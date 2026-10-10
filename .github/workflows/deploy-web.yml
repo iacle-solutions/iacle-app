@@ -18,8 +18,8 @@ permissions:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: pistisai/pistisai-app-web
-  COOLIFY_URL: http://68.168.30.4:8000
-  COOLIFY_APP_UUID: o8ydk6d8w6qaclqdtd5xjhng
+  COOLIFY_URL: https://deploy.pistisai.app
+  COOLIFY_APP_UUID: umnmzbzlgcnjssqphnrgiejt
 
 jobs:
   analyze:
@@ -101,36 +101,95 @@ jobs:
   deploy_coolify:
     needs: build_and_push
     runs-on: ubuntu-24.04
-    timeout-minutes: 10
+    timeout-minutes: 20
     env:
       COOLIFY_API_TOKEN: ${{ secrets.COOLIFY_API_TOKEN }}
     steps:
-      - name: Trigger Coolify deployment via webhook
-        if: env.COOLIFY_API_TOKEN != ''
+      - name: Log the VPS into GHCR
+        env:
+          SSH_KEY: ${{ secrets.COOLIFY_SSH_KEY }}
         run: |
           set -euo pipefail
-          echo "🚀 Triggering Coolify deployment for ${{ env.COOLIFY_APP_UUID }}"
-          
-          WEBHOOK_URL="${{ env.COOLIFY_URL }}/api/v1/deploy?uuid=${{ env.COOLIFY_APP_UUID }}&force=false"
-          
-          echo "Triggering: $WEBHOOK_URL"
-          RESPONSE=$(curl -sS -w "\n%{http_code}" -X POST "$WEBHOOK_URL" \
+          if [ -z "${COOLIFY_API_TOKEN:-}" ]; then
+            echo "COOLIFY_API_TOKEN is not set"
+            exit 1
+          fi
+          if [ -z "${SSH_KEY:-}" ]; then
+            echo "COOLIFY_SSH_KEY is not set"
+            exit 1
+          fi
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/coolify_ci
+          chmod 600 ~/.ssh/coolify_ci
+          ssh-keyscan -H 68.168.30.4 >> ~/.ssh/known_hosts
+          printf '%s' "$GITHUB_TOKEN" | ssh -i ~/.ssh/coolify_ci -o StrictHostKeyChecking=yes root@68.168.30.4 "docker login ghcr.io -u ${{ github.actor }} --password-stdin"
+
+      - name: Trigger Coolify deployment
+        id: trigger
+        run: |
+          set -euo pipefail
+          echo "Triggering Coolify deployment for ${{ env.COOLIFY_APP_UUID }}"
+          WEBHOOK_URL="${{ env.COOLIFY_URL }}/api/v1/deploy?uuid=${{ env.COOLIFY_APP_UUID }}&force=true"
+          HTTP_CODE=$(curl -sS -o /tmp/coolify-deploy.json -w "%{http_code}" -X POST "$WEBHOOK_URL" \
             -H "Authorization: Bearer ${{ env.COOLIFY_API_TOKEN }}" \
             -H "Content-Type: application/json" \
             -H "X-GitHub-Event: push" \
             -d '{"ref":"refs/heads/main","head_commit":{"id":"${{ github.sha }}"}}')
-          
-          HTTP_CODE=$(echo "$RESPONSE" | tail -n1)
-          BODY=$(echo "$RESPONSE" | head -n -1)
-          
-          echo "Response: $HTTP_CODE - $BODY"
-          
-          if [ "$HTTP_CODE" = "200" ] || [ "$HTTP_CODE" = "202" ] || [ "$HTTP_CODE" = "201" ]; then
-            echo "✅ Deployment triggered successfully"
-          else
-            echo "❌ Deployment trigger failed"
+          echo "Response: $HTTP_CODE"
+          cat /tmp/coolify-deploy.json
+          echo
+          if [ "$HTTP_CODE" != "200" ] && [ "$HTTP_CODE" != "201" ] && [ "$HTTP_CODE" != "202" ]; then
+            echo "Deployment trigger failed"
             exit 1
           fi
+          DEPLOYMENT_UUID=$(jq -r '.deployments[0].deployment_uuid // .deployment_uuid // empty' /tmp/coolify-deploy.json)
+          if [ -z "$DEPLOYMENT_UUID" ]; then
+            echo "Coolify did not return a deployment uuid"
+            exit 1
+          fi
+          echo "deployment_uuid=$DEPLOYMENT_UUID" >> "$GITHUB_OUTPUT"
+
+      - name: Wait for Coolify to finish
+        run: |
+          set -euo pipefail
+          DEPLOYMENT_UUID="${{ steps.trigger.outputs.deployment_uuid }}"
+          for _ in $(seq 1 60); do
+            HTTP_CODE=$(curl -sS -o /tmp/coolify-status.json -w "%{http_code}" \
+              -H "Authorization: Bearer ${{ env.COOLIFY_API_TOKEN }}" \
+              -H "Accept: application/json" \
+              "${{ env.COOLIFY_URL }}/api/v1/deployments/${DEPLOYMENT_UUID}")
+            STATUS=$(jq -r '.status // empty' /tmp/coolify-status.json)
+            echo "deployment ${DEPLOYMENT_UUID}: http ${HTTP_CODE} status ${STATUS}"
+            case "$STATUS" in
+              finished|success) exit 0 ;;
+              failed|cancelled|canceled) cat /tmp/coolify-status.json; exit 1 ;;
+            esac
+            sleep 15
+          done
+          echo "Timed out waiting for Coolify"
+          exit 1
+
+      - name: Confirm pistisai.app serves the app
+        run: |
+          set -euo pipefail
+          for host in pistisai.app www.pistisai.app; do
+            code=$(curl -sS -o "/tmp/${host}.html" -w "%{http_code}" --max-time 30 "https://${host}/")
+            echo "${host} -> ${code}"
+            if [ "$code" != "200" ]; then
+              echo "Expected 200 from https://${host}/"
+              head -c 300 "/tmp/${host}.html" || true
+              exit 1
+            fi
+            if grep -q "404 page not found" "/tmp/${host}.html"; then
+              echo "https://${host}/ is still the proxy 404"
+              exit 1
+            fi
+            if ! grep -q "Pistisai" "/tmp/${host}.html"; then
+              echo "https://${host}/ did not return the Pistisai app"
+              head -c 300 "/tmp/${host}.html" || true
+              exit 1
+            fi
+          done
 
       - name: Purge Cloudflare cache
         if: always()
