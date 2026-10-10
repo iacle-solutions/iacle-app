@@ -174,18 +174,17 @@ jobs:
         run: |
           set -euo pipefail
           for host in pistisai.app www.pistisai.app; do
-            code=$(curl -sS -o "/tmp/${host}.html" -w "%{http_code}" --max-time 30 "https://${host}/")
-            echo "${host} -> ${code}"
-            if [ "$code" != "200" ]; then
-              echo "Expected 200 from https://${host}/"
-              head -c 300 "/tmp/${host}.html" || true
-              exit 1
-            fi
-            if grep -q "404 page not found" "/tmp/${host}.html"; then
-              echo "https://${host}/ is still the proxy 404"
-              exit 1
-            fi
-            if ! grep -q "Pistisai" "/tmp/${host}.html"; then
+            ok=0
+            for _ in $(seq 1 24); do
+              code=$(curl -sS -o "/tmp/${host}.html" -w "%{http_code}" --max-time 30 "https://${host}/" || true)
+              echo "${host} -> ${code}"
+              if [ "$code" = "200" ] && ! grep -q "404 page not found" "/tmp/${host}.html" && grep -q "Pistisai" "/tmp/${host}.html"; then
+                ok=1
+                break
+              fi
+              sleep 5
+            done
+            if [ "$ok" != "1" ]; then
               echo "https://${host}/ did not return the Pistisai app"
               head -c 300 "/tmp/${host}.html" || true
               exit 1
