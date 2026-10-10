@@ -108,6 +108,7 @@ jobs:
       - name: Log the VPS into GHCR
         env:
           SSH_KEY: ${{ secrets.COOLIFY_SSH_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
           if [ -z "${COOLIFY_API_TOKEN:-}" ]; then
