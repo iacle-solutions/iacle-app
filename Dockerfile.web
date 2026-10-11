@@ -6,7 +6,7 @@ COPY pubspec.* ./
 RUN flutter pub get
 RUN flutter config --enable-web
 COPY . .
-RUN flutter build web --release
+RUN flutter build web --release --no-web-resources-cdn
 
 # ---- Serve stage: Nginx ----
 FROM nginx:alpine
