@@ -1,6 +1,6 @@
 # Vision System Architecture
 
-Pillar 5, Vision, gives the assistant controlled access to visual context through screenshots, region capture, camera input, and OCR.
+Vision gives the assistant controlled access to visual context through screenshots, region capture, camera input, and OCR.
 
 ## Current Status
 

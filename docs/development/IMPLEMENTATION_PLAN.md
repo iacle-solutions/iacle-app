@@ -16,7 +16,7 @@
 
 Final Phase 3 sprint completing vector embedding generation, fixing the broken channel detail screen, and cleaning up stale dependabot PRs:
 
-**Vector Embedding Generation (Pillar 3) - 100% Complete:**
+**Vector Embedding Generation - 100% Complete:**
 - ✅ Implemented `_generateEmbedding()` calling LM Studio API at `localhost:1234/v1/embeddings`
 - ✅ `storeMemory()` now auto-generates embeddings when not provided
 - ✅ Configurable embedding endpoint with graceful fallback on API failure
@@ -45,7 +45,7 @@ Final Phase 3 sprint completing vector embedding generation, fixing the broken c
 
 Major implementation sprint completing Vision System foundation, Desktop Control enhancements, and Avatar Memory storage layer:
 
-**Vision System (Pillar 5) - 80% Complete:**
+**Vision System - 80% Complete:**
 - ✅ Created vision services directory structure (`lib/services/vision/`)
 - ✅ Implemented RegionCaptureService for screen capture regions
 - ✅ Implemented CameraCaptureService with camera input
@@ -54,14 +54,14 @@ Major implementation sprint completing Vision System foundation, Desktop Control
 - ✅ Added VisionSettingsScreen UI for testing
 - 🔲 Native platform implementations (Linux/Windows) - separate task
 
-**Desktop Control (Pillar 4) - 90% Complete:**
+**Desktop Control - 90% Complete:**
 - ✅ Enhanced GuiAutomationService with platform channels
 - ✅ Created WindowManagerService with full window management
 - ✅ WindowInfo class with state tracking (minimize, maximize, active)
 - ✅ Window operations: focus, move, resize, minimize, maximize, close, toggle
 - 🔲 Native platform implementations (Linux/Windows) - separate task
 
-**Avatar Memory System (Pillar 3) - 85% Complete:**
+**Avatar Memory System - 85% Complete:**
 - ✅ Added ConversationMemories table to database (vector embeddings storage)
 - ✅ Created MemoryService with semantic search foundation
 - ✅ Added DAO methods: getMemoriesForConversation, insertMemory, searchMemoriesByContent
@@ -223,9 +223,9 @@ Implemented device identity authentication for OpenClaw Gateway WebSocket connec
 
 ---
 
-## Quick Reference: Pillar Status
+## Quick Reference: Capability Status
 
-| Pillar | Status | Progress | Next Step |
+| Capability | Status | Progress | Next Step |
 |--------|--------|----------|-----------|
 | **Setup Wizard** | ✅ Complete | 100% | None |
 | **Chat** | ✅ Phase 1 Complete | 95% | Multi-model attachments |

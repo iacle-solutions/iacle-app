@@ -20,8 +20,8 @@ Pistisai is a Flutter desktop/web application with optional Node.js backend serv
 | Flutter app | Dart `>=3.5.0`, package `pistisai` |
 | Local database | Drift / SQLite |
 | Embedded router | Shelf server, port `1337` |
-| API backend | Express 5 ESM, Node `>=22 <25`, port `8080` |
-| Streaming proxy | ESM service, Node `>=22 <25`, port `3001` |
+| API backend | Express 5 ESM, Node `>=22 <27`, port `8080` |
+| Streaming proxy | ESM service, Node `>=22 <27`, port `3001` |
 | Tailscale relay | Express 4 ESM, port `3002` |
 | Auth backend | Express 5 CommonJS, port `3000` |
 | SDK | `@Pistisai/sdk` v2, ESM |

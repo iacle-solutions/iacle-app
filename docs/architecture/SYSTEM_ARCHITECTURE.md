@@ -49,7 +49,7 @@ The setup wizard is the authority for agent runtime selection. Do not assume one
 
 Use `di.serviceLocator<T>()` or `serviceLocator.get<T>()` for registered services. Do not instantiate long-lived services directly unless the file already follows that pattern for a local helper.
 
-## Pillar Services
+## Core Services
 
 ### Chat
 

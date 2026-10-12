@@ -10,7 +10,7 @@ Ollama, LM Studio, and similar local model servers are optional support model pr
 
 ## Overview
 
-Pistisai is organized around seven core pillars:
+Pistisai is organized around core capabilities:
 
 1. **Secure Agent Channel** - The main window is a direct, low-friction channel to the selected agent runtime.
 2. **Avatar And Voice Companion** - A sidecar companion window for avatar presence and voice interaction.
