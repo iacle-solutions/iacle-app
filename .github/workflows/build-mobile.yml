@@ -96,7 +96,7 @@ jobs:
             exit 1
           fi
           yes | "$SDKMANAGER" --licenses > /dev/null 2>&1 || true
-          if ! "$SDKMANAGER" --install "platforms;android-37.0" "platforms;android-36" > /tmp/sdk.log 2>&1; then
+          if ! "$SDKMANAGER" --install "platforms;android-37" > /tmp/sdk.log 2>&1; then
             echo "sdkmanager install failed — output:" >&2
             tail -60 /tmp/sdk.log >&2
             exit 1
