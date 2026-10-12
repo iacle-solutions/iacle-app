@@ -341,12 +341,15 @@ cp -r build/web/* /var/www/html/
 
 #### **Container Deployment**
 
-```bash
-# Build web container
-docker build -f docker/Dockerfile.web -t Pistisai-web .
+The Coolify image is the repo-root `Dockerfile.web`. It compiles the web app. The compose image at `config/docker/Dockerfile.web` only serves a prebuilt `build/web/` tree and listens on port `8080`. Details and cache pitfalls are in [Web Deploy](../operations/cicd/WEB_DEPLOY.md).
 
-# Run web container
-docker run -p 80:80 Pistisai-web
+```bash
+# Production image (what deploy-web.yml builds)
+docker build -f Dockerfile.web -t pistisai-web .
+docker run --rm -p 80:80 pistisai-web
+
+# Compose image, after a local Flutter web build
+docker build -f config/docker/Dockerfile.web -t pistisai-web-prebuilt .
 ```
 
 ---

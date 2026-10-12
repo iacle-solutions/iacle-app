@@ -1,29 +1,42 @@
 # CI/CD Quick Reference
 
-## Azure VM Deployment ✓
+Release automation starts with a push to `main`. [Auto Version Bump](../../../.github/workflows/auto-version-bump.yml) is the entry point. It ignores pushes that already change `assets/version.json`. A commit message containing `[major]` or `[minor]` selects the bump level. Anything else is a patch bump.
 
-The deployment pipeline is automated via GitHub Actions using Service Principal authentication.
+```text
+push to main
+  -> Auto Version Bump
+    -> Web Deploy
+      -> Desktop Build, Mobile Build, Backend Deploy
+```
 
-### Pipeline: deployment.yml
+Web Deploy must complete successfully before the three downstream workflows proceed. Each of them also accepts `workflow_dispatch`. Desktop Build additionally runs on tags matching `v*`.
 
-1. **AI Analysis**: Determines which components changed.
-2. **Build**: Build Docker images for changed components (API, Web, Proxy, Postgres).
-3. **Registry**: Push images to GHCR (ghcr.io).
-4. **Deploy**: SSH into Azure Swarm VM and update stack.
+| Workflow | File | What it ships |
+| --- | --- | --- |
+| Auto Version Bump | `.github/workflows/auto-version-bump.yml` | `assets/version.json` and `pubspec.yaml` |
+| Web Deploy | `.github/workflows/deploy-web.yml` | `ghcr.io/pistisai/pistisai-app-web` via Coolify |
+| Desktop Build | `.github/workflows/build-desktop.yml` | Linux, Windows, and macOS artifacts |
+| Mobile Build | `.github/workflows/build-mobile.yml` | Android APKs. iOS only when dispatched and the `ios/` project exists |
+| Backend Deploy | `.github/workflows/deploy-backend.yml` | Backend containers |
 
-### Required Secrets
+Flutter CI pins `3.44.6` (stable). Web and Android runners are `ubuntu-24.04`.
 
-- `AZURE_CREDENTIALS`: Service Principal JSON.
-- `CLOUDFLARE_TUNNEL_TOKEN`: For ingress.
-- `JWT_SECRET`: API authentication.
-- `POSTGRES_PASSWORD`: Database security.
+There is no `deployment.yml` or `build-pipeline.yml` in `.github/workflows/`. [Unified Deployment Workflow](UNIFIED_DEPLOYMENT_WORKFLOW.md) describes that older pipeline and is not the current path.
 
-### Quick Commands
+## Commands
 
 ```bash
-# Trigger manual build
-gh workflow run deployment.yml -f force_build=true
+# Rebuild and deploy the web image without waiting for a version bump
+gh workflow run "🌐 Web Deploy" --ref main
 
-# View deployment logs
-gh run list --workflow="deployment.yml" --limit 3
+# Android APKs only (the default)
+gh workflow run "📱 Mobile Build & Release" --ref main
+
+# Follow the latest web deploy
+gh run list --workflow="deploy-web.yml" --limit 3
 ```
+
+## Where to read next
+
+- [Web Deploy](WEB_DEPLOY.md) — image, nginx cache, Coolify, Traefik health
+- [Android Build Guide](../../development/ANDROID_BUILD_GUIDE.md) — SDK 37, signing secrets, APK job

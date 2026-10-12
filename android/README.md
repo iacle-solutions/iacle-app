@@ -37,15 +37,30 @@ This directory contains the Android-specific configuration for Pistisai.
 
 The CI/CD workflow automatically creates the signing configuration from GitHub Secrets.
 
-**Required GitHub Secrets:**
-- `ANDROID_KEYSTORE_BASE64` - Base64-encoded keystore file
-- `ANDROID_KEYSTORE_PASSWORD` - Keystore password
-- `ANDROID_KEY_PASSWORD` - Key password
-- `ANDROID_KEY_ALIAS` - Key alias
+**Required GitHub Secrets** (names read by `.github/workflows/build-mobile.yml`):
+
+- `ANDROID_KEYSTORE_B64` — base64-encoded keystore file
+- `ANDROID_STORE_PASSWORD` — keystore password
+- `ANDROID_KEY_PASSWORD` — key password
+- `ANDROID_KEY_ALIAS` — key alias
+
+`scripts/setup-android-signing.ps1` still writes `ANDROID_KEYSTORE_BASE64` and `ANDROID_KEYSTORE_PASSWORD`. Those secrets are not the ones the workflow reads.
 
 **Setup Instructions:**
 
-See  for complete setup instructions.
+See [Android Build Guide](../docs/development/ANDROID_BUILD_GUIDE.md).
+
+## Toolchain
+
+| Piece | Value |
+| --- | --- |
+| Android Gradle Plugin | 8.9.1 (`android/settings.gradle`) |
+| Gradle wrapper | 8.11.1 |
+| `compileSdk` / `compileSdkMinor` | 37 / 0 |
+| SDK package CI installs | `platforms;android-37.0` |
+| NDK, minSdk, targetSdk | Flutter's values (`flutter.ndkVersion`, `flutter.minSdkVersion`, `flutter.targetSdkVersion`) |
+
+`platforms;android-37` without the `.0` minor does not match what AGP 8.9 requests. On GitHub `ubuntu-24.04` runners, call `sdkmanager` from `$ANDROID_HOME`. It is not on `PATH`.
 
 ## Security Notes
 
@@ -121,7 +136,7 @@ flutter run --release
 
 ### "SDK licenses not accepted"
 
-**Solution**: Run `flutter doctor --android-licenses` and accept all licenses.
+**Solution**: Locally, run `flutter doctor --android-licenses`. In CI, the mobile workflow runs `yes | "$SDKMANAGER" --licenses` using the binary under `ANDROID_HOME`, then installs `platforms;android-37.0`.
 
 ### Build fails with Gradle errors
 
@@ -139,4 +154,4 @@ flutter build apk --release
 
 - [Flutter Android Deployment](https://docs.flutter.dev/deployment/android)
 - [Android App Signing](https://developer.android.com/studio/publish/app-signing)
-- 
+- [Android Build Guide](../docs/development/ANDROID_BUILD_GUIDE.md) 

@@ -55,6 +55,8 @@ For project-wide agent instructions, see [AGENTS.md](../AGENTS.md). For the prod
 - [Docker Deployment](deployment/DOCKER_DEPLOYMENT.md)
 - [Complete Deployment Workflow](deployment/COMPLETE_DEPLOYMENT_WORKFLOW.md)
 - [Operations Index](operations/README.md)
+- [Web Deploy](operations/cicd/WEB_DEPLOY.md)
+- [CI/CD Quick Reference](operations/cicd/CI_CD_QUICK_REFERENCE.md)
 - [Security Policy](governance/security/SECURITY.md)
 - [Secrets Management](deployment/SECRETS_MANAGEMENT.md)
 

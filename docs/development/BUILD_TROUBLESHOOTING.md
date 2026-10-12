@@ -528,14 +528,15 @@ If you exceed free tier, consider:
 
 **Solutions:**
 
-1. **Verify Android build is enabled**:
-   - Check `.github/workflows/build-release.yml`
-   - Ensure Android matrix entry is uncommented
-   - See  for setup
+1. **Verify the mobile workflow ran**:
+   - Android is `.github/workflows/build-mobile.yml`, job `build_android`
+   - It starts after Web Deploy succeeds, or from `workflow_dispatch`
+   - There is no `build-release.yml`
+   - See [Android Build Guide](ANDROID_BUILD_GUIDE.md)
 
 2. **Check GitHub Secrets**:
-   - Verify all Android signing secrets are configured
-   - Required: `ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_PASSWORD`, `ANDROID_KEY_ALIAS`
+   - Required: `ANDROID_KEYSTORE_B64`, `ANDROID_STORE_PASSWORD`, `ANDROID_KEY_PASSWORD`, `ANDROID_KEY_ALIAS`
+   - `ANDROID_KEYSTORE_BASE64` and `ANDROID_KEYSTORE_PASSWORD` are not read by the workflow
 
 ### Issue: Android Signing Failed
 
@@ -552,7 +553,7 @@ If you exceed free tier, consider:
    # Re-encode keystore to base64
    base64 release-keystore.jks > release-keystore.base64.txt
    
-   # Update ANDROID_KEYSTORE_BASE64 secret with content
+   # Update the ANDROID_KEYSTORE_B64 secret with that content
    ```
 
 2. **Check secret names**:
@@ -576,8 +577,9 @@ If you exceed free tier, consider:
 **Solutions:**
 
 1. **Check Android SDK version**:
-   - Verify `compileSdkVersion` in `android/app/build.gradle`
-   - Ensure it matches workflow SDK version (33)
+   - `android/app/build.gradle` sets `compileSdk 37` and `compileSdkMinor 0`
+   - CI installs `platforms;android-37.0` via `sdkmanager` under `ANDROID_HOME`
+   - AGP is `8.9.1` and the Gradle wrapper is `8.11.1`
 
 2. **Clear Gradle cache**:
    - Re-run workflow (cache will be cleared automatically)
@@ -622,8 +624,8 @@ If you exceed free tier, consider:
 **Solutions:**
 
 1. **Check minimum SDK version**:
-   - Device must be Android 5.0+ (API 21+)
-   - Verify `minSdkVersion` in `android/app/build.gradle`
+   - `minSdkVersion` is `flutter.minSdkVersion` in `android/app/build.gradle`
+   - The floor is whatever Flutter `3.44.6` supplies. It is not a literal in this repo.
 
 2. **Enable unknown sources**:
    - Settings → Security → Enable "Install from Unknown Sources"
@@ -742,7 +744,7 @@ If you exceed free tier, consider:
 For detailed Android build setup and configuration:
 
 - Complete setup guide with secret configuration
-- [android/README.md](../android/README.md) - Local build instructions
+- [android/README.md](../../android/README.md) - Local build instructions
 - [Flutter Android Deployment](https://docs.flutter.dev/deployment/android)
 - [Android App Signing](https://developer.android.com/studio/publish/app-signing)
 

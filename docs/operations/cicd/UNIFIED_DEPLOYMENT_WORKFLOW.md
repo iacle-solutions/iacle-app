@@ -1,5 +1,7 @@
 # Unified Deployment Workflow
 
+> Historical. `.github/workflows/` has no `build-pipeline.yml` and no `deployment.yml`. Current releases chain Auto Version Bump into Web Deploy, then desktop, mobile, and backend. Use [CI/CD Quick Reference](CI_CD_QUICK_REFERENCE.md) and [Web Deploy](WEB_DEPLOY.md).
+
 ## Overview
 
 The Unified Deployment Workflow (`build-pipeline.yml`) represents a significant evolution in Pistisai's CI/CD system. It consolidates AI analysis, version management, and multi-platform deployment into a single intelligent workflow, eliminating the complexity of previous orchestrator-based systems.
