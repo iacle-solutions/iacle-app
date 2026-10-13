@@ -53,7 +53,17 @@ const checkJwt = (req, res, next) => {
   const authHeader = req.headers.authorization || req.headers.Authorization;
   const token = authHeader && authHeader.startsWith('Bearer ') ? authHeader.substring(7) : null;
 
-  if (token === 'mock_dev_access_token' && (process.env.NODE_ENV || 'development') !== 'production') {
+  // Dev bypass: only when NODE_ENV !== 'production' and DEV_BYPASS_TOKEN is set.
+  // No hardcoded token literal — must come from the environment.
+  const isNonProduction =
+    (process.env.NODE_ENV || 'development') !== 'production';
+  const devBypassToken = process.env.DEV_BYPASS_TOKEN;
+  if (
+    isNonProduction &&
+    typeof devBypassToken === 'string' &&
+    devBypassToken.length > 0 &&
+    token === devBypassToken
+  ) {
     req.auth = {
       sub: 'google-oauth2|102509433531341542550',
       email: 'dev@pistisai.app',

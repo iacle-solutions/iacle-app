@@ -1,4 +1,13 @@
-import { describe, it, beforeAll, afterAll, expect, jest } from "@jest/globals";
+import {
+  describe,
+  it,
+  beforeAll,
+  afterAll,
+  expect,
+  jest,
+} from "@jest/globals";
+
+const DEV_TOKEN = "ci-dev-bypass-token-for-tests";
 
 // Mock express-oauth2-jwt-bearer and jwks-rsa to prevent ES module loading issues in Jest
 jest.mock("express-oauth2-jwt-bearer", () => {
@@ -22,14 +31,25 @@ import request from "supertest";
 let checkJwt;
 let optionalAuth;
 
-// Mock AuthService to prevent real database and JWKS calls
+// AuthService mock that mirrors env-gated isDevBypassToken behavior
 jest.mock("../../../services/api-backend/auth/auth-service.js", () => {
   return {
     AuthService: jest.fn().mockImplementation(() => {
+      const configured = process.env.DEV_BYPASS_TOKEN;
+      const devBypassToken =
+        process.env.NODE_ENV !== "production" &&
+        typeof configured === "string" &&
+        configured.length > 0
+          ? configured
+          : null;
       return {
         initialize: jest.fn().mockResolvedValue(true),
         syncSession: jest.fn().mockResolvedValue({ success: true }),
         validateToken: jest.fn().mockResolvedValue({ valid: true }),
+        devBypassToken,
+        isDevBypassToken(token) {
+          return Boolean(devBypassToken) && token === devBypassToken;
+        },
       };
     }),
   };
@@ -38,11 +58,13 @@ jest.mock("../../../services/api-backend/auth/auth-service.js", () => {
 describe("Developer Mock Bypass Authentication", () => {
   let app;
   let originalNodeEnv;
+  let originalDevBypass;
 
   beforeAll(async () => {
     originalNodeEnv = process.env.NODE_ENV;
-    // Set NODE_ENV to development so the bypass code paths are active and testable
+    originalDevBypass = process.env.DEV_BYPASS_TOKEN;
     process.env.NODE_ENV = "development";
+    process.env.DEV_BYPASS_TOKEN = DEV_TOKEN;
 
     const authModule =
       await import("../../../services/api-backend/middleware/auth.js");
@@ -52,7 +74,6 @@ describe("Developer Mock Bypass Authentication", () => {
     app = express();
     app.use(express.json());
 
-    // Protected endpoint
     app.get("/api/test-protected", checkJwt, (req, res) => {
       res.json({
         message: "success",
@@ -62,7 +83,6 @@ describe("Developer Mock Bypass Authentication", () => {
       });
     });
 
-    // Optional endpoint
     app.get("/api/test-optional", optionalAuth, (req, res) => {
       res.json({
         message: "success",
@@ -75,26 +95,31 @@ describe("Developer Mock Bypass Authentication", () => {
 
   afterAll(() => {
     process.env.NODE_ENV = originalNodeEnv;
+    if (originalDevBypass === undefined) {
+      delete process.env.DEV_BYPASS_TOKEN;
+    } else {
+      process.env.DEV_BYPASS_TOKEN = originalDevBypass;
+    }
   });
 
-  it("should successfully bypass Auth0 verification for mock_dev_access_token", async () => {
+  it("should successfully bypass verification for configured DEV_BYPASS_TOKEN", async () => {
     const response = await request(app)
       .get("/api/test-protected")
-      .set("Authorization", "Bearer mock_dev_access_token")
+      .set("Authorization", `Bearer ${DEV_TOKEN}`)
       .expect(200);
 
     expect(response.body.message).toBe("success");
     expect(response.body.auth).toBeDefined();
-    expect(response.body.auth.token).toBe("mock_dev_access_token");
+    expect(response.body.auth.token).toBe(DEV_TOKEN);
     expect(response.body.auth.payload.email).toBe("dev@pistisai.app");
     expect(response.body.auth.payload.name).toBe("Christopher (Dev)");
     expect(response.body.auth.payload.nickname).toBe("rightguy");
   });
 
-  it("should successfully populate auth credentials under optionalAuth for mock_dev_access_token", async () => {
+  it("should successfully populate auth credentials under optionalAuth for DEV_BYPASS_TOKEN", async () => {
     const response = await request(app)
       .get("/api/test-optional")
-      .set("Authorization", "Bearer mock_dev_access_token")
+      .set("Authorization", `Bearer ${DEV_TOKEN}`)
       .expect(200);
 
     expect(response.body.message).toBe("success");
@@ -107,7 +132,6 @@ describe("Developer Mock Bypass Authentication", () => {
       .get("/api/test-protected")
       .set("Authorization", "Bearer invalid_or_unsupported_token");
 
-    // Should fail with an authentication error (non-200 status code)
     expect(response.status).not.toBe(200);
   });
 });
