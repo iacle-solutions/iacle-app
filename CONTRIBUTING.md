@@ -4,7 +4,7 @@ Thanks for showing up. Pistisai is **local-first, open, and built in the open** 
 issues, failure reports, and pull requests are the lifeblood of this launch. This guide
 gets you from "I cloned the repo" to "my change is in `main`" without surprises.
 
-> Launch anchor issue: [#39 — Paperclip AI — public launch](https://github.com/pistisAI/pistisai-app/issues/39).
+> Launch anchor issue: [#39 — Pistisai — public launch](https://github.com/pistisAI/pistisai-app/issues/39).
 > Read it first if you're here from a launch channel. Open an issue or discussion with your
 > real use case — that counts as a contribution.
 
@@ -37,8 +37,9 @@ git clone https://github.com/pistisAI/pistisai-app.git
 cd pistisai-app
 
 flutter pub get
+cd lib/shared && flutter pub get && cd ../..   # shared package deps are separate
 flutter analyze lib/     # must pass — CI scopes analysis to lib/ (test-file lints are non-blocking)
-flutter test             # run the app test suite
+bash scripts/ci/flutter_security_basic_tests.sh   # CI Flutter gate suite
 
 # Run it
 flutter run -d linux     # desktop
@@ -57,14 +58,15 @@ Do **not** hand-edit generated `*.g.dart` / `*.freezed.dart` files.
 
 Node services use ESM. Engines:
 
-- `services/api-backend` and `services/streaming-proxy`: Node `>=22.0.0 <25.0.0`
+- `services/api-backend` and `services/streaming-proxy`: Node `>=22.0.0 <27.0.0` (CI pins Node `26` via `.nvmrc`)
 - `services/sdk`: Node `>=18.0.0`
 - `backend/auth`: CommonJS, no `npm run dev` (run with `node handlers.js`)
 
 ```bash
 # Root tooling
 npm install
-npm test                 # ESM Jest, matches **/test/**/*.test.js
+npm test                 # api-backend security CI suite only
+# npm run test:full      # broader Jest run; many suites are ignore-listed — see jest.config.js
 
 # Per-service (example: api-backend)
 cd services/api-backend && npm install && npm test
@@ -86,8 +88,8 @@ We keep it low-ceremony.
 2. **Make the change.** Keep commits small and real — no stubs, no empty docs.
 3. **Verify before pushing:**
    - `flutter analyze lib/` is clean (CI only analyzes `lib/`; `test/` info-lints don't block)
-   - `flutter test` (or the affected suite) passes
-   - `npm test` passes for backend/tooling changes
+   - `bash scripts/ci/flutter_security_basic_tests.sh` (or the affected suite) passes
+   - `npm test` passes for backend/tooling changes (security suite; use per-service tests as needed)
 4. **Open a pull request** against `main` with a clear description of what and why.
 
 > (Internal agent contributors follow the push-to-`main` discipline in
@@ -98,7 +100,7 @@ We keep it low-ceremony.
 ## Commit & PR conventions
 
 - Use **conventional commits**: `feat:`, `fix:`, `docs:`, `chore:`, `test:`, `refactor:`.
-- Prefix agent-authored commits with the agent name, e.g. `ai(Paperclip): ...`.
+- Prefix agent-authored commits with the agent name, e.g. `ai(<agent>): ...`.
 - Keep PRs focused. One logical change per PR is easier to review and merge.
 - Reference the relevant issue: `fix: correct wizard clone dir (issue #39)`.
 
@@ -106,11 +108,11 @@ We keep it low-ceremony.
 
 ## Code style
 
-- **Dart**: `flutter format .`; prefer single quotes; `snake_case.dart` files, `PascalCase`
+- **Dart**: `dart format .`; prefer single quotes; `snake_case.dart` files, `PascalCase`
   classes. Strong mode is on (`implicit-casts`/`implicit-dynamic` are false).
 - **JS/TS**: match the surrounding `kebab-case` files; `PascalCase` classes.
 - Avoid code comments unless the code is genuinely not self-explanatory.
-- Preserve branding exactly: `Pistisai`, `OpenClaw`, `Zoidbot`, and the lobster branding.
+- Preserve branding exactly: `Pistisai`, `OpenClaw`, `Zoidbot`.
 
 ---
 
@@ -122,7 +124,7 @@ We keep it low-ceremony.
 | Services (router, agents, desktop, vision) | `lib/services/` |
 | Architecture docs | `docs/architecture/` |
 | Dev / testing guides | `docs/development/` |
-| Deployment | `docs/deployment/DEPLOYMENT_OVERVIEW.md` (current), `DEPLOYMENT.md` (legacy Swarm runbook) |
+| Deployment | `docs/deployment/DEPLOYMENT_OVERVIEW.md` (current), `docs/deployment/SELF_HOSTING.md` |
 | Launch content (issue #39 assets) | `docs/LAUNCH.md`, `docs/marketing/publish-ready/`, `cmo-deliverables/` |
 
 Full map: [AGENTS.md](AGENTS.md) and [docs/LAUNCH.md](docs/LAUNCH.md).

@@ -21,7 +21,7 @@ The streaming-proxy service is a Node.js application that provides WebSocket con
 │         ▼                    │  - Auth          │           │
 │  ┌────────────────┐         └──────────────────┘           │
 │  │  API Backend   │                                         │
-│  │  (Port 3000)   │                                         │
+│  │  (Port 8080)   │                                         │
 │  └────────────────┘                                         │
 │                                                              │
 └─────────────────────────────────────────────────────────────┘

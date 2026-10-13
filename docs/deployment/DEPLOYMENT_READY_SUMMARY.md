@@ -110,7 +110,7 @@ The script will:
 ┌────────────────────────┐  ┌────────────────────────────────┐
 │    Web Service         │  │    API Backend Service         │
 │  (Flutter + Nginx)     │  │    (Node.js Express)           │
-│     Port: 8080         │  │      Port: 3000                │
+│     Port: 8080         │  │      Port: 8080                │
 └────────────────────────┘  └──────────┬─────────────────────┘
                                        │
                                        │ HTTP Polling

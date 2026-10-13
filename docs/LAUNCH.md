@@ -41,7 +41,7 @@ they are not the primary app runtime.
 |---------|--------|-------|
 | **Hermes** | ✅ Primary test path | First-class integration; sessions, channels, tools wired in. |
 | **OpenClaw** | ✅ Supported | Gateway control + skill management built in. |
-| Compatible agent gateways | ✅ Supported | Any agent exposing the runtime contract (see [Agent Runtime Contract](docs/architecture/AGENT_RUNTIME_CONTRACT.md)). |
+| Compatible agent gateways | ✅ Supported | Any agent exposing the runtime contract (see [Agent Runtime Contract](architecture/AGENT_RUNTIME_CONTRACT.md)). |
 | Ollama / LM Studio / model servers | 🔌 Support only | Used for app-owned memory/embeddings/OCR/speech, not as the main runtime. |
 | Pistisai-hosted compute | 🔜 Optional | Paid, opt-in hosted agent runtime (per-user container). |
 
@@ -81,8 +81,9 @@ That's it. No build step.
 git clone https://github.com/pistisAI/pistisai-app.git
 cd pistisai-app
 
-# 2. Get Flutter dependencies
+# 2. Get Flutter dependencies (app + shared package)
 flutter pub get
+cd lib/shared && flutter pub get && cd ../..
 
 # 3. Run (pick your target)
 flutter run -d linux    # Linux desktop
@@ -90,12 +91,13 @@ flutter run -d chrome   # Web
 
 # 4. Build release artifacts
 flutter build linux --release
-flutter build web --release
+flutter build web --release --no-web-resources-cdn
 flutter build apk --release --split-per-abi
 ```
 
-> The Flutter app package is `pistisai` (Dart SDK `>=3.5.0 <4.0.0`). A shared
-> package `lib/shared` (`pistisai_shared`) has its own `pubspec.yaml`.
+> The Flutter app package is `pistisai` (Dart SDK `>=3.5.0 <4.0.0`). The shared
+> package `lib/shared` (`pistisai_shared`) targets Dart `>=3.9.0 <4.0.0` and needs
+> its own `flutter pub get`.
 
 ### Option C — Backend services (for self-hosted / full stack)
 
@@ -104,16 +106,18 @@ The repo bundles Node.js services. From the repo root:
 ```bash
 # Root tooling
 npm install
-npm test          # ESM Jest, matches **/test/**/*.test.js
+npm test          # api-backend security CI suite only (see AGENTS.md)
+# npm run test:full   # broader Jest run; many suites are ignore-listed
 
-# API backend
+# API backend (default port 8080)
 cd services/api-backend && npm install && npm run dev
 
-# Streaming proxy
+# Streaming proxy (default port 3001)
 cd services/streaming-proxy && npm install && npm run dev
 ```
 
-Full backend/dev guide → [docs/development/BUILD_SCRIPTS.md](docs/development/BUILD_SCRIPTS.md).
+Developer onboarding → [development/DEVELOPER_ONBOARDING.md](development/DEVELOPER_ONBOARDING.md).
+Command reference → [AGENTS.md](../AGENTS.md).
 
 ---
 
@@ -125,7 +129,7 @@ setup wizard, which supports:
 - **This device** — Hermes / OpenClaw running locally.
 - **Another private device** — a machine on your LAN.
 - **Tailscale device** — preferred secure path; one private network across all
-  your machines (see [Secure Device Mesh](docs/architecture/SECURE_DEVICE_MESH.md)).
+  your machines (see [Secure Device Mesh](architecture/SECURE_DEVICE_MESH.md)).
 - **Manual / private URL** — bring your own agent gateway endpoint.
 - **Pistisai-hosted compute** — optional paid runtime (per-user container joined
   to your tailnet).
@@ -137,11 +141,9 @@ and permissioned per action — explicit consent, fully auditable.
 
 ## Self-hosting & deployment
 
-- **Overview / strategy**: [docs/deployment/DEPLOYMENT_OVERVIEW.md](docs/deployment/DEPLOYMENT_OVERVIEW.md)
+- **Overview / strategy**: [deployment/DEPLOYMENT_OVERVIEW.md](deployment/DEPLOYMENT_OVERVIEW.md)
   (agent-runtime-first, Tailscale-first, optional per-user cloud connector).
-- **Current production path**: Kubernetes / container deployment per the overview.
-- **Historical Docker Swarm runbook**: [DEPLOYMENT.md](../DEPLOYMENT.md) (legacy
-  streaming-proxy stack; keep only for maintaining that older path).
+- **Self-hosting steps**: [deployment/SELF_HOSTING.md](deployment/SELF_HOSTING.md).
 - **Security**: [SECURITY.md](../SECURITY.md) — report vulnerabilities privately
   to `security@pistisai.app` or the GitHub security advisories tab.
 
@@ -163,15 +165,15 @@ and permissioned per action — explicit consent, fully auditable.
 
 | Guide | Link |
 |-------|------|
-| System Architecture | [docs/architecture/SYSTEM_ARCHITECTURE.md](docs/architecture/SYSTEM_ARCHITECTURE.md) |
-| Agent Runtime Contract | [docs/architecture/AGENT_RUNTIME_CONTRACT.md](docs/architecture/AGENT_RUNTIME_CONTRACT.md) |
-| Secure Device Mesh | [docs/architecture/SECURE_DEVICE_MESH.md](docs/architecture/SECURE_DEVICE_MESH.md) |
-| Desktop Control | [docs/architecture/DESKTOP_CONTROL.md](docs/architecture/DESKTOP_CONTROL.md) |
-| Vision System | [docs/architecture/VISION_SYSTEM.md](docs/architecture/VISION_SYSTEM.md) |
-| User Guide | [docs/user-guide/USER_GUIDE.md](docs/user-guide/USER_GUIDE.md) |
-| Setup Guide | [docs/user-guide/SETUP_GUIDE.md](docs/user-guide/SETUP_GUIDE.md) |
-| Build Scripts | [docs/development/BUILD_SCRIPTS.md](docs/development/BUILD_SCRIPTS.md) |
-| Deployment Overview | [docs/deployment/DEPLOYMENT_OVERVIEW.md](docs/deployment/DEPLOYMENT_OVERVIEW.md) |
+| System Architecture | [architecture/SYSTEM_ARCHITECTURE.md](architecture/SYSTEM_ARCHITECTURE.md) |
+| Agent Runtime Contract | [architecture/AGENT_RUNTIME_CONTRACT.md](architecture/AGENT_RUNTIME_CONTRACT.md) |
+| Secure Device Mesh | [architecture/SECURE_DEVICE_MESH.md](architecture/SECURE_DEVICE_MESH.md) |
+| Desktop Control | [architecture/DESKTOP_CONTROL.md](architecture/DESKTOP_CONTROL.md) |
+| Vision System | [architecture/VISION_SYSTEM.md](architecture/VISION_SYSTEM.md) |
+| User Guide | [user-guide/USER_GUIDE.md](user-guide/USER_GUIDE.md) |
+| Setup Guide | [user-guide/SETUP_GUIDE.md](user-guide/SETUP_GUIDE.md) |
+| Developer Onboarding | [development/DEVELOPER_ONBOARDING.md](development/DEVELOPER_ONBOARDING.md) |
+| Deployment Overview | [deployment/DEPLOYMENT_OVERVIEW.md](deployment/DEPLOYMENT_OVERVIEW.md) |
 | Contributing | [CONTRIBUTING.md](../CONTRIBUTING.md) |
 
 ---
@@ -183,12 +185,12 @@ the code and stays in sync:
 
 | Asset | Link |
 |-------|------|
-| Content brief (one-liner, positioning, channel plan) | [docs/marketing/LAUNCH_CONTENT_BRIEF.md](docs/marketing/LAUNCH_CONTENT_BRIEF.md) |
-| Social thread pack (X + LinkedIn) | [docs/marketing/publish-ready/social-thread-pack.md](docs/marketing/publish-ready/social-thread-pack.md) |
-| Community copy pack (Discord/forum FAQ) | [docs/marketing/publish-ready/community-copy-pack.md](docs/marketing/publish-ready/community-copy-pack.md) |
-| Measurement plan (Day 1 / Week 1 metrics) | [docs/marketing/publish-ready/measurement-plan.md](docs/marketing/publish-ready/measurement-plan.md) |
-| Social announcements (CMO drafts + calendar) | [cmo-deliverables/launch-social-announcements.md](cmo-deliverables/launch-social-announcements.md) |
-| Community activation plan | [cmo-deliverables/community-activation-plan.md](cmo-deliverables/community-activation-plan.md) |
+| Content brief (one-liner, positioning, channel plan) | [marketing/LAUNCH_CONTENT_BRIEF.md](marketing/LAUNCH_CONTENT_BRIEF.md) |
+| Social thread pack (X + LinkedIn) | [marketing/publish-ready/social-thread-pack.md](marketing/publish-ready/social-thread-pack.md) |
+| Community copy pack (Discord/forum FAQ) | [marketing/publish-ready/community-copy-pack.md](marketing/publish-ready/community-copy-pack.md) |
+| Measurement plan (Day 1 / Week 1 metrics) | [marketing/publish-ready/measurement-plan.md](marketing/publish-ready/measurement-plan.md) |
+| Social announcements (CMO drafts + calendar) | [../cmo-deliverables/launch-social-announcements.md](../cmo-deliverables/launch-social-announcements.md) |
+| Community activation plan | [../cmo-deliverables/community-activation-plan.md](../cmo-deliverables/community-activation-plan.md) |
 
 ---
 

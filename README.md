@@ -101,7 +101,7 @@ flutter run -d chrome  # Web
 # Build
 
 flutter build linux --release
-flutter build web --release
+flutter build web --release --no-web-resources-cdn
 flutter build apk --release --split-per-abi
 flutter build windows --release
 flutter build macos --release
@@ -114,7 +114,8 @@ cd services/api-backend && npm install && npm run dev
 cd services/streaming-proxy && npm install && npm run dev
 ```
 
-Full developer guide → [docs/development/BUILD_SCRIPTS.md](docs/development/BUILD_SCRIPTS.md)
+Developer onboarding → [docs/development/DEVELOPER_ONBOARDING.md](docs/development/DEVELOPER_ONBOARDING.md).
+Command reference → [AGENTS.md](AGENTS.md).
 
 ---
 

@@ -280,7 +280,7 @@ Variables use `{{variableName}}` syntax:
 ### Create Password Reset Template
 
 ```bash
-curl -X POST http://localhost:3000/api/admin/email/templates \
+curl -X POST http://localhost:8080/api/admin/email/templates \
   -H "Authorization: Bearer <token>" \
   -H "Content-Type: application/json" \
   -d '{
@@ -295,14 +295,14 @@ curl -X POST http://localhost:3000/api/admin/email/templates \
 ### List All Templates
 
 ```bash
-curl -X GET "http://localhost:3000/api/admin/email/templates?limit=10&offset=0" \
+curl -X GET "http://localhost:8080/api/admin/email/templates?limit=10&offset=0" \
   -H "Authorization: Bearer <token>"
 ```
 
 ### Update Template
 
 ```bash
-curl -X PUT http://localhost:3000/api/admin/email/templates/<template-id> \
+curl -X PUT http://localhost:8080/api/admin/email/templates/<template-id> \
   -H "Authorization: Bearer <token>" \
   -H "Content-Type: application/json" \
   -d '{
@@ -313,7 +313,7 @@ curl -X PUT http://localhost:3000/api/admin/email/templates/<template-id> \
 ### Delete Template
 
 ```bash
-curl -X DELETE http://localhost:3000/api/admin/email/templates/<template-id> \
+curl -X DELETE http://localhost:8080/api/admin/email/templates/<template-id> \
   -H "Authorization: Bearer <token>"
 ```
 

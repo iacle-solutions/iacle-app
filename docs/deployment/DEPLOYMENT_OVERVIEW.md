@@ -34,8 +34,9 @@ docker build -f services/api-backend/Dockerfile.prod \
   -t your-registry.com/Pistisai/api:latest .
 docker push your-registry.com/Pistisai/api:latest
 
-# Deploy to Kubernetes (any cluster)
-kubectl apply -f k8s/
+# Deploy to Kubernetes (any cluster) — see config/kubernetes/ and services/*/k8s/
+kubectl apply -f config/kubernetes/namespace.yaml
+kubectl apply -f config/kubernetes/base/
 ```
 
 **Benefits:**
@@ -124,20 +125,17 @@ docker build -f services/api-backend/Dockerfile.prod -t pistisai-api:latest .
 
 ### ☸️ **Kubernetes Deployment**
 
-Deploy to any Kubernetes cluster (managed or self-hosted) using the manifests in the `k8s/` directory:
+Deploy to any Kubernetes cluster (managed or self-hosted) using the manifests under
+`config/kubernetes/` and per-service `k8s/` folders (there is no root `k8s/` directory):
 
 ```bash
-# Apply all Kubernetes resources
-kubectl apply -f k8s/
+# Shared / base manifests
+kubectl apply -f config/kubernetes/namespace.yaml
+kubectl apply -f config/kubernetes/base/
 
-# Or apply individually
-kubectl apply -f k8s/namespace.yaml
-kubectl apply -f k8s/configmap.yaml
-kubectl apply -f k8s/secrets.yaml
-kubectl apply -f k8s/postgres-statefulset.yaml
-kubectl apply -f k8s/api-backend-deployment.yaml
-kubectl apply -f k8s/web-deployment.yaml
-kubectl apply -f k8s/ingress-nginx.yaml
+# Service-specific examples
+kubectl apply -f services/api-backend/k8s/
+kubectl apply -f web/k8s/
 ```
 
 **Platform Options:**
@@ -147,7 +145,7 @@ kubectl apply -f k8s/ingress-nginx.yaml
 
 For detailed deployment instructions, see:
 
-- Kubernetes manifests live in `k8s/`
+- Kubernetes manifests: `config/kubernetes/`, `services/*/k8s/`, `web/k8s/`
 - [Self-Hosting Guide](SELF_HOSTING.md) - For businesses deploying on-premises
 
 ---
@@ -177,15 +175,15 @@ See [Strict Deployment Policy](STRICT_DEPLOYMENT_POLICY.md) for complete details
 
 ## Versioning Strategy
 
-Pistisai uses a granular build numbering system:
+Pistisai tracks version in two synced files (see [AGENTS.md](../../AGENTS.md)):
 
-- **Format**: `v<major>.<minor>.<patch>+<build>` (e.g., `v3.13.0+202507262156`)
-- **`major.minor.patch`**: Semantic versioning for core application
-- **`build`**: Incremental build number based on timestamp (YYYYMMDDHHMM)
+- `assets/version.json` — `version` (semver) + integer `build_number`
+- `pubspec.yaml` — `version: X.Y.Z+<build_number>`
 
-This allows for precise tracking of releases and development builds.
+Example shape: `1.1.46+45` (not a timestamped `YYYYMMDDHHMM` build id).
 
-For detailed information, see [Versioning Strategy](VERSIONING_STRATEGY.md).
+For packaging/version helper scripts, see [BUILD_SCRIPTS.md](../development/BUILD_SCRIPTS.md)
+and [docs/development/versioning/](../development/versioning/).
 
 ---
 
@@ -206,7 +204,7 @@ For detailed information, see [Versioning Strategy](VERSIONING_STRATEGY.md).
 
 ### ☸️ **Kubernetes Deployment**
 
-- Kubernetes manifests live in `k8s/`
+- Kubernetes manifests live in `config/kubernetes/`, `services/*/k8s/`, and `web/k8s/`
 
 ### 🏗️ **Architecture**
 

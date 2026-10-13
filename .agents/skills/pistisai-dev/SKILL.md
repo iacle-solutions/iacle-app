@@ -13,18 +13,18 @@ This skill contains the comprehensive developer guidelines, commands, architectu
 
 ### Structure Overview
 
-- [lib/](file:///data/dev/projects/pistisai-app/lib/) — Flutter desktop & web application
-  - [lib/main.dart](file:///data/dev/projects/pistisai-app/lib/main.dart) — Main entry point
-  - [lib/di/locator.dart](file:///data/dev/projects/pistisai-app/lib/di/locator.dart) — Dependency injection registry
-  - [lib/database/](file:///data/dev/projects/pistisai-app/lib/database/) — Drift local SQLite database
-  - [lib/services/](file:///data/dev/projects/pistisai-app/lib/services/) — Core logic services
-  - [lib/screens/](file:///data/dev/projects/pistisai-app/lib/screens/) — UI screens
-- [services/](file:///data/dev/projects/pistisai-app/services/) — Node.js backend services
-  - [services/api-backend/](file:///data/dev/projects/pistisai-app/services/api-backend/) — Express 5 REST API (Node `>=22 <25`)
-  - [services/streaming-proxy/](file:///data/dev/projects/pistisai-app/services/streaming-proxy/) — Streaming proxy (Node `>=22 <25`)
-  - [services/tailscale-relay/](file:///data/dev/projects/pistisai-app/services/tailscale-relay/) — Tailscale relay (Express 4)
-  - [services/sdk/](file:///data/dev/projects/pistisai-app/services/sdk/) — TypeScript SDK (Node `>=18`)
-- [backend/auth/](file:///data/dev/projects/pistisai-app/backend/auth/) — Express 5 Auth0 JWT validation backend (CommonJS, Node `>=22 <25`)
+- [lib/](../../../lib/) — Flutter desktop & web application
+  - [lib/main.dart](../../../lib/main.dart) — Main entry point
+  - [lib/di/locator.dart](../../../lib/di/locator.dart) — Dependency injection registry
+  - [lib/database/](../../../lib/database/) — Drift local SQLite database
+  - [lib/services/](../../../lib/services/) — Core logic services
+  - [lib/screens/](../../../lib/screens/) — UI screens
+- [services/](../../../services/) — Node.js backend services
+  - [services/api-backend/](../../../services/api-backend/) — Express 5 REST API (Node `>=22 <27`)
+  - [services/streaming-proxy/](../../../services/streaming-proxy/) — Streaming proxy (Node `>=22 <27`)
+  - [services/tailscale-relay/](../../../services/tailscale-relay/) — Tailscale relay (Express 4)
+  - [services/sdk/](../../../services/sdk/) — TypeScript SDK (Node `>=18`)
+- [backend/auth/](../../../backend/auth/) — Express 5 Auth0 JWT validation backend (CommonJS, Node `>=22 <27`)
 
 ---
 
@@ -61,15 +61,15 @@ When you modify Drift table definitions or queries in `lib/database/`, you must 
 ### 3.1 Flutter Frontend Operations
 Run these commands from the root directory of the repository:
 
-- **Get dependencies**: `flutter pub get`
-- **Linter checks**: `flutter analyze`
-- **Run frontend tests**: `flutter test`
+- **Get dependencies**: `flutter pub get` then `cd lib/shared && flutter pub get && cd ../..`
+- **Linter checks**: `flutter analyze lib/`
+- **CI Flutter gate**: `bash scripts/ci/flutter_security_basic_tests.sh`
 - **Run specific test file**: `flutter test test/services/some_test.dart`
-- **Code formatting**: `flutter format .`
+- **Code formatting**: `dart format .`
 - **Run local desktop (Linux)**: `flutter run -d linux`
 - **Run local web app**: `flutter run -d chrome`
 - **Build desktop release package**: `flutter build linux --release`
-- **Build web release package**: `flutter build web --release`
+- **Build web release package**: `flutter build web --release --no-web-resources-cdn`
 
 ### 3.2 Node.js Backend Operations
 All backend service directories are ESM (except `backend/auth/` which is CommonJS).
@@ -85,7 +85,7 @@ All backend service directories are ESM (except `backend/auth/` which is CommonJ
   - Unit tests: `npm run test:unit`
   - Integration tests: `npm run test:integration`
   - Complete security/auth tests: `npm run test:security` / `npm run test:auth`
-- **Database migrations**: `npm run db:migrate`
+- **Database helpers**: `npm run db:validate` / `npm run db:stats` / `npm run db:test` (there is no `db:migrate`)
 
 #### Streaming Proxy (`services/streaming-proxy/`)
 - **Install & dev**: `npm install && npm run dev`

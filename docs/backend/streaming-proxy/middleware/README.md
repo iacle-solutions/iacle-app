@@ -302,7 +302,7 @@ SUPABASE_AUTH_AUDIENCE=https://api.Pistisai.com
 SUPABASE_AUTH_ISSUER=https://your-tenant.auth0.com/
 
 # Server Configuration
-PORT=3000
+PORT=3001
 LOG_LEVEL=info
 ```
 

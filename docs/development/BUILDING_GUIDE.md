@@ -20,7 +20,7 @@ This document provides comprehensive instructions for building Pistisai client a
 
 #### **Core Requirements**
 
-- **Flutter SDK**: Version 3.8 or higher
+- **Flutter SDK**: CI pins Flutter `3.44.6` stable (Dart compatible with root `pubspec.yaml` `>=3.5.0 <4.0.0`)
 - **Dart SDK**: Included with Flutter
 - **Git**: For version control and dependency management
 - **Platform-specific tools**: See platform sections below
@@ -71,7 +71,7 @@ sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev
 
 ```bash
 # Use the unified build script
-./scripts/build_unified_package.sh
+./scripts/packaging/build_all_packages.sh
 ```
 
 **What it does**:
@@ -182,11 +182,12 @@ flutter build windows --debug
 #### **3. Using Build Scripts**
 
 ```powershell
-# Use PowerShell build automation
-.\scripts\powershell\Build-WindowsRelease.ps1
+# Windows packaging helpers (repo scripts)
+.\scripts\packaging\build_windows_installer.ps1
+.\scripts\packaging\build_windows_portable.ps1
 
-# With custom configuration
-.\scripts\powershell\Build-WindowsRelease.ps1 -Configuration Release -Platform x64
+# Release-asset helper (broader packaging)
+.\scripts\powershell\Build-GitHubReleaseAssets.ps1
 ```
 
 ### 📦 **Windows Packaging**
@@ -269,15 +270,16 @@ flutter build macos --debug
 #### **App Bundle**
 
 ```bash
-# Create macOS app bundle
-./scripts/packaging/build_macos_app.sh
+# macOS packaging scripts are not currently in scripts/packaging/.
+# Use the Flutter build + CI desktop workflow until dedicated packaging lands:
+flutter build macos --release
 ```
 
 #### **DMG Creation**
 
 ```bash
-# Create DMG installer
-./scripts/packaging/build_macos_dmg.sh
+# No repo-local build_macos_dmg.sh yet — produce the app bundle via Flutter/CI first.
+flutter build macos --release
 ```
 
 ### 🔧 **macOS Features**
@@ -333,20 +335,18 @@ flutter build web --web-renderer canvaskit
 
 ```bash
 # Copy build output to web server
+flutter build web --release --no-web-resources-cdn
 cp -r build/web/* /var/www/html/
-
-# Or use deployment script
-./scripts/deploy/deploy_web.sh
 ```
 
 #### **Container Deployment**
 
 ```bash
 # Build web container
-docker build -f docker/Dockerfile.web -t Pistisai-web .
+docker build -f config/docker/Dockerfile.web -t pistisai-web .
 
 # Run web container
-docker run -p 80:80 Pistisai-web
+docker run -p 80:80 pistisai-web
 ```
 
 ---
@@ -420,7 +420,7 @@ flutter pub get
 sudo apt-get install -y libgtk-3-dev
 
 # Permission issues
-chmod +x scripts/build_unified_package.sh
+chmod +x scripts/packaging/build_all_packages.sh
 ```
 
 **Windows**:
@@ -464,9 +464,9 @@ flutter doctor -v
 - [Development Workflow](DEVELOPMENT_WORKFLOW.md)
 - [Developer Onboarding](DEVELOPER_ONBOARDING.md)
 - [API Documentation](API_DOCUMENTATION.md)
-- [Deployment Overview](../DEPLOYMENT/DEPLOYMENT_OVERVIEW.md)
-- [System Architecture](../ARCHITECTURE/SYSTEM_ARCHITECTURE.md)
+- [Deployment Overview](../deployment/DEPLOYMENT_OVERVIEW.md)
+- [System Architecture](../architecture/SYSTEM_ARCHITECTURE.md)
 
 ---
 
-*For build issues or questions, please check our [troubleshooting guide](../USER_DOCUMENTATION/USER_TROUBLESHOOTING_GUIDE.md) or [open an issue](https://github.com/pistisAI/pistisai-app/issues).*
+*For build issues or questions, please check our [troubleshooting guide](../user-guide/TROUBLESHOOTING.md) or [open an issue](https://github.com/pistisAI/pistisai-app/issues).*

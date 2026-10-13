@@ -24,7 +24,7 @@ app.post('/api/tunnel/forward', async (req, res) => {
   res.json({ success: true });
 });
 
-app.listen(3000);
+app.listen(3001);
 ```
 
 ### 2. Configure User Tiers
@@ -150,7 +150,7 @@ limiter.setCustomUserLimit('vip-user-123', {
 ```bash
 # Make multiple requests quickly
 for i in {1..100}; do
-  curl http://localhost:3000/api/test
+  curl http://localhost:3001/api/test
 done
 
 # You should see 429 responses after the limit
@@ -161,11 +161,11 @@ done
 ```bash
 # Free tier user (60 req/min)
 curl -H "Authorization: Bearer <free-user-token>" \
-  http://localhost:3000/api/test
+  http://localhost:3001/api/test
 
 # Premium tier user (300 req/min)
 curl -H "Authorization: Bearer <premium-user-token>" \
-  http://localhost:3000/api/test
+  http://localhost:3001/api/test
 ```
 
 ## Configuration
@@ -231,7 +231,7 @@ app.get('/metrics', (req, res) => {
 ### View Statistics
 
 ```bash
-curl http://localhost:3000/metrics
+curl http://localhost:3001/metrics
 ```
 
 ## Troubleshooting
