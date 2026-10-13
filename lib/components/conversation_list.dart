@@ -330,7 +330,7 @@ class _ConversationListState extends State<ConversationList> {
               icon: const Icon(Icons.add),
               style: IconButton.styleFrom(
                 backgroundColor: AppTheme.colorsOf(context).primary,
-                foregroundColor: Colors.white,
+                foregroundColor: AppTheme.colorsOf(context).textColor,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(AppTheme.borderRadiusS),
                 ),
