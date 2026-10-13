@@ -21,7 +21,6 @@ import 'package:pistisai/services/langchain_integration_service.dart';
 import 'package:pistisai/services/langchain_prompt_service.dart';
 import 'package:pistisai/services/langchain_rag_service.dart'
     if (dart.library.html) 'package:pistisai/services/langchain_rag_service_stub.dart';
-import 'package:pistisai/services/llm_error_handler.dart';
 import 'package:pistisai/services/llm_provider_manager.dart';
 import 'package:pistisai/services/provider_discovery_service.dart';
 import 'package:pistisai/services/streaming_chat_service.dart';
@@ -368,12 +367,6 @@ Future<void> setupCoreServices() async {
     serviceLocator.registerSingleton<ProviderDiscoveryService>(
       providerDiscoveryService,
     );
-
-    // LLM Error Handler - lightweight, doesn't require auth
-    final llmErrorHandler = LLMErrorHandler(
-      providerDiscovery: providerDiscoveryService,
-    );
-    serviceLocator.registerSingleton<LLMErrorHandler>(llmErrorHandler);
 
     // LangChain Prompt Service - create but don't initialize templates until auth
     final langchainPromptService = LangChainPromptService();
