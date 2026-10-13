@@ -30,11 +30,15 @@ export class AuthService {
     this.authDbMigrator = config.authDbMigrator || null;
     this.mainDbMigrator = config.dbMigrator || null;
 
-    // Dev bypass token: only active when NODE_ENV !== 'production'
-    // Allows local development without a real Supabase JWT
+    // Dev bypass token: only active when NODE_ENV !== 'production' AND
+    // DEV_BYPASS_TOKEN is explicitly set. No hardcoded fallback — a known
+    // literal in source would be a trivial auth bypass if NODE_ENV is mis-set.
     if (process.env.NODE_ENV !== 'production') {
+      const configured = process.env.DEV_BYPASS_TOKEN;
       this.devBypassToken =
-        process.env.DEV_BYPASS_TOKEN || 'mock_dev_access_token';
+        typeof configured === 'string' && configured.length > 0
+          ? configured
+          : null;
     } else {
       this.devBypassToken = null;
     }
