@@ -18,7 +18,6 @@ import 'package:pistisai/auth/providers/supabase_auth_provider.dart';
 import 'package:pistisai/services/desktop_client_detection_service.dart';
 import 'package:pistisai/services/enhanced_user_tier_service.dart';
 import 'package:pistisai/services/langchain_integration_service.dart';
-import 'package:pistisai/services/langchain_prompt_service.dart';
 import 'package:pistisai/services/langchain_rag_service.dart'
     if (dart.library.html) 'package:pistisai/services/langchain_rag_service_stub.dart';
 import 'package:pistisai/services/llm_provider_manager.dart';
@@ -366,12 +365,6 @@ Future<void> setupCoreServices() async {
     final providerDiscoveryService = ProviderDiscoveryService();
     serviceLocator.registerSingleton<ProviderDiscoveryService>(
       providerDiscoveryService,
-    );
-
-    // LangChain Prompt Service - create but don't initialize templates until auth
-    final langchainPromptService = LangChainPromptService();
-    serviceLocator.registerSingleton<LangChainPromptService>(
-      langchainPromptService,
     );
 
     // Desktop client detection - can check client type without auth
@@ -739,8 +732,6 @@ Future<void> setupAuthenticatedServices() async {
     // Initialize web download prompt service
     debugPrint('[ServiceLocator] Initializing WebDownloadPromptService...');
     await webDownloadPromptService.initialize();
-
-    // LangChain Prompt Service is already initialized in constructor
 
     // Initialize Provider Discovery Service and auto-configure discovered providers
     // Skip if forcing setup wizard for testing
