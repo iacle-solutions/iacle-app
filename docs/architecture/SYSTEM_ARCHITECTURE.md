@@ -34,7 +34,7 @@ The setup wizard is the authority for agent runtime selection. Do not assume one
 | `lib/services/avatar/` | Personality, evolution, memory, avatar state |
 | `lib/services/voice/` | Avatar companion voice state, Hermes bridge status, TTS foundation |
 | `lib/services/openclaw_manager/` | Gateway control |
-| `lib/services/hermes_manager/` | Hermes gateway and streaming management |
+| `lib/services/hermes_manager/` | Main-chat timeline record/sync trust helpers and Hermes gateway control |
 | `lib/services/desktop_control/` | Clipboard and desktop window control |
 | `lib/services/vision/` | Region capture, camera capture, OCR, vision orchestration |
 | `lib/screens/` | App screens |
