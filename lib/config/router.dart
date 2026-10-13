@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import '../config/theme.dart';
 import '../services/auth_service.dart';
 import '../services/streaming_chat_service.dart';
 
@@ -505,9 +506,19 @@ class AppRouter {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.error_outline, size: 64, color: Colors.red),
+              Icon(
+                Icons.error_outline,
+                size: 64,
+                color: AppTheme.colorsOf(context).danger,
+              ),
               const SizedBox(height: 16),
-              const Text('Page Not Found', style: TextStyle(fontSize: 24)),
+              Text(
+                'Page Not Found',
+                style: TextStyle(
+                  fontSize: 24,
+                  color: AppTheme.colorsOf(context).textColor,
+                ),
+              ),
               const SizedBox(height: 24),
               ElevatedButton(
                 onPressed: () => context.go('/'),
