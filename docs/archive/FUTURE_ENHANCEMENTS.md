@@ -94,7 +94,7 @@ Future<User> signIn(String email, String password) async {
 
 ## Other Future Enhancements
 
-### Desktop Control & Automation (Pillar 4)
+### Desktop Control & Automation
 
 **Current Status**: Partial (`GuiAutomationService` exists)
 
@@ -106,7 +106,7 @@ Future<User> signIn(String email, String password) async {
 
 **Estimated Effort**: Medium
 
-### Vision System (Pillar 5)
+### Vision System
 
 **Current Status**: Partial (screen capture via `GuiAutomationService`)
 

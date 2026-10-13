@@ -1,6 +1,6 @@
 # Launch Content Brief — Pistisai Public Launch
 
-> Canonical launch issue: [#39 — Paperclip AI — public launch](https://github.com/pistisAI/pistisai-app/issues/39)
+> Canonical launch issue: [#39 — Pistisai — public launch](https://github.com/pistisAI/pistisai-app/issues/39)
 > Companion guide: [docs/LAUNCH.md](docs/LAUNCH.md)
 
 This brief governs all outward-facing launch copy. Keep every channel consistent with the

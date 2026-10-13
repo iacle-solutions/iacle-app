@@ -1,6 +1,6 @@
 # Pistisai — Public Launch Guide
 
-> Canonical launch issue: [#39 — Paperclip AI — public launch](https://github.com/pistisAI/pistisai-app/issues/39)
+> Canonical launch issue: [#39 — Pistisai — public launch](https://github.com/pistisAI/pistisai-app/issues/39)
 > Repo: [github.com/pistisAI/pistisai-app](https://github.com/pistisAI/pistisai-app)
 > Web app: [pistisai.app](https://pistisai.app)
 
