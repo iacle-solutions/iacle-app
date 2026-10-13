@@ -3,15 +3,26 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pistisai/services/session_service.dart';
 
-/// Writes a fake `hermes` executable that echoes its args and exits with
-/// [exitCode], returning the path. Used to exercise SessionService without a
-/// real Hermes runtime.
+/// Writes a fake `hermes` executable that exits with [exitCode], returning the
+/// path. Uses `hermes.cmd` on Windows and a `#!/bin/sh` script elsewhere so the
+/// test can exercise [SessionService] without a real Hermes runtime.
 Future<String> _writeFakeHermes({
   required int exitCode,
   String stdout = '',
   String stderr = '',
 }) async {
   final dir = await Directory.systemTemp.createTemp('fake-hermes-');
+  if (Platform.isWindows) {
+    final file = File('${dir.path}${Platform.pathSeparator}hermes.cmd');
+    await file.writeAsString(
+      '@echo off\r\n'
+      'echo $stdout\r\n'
+      'echo $stderr 1>&2\r\n'
+      'exit /b $exitCode\r\n',
+    );
+    return file.path;
+  }
+
   final file = File('${dir.path}/hermes');
   await file.writeAsString(
     '#!/bin/sh\n'
