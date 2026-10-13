@@ -126,7 +126,6 @@ RECOVERY_NOTION_DESIGN.md
 SESSION_RECOVERY_PLAN.md
 SESSION_REENTRY.md
 gemini-cli.config.json
-opencode.json
 status.json
 
 # Session/working artifacts
@@ -145,3 +144,6 @@ site/
 .crush-mcp-config.json
 telemetry-id
 scripts/run_init.sh
+
+# Kilo Code local agent state
+.kilo/

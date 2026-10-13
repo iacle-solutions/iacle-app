@@ -1,90 +1,81 @@
 # Pistisai — Agent Guide
 
-Flutter desktop/web app + Node.js backend services: a local-first companion layer for agent runtimes (Hermes, OpenClaw, compatible gateways). Ollama/LM Studio are support model providers for app-owned features only — not primary runtimes unless wrapped by an agent runtime.
+Flutter desktop/web app + Node.js backend services: local-first companion layer for agent runtimes (Hermes primary test path, OpenClaw Gateway, compatible gateways). Ollama/LM Studio are support model providers for app-owned features (e.g. embeddings) — not primary runtimes unless wrapped by an agent runtime.
 
-## Repo layout
+## Layout (service → port / contract)
 
-- `pubspec.yaml` — Flutter app (package `pistisai`, version `1.1.26+25`, Dart `>=3.5.0 <4.0.0`)
-- `lib/shared/pubspec.yaml` — shared Flutter package (`pistisai_shared`, Dart `>=3.9.0 <4.0.0`)
-- `lib/di/locator.dart` — two-phase DI: `setupCoreServices()` → `setupAuthenticatedServices()`
+- `lib/main.dart`, `lib/di/locator.dart` — app entry, two-phase DI: `setupCoreServices()` → `setupAuthenticatedServices()`
+- `lib/services/router_server.dart` — embedded OpenAI-compatible router, defaults to port `1337`
 - `lib/database/drift_local_brain.dart` — Drift/SQLite local brain (generated `.g.dart`, DO NOT EDIT)
-- `lib/services/router_server.dart` — embedded OpenAI-compatible router (port 1337)
-- `package.json` — root Node tooling (ESM), backend only, NOT the Flutter package
-- `services/api-backend/` — Express 5 (ESM, Node `>=22 <27`, port 8080)
-- `services/streaming-proxy/` — Express 5 (ESM, Node `>=22 <27`, port 3001)
-- `services/sdk/` — TypeScript SDK (ESM, Node `>=18`)
-- `services/tailscale-relay/` — Express 4 (ESM, port 3002; uses Express 4, not 5)
-- `backend/auth/` — Express 5 (CommonJS, port 3000; no `dev` script, `test` is a placeholder)
-- `services/openclaw-skills/pistisai/` — avatar personality skill (ESM, TypeScript, Vitest)
-- `test/api-backend/` — backend tests at root, NOT in `services/api-backend/test/`
+- `services/api-backend/` — Express 5 ESM, `PORT || 8080`; tests live at repo-root `test/api-backend/`, not in-service
+- `services/streaming-proxy/` — Express 5 ESM, `PORT || 3001` (`proxy-server.js`); `dev` is `node --inspect`, not nodemon
+- `services/tailscale-relay/` — Express 4 ESM, `PORT || 3002`; has only `start`/`dev` scripts (no lint/test)
+- `backend/auth/` — Express 5 **CommonJS** (`"type": "commonjs"`), `PORT || 3000`, entry `handlers.js`; no `dev` script; Jest 29
+- `services/sdk/` — TypeScript SDK (ESM, Node `>=18`), `main: dist/index.js` — run `npm run build` (`tsc`) before use
+- `services/openclaw-skills/pistisai/` — avatar personality skill, tests use **Vitest** (`vitest run`), not Jest
+- `lib/shared/` — separate package `pistisai_shared` (Dart `>=3.9.0 <4.0.0`, version `1.0.6+33`) needing its own `flutter pub get`
+- Discovery defaults: OpenClaw Gateway `localhost:18789`, Hermes `127.0.0.1:8642`, Ollama `localhost:11434`, LM Studio `localhost:1234`
 
-## Setup & build
+## Setup & verify (exact commands, from repo root)
 
 ```bash
-cd /d/dev/projects/pistisai-app
-flutter pub get                    # Flutter app
-cd lib/shared && flutter pub get   # shared package
-cd ../..
-npm install                        # root Node tooling
-cd services/api-backend && npm install   # API backend
+flutter pub get
+cd lib/shared && flutter pub get && cd ../..   # shared package deps are separate
+npm install                                     # root Node tooling (backend only, NOT the Flutter package)
+cd services/api-backend && npm install          # repeat per service you touch
 ```
 
-CI uses Flutter 3.44.6 (stable) and Node 26.
+CI pins Flutter `3.44.6` (stable) and Node `26` (`.nvmrc` — **single source of truth**); service engines allow Node `>=22 <27` (sdk `>=18`).
 
 ```bash
-# Flutter (from repo root)
+# Flutter — CI scopes analysis to lib/ only; gate suite is the script, not bare flutter test
 flutter analyze lib/
-flutter test test/smoke/
-bash scripts/ci/flutter_security_basic_tests.sh   # CI gate subset
-flutter build linux --release
-flutter build web --release
-dart run build_runner build --delete-conflicting-outputs   # after Drift schema/query changes
+bash scripts/ci/flutter_security_basic_tests.sh   # CI gate: smoke/config/models/utils/helpers + selected services/widgets/integration
+flutter build web --release --no-web-resources-cdn  # --no-web-resources-cdn matches CI
+dart run build_runner build --delete-conflicting-outputs  # after Drift schema/query changes only
 
-# Backend (from repo root)
-npm run lint              # lints api-backend + streaming-proxy + sdk
-npm run format            # formats selected services + root test/
-npm test                  # runs api-backend test:ci:security
+# Backend — root npm test is api-backend security suite only, not a full suite
+npm test                  # == cd services/api-backend && npm run test:ci:security
+npm run lint              # loops api-backend + streaming-proxy + sdk (tailscale-relay/auth excluded)
+npm run format            # loops same 3 services + prettier --write 'test/**/*.js'
+npm run test:full          # full root Jest run (cross-env NODE_ENV=test); most tunnel/properties/integration tests are ignore-listed, see jest.config.js
 
 # Per-service (cd into dir first)
-# api-backend:      npm run dev && npm run test:ci:security && npm run test:unit && npm run lint
-# streaming-proxy:  npm run dev && npm run health && npm test && npm run build && npm run lint
-# sdk:              npm run build && npm test && npm run lint
-# openclaw skills:  npm run build && npm test
+# api-backend:     npm run dev | npm run test:unit (../../test/api-backend/, --detectOpenHandles) | npm run test:auth (single file) | npm run lint | npm run db:validate | npm run db:stats | npm run db:test
+# streaming-proxy: npm run dev (node --inspect) | npm run health | npm test (uses root jest) | npm run build (tsc) | npm run lint
+# sdk:             npm run build (tsc) | npm test (jest ^29) | npm run lint
+# openclaw skill:  npm run build (tsc) | npm test (vitest run)
 ```
 
-## Version bumping
+## Versioning
 
-Every push to `main` with code changes must bump version in both `assets/version.json` and `pubspec.yaml`:
+Version is tracked in two files that must stay in sync:
+- `assets/version.json` — `version` (semver) + `build_number` (integer)
+- `pubspec.yaml` — `version: X.Y.Z+<build_number>`
 
-```bash
-CURRENT=$(jq -r '.version' assets/version.json)   # e.g. 1.1.26
-NEW_VERSION="1.1.27"   # new patch/minor/major
-BUILD_NUM=$(jq -r '.build_number' assets/version.json)
-jq ".version = \"$NEW_VERSION\" | .build_number = \"$((BUILD_NUM + 1))\"" assets/version.json > v.tmp && mv v.tmp assets/version.json
-sed -i "s/^version: .*/version: $NEW_VERSION+$(jq -r '.build_number' assets/version.json)/" pubspec.yaml
-```
-
-`auto-version-bump.yml` auto-bumps patch on push to main if `version.json` wasn't changed. Commit `[major]` or `[minor]` to control bump level.
+The `build_number` in `assets/version.json` should match the `+<build_number>` suffix in `pubspec.yaml`. When releasing, update both files together. Do not hand-increment `build_number` locally to "stay ahead" — only edit both files when you intend a specific release version.
 
 ## Conventions
 
-- Dart: `snake_case.dart` files, `PascalCase` classes, single quotes, `implicit-casts:false`, `implicit-dynamic:false`
-- JS/TS: `kebab-case`, `PascalCase` classes; `backend/auth/` is CommonJS, everything else under `services/` is ESM
-- Commits: `ai(<agent>): <subject>` — e.g. `ai(Zoidbot): fix window spam`. Push directly to `main` unless a branch is explicitly requested.
-- Platform splits via conditional imports (`dart.library.io` / `dart.library.html` / `dart.library.js_interop`); never import `dart:io` directly in shared code
-- Use `serviceLocator.get<T>()` / `di.serviceLocator<T>()` — don't instantiate registered services directly
-- Agent runtime discovery: Hermes, OpenClaw Gateway `localhost:18789`, custom gateways
-- Local model discovery (memory/embeddings only): LM Studio `localhost:1234`, Ollama `localhost:11434`
+- Dart: `snake_case.dart`, `PascalCase` classes, single quotes; `implicit-casts:false`, `implicit-dynamic:false` enforced via `analysis_options.yaml`
+- JS/TS: `kebab-case` files, `PascalCase` classes; `backend/auth/` is CommonJS, everything else under `services/` is ESM — do not mix `require`/`import` styles across that boundary
+- Commits: conventional `feat:`/`fix:`/`docs:`/`chore:`/`test:`/`refactor:` with agent prefix `ai(<agent>): <subject>`; internal agents push to `main`, external contributors use fork → PR (`CONTRIBUTING.md`)
+- Platform splits via conditional imports (`dart.library.io` / `dart.library.html`); never import `dart:io` directly in shared code
+- Register services via `setupCoreServices()` / `setupAuthenticatedServices()` in `lib/di/locator.dart`; consume via `serviceLocator.get<T>()` — don't instantiate registered services directly
+- Desktop auto-bootstraps authenticated services (30s timeout); web requires explicit auth/session bootstrap first
+- GitHub issues (`github.com/pistisAI/pistisai-app/issues`, launch tracker #39) are the work-tracking source of truth — check before substantive work
+
+## MCP (OpenCode)
+
+Servers in `opencode.json` (committed; secrets stay in env): `sentry` (needs `opencode mcp auth sentry`), `context7` (package docs), `playwright` (Flutter web E2E), `postgres` (needs `DATABASE_URL` from `.env`). GitHub goes via `gh` CLI (authed, `repo` scope) — no GitHub MCP needed.
+Restart OpenCode after editing `opencode.json` so it refetches server tools.
 
 ## Pitfalls
 
-- Don't edit generated `lib/**/*.g.dart` or `lib/**/*.freezed.dart` — regenerate via build_runner
 - `npm run db:migrate` does NOT exist in api-backend; use `db:validate`, `db:stats`, `db:test`
-- Auth backend: no `npm run dev` — run `node handlers.js`; `npm test` is a placeholder (exits with error)
-- Tailscale relay uses Express 4; api-backend, streaming-proxy, and auth use Express 5
-- Root `npm test` runs only api-backend security tests — not a full suite
-- Jest's `testPathIgnorePatterns` intentionally skips many live-infrastructure tests; check `jest.config.js` before assuming a test runs
-- Drift schema or query changes require `dart run build_runner build --delete-conflicting-outputs`
-- Web requires explicit auth/session bootstrap before authenticated services are available
-- Version bump must update BOTH `assets/version.json` AND `pubspec.yaml`
-- GitHub issues at `https://github.com/pistisAI/pistisai-app/issues` are the source of truth — check before starting substantive work
+- Auth backend: no `npm run dev` — run `node handlers.js`
+- Tailscale relay is Express 4; api-backend, streaming-proxy, auth are Express 5 — check middleware API against the right major
+- Jest `testPathIgnorePatterns` intentionally skips tunnel-*, `*-properties`, `*-integration`, `test/archive/`, and live-Auth0 tests; check `jest.config.js` before assuming a test runs or "passes" by being skipped
+- api-backend Jest needs `node --experimental-vm-modules ... --forceExit`; sdk uses plain `jest`
+- Don't edit `lib/**/*.g.dart` / `lib/**/*.freezed.dart` — regenerate via build_runner
+- Preserve branding exactly: `Pistisai`, `OpenClaw`, `Zoidbot`
