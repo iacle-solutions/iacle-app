@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../config/theme.dart';
 
 /// Marketing homepage screen - web-only
 /// Stoa Poikile design — Pistisai brand (2026-07)
@@ -47,22 +48,23 @@ class HomepageScreen extends StatelessWidget {
   // ─── HERO ─────────────────────────────────────────────────────────────────
 
   Widget _buildHero(BuildContext context, {required bool isMobile}) {
+    final colors = AppTheme.colorsOf(context);
     final titleSize = isMobile ? 36.0 : 52.0;
     final vPad = isMobile ? 48.0 : 80.0;
     final hPad = isMobile ? 20.0 : 40.0;
 
     return Container(
       width: double.infinity,
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            Color(0xFF0F1118),
-            Color(0xFF181A20),
-            Color(0xFF1E2230),
+            colors.backgroundCard,
+            colors.backgroundMain,
+            colors.backgroundCard,
           ],
-          stops: [0.0, 0.5, 1.0],
+          stops: const [0.0, 0.5, 1.0],
         ),
       ),
       padding: EdgeInsets.symmetric(vertical: vPad, horizontal: hPad),
@@ -80,8 +82,8 @@ class HomepageScreen extends StatelessWidget {
                 }
               },
               style: TextButton.styleFrom(
-                foregroundColor: const Color(0xFFFFD700),
-                side: const BorderSide(color: Color(0xFFFFD700), width: 1.5),
+                foregroundColor: colors.primary,
+                side: BorderSide(color: colors.primary, width: 1.5),
                 padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(6),
@@ -101,7 +103,7 @@ class HomepageScreen extends StatelessWidget {
               SizedBox(
                 width: isMobile ? 260 : 320,
                 child: CustomPaint(
-                  painter: _StoaPorticoPainter(),
+                  painter: _StoaPorticoPainter(color: colors.primary),
                   size: const Size(320, 60),
                 ),
               ),
@@ -113,7 +115,7 @@ class HomepageScreen extends StatelessWidget {
                 style: TextStyle(
                   fontFamily: 'serif',
                   fontSize: isMobile ? 14 : 16,
-                  color: const Color(0xFFFFD700).withValues(alpha: 0.5),
+                  color: colors.primary.withValues(alpha: 0.5),
                   letterSpacing: 8,
                   fontWeight: FontWeight.w300,
                 ),
@@ -126,7 +128,7 @@ class HomepageScreen extends StatelessWidget {
                 style: TextStyle(
                   fontSize: titleSize,
                   fontWeight: FontWeight.w200,
-                  color: const Color(0xFFF5E6C8),
+                  color: colors.textColor,
                   letterSpacing: 8,
                   height: 1.1,
                 ),
@@ -139,7 +141,7 @@ class HomepageScreen extends StatelessWidget {
                 style: TextStyle(
                   fontSize: isMobile ? 18 : 24,
                   fontWeight: FontWeight.w300,
-                  color: const Color(0xFFFFD700),
+                  color: colors.primary,
                   letterSpacing: 4,
                   fontStyle: FontStyle.italic,
                 ),
@@ -154,7 +156,7 @@ class HomepageScreen extends StatelessWidget {
                   'run on your machine, and grow with you.',
                   style: TextStyle(
                     fontSize: isMobile ? 14 : 16,
-                    color: const Color(0xFFB8A88A),
+                    color: colors.textColorLight,
                     height: 1.6,
                     letterSpacing: 0.5,
                   ),
@@ -180,8 +182,8 @@ class HomepageScreen extends StatelessWidget {
                         if (await canLaunchUrl(uri)) await launchUrl(uri);
                       },
                       style: OutlinedButton.styleFrom(
-                        foregroundColor: const Color(0xFFF5E6C8),
-                        side: BorderSide(color: const Color(0xFFF5E6C8).withValues(alpha: 0.3)),
+                        foregroundColor: colors.textColor,
+                        side: BorderSide(color: colors.textColor.withValues(alpha: 0.3)),
                         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
                       ),
@@ -201,13 +203,14 @@ class HomepageScreen extends StatelessWidget {
   // ─── GREEK KEY SEPARATOR ──────────────────────────────────────────────────
 
   Widget _buildGreekSeparator(BuildContext context) {
+    final colors = AppTheme.colorsOf(context);
     return Container(
       width: double.infinity,
       height: 24,
-      color: const Color(0xFF0F1118),
+      color: colors.backgroundCard,
       child: Center(
         child: CustomPaint(
-          painter: _GreekKeyPainter(),
+          painter: _GreekKeyPainter(color: colors.primary),
           size: const Size(double.infinity, 16),
         ),
       ),
@@ -217,9 +220,10 @@ class HomepageScreen extends StatelessWidget {
   // ─── PISTIS NARRATIVE ─────────────────────────────────────────────────────
 
   Widget _buildPistisSection(BuildContext context, {required bool isMobile}) {
+    final colors = AppTheme.colorsOf(context);
     return Container(
       width: double.infinity,
-      color: const Color(0xFF0F1118),
+      color: colors.backgroundCard,
       padding: EdgeInsets.symmetric(
         vertical: isMobile ? 40 : 60,
         horizontal: isMobile ? 20 : 40,
@@ -235,7 +239,7 @@ class HomepageScreen extends StatelessWidget {
                   style: TextStyle(
                     fontFamily: 'serif',
                     fontSize: isMobile ? 20 : 28,
-                    color: const Color(0xFFFFD700),
+                    color: colors.primary,
                     letterSpacing: 4,
                   ),
                 ),
@@ -246,7 +250,7 @@ class HomepageScreen extends StatelessWidget {
                   'fled back to the heavens. She has not returned since.',
                   style: TextStyle(
                     fontSize: isMobile ? 15 : 18,
-                    color: const Color(0xFFB8A88A),
+                    color: colors.textColorLight,
                     height: 1.7,
                     letterSpacing: 0.3,
                     fontStyle: FontStyle.italic,
@@ -257,7 +261,7 @@ class HomepageScreen extends StatelessWidget {
                 Container(
                   width: 60,
                   height: 1,
-                  color: const Color(0xFFFFD700).withValues(alpha: 0.4),
+                  color: colors.primary.withValues(alpha: 0.4),
                 ),
                 const SizedBox(height: 24),
                 Text(
@@ -266,7 +270,7 @@ class HomepageScreen extends StatelessWidget {
                   'private, local, trustworthy AI.',
                   style: TextStyle(
                     fontSize: isMobile ? 14 : 16,
-                    color: const Color(0xFF8A7E6A),
+                    color: colors.textColorLight,
                     height: 1.6,
                   ),
                   textAlign: TextAlign.center,
@@ -286,6 +290,7 @@ class HomepageScreen extends StatelessWidget {
     required bool isMobile,
     required bool isTablet,
   }) {
+    final colors = AppTheme.colorsOf(context);
     final pillars = [
       _PillarData(
         titan: 'Hyperion',
@@ -296,7 +301,7 @@ class HomepageScreen extends StatelessWidget {
         desc: 'Your personal AI — learns your patterns, remembers your context, '
             'always private. The warm presence that greets you.',
         texture: 'Warm glow, broad presence',
-        color: const Color(0xFFFFD700),
+        color: colors.primary,
       ),
       _PillarData(
         titan: 'Koios',
@@ -307,7 +312,7 @@ class HomepageScreen extends StatelessWidget {
         desc: 'Acts for you — schedules, research, automation, desktop control. '
             'The precise engine that queries and reasons.',
         texture: 'Precision fluting, geometric',
-        color: const Color(0xFFE8C84A),
+        color: colors.accent,
       ),
       _PillarData(
         titan: 'Krios',
@@ -318,7 +323,7 @@ class HomepageScreen extends StatelessWidget {
         desc: 'Grows with you — personality, memory, and capabilities evolve '
             'over time. The measured rhythm of a life observed.',
         texture: 'Measured cadence, constellation',
-        color: const Color(0xFFD4A017),
+        color: colors.accent,
       ),
       _PillarData(
         titan: 'Iapetos',
@@ -329,13 +334,13 @@ class HomepageScreen extends StatelessWidget {
         desc: 'Connects with you — tone-aware, expressive, never cold. '
             'The heart that feels, crafted with mortality\'s depth.',
         texture: 'Organic curves, fire-like',
-        color: const Color(0xFFB8860B),
+        color: colors.accent,
       ),
     ];
 
     return Container(
       width: double.infinity,
-      color: const Color(0xFF181A20),
+      color: colors.backgroundMain,
       padding: EdgeInsets.symmetric(
         vertical: isMobile ? 48 : 72,
         horizontal: isMobile ? 16 : 40,
@@ -347,7 +352,7 @@ class HomepageScreen extends StatelessWidget {
             style: TextStyle(
               fontSize: isMobile ? 22 : 32,
               fontWeight: FontWeight.w200,
-              color: const Color(0xFFF5E6C8),
+              color: colors.textColor,
               letterSpacing: 6,
             ),
           ),
@@ -355,7 +360,7 @@ class HomepageScreen extends StatelessWidget {
           Text('A Stoa Poikile for the age of AI',
             style: TextStyle(
               fontSize: isMobile ? 14 : 16,
-              color: const Color(0xFF8A7E6A),
+              color: colors.textColorLight,
               letterSpacing: 2,
               fontStyle: FontStyle.italic,
             ),
@@ -372,7 +377,7 @@ class HomepageScreen extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
             decoration: BoxDecoration(
               border: Border.all(
-                color: const Color(0xFFFFD700).withValues(alpha: 0.15),
+                color: colors.primary.withValues(alpha: 0.15),
               ),
               borderRadius: BorderRadius.circular(8),
             ),
@@ -383,7 +388,7 @@ class HomepageScreen extends StatelessWidget {
               'Here, they ground the four aspects of your AI companion.',
               style: TextStyle(
                 fontSize: isMobile ? 12 : 14,
-                color: const Color(0xFF6A5E4A),
+                color: colors.textColorLight,
                 height: 1.6,
                 letterSpacing: 0.5,
               ),
@@ -429,10 +434,11 @@ class HomepageScreen extends StatelessWidget {
   }
 
   Widget _buildPillarCard(BuildContext context, _PillarData p) {
+    final colors = AppTheme.colorsOf(context);
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: const Color(0xFF1E2230),
+        color: colors.backgroundCard,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: p.color.withValues(alpha: 0.2),
@@ -473,7 +479,7 @@ class HomepageScreen extends StatelessWidget {
                   Text(p.titanGreek,
                     style: TextStyle(
                       fontSize: 12,
-                      color: const Color(0xFF6A5E4A),
+                      color: colors.textColorLight,
                       fontFamily: 'serif',
                       letterSpacing: 1,
                     ),
@@ -506,10 +512,10 @@ class HomepageScreen extends StatelessWidget {
 
           // Zoid pillar name
           Text(p.name,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.w300,
-              color: Color(0xFFF5E6C8),
+              color: colors.textColor,
               letterSpacing: 2,
             ),
           ),
@@ -518,9 +524,9 @@ class HomepageScreen extends StatelessWidget {
 
           // Description
           Text(p.desc,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 13,
-              color: Color(0xFF8A7E6A),
+              color: colors.textColorLight,
               height: 1.5,
             ),
           ),
@@ -553,16 +559,17 @@ class HomepageScreen extends StatelessWidget {
   // ─── CTA ───────────────────────────────────────────────────────────────────
 
   Widget _buildCTASection(BuildContext context, {required bool isMobile}) {
+    final colors = AppTheme.colorsOf(context);
     return Container(
       width: double.infinity,
       constraints: const BoxConstraints(maxWidth: 900),
       padding: EdgeInsets.all(isMobile ? 28 : 48),
       margin: EdgeInsets.symmetric(horizontal: isMobile ? 16 : 40),
       decoration: BoxDecoration(
-        color: const Color(0xFF1E2230),
+        color: colors.backgroundCard,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: const Color(0xFFFFD700).withValues(alpha: 0.15),
+          color: colors.primary.withValues(alpha: 0.15),
         ),
       ),
       child: Column(
@@ -571,7 +578,7 @@ class HomepageScreen extends StatelessWidget {
             style: TextStyle(
               fontSize: isMobile ? 22 : 30,
               fontWeight: FontWeight.w300,
-              color: const Color(0xFFF5E6C8),
+              color: colors.textColor,
               letterSpacing: 1,
             ),
             textAlign: TextAlign.center,
@@ -585,7 +592,7 @@ class HomepageScreen extends StatelessWidget {
               'no subscription required. Trust is not a feature — it\'s the foundation.',
               style: TextStyle(
                 fontSize: isMobile ? 14 : 16,
-                color: const Color(0xFF8A7E6A),
+                color: colors.textColorLight,
                 height: 1.6,
               ),
               textAlign: TextAlign.center,
@@ -604,6 +611,7 @@ class HomepageScreen extends StatelessWidget {
   // ─── QUICK INSTALL ─────────────────────────────────────────────────────────
 
   Widget _buildQuickInstall(BuildContext context, {required bool isMobile}) {
+    final colors = AppTheme.colorsOf(context);
     return Container(
       width: double.infinity,
       constraints: const BoxConstraints(maxWidth: 900),
@@ -615,10 +623,10 @@ class HomepageScreen extends StatelessWidget {
         48,
       ),
       decoration: BoxDecoration(
-        color: const Color(0xFF1E2230),
+        color: colors.backgroundCard,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: const Color(0xFFFFD700).withValues(alpha: 0.1),
+          color: colors.primary.withValues(alpha: 0.1),
         ),
       ),
       child: Column(
@@ -626,13 +634,13 @@ class HomepageScreen extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Icon(Icons.bolt, color: Color(0xFFFFD700), size: 20),
+              Icon(Icons.bolt, color: colors.primary, size: 20),
               const SizedBox(width: 8),
               Text('Quick Install',
                 style: TextStyle(
                   fontSize: isMobile ? 20 : 24,
                   fontWeight: FontWeight.w300,
-                  color: const Color(0xFFF5E6C8),
+                  color: colors.textColor,
                   letterSpacing: 1,
                 ),
               ),
@@ -643,7 +651,7 @@ class HomepageScreen extends StatelessWidget {
             'Install Pistisai and your Aiman with a single command.',
             style: TextStyle(
               fontSize: 14,
-              color: const Color(0xFF8A7E6A),
+              color: colors.textColorLight,
             ),
           ),
           const SizedBox(height: 32),
@@ -658,14 +666,15 @@ class HomepageScreen extends StatelessWidget {
   }
 
   Widget _buildCodeBlock(BuildContext context, String label, String code, bool isMobile) {
+    final colors = AppTheme.colorsOf(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(label,
-          style: const TextStyle(
+          style: TextStyle(
             fontWeight: FontWeight.w500,
             fontSize: 13,
-            color: Color(0xFF6A5E4A),
+            color: colors.textColorLight,
             letterSpacing: 0.5,
           ),
         ),
@@ -674,25 +683,25 @@ class HomepageScreen extends StatelessWidget {
           width: double.infinity,
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: BoxDecoration(
-            color: const Color(0xFF0F1118),
+            color: colors.backgroundCard,
             borderRadius: BorderRadius.circular(8),
             border: Border.all(
-              color: const Color(0xFFFFD700).withValues(alpha: 0.08),
+              color: colors.primary.withValues(alpha: 0.08),
             ),
           ),
           child: Row(
             children: [
               Expanded(
                 child: Text(code,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontFamily: 'monospace',
                     fontSize: 13,
-                    color: Color(0xFFB8A88A),
+                    color: colors.textColorLight,
                   ),
                 ),
               ),
               IconButton(
-                icon: const Icon(Icons.copy, size: 16, color: Color(0xFF6A5E4A)),
+                icon: Icon(Icons.copy, size: 16, color: colors.textColorLight),
                 tooltip: 'Copy command',
                 onPressed: () async {
                   await Clipboard.setData(ClipboardData(text: code));
@@ -716,16 +725,17 @@ class HomepageScreen extends StatelessWidget {
   // ─── FOOTER ────────────────────────────────────────────────────────────────
 
   Widget _buildFooter(BuildContext context) {
+    final colors = AppTheme.colorsOf(context);
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 24),
-      color: const Color(0xFF0F1118),
+      color: colors.backgroundCard,
       child: Column(
         children: [
           Container(
             width: 40,
             height: 1,
-            color: const Color(0xFFFFD700).withValues(alpha: 0.3),
+            color: colors.primary.withValues(alpha: 0.3),
           ),
           const SizedBox(height: 16),
           Text(
@@ -733,7 +743,7 @@ class HomepageScreen extends StatelessWidget {
             style: TextStyle(
               fontFamily: 'serif',
               fontSize: 12,
-              color: const Color(0xFF6A5E4A),
+              color: colors.textColorLight,
               letterSpacing: 1,
               fontStyle: FontStyle.italic,
             ),
@@ -743,7 +753,7 @@ class HomepageScreen extends StatelessWidget {
             '© 2026 Pistisai — Trust is what remains',
             style: TextStyle(
               fontSize: 11,
-              color: const Color(0xFF4A3E2A),
+              color: colors.textColorLight,
               letterSpacing: 1,
             ),
           ),
@@ -755,11 +765,12 @@ class HomepageScreen extends StatelessWidget {
   // ─── HELPERS ───────────────────────────────────────────────────────────────
 
   Widget _buildGoldButton(BuildContext context, String label, VoidCallback onPressed, bool isMobile) {
+    final colors = AppTheme.colorsOf(context);
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
-        foregroundColor: const Color(0xFF181A20),
-        backgroundColor: const Color(0xFFFFD700),
+        foregroundColor: colors.backgroundMain,
+        backgroundColor: colors.primary,
         padding: EdgeInsets.symmetric(horizontal: isMobile ? 20 : 28, vertical: 14),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(6),
@@ -789,7 +800,7 @@ class _PillarData {
   final String texture;
   final Color color;
 
-  const _PillarData({
+  _PillarData({
     required this.titan,
     required this.titanGreek,
     required this.direction,
@@ -804,10 +815,14 @@ class _PillarData {
 // ─── STOA PORTICO PAINTER ────────────────────────────────────────────────────
 
 class _StoaPorticoPainter extends CustomPainter {
+  final Color color;
+
+  const _StoaPorticoPainter({required this.color});
+
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = const Color(0xFFFFD700).withValues(alpha: 0.25)
+      ..color = color.withValues(alpha: 0.25)
       ..strokeWidth = 1.5
       ..style = PaintingStyle.stroke;
 
@@ -839,16 +854,21 @@ class _StoaPorticoPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+  bool shouldRepaint(covariant _StoaPorticoPainter oldDelegate) =>
+      oldDelegate.color != color;
 }
 
 // ─── GREEK KEY PAINTER ──────────────────────────────────────────────────────
 
 class _GreekKeyPainter extends CustomPainter {
+  final Color color;
+
+  const _GreekKeyPainter({required this.color});
+
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = const Color(0xFFFFD700).withValues(alpha: 0.12)
+      ..color = color.withValues(alpha: 0.12)
       ..strokeWidth = 1.0
       ..style = PaintingStyle.stroke;
 
@@ -869,5 +889,6 @@ class _GreekKeyPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+  bool shouldRepaint(covariant _GreekKeyPainter oldDelegate) =>
+      oldDelegate.color != color;
 }

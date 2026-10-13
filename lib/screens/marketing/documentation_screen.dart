@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../services/platform_detection_service.dart';
 import '../../services/platform_adapter.dart';
-import '../../config/theme_config.dart';
+import '../../config/theme.dart';
 
 /// Documentation screen - web-only
 /// Displays documentation content with unified theme system
@@ -28,23 +28,19 @@ class DocumentationScreen extends StatelessWidget {
 
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
+    final colors = AppTheme.colorsOf(context);
     final screenWidth = MediaQuery.of(context).size.width;
     final isMobile = screenWidth < 600;
     final isTablet = screenWidth >= 600 && screenWidth < 1024;
 
     // Use theme colors for proper contrast
-    final backgroundColor = isDark
-        ? ThemeConfig.darkBackgroundMain
-        : ThemeConfig.lightBackgroundMain;
-    final cardColor = isDark
-        ? ThemeConfig.darkBackgroundCard
-        : ThemeConfig.lightBackgroundCard;
+    final backgroundColor = colors.backgroundMain;
+    final cardColor = colors.backgroundCard;
     final borderColor = isDark
-        ? ThemeConfig.secondaryColor.withValues(alpha: 0.27)
-        : ThemeConfig.lightBorderColor;
-    final textColor =
-        isDark ? ThemeConfig.darkTextColorLight : ThemeConfig.lightTextColor;
-    final iconColor = ThemeConfig.primaryColor;
+        ? colors.secondary.withValues(alpha: 0.27)
+        : colors.textColorLight.withValues(alpha: 0.35);
+    final textColor = colors.textColor;
+    final iconColor = colors.primary;
 
     // Responsive sizing
     final maxWidth = isMobile ? double.infinity : (isTablet ? 640.0 : 800.0);
@@ -122,7 +118,7 @@ class DocumentationScreen extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: cardColor,
-        borderRadius: BorderRadius.circular(ThemeConfig.borderRadiusM),
+        borderRadius: BorderRadius.circular(AppTheme.borderRadiusM),
         border: Border.all(color: borderColor, width: 1.5),
         boxShadow: [
           BoxShadow(
@@ -237,7 +233,7 @@ class DocumentationScreen extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: cardColor,
-        borderRadius: BorderRadius.circular(ThemeConfig.borderRadiusM),
+        borderRadius: BorderRadius.circular(AppTheme.borderRadiusM),
         border: Border.all(color: borderColor, width: 1.5),
         boxShadow: [
           BoxShadow(
@@ -320,7 +316,7 @@ class DocumentationScreen extends StatelessWidget {
       children: [
         Row(
           children: [
-            Icon(icon, size: 20, color: ThemeConfig.primaryColor),
+            Icon(icon, size: 20, color: AppTheme.colorsOf(context).primary),
             const SizedBox(width: 8),
             Expanded(
               child: Text(

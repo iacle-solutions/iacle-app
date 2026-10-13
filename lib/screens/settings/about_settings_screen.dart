@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../config/app_config.dart';
 import '../../config/theme.dart';
-import '../../config/theme_config.dart';
 import '../../services/agent_display_name.dart';
 import '../../widgets/navigation/breadcrumb_bar.dart';
 
@@ -30,9 +29,10 @@ class AboutSettingsScreen extends StatelessWidget {
             child: ListView(
               padding: EdgeInsets.all(spacing.l),
               children: [
-                _buildLogoHeader(theme),
+                _buildLogoHeader(context, theme),
                 const SizedBox(height: 24),
                 _buildSection(
+                  context: context,
                   theme: theme,
                   icon: Icons.auto_awesome,
                   title: 'The Vision',
@@ -45,6 +45,7 @@ class AboutSettingsScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 24),
                 _buildSection(
+                  context: context,
                   theme: theme,
                   icon: Icons.flaky,
                   title: 'The Four Pillars',
@@ -54,6 +55,7 @@ class AboutSettingsScreen extends StatelessWidget {
                   child: Column(
                     children: [
                       _buildPillarCard(
+                        context: context,
                         theme: theme,
                         number: '1',
                         titan: 'Ὑπερίων',
@@ -65,10 +67,11 @@ class AboutSettingsScreen extends StatelessWidget {
                             '"He who watches from above." God of heavenly light, '
                             'father of the Sun, Moon, and Dawn. The watcher, the welcoming '
                             'presence — ${agentPossessive(configuredAgentName())} face to the world.',
-                        color: ThemeConfig.primaryColor,
+                        color: AppTheme.colorsOf(context).primary,
                       ),
                       const SizedBox(height: 12),
                       _buildPillarCard(
+                        context: context,
                         theme: theme,
                         number: '2',
                         titan: 'Κοῖος',
@@ -80,10 +83,11 @@ class AboutSettingsScreen extends StatelessWidget {
                             '"Query / Questioning." God of intellect, the axis of '
                             'heaven around which the constellations turn. The mind, the '
                             'engine — ${agentPossessive(configuredAgentName())} capability to reason and execute.',
-                        color: ThemeConfig.secondaryColor,
+                        color: AppTheme.colorsOf(context).secondary,
                       ),
                       const SizedBox(height: 12),
                       _buildPillarCard(
+                        context: context,
                         theme: theme,
                         number: '3',
                         titan: 'Κρεῖος',
@@ -95,10 +99,11 @@ class AboutSettingsScreen extends StatelessWidget {
                             '"The Ram / Master." God of constellations, measurement, '
                             'and the cycles of time. The order, the rhythm — ${agentPossessive(configuredAgentName())} '
                             'orchestration of complexity.',
-                        color: ThemeConfig.accentColor,
+                        color: AppTheme.colorsOf(context).accent,
                       ),
                       const SizedBox(height: 12),
                       _buildPillarCard(
+                        context: context,
                         theme: theme,
                         number: '4',
                         titan: 'Ἰαπετός',
@@ -110,13 +115,14 @@ class AboutSettingsScreen extends StatelessWidget {
                             '"The Piercer." Father of Prometheus (forethought), '
                             'Epimetheus (afterthought), and Atlas (endurance). The wound '
                             'that creates — ${agentPossessive(configuredAgentName())} emotional core and humanity.',
-                        color: ThemeConfig.dangerColor,
+                        color: AppTheme.colorsOf(context).danger,
                       ),
                     ],
                   ),
                 ),
                 const SizedBox(height: 24),
                 _buildSection(
+                  context: context,
                   theme: theme,
                   icon: Icons.account_balance,
                   title: 'The Stoa Poikile',
@@ -143,6 +149,7 @@ class AboutSettingsScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 24),
                 _buildSection(
+                  context: context,
                   theme: theme,
                   icon: Icons.science_outlined,
                   title: 'The Myth of Pistis',
@@ -162,7 +169,7 @@ class AboutSettingsScreen extends StatelessWidget {
                         'the race of pious men has perished."',
                         style: theme.textTheme.bodyLarge?.copyWith(
                           fontStyle: FontStyle.italic,
-                          color: ThemeConfig.darkTextColorLight,
+                          color: AppTheme.colorsOf(context).textColorLight,
                         ),
                       ),
                       const SizedBox(height: 8),
@@ -208,7 +215,7 @@ class AboutSettingsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildLogoHeader(ThemeData theme) {
+  Widget _buildLogoHeader(BuildContext context, ThemeData theme) {
     return Center(
       child: Column(
         children: [
@@ -217,14 +224,14 @@ class AboutSettingsScreen extends StatelessWidget {
             height: 100,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              gradient: const LinearGradient(
+              gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: [ThemeConfig.secondaryColor, ThemeConfig.primaryColor],
+                colors: [AppTheme.colorsOf(context).secondary, AppTheme.colorsOf(context).primary],
               ),
               boxShadow: [
                 BoxShadow(
-                  color: ThemeConfig.primaryColor.withValues(alpha: 0.3),
+                  color: AppTheme.colorsOf(context).primary.withValues(alpha: 0.3),
                   blurRadius: 20,
                   offset: const Offset(0, 4),
                 ),
@@ -246,7 +253,7 @@ class AboutSettingsScreen extends StatelessWidget {
             'ΠΙΣΤΙΣΑΙ',
             style: theme.textTheme.headlineLarge?.copyWith(
               letterSpacing: 6,
-              color: ThemeConfig.primaryColor,
+              color: AppTheme.colorsOf(context).primary,
             ),
           ),
           const SizedBox(height: 4),
@@ -254,7 +261,7 @@ class AboutSettingsScreen extends StatelessWidget {
             'PISTISAI',
             style: theme.textTheme.bodyMedium?.copyWith(
               letterSpacing: 4,
-              color: ThemeConfig.darkTextColorLight,
+              color: AppTheme.colorsOf(context).textColorLight,
             ),
           ),
         ],
@@ -263,6 +270,7 @@ class AboutSettingsScreen extends StatelessWidget {
   }
 
   Widget _buildSection({
+    required BuildContext context,
     required ThemeData theme,
     required IconData icon,
     required String title,
@@ -274,12 +282,12 @@ class AboutSettingsScreen extends StatelessWidget {
       children: [
         Row(
           children: [
-            Icon(icon, color: ThemeConfig.primaryColor, size: 20),
+            Icon(icon, color: AppTheme.colorsOf(context).primary, size: 20),
             const SizedBox(width: 8),
             Text(
               title,
               style: theme.textTheme.titleLarge?.copyWith(
-                color: ThemeConfig.primaryColor,
+                color: AppTheme.colorsOf(context).primary,
               ),
             ),
           ],
@@ -291,7 +299,7 @@ class AboutSettingsScreen extends StatelessWidget {
             child: Text(
               subtitle,
               style: theme.textTheme.bodySmall?.copyWith(
-                color: ThemeConfig.darkTextColorLight,
+                color: AppTheme.colorsOf(context).textColorLight,
                 fontStyle: FontStyle.italic,
               ),
             ),
@@ -304,6 +312,7 @@ class AboutSettingsScreen extends StatelessWidget {
   }
 
   Widget _buildPillarCard({
+    required BuildContext context,
     required ThemeData theme,
     required String number,
     required String titan,
@@ -378,7 +387,7 @@ class AboutSettingsScreen extends StatelessWidget {
                 Text(
                   description,
                   style: theme.textTheme.bodySmall?.copyWith(
-                    color: ThemeConfig.darkTextColorLight,
+                    color: AppTheme.colorsOf(context).textColorLight,
                     height: 1.4,
                   ),
                 ),
