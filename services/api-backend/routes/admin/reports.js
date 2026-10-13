@@ -705,22 +705,13 @@ router.get(
         );
         res.send(csv);
       } else if (format === 'pdf') {
-        // PDF export is a placeholder for now
-        // In a production environment, you would use a library like pdfkit or puppeteer
-        // For now, we'll return CSV with a note
-        const csv = convertToCSV(reportData, headers);
-
-        res.setHeader('Content-Type', 'text/csv');
-        res.setHeader(
-          'Content-Disposition',
-          `attachment; filename="${filename}.csv"`,
-        );
-        res.setHeader(
-          'X-PDF-Note',
-          'PDF export not yet implemented, returning CSV format',
-        );
-        res.send(csv);
-      }
+              // PDF export is not implemented yet — fail loudly rather than
+              // silently returning CSV in a different format than was requested.
+              return res.status(501).json({
+                error: 'PDF export not yet implemented',
+                hint: 'Use format=csv for now; PDF export is planned.',
+              });
+            }
 
       // Log the export action
       await logAdminAction(pool, {
