@@ -17,8 +17,6 @@ import 'package:pistisai/auth/auth_provider.dart';
 import 'package:pistisai/auth/providers/supabase_auth_provider.dart';
 import 'package:pistisai/services/desktop_client_detection_service.dart';
 import 'package:pistisai/services/enhanced_user_tier_service.dart';
-import 'package:pistisai/services/langchain_rag_service.dart'
-    if (dart.library.html) 'package:pistisai/services/langchain_rag_service_stub.dart';
 import 'package:pistisai/services/provider_discovery_service.dart';
 import 'package:pistisai/services/streaming_chat_service.dart';
 import 'package:pistisai/services/streaming_proxy_service.dart';
@@ -830,18 +828,6 @@ Future<void> setupAuthenticatedServices() async {
     gatewayControlService.setConnectionManager(connectionManager);
     debugPrint(
         '[ServiceLocator] ✓ GatewayControlService now listens to connection changes');
-
-    // LangChain RAG service - requires connection manager
-    final langchainRagService = LangChainRAGService();
-    try {
-      await langchainRagService
-          .initialize()
-          .timeout(const Duration(seconds: 10));
-    } catch (e) {
-      debugPrint(
-          '[ServiceLocator] Warning: LangChainRAGService initialization failed: $e');
-    }
-    serviceLocator.registerSingleton<LangChainRAGService>(langchainRagService);
 
     // Streaming chat service - requires connection manager
     final streamingChatService = StreamingChatService(
