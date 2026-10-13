@@ -3,7 +3,6 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../../di/locator.dart' as di;
 
-import '../../config/theme_config.dart';
 import '../../services/admin_data_flush_service.dart';
 import '../../services/platform_adapter.dart';
 import '../../services/platform_detection_service.dart';
@@ -348,7 +347,7 @@ class _AdminDataFlushScreenState extends State<AdminDataFlushScreen>
                         icon: Icon(Icons.cleaning_services),
                         label: Text('Emergency Cleanup'),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: ThemeConfig.warningColor,
+                          backgroundColor: AppTheme.colorsOf(context).warning,
                           foregroundColor: AppTheme.colorsOf(context).textColor,
                           minimumSize: const Size(double.infinity, 44),
                         ),
@@ -378,7 +377,7 @@ class _AdminDataFlushScreenState extends State<AdminDataFlushScreen>
                         icon: Icon(Icons.cleaning_services),
                         label: Text('Emergency Cleanup'),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: ThemeConfig.warningColor,
+                          backgroundColor: AppTheme.colorsOf(context).warning,
                           foregroundColor: AppTheme.colorsOf(context).textColor,
                         ),
                       ),
@@ -428,7 +427,7 @@ class _AdminDataFlushScreenState extends State<AdminDataFlushScreen>
                   style: theme.textTheme.bodyMedium,
                 )
               else
-                ...recentOps.map((op) => _buildOperationTile(op, theme)),
+                ...recentOps.map((op) => _buildOperationTile(context, op, theme)),
             ],
           ),
         );
@@ -470,7 +469,7 @@ class _AdminDataFlushScreenState extends State<AdminDataFlushScreen>
     bool isMobile,
   ) {
     return Card(
-      color: ThemeConfig.dangerColor,
+      color: AppTheme.colorsOf(context).danger,
       child: Padding(
         padding: EdgeInsets.all(isMobile ? 12 : 16),
         child: Column(
@@ -607,7 +606,7 @@ class _AdminDataFlushScreenState extends State<AdminDataFlushScreen>
                 Container(
                   padding: EdgeInsets.all(isMobile ? 10 : 12),
                   decoration: BoxDecoration(
-                    color: ThemeConfig.dangerColor,
+                    color: AppTheme.colorsOf(context).danger,
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(
@@ -635,7 +634,7 @@ class _AdminDataFlushScreenState extends State<AdminDataFlushScreen>
                             style: ElevatedButton.styleFrom(
                               backgroundColor:
                                   adminService.hasValidConfirmationToken
-                                      ? ThemeConfig.successColor
+                                      ? AppTheme.colorsOf(context).success
                                       : theme.colorScheme.primary,
                               foregroundColor: AppTheme.colorsOf(context).textColor,
                               minimumSize: const Size(double.infinity, 44),
@@ -653,7 +652,7 @@ class _AdminDataFlushScreenState extends State<AdminDataFlushScreen>
                             icon: Icon(Icons.delete_forever),
                             label: Text('EXECUTE FLUSH'),
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: ThemeConfig.dangerColor,
+                              backgroundColor: AppTheme.colorsOf(context).danger,
                               foregroundColor: AppTheme.colorsOf(context).textColor,
                               minimumSize: const Size(double.infinity, 44),
                             ),
@@ -676,7 +675,7 @@ class _AdminDataFlushScreenState extends State<AdminDataFlushScreen>
                             style: ElevatedButton.styleFrom(
                               backgroundColor:
                                   adminService.hasValidConfirmationToken
-                                      ? ThemeConfig.successColor
+                                      ? AppTheme.colorsOf(context).success
                                       : theme.colorScheme.primary,
                               foregroundColor: AppTheme.colorsOf(context).textColor,
                             ),
@@ -692,7 +691,7 @@ class _AdminDataFlushScreenState extends State<AdminDataFlushScreen>
                             icon: Icon(Icons.delete_forever),
                             label: Text('EXECUTE FLUSH'),
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: ThemeConfig.dangerColor,
+                              backgroundColor: AppTheme.colorsOf(context).danger,
                               foregroundColor: AppTheme.colorsOf(context).textColor,
                             ),
                           ),
@@ -724,16 +723,16 @@ class _AdminDataFlushScreenState extends State<AdminDataFlushScreen>
           itemCount: adminService.operationHistory.length,
           itemBuilder: (context, index) {
             final operation = adminService.operationHistory[index];
-            return _buildOperationCard(operation, theme, platformAdapter);
+            return _buildOperationCard(context, operation, theme, platformAdapter);
           },
         );
       },
     );
   }
 
-  Widget _buildOperationTile(Map<String, dynamic> operation, ThemeData theme) {
+  Widget _buildOperationTile(BuildContext context, Map<String, dynamic> operation, ThemeData theme) {
     return ListTile(
-      leading: Icon(Icons.delete_forever, color: ThemeConfig.dangerColor),
+      leading: Icon(Icons.delete_forever, color: AppTheme.colorsOf(context).danger),
       title: Text(
         'Operation ${operation['operationId']?.substring(0, 8) ?? 'Unknown'}',
         style: theme.textTheme.bodyLarge,
@@ -750,6 +749,7 @@ class _AdminDataFlushScreenState extends State<AdminDataFlushScreen>
   }
 
   Widget _buildOperationCard(
+    BuildContext context,
     Map<String, dynamic> operation,
     ThemeData theme,
     PlatformAdapter platformAdapter,
@@ -762,7 +762,7 @@ class _AdminDataFlushScreenState extends State<AdminDataFlushScreen>
         children: [
           Row(
             children: [
-              Icon(Icons.delete_forever, color: ThemeConfig.dangerColor),
+              Icon(Icons.delete_forever, color: AppTheme.colorsOf(context).danger),
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
@@ -929,7 +929,7 @@ class _AdminDataFlushScreenState extends State<AdminDataFlushScreen>
                 Icon(
                   isDestructive ? Icons.warning : Icons.info,
                   color: isDestructive
-                      ? ThemeConfig.warningColor
+                      ? AppTheme.colorsOf(context).warning
                       : theme.colorScheme.primary,
                 ),
                 const SizedBox(width: 8),
@@ -946,22 +946,22 @@ class _AdminDataFlushScreenState extends State<AdminDataFlushScreen>
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: ThemeConfig.dangerColor.withValues(alpha: 0.1),
+                      color: AppTheme.colorsOf(context).danger.withValues(alpha: 0.1),
                       border: Border.all(
-                        color: ThemeConfig.dangerColor.withValues(alpha: 0.3),
+                        color: AppTheme.colorsOf(context).danger.withValues(alpha: 0.3),
                       ),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Row(
                       children: [
-                        const Icon(Icons.warning,
-                            color: ThemeConfig.dangerColor, size: 20),
+                        Icon(Icons.warning,
+                            color: AppTheme.colorsOf(context).danger, size: 20),
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(
                             'This action cannot be undone!',
                             style: theme.textTheme.bodyMedium?.copyWith(
-                              color: ThemeConfig.dangerColor,
+                              color: AppTheme.colorsOf(context).danger,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -981,7 +981,7 @@ class _AdminDataFlushScreenState extends State<AdminDataFlushScreen>
                 onPressed: () => Navigator.of(context).pop(true),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: isDestructive
-                      ? ThemeConfig.dangerColor
+                      ? AppTheme.colorsOf(context).danger
                       : theme.colorScheme.primary,
                   foregroundColor: AppTheme.colorsOf(context).textColor,
                 ),
@@ -1010,13 +1010,13 @@ class _AdminDataFlushScreenState extends State<AdminDataFlushScreen>
             builder: (context, setState) => AlertDialog(
               title: Row(
                 children: [
-                  const Icon(Icons.dangerous, color: ThemeConfig.dangerColor),
+                  Icon(Icons.dangerous, color: AppTheme.colorsOf(context).danger),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
                       title,
                       style: theme.textTheme.headlineSmall?.copyWith(
-                        color: ThemeConfig.dangerColor,
+                        color: AppTheme.colorsOf(context).danger,
                       ),
                     ),
                   ),
@@ -1031,9 +1031,9 @@ class _AdminDataFlushScreenState extends State<AdminDataFlushScreen>
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: ThemeConfig.dangerColor.withValues(alpha: 0.1),
+                      color: AppTheme.colorsOf(context).danger.withValues(alpha: 0.1),
                       border: Border.all(
-                        color: ThemeConfig.dangerColor.withValues(alpha: 0.3),
+                        color: AppTheme.colorsOf(context).danger.withValues(alpha: 0.3),
                       ),
                       borderRadius: BorderRadius.circular(8),
                     ),
@@ -1042,13 +1042,13 @@ class _AdminDataFlushScreenState extends State<AdminDataFlushScreen>
                       children: [
                         Row(
                           children: [
-                            const Icon(Icons.warning,
-                                color: ThemeConfig.dangerColor, size: 20),
+                            Icon(Icons.warning,
+                                color: AppTheme.colorsOf(context).danger, size: 20),
                             const SizedBox(width: 8),
                             Text(
                               'CRITICAL WARNING',
                               style: theme.textTheme.titleMedium?.copyWith(
-                                color: ThemeConfig.dangerColor,
+                                color: AppTheme.colorsOf(context).danger,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -1062,7 +1062,7 @@ class _AdminDataFlushScreenState extends State<AdminDataFlushScreen>
                           '• All authentication tokens will be cleared\n'
                           '• Docker containers will be removed',
                           style: theme.textTheme.bodyMedium?.copyWith(
-                            color: ThemeConfig.dangerColor,
+                            color: AppTheme.colorsOf(context).danger,
                           ),
                         ),
                       ],
@@ -1099,7 +1099,7 @@ class _AdminDataFlushScreenState extends State<AdminDataFlushScreen>
                   onPressed:
                       canConfirm ? () => Navigator.of(context).pop(true) : null,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: ThemeConfig.dangerColor,
+                    backgroundColor: AppTheme.colorsOf(context).danger,
                     foregroundColor: AppTheme.colorsOf(context).textColor,
                   ),
                   child: const Text('EXECUTE DELETION'),
