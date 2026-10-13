@@ -151,7 +151,7 @@ user_voice_settings table:
 whisper /tmp/test.wav --model base --language en
 
 # Test voice API
-curl -X POST http://localhost:3000/api/v1/voice/transcribe \
+curl -X POST http://localhost:8080/api/v1/voice/transcribe \
   -F "audio=@test.wav" \
   -F 'options={"model":"base","language":"en"}'
 ```

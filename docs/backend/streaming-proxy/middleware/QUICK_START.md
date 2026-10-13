@@ -138,7 +138,7 @@ TOKEN="eyJhbGc..."
 
 # Test validation
 curl -H "Authorization: Bearer $TOKEN" \
-  http://localhost:3000/api/tunnel/status
+  http://localhost:3001/api/tunnel/status
 ```
 
 ### Test Brute Force Protection
@@ -147,7 +147,7 @@ curl -H "Authorization: Bearer $TOKEN" \
 # Make multiple failed attempts
 for i in {1..6}; do
   curl -H "Authorization: Bearer invalid-token" \
-    http://localhost:3000/api/tunnel/status
+    http://localhost:3001/api/tunnel/status
 done
 
 # IP should now be blocked

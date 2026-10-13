@@ -145,7 +145,7 @@ Local (Manjaro Linux):
 - Tooling validation: `node -v` (v24.x), `npm -v`, `docker --version`, `docker compose version`.
 - Install deps: `npm ci` (root and services), `npx playwright install`.
 - Backend:
-  - services/api-backend: `npm run test` / `npm run test:unit` / `npm run db:migrate` then `npm run dev`; `curl -f http://127.0.0.1:8080/health`.
+  - services/api-backend: `npm run test` / `npm run test:unit` / `npm run db:validate` then `npm run dev`; `curl -f http://127.0.0.1:8080/health`.
   - services/streaming-proxy: `npm run dev` and health check endpoint if present.
 - Flutter client smoke with web and desktop to validate end-to-end connection paths.
 

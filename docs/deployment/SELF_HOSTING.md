@@ -11,8 +11,8 @@ Current orientation is agent-runtime-first and Tailscale-first. The setup wizard
 ## Prerequisites
 
 - Docker and Docker Compose
-- Node.js >=22 <25 (for backend development)
-- Flutter SDK >=3.5.0 <4.0.0 (for frontend development)
+- Node.js >=22 <27 (for backend development; CI pins Node 26 via `.nvmrc`)
+- Flutter SDK >=3.5.0 <4.0.0 (for frontend development; shared package needs Dart >=3.9.0)
 - PostgreSQL >=14
 - Redis >=7
 - Git
@@ -37,11 +37,12 @@ Run only the Flutter frontend with local SQLite storage. No backend services req
 
 ```bash
 # Get the code
-git clone https://github.com/your-repo/pistisai.git
-cd pistisai
+git clone https://github.com/pistisAI/pistisai-app.git
+cd pistisai-app
 
-# Install Flutter dependencies
+# Install Flutter dependencies (app + shared package)
 flutter pub get
+cd lib/shared && flutter pub get && cd ../..
 
 # Run the app (local-first mode)
 flutter run -d linux  # or windows, macos, chrome
@@ -72,18 +73,26 @@ cp .env.example .env
 #### Step 2: Start Infrastructure Services
 
 ```bash
-# Start PostgreSQL and Redis
-docker-compose up -d postgres redis
+# Start PostgreSQL and Redis (compose service names)
+docker compose up -d database redis
 
-# Initialize database
-npm run db:migrate
+# Validate database connectivity / schema helpers from api-backend
+# (there is no npm run db:migrate — see AGENTS.md)
+cd services/api-backend && npm install && npm run db:validate && cd ../..
 ```
 
 #### Step 3: Start Backend Services
 
 ```bash
-# Start backend services. Streaming proxy is legacy/fallback for tunnel-heavy paths.
-docker-compose up -d api-backend streaming-proxy tailscale-relay auth-backend
+# Root docker-compose.yml services include api-backend + tailscale-relay
+# (not streaming-proxy or auth-backend — those run from their own directories when needed)
+docker compose up -d api-backend tailscale-relay
+
+# Optional legacy/fallback streaming proxy (separate service folder):
+# cd services/streaming-proxy && npm install && npm run dev
+
+# Optional auth backend (CommonJS; no npm run dev):
+# cd backend/auth && npm install && node handlers.js
 ```
 
 #### Step 4: Build and Configure Frontend
@@ -91,9 +100,9 @@ docker-compose up -d api-backend streaming-proxy tailscale-relay auth-backend
 ```bash
 # Get Flutter dependencies
 flutter pub get
+cd lib/shared && flutter pub get && cd ../..
 
-# Configure frontend to point to your self-hosted backend
-# Update lib/config/endpoint.dart with your backend URLs
+# Point the app at your self-hosted API (see lib/config/app_config.dart)
 
 # Run the app
 flutter run -d linux  # or your target platform
@@ -104,10 +113,12 @@ flutter run -d linux  # or your target platform
 ```bash
 # Build frontend for production
 flutter build linux --release  # or windows, macos, web
+# For web builds matching CI:
+# flutter build web --release --no-web-resources-cdn
 
-# Build backend (if making changes)
+# Restart / redeploy api-backend after Node changes (no npm run build script)
 cd services/api-backend
-npm run build
+npm start
 ```
 
 ## Configuration
@@ -147,16 +158,10 @@ TAILSCALE_AUTHKEY=your_tailscale_authkey
 
 ### Flutter Configuration
 
-Edit `lib/config/endpoint.dart` to point to your self-hosted services:
-
-```dart
-class EndpointConfig {
-  static String get apiBaseUrl => 'http://your-server:8080/api';
-  static String get streamingProxyUrl => 'ws://your-server:3001';
-  static String get authBaseUrl => 'http://your-server:8080/auth';
-  // ... other endpoints
-}
-```
+Update endpoint constants in `lib/config/app_config.dart` (for example `apiBaseUrl`
+and related admin/router URLs) so the Flutter app targets your self-hosted services.
+Default local ports: API backend `8080`, embedded router `1337`, streaming proxy
+`3001` (when used), auth backend `3000`, Tailscale relay `3002`.
 
 ## Security Considerations
 
@@ -194,8 +199,8 @@ Backend services log to stdout/stderr, captured by Docker Compose:
 
 ```bash
 # View logs
-docker-compose logs -f api-backend
-docker-compose logs -f streaming-proxy
+docker compose logs -f api-backend
+docker compose logs -f tailscale-relay
 ```
 
 ### Updates
@@ -210,11 +215,11 @@ flutter pub get
 # Update Node.js dependencies
 npm ci  # in each service directory
 
-# Apply database migrations
-npm run db:migrate
+# Validate database helpers from api-backend
+cd services/api-backend && npm run db:validate && cd ../..
 
 # Restart services
-docker-compose restart
+docker compose restart
 ```
 
 ## Troubleshooting
@@ -222,17 +227,17 @@ docker-compose restart
 ### Common Issues
 
 1. **Database Connection Failures**:
-   - Verify PostgreSQL is running: `docker-compose ps postgres`
+   - Verify PostgreSQL is running: `docker compose ps database`
    - Check `.env` database credentials
-   - Ensure database has been migrated: `npm run db:migrate`
+   - Validate from api-backend: `cd services/api-backend && npm run db:validate`
 
 2. **Service Startup Failures**:
-   - Check logs: `docker-compose logs <service-name>`
+   - Check logs: `docker compose logs <service-name>`
    - Verify required environment variables are set
-   - Check port conflicts (8080 for API, 3001 for streaming proxy)
+   - Check port conflicts (8080 for API, 3001 for streaming proxy when used)
 
 3. **Frontend Cannot Connect to Backend**:
-   - Verify `lib/config/endpoint.dart` points to correct URLs
+   - Verify `lib/config/app_config.dart` points to correct URLs
    - Check network connectivity between frontend and backend devices
    - Ensure backend services are exposed on the correct network interface
 

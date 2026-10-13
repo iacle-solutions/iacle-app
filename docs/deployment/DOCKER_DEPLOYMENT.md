@@ -44,23 +44,23 @@ Before deployment, configure your DNS with A records for:
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/Pistisai.git
-cd Pistisai
+git clone https://github.com/pistisAI/pistisai-app.git
+cd pistisai-app
 ```
 
-### 2. Run the Deployment Script
+### 2. Deploy with Docker Compose
+
+There is no root `deploy.sh` in this repository. Use Compose against the real
+service definitions (see `docker-compose.yml`):
 
 ```bash
-chmod +x deploy.sh
-./deploy.sh
+cp .env.example .env
+# Edit .env with domain, secrets, and database settings
+docker compose up -d database redis api-backend webapp tailscale-relay
 ```
 
-The script will:
-
-1. Check prerequisites
-2. Create `.env` configuration
-3. Request SSL certificates from Let's Encrypt
-4. Build and deploy all services
+For a fuller walkthrough, see [SELF_HOSTING.md](SELF_HOSTING.md) and
+[DEPLOYMENT_OVERVIEW.md](DEPLOYMENT_OVERVIEW.md).
 
 ### 3. Access Your Application
 
@@ -77,7 +77,7 @@ If you prefer manual deployment or need to customize:
 ### 1. Create Environment File
 
 ```bash
-cp env.template .env
+cp .env.example .env
 ```
 
 Edit `.env` and configure:
@@ -164,11 +164,11 @@ Nginx (Port 80/443)
    │   └─→ Web Service (Flutter App) :8080
    │
    ├─→ API Requests (/api/*)
-   │   └─→ API Backend Service :3000
+   │   └─→ API Backend Service :8080
    │       └─→ PostgreSQL :5432
    │
    └─→ Legacy WebSocket Tunnel (/ws/tunnel)
-       └─→ API Backend Service :3000
+       └─→ API Backend Service :8080
            └─→ Windows Desktop App
                └─→ Selected agent runtime or support model provider
 ```
@@ -186,7 +186,7 @@ Nginx (Port 80/443)
 
 - **Container**: `pistisai-api-backend`
 - **Technology**: Node.js Express
-- **Port**: 3000 (internal)
+- **Port**: 8080 (internal; matches `PORT || 8080` and compose `8080:8080`)
 - **Features**:
   - REST API endpoints
   - Legacy WebSocket tunnel server at `/ws/tunnel`
@@ -445,6 +445,6 @@ Kubernetes manifests live in `k8s/`. For private deployments, start with [Self-H
 
 For issues or questions:
 
-- GitHub Issues: https://github.com/yourusername/Pistisai/issues
+- GitHub Issues: https://github.com/pistisAI/pistisai-app/issues
 - Documentation: https://docs.pistisai.app
 - Email: support@pistisai.app

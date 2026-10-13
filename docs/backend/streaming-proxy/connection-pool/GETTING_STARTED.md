@@ -214,8 +214,8 @@ app.post('/api/forward', async (req, res) => {
   }
 });
 
-app.listen(3000, () => {
-  logger.info('Server started on port 3000');
+app.listen(3001, () => {
+  logger.info('Server started on port 3001');
 });
 ```
 

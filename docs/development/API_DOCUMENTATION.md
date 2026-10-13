@@ -7,7 +7,7 @@ Pistisai v3.6.2+ provides APIs for bridge communication, legacy streaming proxy 
 **API Base URLs:**
 
 - **Production**: `https://app.pistisai.app/api`
-- **Local Development**: `http://localhost:3000/api`
+- **Local Development**: `http://localhost:8080/api`
 
 ---
 

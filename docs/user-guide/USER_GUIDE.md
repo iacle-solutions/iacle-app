@@ -64,7 +64,7 @@ The app can discover or configure agent runtimes:
 
 | Runtime | Typical Endpoint | Notes |
 | --- | --- | --- |
-| Hermes | Configured by wizard | First agent runtime path for current testing |
+| Hermes | `127.0.0.1:8642` (wizard-configured) | First agent runtime path for current testing |
 | OpenClaw Gateway | `localhost:18789` | Supported original integration |
 | Custom agent gateway | User supplied | Private compatible agent runtime |
 | Hosted agent runtime | Pistisai managed | Optional paid compute |

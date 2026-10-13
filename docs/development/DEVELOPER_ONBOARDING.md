@@ -21,8 +21,8 @@ This guide is the current entry point for working on Pistisai.
 
 ## Required Tools
 
-- Flutter with Dart compatible with `pubspec.yaml` (`>=3.5.0 <4.0.0`).
-- Node.js `>=22 <25` for `services/api-backend/` and `services/streaming-proxy/`.
+- Flutter with Dart compatible with `pubspec.yaml` (`>=3.5.0 <4.0.0`). CI pins Flutter `3.44.6` stable.
+- Node.js `>=22 <27` for `services/api-backend/` and `services/streaming-proxy/` (CI pins Node `26` via `.nvmrc`).
 - Node.js `>=18` is sufficient for `services/sdk/`.
 - Docker or a compatible container runtime for backend/deployment work.
 - PostgreSQL for backend database work.
@@ -31,8 +31,9 @@ This guide is the current entry point for working on Pistisai.
 
 ```bash
 flutter pub get
-flutter analyze
-flutter test
+cd lib/shared && flutter pub get && cd ../..
+flutter analyze lib/
+bash scripts/ci/flutter_security_basic_tests.sh
 ```
 
 For API backend work:
@@ -78,19 +79,20 @@ dart run build_runner build --delete-conflicting-outputs
 ## Common Commands
 
 ```bash
-flutter analyze
-flutter test
+flutter analyze lib/
+bash scripts/ci/flutter_security_basic_tests.sh
 flutter test test/services/some_test.dart
-flutter format .
+dart format .
 flutter run -d linux
 flutter run -d windows
 flutter run -d chrome
 flutter build linux --release
-flutter build web --release
+flutter build web --release --no-web-resources-cdn
 ```
 
 ```bash
-npm test
+npm test                  # api-backend security CI suite only
+# npm run test:full       # broader Jest run; see jest.config.js ignore-list
 npm run docs:links
 ```
 

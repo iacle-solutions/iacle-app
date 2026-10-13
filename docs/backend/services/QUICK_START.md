@@ -20,12 +20,16 @@ cp .env.example .env
 
 Edit `.env` and add your Stripe API keys from https://dashboard.stripe.com/apikeys
 
-### 3. Run Database Migrations
+### 3. Validate Database Helpers
 
-Ensure the payment gateway tables are created:
+There is no `npm run db:migrate` in api-backend. Use the available helpers after
+ensuring schema/SQL for payment tables is applied via your usual DB path:
 
 ```bash
-npm run db:migrate
+cd services/api-backend
+npm run db:validate
+# npm run db:stats
+# npm run db:test
 ```
 
 ## Basic Usage

@@ -46,7 +46,7 @@ The primary interface is a direct, secure line of communication to your active a
 *   **Thinking Artifact Previews:** Shows model "thinking" timelines and artifact states inline before output generation (for supported reasoning runtimes).
 *   **Model Selection:** Dynamic model switching based on models exposed by the active agent gateway (e.g. Hermes or OpenClaw models).
 *   **Session Management:** Create, delete, search, and toggle sessions directly from the sidebar.
-*   **Local Storage:** All conversations are persisted locally in your encrypted [LocalBrain SQLite](file:///data/dev/projects/pistisai-app/lib/database/drift_local_brain.dart) database.
+*   **Local Storage:** All conversations are persisted locally in your encrypted [LocalBrain SQLite](../../lib/database/drift_local_brain.dart) database.
 
 ---
 
@@ -106,7 +106,7 @@ Pistisai allows the agent runtime to "see" and interpret the environment on your
 
 *   **Full Screen Capture:** Captures complete desktop viewports for multimodal analysis.
 *   **Region Selection:** Select and crop specific screen regions.
-*   **Multilingual OCR Engine:** Extract text from screen regions using an integrated [Tesseract OCR Service](file:///data/dev/projects/pistisai-app/lib/services/vision/ocr_engine_service.dart). Supports multi-language configs (default: English `eng` + Simplified Chinese `chi_sim`).
+*   **Multilingual OCR Engine:** Extract text from screen regions using an integrated [Tesseract OCR Service](../../lib/services/vision/ocr_engine_service.dart). Supports multi-language configs (default: English `eng` + Simplified Chinese `chi_sim`).
 *   **Continuous Watch Modes:** Continuous regional screen captures to monitor specific workflows and alert the agent.
 
 ---
@@ -128,7 +128,7 @@ Define and monitor where the active agent computing actually takes place.
 
 *   **Tailscale Integration:** Connect securely to agent runtimes running on other computers, home servers, or VPS instances inside your private Tailscale network mesh.
 *   **Hermes Gateway:** Configures custom endpoint connections for the Hermes agent runtime.
-*   **OpenClaw Gateway:** Default integration to `http://localhost:18789` for running local openclaw skills.
+*   **OpenClaw Gateway:** Default integration to `http://localhost:18789` for running local OpenClaw skills.
 *   **Health & Latency Checkers:** Monitor gateway status, latency, available system tools, and connection availability.
 
 ---
