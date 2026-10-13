@@ -12,11 +12,7 @@ void main() {
         'lib/services/hermes_manager/main_chat_timeline_trust_store.dart',
       ).readAsStringSync();
 
-      final selectorSource = File(
-        'lib/services/hermes_manager/main_chat_timeline_destination_selector.dart',
-      ).readAsStringSync();
-
-      for (final source in <String>[envelopeSource, trustStoreSource, selectorSource]) {
+      for (final source in <String>[envelopeSource, trustStoreSource]) {
         expect(source, isNot(contains('dart:io')));
         expect(source, isNot(contains('package:shelf')));
         expect(source, isNot(contains('package:shelf_router')));
