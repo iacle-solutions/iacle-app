@@ -17,12 +17,6 @@ import 'package:pistisai/auth/auth_provider.dart';
 import 'package:pistisai/auth/providers/supabase_auth_provider.dart';
 import 'package:pistisai/services/desktop_client_detection_service.dart';
 import 'package:pistisai/services/enhanced_user_tier_service.dart';
-import 'package:pistisai/services/langchain_integration_service.dart';
-import 'package:pistisai/services/langchain_prompt_service.dart';
-import 'package:pistisai/services/langchain_rag_service.dart'
-    if (dart.library.html) 'package:pistisai/services/langchain_rag_service_stub.dart';
-import 'package:pistisai/services/llm_error_handler.dart';
-import 'package:pistisai/services/llm_provider_manager.dart';
 import 'package:pistisai/services/provider_discovery_service.dart';
 import 'package:pistisai/services/streaming_chat_service.dart';
 import 'package:pistisai/services/streaming_proxy_service.dart';
@@ -367,18 +361,6 @@ Future<void> setupCoreServices() async {
     final providerDiscoveryService = ProviderDiscoveryService();
     serviceLocator.registerSingleton<ProviderDiscoveryService>(
       providerDiscoveryService,
-    );
-
-    // LLM Error Handler - lightweight, doesn't require auth
-    final llmErrorHandler = LLMErrorHandler(
-      providerDiscovery: providerDiscoveryService,
-    );
-    serviceLocator.registerSingleton<LLMErrorHandler>(llmErrorHandler);
-
-    // LangChain Prompt Service - create but don't initialize templates until auth
-    final langchainPromptService = LangChainPromptService();
-    serviceLocator.registerSingleton<LangChainPromptService>(
-      langchainPromptService,
     );
 
     // Desktop client detection - can check client type without auth
@@ -747,8 +729,6 @@ Future<void> setupAuthenticatedServices() async {
     debugPrint('[ServiceLocator] Initializing WebDownloadPromptService...');
     await webDownloadPromptService.initialize();
 
-    // LangChain Prompt Service is already initialized in constructor
-
     // Initialize Provider Discovery Service and auto-configure discovered providers
     // Skip if forcing setup wizard for testing
     if (!AppConfig.forceSetupWizard) {
@@ -809,37 +789,6 @@ Future<void> setupAuthenticatedServices() async {
       }),
     );
 
-    // LangChain integration service - requires authentication for provider access
-    debugPrint('[ServiceLocator] Initializing LangChainIntegrationService...');
-    final langchainIntegrationService = LangChainIntegrationService();
-    try {
-      await langchainIntegrationService
-          .initializeProviders()
-          .timeout(const Duration(seconds: 10));
-    } catch (e) {
-      debugPrint(
-          '[ServiceLocator] Warning: LangChainIntegrationService initialization failed: $e');
-    }
-    serviceLocator.registerSingleton<LangChainIntegrationService>(
-      langchainIntegrationService,
-    );
-
-    // LLM Provider Manager - requires authentication
-    debugPrint('[ServiceLocator] Initializing LLMProviderManager...');
-    final llmProviderManager = LLMProviderManager(
-      discoveryService: providerDiscoveryService,
-      langchainService: langchainIntegrationService,
-    );
-    try {
-      await llmProviderManager
-          .initialize()
-          .timeout(const Duration(seconds: 10));
-    } catch (e) {
-      debugPrint(
-          '[ServiceLocator] Warning: LLMProviderManager initialization failed: $e');
-    }
-    serviceLocator.registerSingleton<LLMProviderManager>(llmProviderManager);
-
     // Connection Manager - requires authentication for tunnel/cloud connections
     final gatewayControlService = serviceLocator.get<GatewayControlService>();
     final hermesStreamingService = serviceLocator.get<HermesStreamingService>();
@@ -879,18 +828,6 @@ Future<void> setupAuthenticatedServices() async {
     gatewayControlService.setConnectionManager(connectionManager);
     debugPrint(
         '[ServiceLocator] ✓ GatewayControlService now listens to connection changes');
-
-    // LangChain RAG service - requires connection manager
-    final langchainRagService = LangChainRAGService();
-    try {
-      await langchainRagService
-          .initialize()
-          .timeout(const Duration(seconds: 10));
-    } catch (e) {
-      debugPrint(
-          '[ServiceLocator] Warning: LangChainRAGService initialization failed: $e');
-    }
-    serviceLocator.registerSingleton<LangChainRAGService>(langchainRagService);
 
     // Streaming chat service - requires connection manager
     final streamingChatService = StreamingChatService(
