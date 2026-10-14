@@ -579,7 +579,7 @@ If you exceed free tier, consider:
 1. **Check Android SDK version**:
    - `android/app/build.gradle` sets `compileSdk 37` and `compileSdkMinor 0`
    - CI installs `platforms;android-37.0` via `sdkmanager` under `ANDROID_HOME`
-   - AGP is `8.9.1` and the Gradle wrapper is `8.11.1`
+   - AGP is `8.10.1` and the Gradle wrapper is `8.11.1`
 
 2. **Clear Gradle cache**:
    - Re-run workflow (cache will be cleared automatically)

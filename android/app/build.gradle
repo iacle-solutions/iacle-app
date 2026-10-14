@@ -32,6 +32,7 @@ if (keystorePropertiesFile.exists()) {
 android {
     namespace "app.pistisai.app"
     compileSdk 37
+    compileSdkMinor 0
     ndkVersion flutter.ndkVersion
 
     compileOptions {

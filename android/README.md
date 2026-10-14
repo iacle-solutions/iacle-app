@@ -54,13 +54,13 @@ See [Android Build Guide](../docs/development/ANDROID_BUILD_GUIDE.md).
 
 | Piece | Value |
 | --- | --- |
-| Android Gradle Plugin | 8.9.1 (`android/settings.gradle`) |
+| Android Gradle Plugin | 8.10.1 (`android/settings.gradle`) |
 | Gradle wrapper | 8.11.1 |
 | `compileSdk` / `compileSdkMinor` | 37 / 0 |
 | SDK package CI installs | `platforms;android-37.0` |
 | NDK, minSdk, targetSdk | Flutter's values (`flutter.ndkVersion`, `flutter.minSdkVersion`, `flutter.targetSdkVersion`) |
 
-`platforms;android-37` without the `.0` minor does not match what AGP 8.9 requests. On GitHub `ubuntu-24.04` runners, call `sdkmanager` from `$ANDROID_HOME`. It is not on `PATH`.
+`platforms;android-37` without the `.0` minor does not match what AGP 8.10.1 requests when `compileSdkMinor` is `0`. On GitHub `ubuntu-24.04` runners, call `sdkmanager` from `$ANDROID_HOME`. It is not on `PATH`.
 
 ## Security Notes
 

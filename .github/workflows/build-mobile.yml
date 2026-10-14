@@ -87,8 +87,9 @@ jobs:
             exit 1
           fi
           yes | "$SDKMANAGER" --licenses > /dev/null 2>&1 || true
-          # API 37 is published as platforms;android-37.0 but AGP/lint still resolve platforms;android-37.
-          # sdkmanager often installs 37.0 into platforms/android-37 — do not delete that tree before copying.
+          # API 37 is published only as platforms;android-37.0. AGP 8.10.1+
+          # resolves that id from compileSdk 37 + compileSdkMinor 0.
+          # sdkmanager sometimes unpacks that package into platforms/android-37.
           if ! "$SDKMANAGER" --install "platforms;android-37.0" > /tmp/sdk.log 2>&1; then
             echo "sdkmanager install failed — output:" >&2
             tail -60 /tmp/sdk.log >&2
@@ -99,14 +100,17 @@ jobs:
           if [ -d "$P37" ] && [ ! -d "$P370" ]; then
             mv "$P37" "$P370"
           fi
-          if [ ! -d "$P37" ]; then
-            cp -r "$P370" "$P37"
-            sed -i 's/PlatformVersion=37\.0/PlatformVersion=37/' "$P37/source.properties"
-            sed -i 's/AndroidVersion.ApiLevel=37\.0/AndroidVersion.ApiLevel=37/' "$P37/source.properties"
+          # A second tree that still declares platforms;android-37.0 makes the
+          # SDK lookup report an inconsistent location and miss the real path.
+          if [ -d "$P37" ] && [ -f "$P37/package.xml" ] && grep -q 'path="platforms;android-37.0"' "$P37/package.xml"; then
+            rm -rf "$P37"
           fi
-          if [ ! -f "$P37/source.properties" ]; then
-            echo "Android platform 37 not present after setup (missing $P37/source.properties)" >&2
+          if [ ! -f "$P370/package.xml" ] || ! grep -q 'path="platforms;android-37.0"' "$P370/package.xml"; then
+            echo "platforms;android-37.0 is not installed at $P370" >&2
             ls -la "${ANDROID_HOME}/platforms/" >&2
+            if [ -f "$P370/package.xml" ]; then
+              head -40 "$P370/package.xml" >&2
+            fi
             exit 1
           fi
 

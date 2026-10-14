@@ -12,7 +12,7 @@ Checked in as of the SDK 37 fixes:
 
 | Piece | Value | Where |
 | --- | --- | --- |
-| Android Gradle Plugin | `8.9.1` | `android/settings.gradle` |
+| Android Gradle Plugin | `8.10.1` | `android/settings.gradle` |
 | Gradle | `8.11.1` | `android/gradle/wrapper/gradle-wrapper.properties` |
 | Kotlin Android plugin | `2.1.0` | `android/settings.gradle` |
 | `compileSdk` | `37` | `android/app/build.gradle` |
@@ -23,7 +23,7 @@ Checked in as of the SDK 37 fixes:
 | Flutter | `3.44.6` | `build-mobile.yml` |
 | Runner | `ubuntu-24.04` | `build-mobile.yml` |
 
-API 37 is published as the minor-versioned package `platforms;android-37.0`. AGP 8.9 or newer resolves that package from `compileSdk 37` plus `compileSdkMinor 0`. Installing `platforms;android-37` (no minor) does not satisfy the build. Gradle `8.11.1` is the wrapper version paired with AGP `8.9.1`.
+API 37 is published as the minor-versioned package `platforms;android-37.0`. `compileSdkMinor` exists from AGP 8.10.1, so this repo uses AGP `8.10.1` with `compileSdk 37` and `compileSdkMinor 0`. Installing `platforms;android-37` (no minor) does not satisfy the build. Gradle `8.11.1` is the wrapper version paired with AGP `8.10.1`.
 
 `minSdkVersion` and `targetSdkVersion` are not numeric literals in this repo. They come from the Flutter Gradle plugin for the Flutter version that runs the build.
 
@@ -438,7 +438,7 @@ App Bundles are smaller and optimized per-device by Google Play.
 
 ### Updating Android SDK
 
-Keep the package id, `compileSdk`, and `compileSdkMinor` together. API 37 is `platforms;android-37.0` with `compileSdk 37` and `compileSdkMinor 0` in `android/app/build.gradle`, installed from `build-mobile.yml`. AGP is `8.9.1` in `android/settings.gradle`, and the wrapper is Gradle `8.11.1`. Changing only one of those leaves the build looking for a platform package that is not installed.
+Keep the package id, `compileSdk`, and `compileSdkMinor` together. API 37 is `platforms;android-37.0` with `compileSdk 37` and `compileSdkMinor 0` in `android/app/build.gradle`, installed from `build-mobile.yml`. AGP is `8.10.1` in `android/settings.gradle` and `android/build.gradle`, and the wrapper is Gradle `8.11.1`. Changing only one of those leaves the build looking for a platform package that is not installed.
 
 ### Updating Java Version
 
