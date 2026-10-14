@@ -4,31 +4,78 @@ This guide explains the Android build system for Pistisai, which creates multi-a
 
 ## Overview
 
-Android builds are **ENABLED** and fully integrated into the CI/CD pipeline. The build system:
+Android builds run in [`.github/workflows/build-mobile.yml`](../../.github/workflows/build-mobile.yml) after a successful [Web Deploy](../operations/cicd/WEB_DEPLOY.md), or on `workflow_dispatch`. The automatic chain builds Android only. The iOS job runs only when the dispatch input `platforms` contains `ios`, and the repository does not currently contain `ios/Runner.xcodeproj`.
 
-- Creates separate APKs for ARM64, ARMv7, and x86_64 architectures
-- Uses GitHub-hosted runners (ubuntu-latest) - FREE for public repositories
-- Automatically signs APKs with release keystore
-- Runs in parallel with Windows and Linux builds
+## Current toolchain
+
+Checked in as of the SDK 37 fixes:
+
+| Piece | Value | Where |
+| --- | --- | --- |
+| Android Gradle Plugin | `8.9.1` | `android/settings.gradle` |
+| Gradle | `8.11.1` | `android/gradle/wrapper/gradle-wrapper.properties` |
+| Kotlin Android plugin | `2.1.0` | `android/settings.gradle` |
+| `compileSdk` | `37` | `android/app/build.gradle` |
+| `compileSdkMinor` | `0` | `android/app/build.gradle` |
+| Platform package | `platforms;android-37.0` | `build-mobile.yml` |
+| NDK | `flutter.ndkVersion` | `android/app/build.gradle` |
+| min / target SDK | `flutter.minSdkVersion` / `flutter.targetSdkVersion` | `android/app/build.gradle` |
+| Flutter | `3.44.6` | `build-mobile.yml` |
+| Runner | `ubuntu-24.04` | `build-mobile.yml` |
+
+API 37 is published as the minor-versioned package `platforms;android-37.0`. AGP 8.9 or newer resolves that package from `compileSdk 37` plus `compileSdkMinor 0`. Installing `platforms;android-37` (no minor) does not satisfy the build. Gradle `8.11.1` is the wrapper version paired with AGP `8.9.1`.
+
+`minSdkVersion` and `targetSdkVersion` are not numeric literals in this repo. They come from the Flutter Gradle plugin for the Flutter version that runs the build.
+
+### CI install of platform 37
+
+`ubuntu-24.04` GitHub runners do not put `sdkmanager` on `PATH`. The workflow resolves it from `$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager`, and if that file is missing it searches under `ANDROID_HOME`. A miss prints the tree and fails. It then runs `yes | sdkmanager --licenses` and `sdkmanager --install platforms;android-37.0`. Install failures dump the last 60 lines of `/tmp/sdk.log`.
+
+The APK step is:
+
+```bash
+flutter build apk --release --split-per-abi --android-skip-build-dependency-validation
+```
+
+Artifacts are uploaded as `android-apks` with Flutter's default names (`app-arm64-v8a-release.apk`, `app-armeabi-v7a-release.apk`, `app-x86_64-release.apk`). The release job tags `mobile-v{version}` and allows updates. It does not rename the APKs.
+
+### Signing secrets the workflow reads
+
+`build-mobile.yml` decodes the keystore and writes `android/key.properties`. These names are the ones CI uses:
+
+| Secret | Written into |
+| --- | --- |
+| `ANDROID_KEYSTORE_B64` | `android/release-keystore.jks` |
+| `ANDROID_STORE_PASSWORD` | `storePassword` |
+| `ANDROID_KEY_PASSWORD` | `keyPassword` |
+| `ANDROID_KEY_ALIAS` | `keyAlias` |
+
+`storeFile` in that generated file is `../release-keystore.jks`, which is correct relative to the `android/app` module.
+
+`scripts/setup-android-signing.ps1` and `scripts/verify-android-secrets.ps1` still set `ANDROID_KEYSTORE_BASE64` and `ANDROID_KEYSTORE_PASSWORD`. Those names do not feed `build-mobile.yml`. Set the four names in the table above.
+
+The release `signingConfigs` block in `android/app/build.gradle` reads `android/key.properties` only. It does not read `android.injected.signing.*` properties.
 
 ## Build Artifacts
 
 Android builds produce three APK files optimized for different architectures:
 
-1. **arm64-v8a** (`Pistisai-{version}-arm64-v8a.apk`)
+1. **arm64-v8a** (`app-arm64-v8a-release.apk`)
    - 64-bit ARM architecture
-   - For most modern Android devices (2015+)
+   - For most modern Android devices
    - Recommended for most users
 
-2. **armeabi-v7a** (`Pistisai-{version}-armeabi-v7a.apk`)
+2. **armeabi-v7a** (`app-armeabi-v7a-release.apk`)
    - 32-bit ARM architecture
    - For older Android devices
    - Wider compatibility
 
-3. **x86_64** (`Pistisai-{version}-x86_64.apk`)
+3. **x86_64** (`app-x86_64-release.apk`)
    - 64-bit x86 architecture
    - For Android emulators and some tablets
    - Testing and development
+
+These are the filenames `flutter build apk --split-per-abi` writes. The mobile workflow uploads them unchanged.
 
 Each APK is ~30-40% smaller than a universal APK, providing faster downloads and optimal performance.
 
@@ -77,14 +124,7 @@ base64 release-keystore.jks > release-keystore.base64.txt
 
 **✓ COMPLETED** - Android signing secrets have been configured in the GitHub repository.
 
-The following secrets are now available for CI/CD builds:
-
-| Secret Name | Description | Status |
-|-------------|-------------|--------|
-| `ANDROID_KEYSTORE_BASE64` | Base64-encoded keystore file | ✓ Configured |
-| `ANDROID_KEYSTORE_PASSWORD` | Keystore password | ✓ Configured |
-| `ANDROID_KEY_PASSWORD` | Key password | ✓ Configured |
-| `ANDROID_KEY_ALIAS` | Key alias (`Pistisai-release`) | ✓ Configured |
+CI reads the secret names in [Current toolchain](#current-toolchain), not the older `ANDROID_KEYSTORE_BASE64` / `ANDROID_KEYSTORE_PASSWORD` pair.
 
 ### Automated Setup Scripts
 
@@ -160,8 +200,8 @@ If you prefer to configure secrets manually:
 
    ```bash
    # Using GitHub CLI
-   gh secret set ANDROID_KEYSTORE_BASE64 < android/release-keystore.base64.txt
-   gh secret set ANDROID_KEYSTORE_PASSWORD
+   gh secret set ANDROID_KEYSTORE_B64 < android/release-keystore.base64.txt
+   gh secret set ANDROID_STORE_PASSWORD
    gh secret set ANDROID_KEY_PASSWORD
    gh secret set ANDROID_KEY_ALIAS -b "Pistisai-release"
    ```
@@ -181,7 +221,7 @@ If you prefer to configure secrets manually:
 
 ### Check android/app/build.gradle
 
-Ensure your `android/app/build.gradle` has signing configuration:
+The checked-in release signing block reads `android/key.properties` only. The sample below includes an `android.injected.signing.*` branch that is not in the repo.
 
 ```gradle
 android {
@@ -222,19 +262,7 @@ android {
 
 ### Check android/app/src/main/AndroidManifest.xml
 
-Verify minimum SDK version and permissions:
-
-```xml
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
-    <uses-sdk android:minSdkVersion="21" android:targetSdkVersion="33" />
-    
-    <!-- Add required permissions -->
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    
-    <!-- ... rest of manifest -->
-</manifest>
-```
+SDK levels are not declared in the manifest. `minSdkVersion` and `targetSdkVersion` come from the Flutter Gradle plugin inside `android/app/build.gradle`. The manifest does declare `INTERNET`, `ACCESS_NETWORK_STATE`, and an OAuth callback intent filter with scheme `Pistisai` and host `callback`.
 
 ### Update pubspec.yaml
 
@@ -254,31 +282,17 @@ dependencies:
 
 ## Build Configuration
 
-The Android build is configured in `.github/workflows/build-release.yml` with the following matrix entry:
-
-```yaml
-- platform: android
-  os: ubuntu-latest
-  build-command: flutter build apk --release --split-per-abi
-  artifact-name: android-apk
-```
+The Android job is `build_android` in `.github/workflows/build-mobile.yml`. There is no `build-release.yml`.
 
 ### Build Steps
 
-The Android build process includes the following automated steps:
-
-1. **Setup Java 17** - Installs Zulu OpenJDK 17 (required for Android builds)
-2. **Setup Android SDK** - Installs Android SDK API 33 and build tools
-3. **Setup Android NDK** - Installs NDK version 25.1.8937393
-4. **Cache Gradle Dependencies** - Caches Gradle wrapper and dependencies
-5. **Configure Signing** - Decodes keystore from base64 and creates key.properties
-6. **Verify Dependencies** - Checks Java, Android SDK, and Flutter are ready
-7. **Build APKs** - Compiles app with `--split-per-abi` flag for optimized APKs
-8. **Verify APKs** - Checks all three architecture APKs were created
-9. **Generate Checksums** - Creates SHA256 checksums for each APK
-10. **Upload Artifacts** - Uploads APKs and checksums to GitHub release
-
-All steps are fully automated and require no manual intervention.
+1. Check out `main` and rewrite `pubspec.yaml` / `assets/version.json` with the version from `version.json` and `github.run_number` as the build number.
+2. Install Flutter `3.44.6`.
+3. Install `platforms;android-37.0` with `sdkmanager` resolved from `ANDROID_HOME`.
+4. Decode `ANDROID_KEYSTORE_B64` to `android/release-keystore.jks` and write `android/key.properties`.
+5. `flutter pub get`, then `flutter build apk --release --split-per-abi --android-skip-build-dependency-validation`.
+6. Upload `build/app/outputs/flutter-apk/*.apk` as the `android-apks` artifact (30 days).
+7. `create_release` publishes those APKs on tag `mobile-v{version}` when the Android job succeeded and the iOS job succeeded or was skipped.
 
 ## Step 5: Test Android Build Locally
 
@@ -336,19 +350,13 @@ flutter doctor --android-licenses
 
 ### Triggering a Build
 
-Android builds are triggered automatically when you push a version tag:
+Android builds start after Web Deploy completes successfully on `main`. Dispatch the mobile workflow directly when you need an APK without that chain:
 
 ```bash
-# Create and push a version tag
-git tag v4.5.0
-git push origin v4.5.0
+gh workflow run "📱 Mobile Build & Release" --ref main
 ```
 
-Or manually trigger via GitHub Actions:
-
-- Go to: `Actions` → `Build Desktop Apps & Create Release` → `Run workflow`
-- Select branch: `main`
-- Click `Run workflow`
+Desktop tags matching `v*` do not build Android. Android release tags created by this workflow look like `mobile-v1.1.44`.
 
 ### Monitoring the Build
 
@@ -366,30 +374,23 @@ After successful build:
 
    ```bash
    # Using apksigner (part of Android SDK build-tools)
-   $ANDROID_HOME/build-tools/33.0.2/apksigner verify --verbose Pistisai-*-arm64-v8a.apk
+   "$ANDROID_HOME"/build-tools/*/apksigner verify --verbose app-arm64-v8a-release.apk
    ```
 
 3. **Test on Android device**:
 
    ```bash
    # Install via ADB
-   adb install Pistisai-*-arm64-v8a.apk
-   
-   # Launch app
-   adb shell am start -n com.Pistisai.Pistisai/.MainActivity
-   
+   adb install app-arm64-v8a-release.apk
+
+   # Launch app. applicationId is app.pistisai.app.
+   adb shell am start -n app.pistisai.app/.MainActivity
+
    # Check logs
-   adb logcat | grep Pistisai
+   adb logcat | grep -i pistisai
    ```
 
-4. **Verify checksums**:
-
-   ```bash
-   # Verify SHA256 checksum for each APK
-   sha256sum -c Pistisai-*-arm64-v8a.apk.sha256
-   sha256sum -c Pistisai-*-armeabi-v7a.apk.sha256
-   sha256sum -c Pistisai-*-x86_64.apk.sha256
-   ```
+The mobile workflow does not publish `.sha256` files next to the APKs.
 
 ### Testing on Different Architectures
 
@@ -411,11 +412,17 @@ The Android build targets three architectures:
 
 ### Build Command
 
+CI uses split APKs:
+
+```bash
+flutter build apk --release --split-per-abi --android-skip-build-dependency-validation
+```
+
+A local universal APK is a different command:
+
 ```bash
 flutter build apk --release --target-platform android-arm,android-arm64,android-x64
 ```
-
-This creates a single "fat APK" that works on all architectures.
 
 ### Alternative: App Bundle
 
@@ -431,26 +438,7 @@ App Bundles are smaller and optimized per-device by Google Play.
 
 ### Updating Android SDK
 
-To update Android SDK version:
-
-1. Update in workflow file:
-
-   ```yaml
-   - name: 🤖 Setup Android SDK
-     uses: android-actions/setup-android@v3
-     with:
-       api-level: 34  # Update this
-       build-tools: 34.0.0  # Update this
-   ```
-
-2. Update in `android/app/build.gradle`:
-
-   ```gradle
-   android {
-       compileSdkVersion 34  // Update this
-       targetSdkVersion 34   // Update this
-   }
-   ```
+Keep the package id, `compileSdk`, and `compileSdkMinor` together. API 37 is `platforms;android-37.0` with `compileSdk 37` and `compileSdkMinor 0` in `android/app/build.gradle`, installed from `build-mobile.yml`. AGP is `8.9.1` in `android/settings.gradle`, and the wrapper is Gradle `8.11.1`. Changing only one of those leaves the build looking for a platform package that is not installed.
 
 ### Updating Java Version
 
@@ -481,7 +469,7 @@ If you need to rotate the keystore:
 
 **Solution**:
 
-1. Verify `ANDROID_KEYSTORE_BASE64` secret exists
+1. Verify `ANDROID_KEYSTORE_B64` secret exists
 2. Re-encode keystore to base64
 3. Update secret with new value
 
@@ -501,9 +489,9 @@ If you need to rotate the keystore:
 
 **Solution**:
 
-- The workflow includes automatic license acceptance
-- Check the "Verify Android SDK and dependencies" step
-- Ensure `sdkmanager --licenses` command runs successfully
+- The "Setup Android SDK platform 37" step accepts licenses through the `sdkmanager` binary under `ANDROID_HOME`
+- On `ubuntu-24.04`, a bare `sdkmanager` on `PATH` is not the command the job runs
+- If install fails, read the `sdkmanager install failed` log. The package id is `platforms;android-37.0`
 
 ### APK Signature Verification Fails
 

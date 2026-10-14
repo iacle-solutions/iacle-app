@@ -4,6 +4,7 @@ This directory documents supported deployment paths for Pistisai.
 
 ## Start Here
 
+- [Web Deploy](../operations/cicd/WEB_DEPLOY.md) — production Flutter web image, Coolify, and Traefik health
 - [Deployment Overview](DEPLOYMENT_OVERVIEW.md)
 - [Complete Deployment Workflow](COMPLETE_DEPLOYMENT_WORKFLOW.md)
 - [Self Hosting](SELF_HOSTING.md)

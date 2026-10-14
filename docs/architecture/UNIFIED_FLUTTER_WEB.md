@@ -149,22 +149,14 @@ window.Auth0Bridge = {
 
 ### Nginx Configuration
 
+The production container uses the repo-root `nginx.conf`: one server on port 80, no `server_name` split, and no `proxy_pass`. Domain routing in front of that container is Coolify and Traefik, which is outside this file. Cache rules, the CanvasKit build flag, and the healthcheck are in [Web Deploy](../operations/cicd/WEB_DEPLOY.md).
+
+The sample below is an earlier routing sketch. It is not what the image ships.
+
 ```nginx
-# Main domain - Flutter marketing
+# Not the checked-in container config.
 server {
     server_name pistisai.app;
-    location / {
-        proxy_pass http://flutter-app;
-        # Flutter-specific headers
-    }
-}
-
-# App subdomain - Flutter application
-server {
-    server_name app.pistisai.app;
-    location = / {
-        return 302 /chat; # Redirect to chat interface
-    }
     location / {
         proxy_pass http://flutter-app;
     }
