@@ -36,6 +36,7 @@ jobs:
         with:
           flutter-version: 3.44.6
           channel: "stable"
+          cache: true
       - name: flutter analyze
         run: |
           set -euo pipefail

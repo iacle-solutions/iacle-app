@@ -32,4 +32,3 @@ data/
 build/
 android/
 .pub-cache/
-pubspec.lock

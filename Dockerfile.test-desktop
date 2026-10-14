@@ -82,11 +82,14 @@ RUN useradd -m -s /bin/bash testuser && \
 
 WORKDIR /app
 
-# Copy the entire source code for building inside container
-COPY --chown=testuser:testuser . /app
+# Resolve packages before the full source copy so this layer stays cached
+# when only application code changes. The lockfile is the one from the repo.
+COPY --chown=testuser:testuser pubspec.yaml pubspec.lock ./
+RUN chown testuser:testuser /app && su -s /bin/bash testuser -c "flutter pub get"
 
 # Build the Flutter Linux app inside the container (matches container's GLIBC)
-RUN chown -R testuser:testuser /app && su -s /bin/bash testuser -c "rm -rf build pubspec.lock .dart_tool && flutter pub get && flutter build linux --release" \
+COPY --chown=testuser:testuser . .
+RUN su -s /bin/bash testuser -c "flutter build linux --release" \
  && cp -r /app/build/linux/x64/release/bundle /app/bundle && chown -R testuser:testuser /app/bundle
 
 # Copy test scripts

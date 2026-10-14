@@ -2,6 +2,7 @@ version: '3.8'
 
 services:
   test-desktop:
+    image: pistisai-test-desktop:ci
     build:
       context: .
       dockerfile: Dockerfile.test-desktop

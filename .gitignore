@@ -35,6 +35,7 @@ flutter_build/
 # IDE
 .idea/
 .vscode/
+.vs/
 .cursor/mcp-runtime.json
 *.swp
 *.swo

@@ -3,7 +3,7 @@ name: "🌐 Web E2E (Splash + Smoke)"
 on:
   push:
     branches:
-      - "**"
+      - main
     paths:
       - "web/**"
       - "lib/**"
@@ -61,11 +61,38 @@ jobs:
           grep -q "setTimeout(removeSplashFromWeb" "$INDEX" || { echo "❌ 8s splash timeout missing"; exit 1; }
           echo "✅ Splash fix bindings present in build output"
 
+      - name: "📦 Cache root node_modules"
+        id: npm-cache
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('package.json') }}
+
       - name: "📦 npm install (Playwright + helpers)"
         run: npm install --no-audit --no-fund
 
+      - name: Read installed Playwright version
+        id: playwright-version
+        run: |
+          set -euo pipefail
+          version="$(node -p "require('./node_modules/@playwright/test/package.json').version")"
+          echo "version=${version}" >> "$GITHUB_OUTPUT"
+          echo "Playwright version: ${version}"
+
+      - name: "🎭 Cache Playwright browsers"
+        id: playwright-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-ms-playwright-${{ steps.playwright-version.outputs.version }}
+
       - name: "🎭 Install Playwright browsers"
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: npx playwright install --with-deps chromium
+
+      - name: "🎭 Install Playwright OS dependencies"
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: npx playwright install-deps chromium
 
       - name: "🎭 Run Playwright"
         env:

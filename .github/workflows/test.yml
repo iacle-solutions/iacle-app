@@ -25,10 +25,69 @@ permissions:
   checks: write
 
 jobs:
+  changes:
+    name: "🔎 Detect changes"
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    outputs:
+      flutter: ${{ steps.gate.outputs.flutter }}
+      backend: ${{ steps.gate.outputs.backend }}
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          # Push to main diffs github.event.before..HEAD. A depth-1 clone
+          # does not contain that parent, and GitHub will not fetch it by SHA.
+          fetch-depth: 0
+
+      - uses: dorny/paths-filter@v3
+        id: filter
+        continue-on-error: true
+        with:
+          # Empty token uses git diff (contents: read). Push compares
+          # github.event.before..HEAD. Pull requests compare the PR base SHA.
+          token: ""
+          filters: |
+            flutter:
+              - 'lib/**'
+              - 'test/**'
+              - 'pubspec.yaml'
+              - 'pubspec.lock'
+              - 'web/**'
+              - 'linux/**'
+              - 'windows/**'
+              - 'macos/**'
+              - 'assets/**'
+              - 'analysis_options.yaml'
+              - '.github/workflows/test.yml'
+            backend:
+              - 'services/api-backend/**'
+              - 'test/api-backend/**'
+              - 'scripts/tests/**'
+              - '.github/workflows/test.yml'
+
+      - name: "Fail open if the path filter failed"
+        id: gate
+        if: always() && (steps.filter.outcome == 'success' || steps.filter.outcome == 'failure')
+        env:
+          FILTER_OUTCOME: ${{ steps.filter.outcome }}
+          FLUTTER: ${{ steps.filter.outputs.flutter }}
+          BACKEND: ${{ steps.filter.outputs.backend }}
+        run: |
+          if [ "$FILTER_OUTCOME" = "success" ]; then
+            echo "flutter=$FLUTTER" >> "$GITHUB_OUTPUT"
+            echo "backend=$BACKEND" >> "$GITHUB_OUTPUT"
+          else
+            echo "flutter=true" >> "$GITHUB_OUTPUT"
+            echo "backend=true" >> "$GITHUB_OUTPUT"
+          fi
+
   flutter_analyze:
     name: "🔍 Flutter Analyze"
     runs-on: ubuntu-24.04
     timeout-minutes: 10
+    needs: changes
+    if: needs.changes.outputs.flutter == 'true'
 
     steps:
       - uses: actions/checkout@v7
@@ -49,6 +108,8 @@ jobs:
     name: "🧪 Flutter — smoke"
     runs-on: ubuntu-24.04
     timeout-minutes: 10
+    needs: changes
+    if: needs.changes.outputs.flutter == 'true'
 
     steps:
       - uses: actions/checkout@v7
@@ -69,7 +130,8 @@ jobs:
     name: "🌐 Build Web"
     runs-on: ubuntu-24.04
     timeout-minutes: 10
-    needs: [flutter_analyze, flutter_smoke_test]
+    needs: [changes, flutter_analyze, flutter_smoke_test]
+    if: needs.changes.outputs.flutter == 'true' && needs.flutter_analyze.result == 'success' && needs.flutter_smoke_test.result == 'success'
 
     steps:
       - uses: actions/checkout@v7
@@ -97,7 +159,8 @@ jobs:
     name: "🐧 Build Linux Desktop"
     runs-on: ubuntu-24.04
     timeout-minutes: 20
-    needs: [flutter_analyze, flutter_smoke_test]
+    needs: [changes, flutter_analyze, flutter_smoke_test]
+    if: needs.changes.outputs.flutter == 'true' && needs.flutter_analyze.result == 'success' && needs.flutter_smoke_test.result == 'success'
 
     steps:
       - uses: actions/checkout@v7
@@ -138,10 +201,12 @@ jobs:
           path: /tmp/pistisai-linux-x64.tar.gz
           retention-days: 7
 
-  backend_lint:
-    name: "Backend — lint"
+  backend:
+    name: "Backend — lint & security"
     runs-on: ubuntu-24.04
     timeout-minutes: 10
+    needs: changes
+    if: needs.changes.outputs.backend == 'true'
     defaults:
       run:
         working-directory: services/api-backend
@@ -152,30 +217,18 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: "26"
+
+      - name: "📦 Cache api-backend node_modules"
+        uses: actions/cache@v4
+        with:
+          path: services/api-backend/node_modules
+          key: ${{ runner.os }}-api-backend-node-modules-${{ hashFiles('services/api-backend/package.json') }}
 
       - name: "📦 npm install"
         run: npm install
 
       - name: "🔍 npm lint"
         run: npm run lint
-
-  backend_security_test:
-    name: "Backend — security tests"
-    runs-on: ubuntu-24.04
-    timeout-minutes: 10
-    defaults:
-      run:
-        working-directory: services/api-backend
-
-    steps:
-      - uses: actions/checkout@v7
-
-      - uses: actions/setup-node@v7
-        with:
-          node-version: "26"
-
-      - name: "📦 npm install"
-        run: npm install
 
       - name: "🔒 Forbid hardcoded auth bypass literal (#241)"
         working-directory: .

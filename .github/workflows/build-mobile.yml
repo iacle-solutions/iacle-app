@@ -28,6 +28,8 @@ jobs:
     if: >-
       github.event_name != 'workflow_run' ||
       github.event.workflow_run.conclusion == 'success'
+    outputs:
+      version: ${{ steps.read.outputs.version }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -36,23 +38,12 @@ jobs:
         with:
           flutter-version: 3.44.6
           channel: "stable"
+          cache: true
       - name: flutter analyze
         run: |
           flutter pub get
           flutter analyze lib/
           echo "✅ Analysis passed"
-
-  get_version:
-    name: Read Version
-    needs: analyze
-    runs-on: ubuntu-24.04
-    timeout-minutes: 5
-    outputs:
-      version: ${{ steps.read.outputs.version }}
-    steps:
-      - uses: actions/checkout@v7
-        with:
-          ref: main
       - name: Read version
         id: read
         run: |
@@ -62,7 +53,7 @@ jobs:
 
   build_android:
     name: Android Build
-    needs: get_version
+    needs: analyze
     if: contains(inputs.platforms || 'android', 'android')
     runs-on: ubuntu-24.04
     timeout-minutes: 30
@@ -73,7 +64,7 @@ jobs:
 
       - name: Set Version
         run: |
-          VERSION=${{ needs.get_version.outputs.version }}
+          VERSION=${{ needs.analyze.outputs.version }}
           sed -i "s/^version: .*/version: $VERSION+${{ github.run_number }}/" pubspec.yaml
           jq ".version = \"$VERSION\" | .build_number = \"${{ github.run_number }}\"" assets/version.json > assets/version.json.tmp && mv assets/version.json.tmp assets/version.json
 
@@ -146,7 +137,7 @@ jobs:
 
   build_ios:
     name: iOS Build
-    needs: get_version
+    needs: analyze
     if: contains(inputs.platforms || 'android', 'ios')
     runs-on: macos-15
     timeout-minutes: 30
@@ -165,7 +156,7 @@ jobs:
 
       - name: Set Version
         run: |
-          VERSION=${{ needs.get_version.outputs.version }}
+          VERSION=${{ needs.analyze.outputs.version }}
           sed -i "" "s/^version: .*/version: $VERSION+${{ github.run_number }}/" pubspec.yaml
           jq ".version = \"$VERSION\" | .build_number = \"${{ github.run_number }}\"" assets/version.json > assets/version.json.tmp && mv assets/version.json.tmp assets/version.json
 
@@ -188,9 +179,9 @@ jobs:
           retention-days: 30
 
   create_release:
-    needs: [get_version, build_android, build_ios]
+    needs: [analyze, build_android, build_ios]
     if: >-
-      needs.get_version.result == 'success' &&
+      needs.analyze.result == 'success' &&
       (needs.build_android.result == 'success' || needs.build_android.result == 'skipped') &&
       (needs.build_ios.result == 'success' || needs.build_ios.result == 'skipped')
     runs-on: ubuntu-24.04
@@ -219,13 +210,13 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           artifacts: "release-assets/*"
-          tag: "mobile-v${{ needs.get_version.outputs.version }}"
-          name: "PistisAI Mobile v${{ needs.get_version.outputs.version }}"
+          tag: "mobile-v${{ needs.analyze.outputs.version }}"
+          name: "PistisAI Mobile v${{ needs.analyze.outputs.version }}"
           artifactErrorsFailBuild: true
           allowUpdates: true
           makeLatest: false
           body: |
-            ## PistisAI Mobile v${{ needs.get_version.outputs.version }}
+            ## PistisAI Mobile v${{ needs.analyze.outputs.version }}
 
             ### Android
             - APK(s) attached

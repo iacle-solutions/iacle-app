@@ -38,7 +38,8 @@ concurrency:
 permissions:
   contents: read
   checks: write
-  actions: read
+  # write is required to export the Buildx cache with type=gha
+  actions: write
 
 jobs:
   build_and_test:
@@ -60,35 +61,28 @@ jobs:
       - name: "📦 flutter pub get"
         run: flutter pub get
 
-      - name: "🔍 flutter analyze"
-        run: flutter analyze lib/
+      - name: "🐳 Check Docker Compose"
+        run: docker compose version
 
-      - name: "🐧 Install Linux build dependencies"
-        run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq \
-            clang cmake ninja-build pkg-config \
-            libgtk-3-dev liblzma-dev libstdc++-12-dev \
-            libsecret-1-dev libjsoncpp-dev \
-            libnotify-dev libcurl4-openssl-dev \
-            libayatana-appindicator3-dev \
-            libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev \
-            gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-libav
+      - name: "🐳 Set up Docker Buildx"
+        uses: docker/setup-buildx-action@v3
 
-      - name: "🐧 flutter build linux --release"
-        run: flutter build linux --release
-
-      - name: "🐳 Ensure Docker Compose"
-        run: |
-          if ! docker compose version >/dev/null 2>&1; then
-            sudo apt-get update -qq
-            sudo apt-get install -y -qq docker-compose-v2 || sudo apt-get install -y -qq docker-compose-plugin
-          fi
-          docker compose version
+      - name: "🐳 Build test desktop image"
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Dockerfile.test-desktop
+          load: true
+          push: false
+          tags: pistisai-test-desktop:ci
+          # The docker exporter used by load:true cannot attach provenance.
+          provenance: false
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       - name: "🚀 Start test desktop stack"
         run: |
-          docker compose -f docker-compose.test.yml up -d --build test-desktop
+          docker compose -f docker-compose.test.yml up -d --no-build test-desktop
 
       - name: "⏳ Wait for app health"
         run: |

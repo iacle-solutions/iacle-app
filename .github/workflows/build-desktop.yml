@@ -35,6 +35,9 @@ jobs:
     if: >-
       github.event_name != 'workflow_run' ||
       github.event.workflow_run.conclusion == 'success'
+    outputs:
+      version: ${{ steps.read.outputs.version }}
+      platforms: ${{ steps.platforms.outputs.platforms }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -43,24 +46,12 @@ jobs:
         with:
           flutter-version: 3.44.6
           channel: "stable"
+          cache: true
       - name: flutter analyze
         run: |
           flutter pub get
           flutter analyze lib/
           echo "✅ Analysis passed"
-
-  get_version:
-    name: Read Version
-    needs: analyze
-    runs-on: ubuntu-24.04
-    timeout-minutes: 5
-    outputs:
-      version: ${{ steps.read.outputs.version }}
-      platforms: ${{ steps.platforms.outputs.platforms }}
-    steps:
-      - uses: actions/checkout@v7
-        with:
-          ref: main
       - name: Resolve platforms
         id: platforms
         run: |
@@ -76,8 +67,8 @@ jobs:
 
   build_linux:
     name: Linux Build
-    needs: get_version
-    if: contains(needs.get_version.outputs.platforms, 'linux')
+    needs: analyze
+    if: contains(needs.analyze.outputs.platforms, 'linux')
     runs-on: ubuntu-24.04
     timeout-minutes: 45
     steps:
@@ -88,7 +79,7 @@ jobs:
       - name: Set Version
         run: |
           set -euo pipefail
-          VERSION=${{ needs.get_version.outputs.version }}
+          VERSION=${{ needs.analyze.outputs.version }}
           echo "VERSION=$VERSION" >> $GITHUB_ENV
           sed -i "s/^version: .*/version: $VERSION+${{ github.run_number }}/" pubspec.yaml
           jq ".version = \"$VERSION\" | .build_number = \"${{ github.run_number }}\"" assets/version.json > assets/version.json.tmp && mv assets/version.json.tmp assets/version.json
@@ -151,8 +142,8 @@ jobs:
 
   build_windows:
     name: Windows Build
-    needs: get_version
-    if: contains(needs.get_version.outputs.platforms, 'windows')
+    needs: analyze
+    if: contains(needs.analyze.outputs.platforms, 'windows')
     runs-on: windows-2022
     defaults:
       run:
@@ -165,7 +156,7 @@ jobs:
       - name: Set Version
         run: |
           set -euo pipefail
-          VERSION=${{ needs.get_version.outputs.version }}
+          VERSION=${{ needs.analyze.outputs.version }}
           echo "VERSION=$VERSION" >> $GITHUB_ENV
           sed -i "s/^version: .*/version: $VERSION+${{ github.run_number }}/" pubspec.yaml
           jq ".version = \"$VERSION\" | .build_number = \"${{ github.run_number }}\"" assets/version.json > assets/version.json.tmp && mv assets/version.json.tmp assets/version.json
@@ -231,8 +222,8 @@ jobs:
 
   build_macos:
     name: macOS Build
-    needs: get_version
-    if: contains(needs.get_version.outputs.platforms, 'macos')
+    needs: analyze
+    if: contains(needs.analyze.outputs.platforms, 'macos')
     runs-on: macos-15
     timeout-minutes: 30
     steps:
@@ -244,7 +235,7 @@ jobs:
 
       - name: Set Version
         run: |
-          VERSION=${{ needs.get_version.outputs.version }}
+          VERSION=${{ needs.analyze.outputs.version }}
           echo "VERSION=$VERSION" >> $GITHUB_ENV
           sed -i "" "s/^version: .*/version: $VERSION+${{ github.run_number }}/" pubspec.yaml
           jq ".version = \"$VERSION\" | .build_number = \"${{ github.run_number }}\"" assets/version.json > assets/version.json.tmp && mv assets/version.json.tmp assets/version.json
@@ -278,7 +269,7 @@ jobs:
           retention-days: 7
 
   create_release:
-    needs: [get_version, build_linux, build_windows, build_macos]
+    needs: [analyze, build_linux, build_windows, build_macos]
     if: >-
       always() &&
       needs.build_linux.result == 'success' &&
@@ -297,7 +288,7 @@ jobs:
 
       - name: Compute version
         run: |
-          echo "VERSION=${{ needs.get_version.outputs.version }}" >> $GITHUB_ENV
+          echo "VERSION=${{ needs.analyze.outputs.version }}" >> $GITHUB_ENV
 
       - name: Organize artifacts for release
         run: |
