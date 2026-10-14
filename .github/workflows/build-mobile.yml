@@ -202,12 +202,21 @@ jobs:
 
       - name: Organize artifacts
         run: |
+          set -euo pipefail
+          shopt -s nullglob globstar
           mkdir -p release-assets
-          if [ -d "android-apks" ]; then
-            cp android-apks/*.apk release-assets/ 2>/dev/null || true
+          # download-artifact@v5 may place a single artifact at the workspace
+          # root, or under a directory named after the artifact.
+          apks=(android-apks/**/*.apk ./*.apk)
+          if [ "${#apks[@]}" -eq 0 ]; then
+            echo "No APK files after artifact download" >&2
+            find . -maxdepth 2 -print >&2
+            exit 1
           fi
-          if [ -d "ios-build" ]; then
-            cd ios-build && zip -r ../release-assets/Pistisai-iOS.app.zip Runner.app && cd ..
+          printf 'Copying APK: %s\n' "${apks[@]}"
+          cp -f "${apks[@]}" release-assets/
+          if [ -d "ios-build/Runner.app" ]; then
+            (cd ios-build && zip -r ../release-assets/Pistisai-iOS.app.zip Runner.app)
           fi
           ls -lh release-assets/
 
