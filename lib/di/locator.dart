@@ -44,6 +44,7 @@ import 'package:pistisai/services/router_server.dart';
 import 'package:pistisai/services/providers/zhipu_adapter.dart';
 import 'package:pistisai/services/providers/google_adapter.dart';
 import 'package:pistisai/services/providers/moonshot_adapter.dart';
+import 'package:pistisai/services/hermes/hermes_local_agent_api.dart';
 import 'package:pistisai/services/hermes/hermes_streaming_service.dart';
 import 'package:pistisai/models/provider_configuration.dart';
 import 'package:pistisai/services/agent_status_service.dart';
@@ -465,6 +466,7 @@ Future<void> setupCoreServices() async {
       setupStatusService,
       providerConfigurationManager,
       settings: settingsPreferenceService,
+      localAgentApi: HermesLocalAgentApi(),
     );
     serviceLocator.registerSingleton<SetupWizardService>(setupWizardService);
 

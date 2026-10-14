@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:logging/logging.dart';
 import 'package:pistisai/config/app_config.dart';
+import 'package:pistisai/services/hermes/hermes_endpoint_resolver.dart';
 import 'package:pistisai/services/onboarding/setup_wizard_service.dart';
 
 final Logger _log = Logger('HermesUrlStep');
@@ -25,6 +26,7 @@ class _HermesUrlStepState extends State<HermesUrlStep> {
   bool _autoDiscovered = false;
   bool _generatedKey = false;
   bool _isDiscovering = true;
+  bool _isResolvingEndpoint = false;
   bool _initialized = false;
 
   @override
@@ -32,6 +34,23 @@ class _HermesUrlStepState extends State<HermesUrlStep> {
     _urlController.dispose();
     _apiKeyController.dispose();
     super.dispose();
+  }
+
+  String _localHermesSubtitle(SetupWizardService wizard, bool isRemote) {
+    if (isRemote) {
+      return 'Confirm the Tailscale URL, then paste the API key from your server.';
+    }
+    if (_isResolvingEndpoint) {
+      return 'Looking for Hermes on this device...';
+    }
+    if (wizard.state.detectedHermesKind == HermesEndpointKind.agentApi) {
+      return 'Hermes is running on this device. We auto-detected the connection details below.';
+    }
+    final detection = wizard.state.hermesDetectionMessage;
+    if (detection != null && detection.isNotEmpty) {
+      return detection;
+    }
+    return 'Enter the Hermes Agent URL for this device. The default port is ${AppConfig.defaultHermesPort}.';
   }
 
   void _syncFromWizard(SetupWizardService wizard) {
@@ -76,15 +95,22 @@ class _HermesUrlStepState extends State<HermesUrlStep> {
 
         if (!_initialized) {
           _initialized = true;
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            _syncFromWizard(wizard);
-            if (wizard.state.hermesUrl != null &&
-                wizard.state.hermesUrl!.isNotEmpty) {
-              wizard.setHermesUrl(wizard.state.hermesUrl!);
-            } else if (!isRemote) {
-              wizard.setHermesUrl(_urlController.text);
+          _isResolvingEndpoint = !isRemote;
+          WidgetsBinding.instance.addPostFrameCallback((_) async {
+            if (!isRemote) {
+              await wizard.resolveLocalHermes();
+            } else {
+              _syncFromWizard(wizard);
+              if (wizard.state.hermesUrl != null &&
+                  wizard.state.hermesUrl!.isNotEmpty) {
+                wizard.setHermesUrl(wizard.state.hermesUrl!);
+              }
             }
-            _autoDiscoverApiKey(wizard);
+            if (!mounted) {
+              return;
+            }
+            setState(() => _isResolvingEndpoint = false);
+            await _autoDiscoverApiKey(wizard);
           });
         } else {
           _syncFromWizard(wizard);
@@ -109,11 +135,12 @@ class _HermesUrlStepState extends State<HermesUrlStep> {
               ),
               const SizedBox(height: 8),
               Text(
-                isRemote
-                    ? 'Confirm the Tailscale URL, then paste the API key from your server.'
-                    : 'Hermes is running on this device. We auto-detected the connection details below.',
+                _localHermesSubtitle(wizard, isRemote),
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: AppTheme.colorsOf(context).textColorLight,
+                      color: wizard.state.detectedHermesKind ==
+                              HermesEndpointKind.desktopDashboard
+                          ? Theme.of(context).colorScheme.error
+                          : AppTheme.colorsOf(context).textColorLight,
                     ),
               ),
               const SizedBox(height: 24),

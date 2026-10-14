@@ -6,17 +6,14 @@ import 'package:pistisai/services/onboarding/setup_wizard_service.dart';
 import 'package:pistisai/utils/logger.dart';
 import 'package:pistisai/screens/onboarding/steps/welcome_step.dart';
 import 'package:pistisai/screens/onboarding/steps/connection_method_step.dart';
-import 'package:pistisai/screens/onboarding/steps/local_detection_step.dart';
-import 'package:pistisai/screens/onboarding/steps/gateway_password_step.dart';
 import 'package:pistisai/screens/onboarding/steps/tailscale_discovery_step.dart';
-import 'package:pistisai/screens/onboarding/steps/remote_connection_step.dart';
 import 'package:pistisai/screens/onboarding/steps/hermes_location_step.dart';
 import 'package:pistisai/screens/onboarding/steps/hermes_url_step.dart';
 import 'package:pistisai/screens/onboarding/steps/connection_test_step.dart';
 import 'package:pistisai/screens/onboarding/steps/completion_step.dart';
 
 /// Setup Wizard Screen
-/// Guides new users through OpenClaw Gateway configuration
+/// Guides new users through Hermes Agent setup
 class SetupWizardScreen extends StatefulWidget {
   const SetupWizardScreen({super.key});
 
@@ -97,7 +94,7 @@ class _SetupWizardScreenState extends State<SetupWizardScreen> {
                   ),
                 ),
                 if (wizard.state.errorMessage != null &&
-                    method == ConnectionMethod.hermes)
+                    !wizard.isHermesConnectionTestStep)
                   Padding(
                     padding: const EdgeInsets.fromLTRB(24, 0, 24, 8),
                     child: Text(
@@ -153,47 +150,20 @@ class _SetupWizardScreenState extends State<SetupWizardScreen> {
     ConnectionMethod? method,
     HermesLocation? hermesLocation,
   ) {
-    if (method == ConnectionMethod.hermes) {
-      final steps = <Widget>[
-        const WelcomeStep(),
-        const ConnectionMethodStep(),
-        const HermesLocationStep(),
-      ];
-      if (hermesLocation == HermesLocation.tailscale) {
-        steps.add(const TailscaleDiscoveryStep());
-      }
-      steps.addAll(const [
-        HermesUrlStep(),
-        ConnectionTestStep(),
-        CompletionStep(),
-      ]);
-      return steps;
-    }
-
-    // OpenClaw flow
     final steps = <Widget>[
-      const WelcomeStep(), // 0 - Always shown
-      const ConnectionMethodStep(), // 1 - Always shown
-      const LocalDetectionStep(), // 2 - Always shown
-      const GatewayPasswordStep(), // 3 - Always shown
+      const WelcomeStep(),
+      const ConnectionMethodStep(),
+      const HermesLocationStep(),
     ];
-
-    // Step 4: TailscaleDiscoveryStep - only for tailscale method
-    if (method == ConnectionMethod.tailscale) {
+    if (method == ConnectionMethod.hermes &&
+        hermesLocation == HermesLocation.tailscale) {
       steps.add(const TailscaleDiscoveryStep());
     }
-
-    // Step 5: RemoteConnectionStep - only for custom method
-    if (method == ConnectionMethod.custom) {
-      steps.add(const RemoteConnectionStep());
-    }
-
-    // Remaining steps - always shown
-    steps.addAll([
-      const ConnectionTestStep(),
-      const CompletionStep(),
+    steps.addAll(const [
+      HermesUrlStep(),
+      ConnectionTestStep(),
+      CompletionStep(),
     ]);
-
     return steps;
   }
 

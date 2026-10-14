@@ -114,7 +114,7 @@ class _FeatureCards extends StatelessWidget {
           compact: compact,
           icon: Icons.hub_outlined,
           title: 'Agent Runtimes',
-          description: 'Hermes, OpenClaw, and compatible gateways',
+          description: 'Hermes Agent on this device or over Tailscale',
         ),
         _FeatureCard(
           compact: compact,

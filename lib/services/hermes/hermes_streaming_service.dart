@@ -6,8 +6,10 @@ import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 import '../../models/agent_event.dart';
+import '../../models/message.dart';
 import '../../models/streaming_message.dart';
 import '../streaming_service.dart';
+import 'hermes_session_transcript.dart';
 import '../../utils/logger.dart';
 
 /// Streaming service implementation for Hermes Agent API server.
@@ -800,6 +802,36 @@ class HermesStreamingService extends StreamingService {
           }
         }
       }
+    }
+  }
+
+  /// Load the shared harness transcript for [sessionId].
+  ///
+  /// Every Pistisai device uses the same session id (`main-channel`), so this
+  /// is the one conversation. Returns an empty list when the session does not
+  /// exist yet, and null when the harness cannot be read.
+  Future<List<Message>?> fetchSessionMessages(String sessionId) async {
+    try {
+      final client = _client ?? http.Client();
+      final response = await client
+          .get(
+            Uri.parse(
+              '$_baseUrl/api/sessions/${Uri.encodeComponent(sessionId)}/messages'
+              '?order=oldest&limit=500',
+            ),
+            headers: {
+              ..._headers(),
+              'Accept': 'application/json',
+            },
+          )
+          .timeout(const Duration(seconds: 8));
+
+      if (response.statusCode == 404) return const [];
+      if (response.statusCode != 200) return null;
+      return messagesFromHermesSessionBody(response.body);
+    } catch (e) {
+      appLogger.error('[Hermes] Failed to load shared session', error: e);
+      return null;
     }
   }
 

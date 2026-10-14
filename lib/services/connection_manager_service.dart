@@ -630,13 +630,11 @@ class ConnectionManagerService extends ChangeNotifier {
   }
 
   HermesRuntimeClient _createHermesRuntimeClient() {
-    // Ensure the URL has a port — SharedPreferences can lose the port
-    // due to in-memory caching overwriting the file on startup.
-    var url = _configuredHermesUrl ?? 'http://127.0.0.1:8642';
-    if (!url.contains(':8642') && !url.contains(':1234')) {
-      // URL is missing the port, use the default
-      url = AppConfig.defaultHermesUrl;
-    }
+    // Add 8642 only when a loopback URL was saved without a port.
+    // An explicit port, including a discovered hermes serve port, stays.
+    final url = AppConfig.normalizeHermesUrl(
+      _configuredHermesUrl ?? AppConfig.defaultHermesUrl,
+    );
     return HermesRuntimeClient(
       baseUrl: url,
       apiKey: _configuredHermesApiKey,

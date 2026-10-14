@@ -1,4 +1,8 @@
 import 'package:pistisai/models/provider_configuration.dart';
+import 'dart:io';
+
+import 'package:pistisai/services/hermes/hermes_endpoint_resolver.dart';
+import 'package:pistisai/services/hermes/hermes_local_agent_api.dart';
 import 'package:pistisai/services/auth_service.dart';
 import 'package:pistisai/services/onboarding/setup_wizard_service.dart';
 import 'package:pistisai/services/provider_configuration_manager.dart';
@@ -138,7 +142,7 @@ void main() {
       expect(service.state.isLoading, isFalse);
       expect(
         service.state.errorMessage,
-        'Ollama, LM Studio, and raw model providers are support model providers. Select Hermes, OpenClaw, or a compatible agent runtime to complete setup.',
+        'Ollama, LM Studio, and raw model providers are support model providers. Select Hermes to complete setup.',
       );
       expect(configManager.saveProviderCallCount, 0);
     });
@@ -205,6 +209,126 @@ void main() {
 
       expect(success, isTrue);
       expect(configManager.lastSavedUrl, 'http://100.64.0.5:8642');
+    });
+
+    test('nextStep stays on the Hermes connection test when the probe failed',
+        () async {
+      service = SetupWizardService(
+        discovery,
+        setupStatus,
+        configManager,
+        hermesResolver: HermesEndpointResolver(
+          probe: (Uri uri) async => null,
+          listServePorts: () async => <int>[],
+        ),
+      );
+      service.selectConnectionMethod(ConnectionMethod.hermes);
+      service.selectHermesLocation(HermesLocation.local);
+      service.setHermesUrl('http://127.0.0.1:8642');
+      service.goToStep(4);
+
+      await service.testConnection('http://127.0.0.1:8642');
+      service.nextStep();
+
+      expect(service.state.currentStep, 4);
+      expect(service.state.errorMessage, hermesUnreachableMessage);
+    });
+
+    test('desktop dashboard URL is kept and blocks Next', () async {
+      service = SetupWizardService(
+        discovery,
+        setupStatus,
+        configManager,
+        hermesResolver: HermesEndpointResolver(
+          probe: (Uri uri) async {
+            if (uri.port == 51910 && uri.path == '/api/health') {
+              return 200;
+            }
+            return null;
+          },
+          listServePorts: () async => <int>[51910],
+        ),
+      );
+      service.selectConnectionMethod(ConnectionMethod.hermes);
+      service.selectHermesLocation(HermesLocation.local);
+
+      await service.resolveLocalHermes();
+
+      expect(service.state.hermesUrl, 'http://127.0.0.1:51910');
+      expect(service.state.hermesDetectionMessage, contains('51910'));
+      expect(service.state.detectedHermesKind,
+          HermesEndpointKind.desktopDashboard);
+
+      service.goToStep(4);
+      await service.testConnection(service.state.hermesUrl!);
+      service.nextStep();
+
+      expect(service.state.currentStep, 4);
+      expect(service.state.errorMessage, contains('51910'));
+      expect(service.state.errorMessage, contains('agent API'));
+    });
+
+    test('local agent API startup replaces the desktop URL and allows Next',
+        () async {
+      final home = Directory.systemTemp.createTempSync('hermes-wizard-test');
+      addTearDown(() => home.deleteSync(recursive: true));
+      var started = false;
+      final resolver = HermesEndpointResolver(
+        probe: (Uri uri) async {
+          if (started && uri.port == 8642 && uri.path == '/health') {
+            return 200;
+          }
+          if (uri.port == 51910 && uri.path == '/api/health') {
+            return 200;
+          }
+          return null;
+        },
+        listServePorts: () async => <int>[51910],
+      );
+      service = SetupWizardService(
+        discovery,
+        setupStatus,
+        configManager,
+        hermesResolver: resolver,
+        localAgentApi: HermesLocalAgentApi(
+          readHome: () => home.path,
+          restartGateway: (String path) async {
+            started = true;
+            return true;
+          },
+          generateKey: () => 'psk_0123456789abcdef',
+        ),
+      );
+      service.selectConnectionMethod(ConnectionMethod.hermes);
+      service.selectHermesLocation(HermesLocation.local);
+      service.setHermesUrl('http://127.0.0.1:51910');
+      service.goToStep(4);
+
+      await service.testConnection('http://127.0.0.1:51910');
+      service.nextStep();
+
+      expect(service.state.hermesUrl, 'http://127.0.0.1:8642');
+      expect(service.state.hermesApiKey, 'psk_0123456789abcdef');
+      expect(service.state.currentStep, 5);
+      expect(service.state.errorMessage, isNull);
+    });
+
+    test('nextStep blocks the connection step until Hermes is chosen', () {
+      service.goToStep(1);
+
+      service.nextStep();
+
+      expect(service.state.currentStep, 1);
+      expect(
+        service.state.errorMessage,
+        'Choose Hermes Agent before continuing.',
+      );
+
+      service.selectConnectionMethod(ConnectionMethod.hermes);
+      service.nextStep();
+
+      expect(service.state.currentStep, 2);
+      expect(service.state.errorMessage, isNull);
     });
 
     test('nextStep blocks Hermes location step until a location is chosen',

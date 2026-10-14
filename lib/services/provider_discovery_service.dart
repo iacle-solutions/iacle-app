@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';
 import 'package:pistisai/models/provider_configuration.dart';
+import 'package:pistisai/services/hermes/hermes_endpoint_resolver.dart';
 import 'package:pistisai/services/settings_preference_service.dart';
 
 /// Provider Discovery Service
@@ -12,6 +13,11 @@ import 'package:pistisai/services/settings_preference_service.dart';
 
 class ProviderDiscoveryService {
   static const Duration _scanTimeout = Duration(seconds: 10);
+
+  final HermesEndpointResolver _hermesResolver;
+
+  ProviderDiscoveryService({HermesEndpointResolver? hermesResolver})
+      : _hermesResolver = hermesResolver ?? HermesEndpointResolver();
 
   /// Scan for all known endpoint types on the network.
   ///
@@ -141,53 +147,63 @@ class ProviderDiscoveryService {
     return null;
   }
 
-  /// Scan for Hermes Agent on localhost:8642 (or configurable URL)
+  /// Scan for Hermes Agent on the saved URL, port 8642, or a live serve port.
+  ///
+  /// A desktop `/api/health` server is not an agent runtime and is skipped.
   Future<ProviderInfo?> _scanHermes() async {
     final settings = SettingsPreferenceService();
     final configuredUrl = await settings.getHermesUrl();
     final apiKey = await settings.getHermesApiKey();
-    final baseUrl = (configuredUrl?.isNotEmpty ?? false)
-        ? AppConfig.normalizeHermesUrl(configuredUrl!)
-        : AppConfig.defaultHermesUrl;
-    final healthUrl = Uri.parse('$baseUrl/health');
+    final resolution = await _hermesResolver.resolve(
+      savedUrl: (configuredUrl?.isNotEmpty ?? false) ? configuredUrl : null,
+    );
+    if (!resolution.isAgentApi) {
+      debugPrint(
+        '[ProviderDiscovery] Hermes Agent not available: ${resolution.message}',
+      );
+      return null;
+    }
 
+    final baseUrl = resolution.url;
     try {
-      // Health endpoint doesn't require auth
-      final response = await http.get(healthUrl).timeout(_scanTimeout);
-
-      if (response.statusCode == 200) {
-        // Try to fetch models with the API key (from SharedPreferences or
-        // auto-discovered from Hermes .env file).  If the key is missing
-        // or invalid, we still report Hermes as discovered — the model
-        // list just stays empty and gets populated later.
-        List<String> models = [];
-        if (apiKey != null && apiKey.isNotEmpty) {
-          models = await _fetchOpenAICompatibleModels(baseUrl, apiKey: apiKey);
-        }
-        if (models.isEmpty) {
-          // Fallback: try reading the key directly from the .env file
-          final envKey = await _discoverHermesApiKeyFromEnv();
-          if (envKey != null && envKey.isNotEmpty) {
-            models = await _fetchOpenAICompatibleModels(baseUrl, apiKey: envKey);
-          }
-        }
-        debugPrint('[ProviderDiscovery] Found Hermes Agent at $baseUrl');
-        return ProviderInfo(
-          id: 'hermes_discovered',
-          type: ProviderType.hermes,
-          name: 'Hermes Agent',
-          url: baseUrl,
-          isLocal: true,
-          isAvailable: true,
-          version: _extractVersion(response.body),
-          availableModels: models,
-          role: ProviderRole.agentRuntime,
-        );
+      List<String> models = [];
+      if (apiKey != null && apiKey.isNotEmpty) {
+        models = await _fetchOpenAICompatibleModels(baseUrl, apiKey: apiKey);
       }
+      if (models.isEmpty) {
+        final envKey = await _discoverHermesApiKeyFromEnv();
+        if (envKey != null && envKey.isNotEmpty) {
+          models = await _fetchOpenAICompatibleModels(baseUrl, apiKey: envKey);
+        }
+      }
+      final healthUrl = Uri.parse('$baseUrl/health');
+      final response = await http.get(healthUrl).timeout(_scanTimeout);
+      debugPrint('[ProviderDiscovery] Found Hermes Agent at $baseUrl');
+      return ProviderInfo(
+        id: 'hermes_discovered',
+        type: ProviderType.hermes,
+        name: 'Hermes Agent',
+        url: baseUrl,
+        isLocal: true,
+        isAvailable: true,
+        version: response.statusCode == 200
+            ? _extractVersion(response.body)
+            : null,
+        availableModels: models,
+        role: ProviderRole.agentRuntime,
+      );
     } catch (e) {
       debugPrint('[ProviderDiscovery] Hermes Agent not available: $e');
+      return ProviderInfo(
+        id: 'hermes_discovered',
+        type: ProviderType.hermes,
+        name: 'Hermes Agent',
+        url: baseUrl,
+        isLocal: true,
+        isAvailable: true,
+        role: ProviderRole.agentRuntime,
+      );
     }
-    return null;
   }
 
   /// Auto-discover the Hermes API_SERVER_KEY from the Hermes .env file.
@@ -256,57 +272,25 @@ class ProviderDiscoveryService {
     return null;
   }
 
-  /// Test connectivity to a specific URL
+  /// Test connectivity to a specific URL.
+  ///
+  /// A 200 from `GET /` is not a connection. Hermes desktop serves an HTML
+  /// page at `/` while the agent API lives at `/health` or `/v1/models`.
   Future<ConnectionTestResult> testConnection(
     String url, {
     String? apiKey,
   }) async {
-    final trimmed = url.trim().replaceAll(RegExp(r'/+$'), '');
-    final headers = (apiKey != null && apiKey.isNotEmpty)
-        ? {'Authorization': 'Bearer $apiKey'}
-        : null;
-
-    final candidates = <Uri>[
-      Uri.parse('$trimmed/health'),
-      Uri.parse(trimmed),
-    ];
-
-    Object? lastError;
-    int? lastStatusCode;
-
-    for (final uri in candidates) {
-      try {
-        final response =
-            await http.get(uri, headers: headers).timeout(const Duration(seconds: 5));
-
-        if (response.statusCode == 200) {
-          return ConnectionTestResult(
-            isConnected: true,
-            url: trimmed,
-            statusCode: response.statusCode,
-            message: 'Connected successfully',
-          );
-        }
-
-        lastStatusCode = response.statusCode;
-      } catch (e) {
-        lastError = e;
-      }
-    }
-
-    if (lastStatusCode != null) {
-      return ConnectionTestResult(
-        isConnected: false,
-        url: trimmed,
-        statusCode: lastStatusCode,
-        message: 'Server returned $lastStatusCode',
+    if (apiKey != null && apiKey.isNotEmpty) {
+      debugPrint(
+        '[ProviderDiscovery] Classifying $url with a Hermes API key present',
       );
     }
-
+    final resolution = await _hermesResolver.classify(url);
     return ConnectionTestResult(
-      isConnected: false,
-      url: trimmed,
-      message: 'Connection failed: ${lastError ?? 'unknown error'}',
+      isConnected: resolution.isAgentApi,
+      url: resolution.url,
+      message: resolution.message,
+      endpointKind: resolution.kind,
     );
   }
 
@@ -479,12 +463,14 @@ class ConnectionTestResult {
   final String url;
   final int? statusCode;
   final String message;
+  final HermesEndpointKind endpointKind;
 
   ConnectionTestResult({
     required this.isConnected,
     required this.url,
     this.statusCode,
     required this.message,
+    this.endpointKind = HermesEndpointKind.unreachable,
   });
 }
 

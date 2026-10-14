@@ -24,6 +24,10 @@ void main() {
         'http://127.0.0.1:8642',
       );
       expect(
+        AppConfig.normalizeHermesUrl('http://127.0.0.1:51910'),
+        'http://127.0.0.1:51910',
+      );
+      expect(
         AppConfig.normalizeHermesUrl('https://app.pistisai.app/hermes'),
         'https://app.pistisai.app/hermes',
       );

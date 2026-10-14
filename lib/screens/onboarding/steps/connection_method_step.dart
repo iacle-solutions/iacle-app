@@ -53,20 +53,6 @@ class ConnectionMethodStep extends StatelessWidget {
                     onTap: () =>
                         wizard.selectConnectionMethod(ConnectionMethod.hermes),
                   ),
-                  const SizedBox(height: 16),
-                  ConnectionMethodCard(
-                    icon: Icons.hub,
-                    title: 'OpenClaw or custom runtime',
-                    description:
-                        'OpenClaw Gateway, Tailscale device, or compatible private URL',
-                    selected: wizard.state.selectedMethod ==
-                            ConnectionMethod.local ||
-                        wizard.state.selectedMethod ==
-                            ConnectionMethod.tailscale ||
-                        wizard.state.selectedMethod == ConnectionMethod.custom,
-                    onTap: () =>
-                        wizard.selectConnectionMethod(ConnectionMethod.local),
-                  ),
                 ],
               ),
 

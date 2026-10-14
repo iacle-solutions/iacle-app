@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 import 'package:flutter/foundation.dart';
@@ -7,6 +6,8 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:pistisai/config/app_config.dart';
 import 'package:pistisai/utils/logger.dart';
+import 'package:pistisai/services/hermes/hermes_endpoint_resolver.dart';
+import 'package:pistisai/services/hermes/hermes_local_agent_api.dart';
 import 'package:pistisai/services/provider_discovery_service.dart';
 import 'package:pistisai/services/setup_status_service.dart';
 import 'package:pistisai/services/provider_configuration_manager.dart';
@@ -41,6 +42,8 @@ class WizardState {
   final String? gatewayPassword; // OpenClaw Gateway password/token
   final String? hermesUrl; // Hermes Agent URL
   final String? hermesApiKey; // Hermes API key (auto-discovered)
+  final HermesEndpointKind? detectedHermesKind;
+  final String? hermesDetectionMessage;
   final bool isLoading;
   final String? errorMessage;
 
@@ -55,6 +58,8 @@ class WizardState {
     this.gatewayPassword,
     this.hermesUrl,
     this.hermesApiKey,
+    this.detectedHermesKind,
+    this.hermesDetectionMessage,
     this.isLoading = false,
     this.errorMessage,
   });
@@ -70,6 +75,8 @@ class WizardState {
     String? gatewayPassword,
     Object? hermesUrl = _unset,
     Object? hermesApiKey = _unset,
+    Object? detectedHermesKind = _unset,
+    Object? hermesDetectionMessage = _unset,
     bool? isLoading,
     Object? errorMessage = _unset,
   }) {
@@ -91,6 +98,12 @@ class WizardState {
           identical(hermesUrl, _unset) ? this.hermesUrl : hermesUrl as String?,
       hermesApiKey:
           identical(hermesApiKey, _unset) ? this.hermesApiKey : hermesApiKey as String?,
+      detectedHermesKind: identical(detectedHermesKind, _unset)
+          ? this.detectedHermesKind
+          : detectedHermesKind as HermesEndpointKind?,
+      hermesDetectionMessage: identical(hermesDetectionMessage, _unset)
+          ? this.hermesDetectionMessage
+          : hermesDetectionMessage as String?,
       isLoading: isLoading ?? this.isLoading,
       errorMessage: identical(errorMessage, _unset)
           ? this.errorMessage
@@ -122,20 +135,40 @@ class SetupWizardService extends ChangeNotifier {
   final SetupStatusService _setupStatus;
   final ProviderConfigurationManager _configManager;
   final SettingsPreferenceService? _settings;
+  final HermesEndpointResolver _hermesResolver;
+  final HermesLocalAgentApi? _localAgentApi;
 
   WizardState _state = const WizardState();
   Timer? _testTimeoutTimer;
   bool _setupCompleted = false; // Track if setup was completed this session
+  bool _hermesAgentApiConnected = false;
 
   SetupWizardService(
     this._discovery,
     this._setupStatus,
     this._configManager, {
     SettingsPreferenceService? settings,
-  }) : _settings = settings;
+    HermesEndpointResolver? hermesResolver,
+    HermesLocalAgentApi? localAgentApi,
+  })  : _settings = settings,
+        _hermesResolver = hermesResolver ?? HermesEndpointResolver(),
+        _localAgentApi = localAgentApi;
 
   WizardState get state => _state;
   bool get isSetupCompleted => _setupCompleted;
+
+  /// True on the Hermes connection-test step, which already renders [WizardState.errorMessage].
+  bool get isHermesConnectionTestStep {
+    if (_state.selectedMethod != ConnectionMethod.hermes) {
+      return false;
+    }
+    final steps = _hermesStepKinds();
+    final index = _state.currentStep;
+    if (index < 0 || index >= steps.length) {
+      return false;
+    }
+    return steps[index] == _HermesStepKind.connectionTest;
+  }
 
   /// Initialize the wizard - check if first run
   Future<bool> shouldShowWizard() async {
@@ -291,16 +324,17 @@ class SetupWizardService extends ChangeNotifier {
 
   /// Returns a user-visible error when Next should be blocked, or null if OK.
   String? validateCurrentStep() {
-    if (_state.selectedMethod != ConnectionMethod.hermes) {
-      return null;
-    }
-
     final steps = _hermesStepKinds();
-    if (_state.currentStep >= steps.length) {
+    if (_state.currentStep < 0 || _state.currentStep >= steps.length) {
       return null;
     }
 
     switch (steps[_state.currentStep]) {
+      case _HermesStepKind.connectionMethod:
+        if (_state.selectedMethod != ConnectionMethod.hermes) {
+          return 'Choose Hermes Agent before continuing.';
+        }
+        return null;
       case _HermesStepKind.location:
         if (_state.hermesLocation == null) {
           return 'Choose where Hermes is running before continuing.';
@@ -311,6 +345,15 @@ class SetupWizardService extends ChangeNotifier {
           return 'Select a Tailscale device running Hermes.';
         }
         return null;
+      case _HermesStepKind.connectionTest:
+        if (_state.selectedMethod == ConnectionMethod.hermes &&
+            _hermesAgentApiConnected) {
+          return null;
+        }
+        if (_state.selectedMethod != ConnectionMethod.hermes) {
+          return 'Choose Hermes Agent before continuing.';
+        }
+        return _state.errorMessage ?? hermesUnreachableMessage;
       default:
         return null;
     }
@@ -472,6 +515,33 @@ class SetupWizardService extends ChangeNotifier {
     }
   }
 
+  /// Look up a local Hermes endpoint and prefill the wizard URL.
+  ///
+  /// An agent API is stored as connected. A desktop dashboard URL is stored
+  /// with [WizardState.hermesDetectionMessage] and is not a successful connection.
+  Future<void> resolveLocalHermes() async {
+    if (_state.hermesLocation == HermesLocation.tailscale) {
+      return;
+    }
+
+    var resolution = await _hermesResolver.resolve(
+      savedUrl: _state.hermesUrl,
+    );
+    if (!resolution.isAgentApi && _localAgentApi != null) {
+      final ready = await _localAgentApi.ensure(
+        _hermesResolver,
+        preferredKey: _state.hermesApiKey,
+      );
+      resolution = ready.resolution;
+      final key = ready.apiKey;
+      if (key != null && key.isNotEmpty) {
+        _state = _state.copyWith(hermesApiKey: key);
+      }
+    }
+    _applyHermesResolution(resolution, replaceUrl: true);
+    notifyListeners();
+  }
+
   /// Test connection to provider
   Future<ConnectionTestResult?> testConnection(String url) async {
     _state = _state.copyWith(isLoading: true, errorMessage: null);
@@ -481,19 +551,54 @@ class SetupWizardService extends ChangeNotifier {
       final apiKey = _state.selectedMethod == ConnectionMethod.hermes
           ? _state.hermesApiKey
           : null;
-      final result = await _discovery.testConnection(
-        url,
-        apiKey: apiKey,
-      );
-      _state = _state.copyWith(
-        isLoading: false,
-        errorMessage: result.isConnected
-            ? null
-            : _mapUserSafeError(_WizardOperation.connectionTest),
-      );
+      final ConnectionTestResult result;
+      if (_state.selectedMethod == ConnectionMethod.hermes) {
+        var resolution = await _hermesResolver.classify(url);
+        if (!resolution.isAgentApi &&
+            _state.hermesLocation != HermesLocation.tailscale &&
+            _localAgentApi != null) {
+          final ready = await _localAgentApi.ensure(
+            _hermesResolver,
+            preferredKey: _state.hermesApiKey,
+          );
+          resolution = ready.resolution;
+          final key = ready.apiKey;
+          if (key != null && key.isNotEmpty) {
+            _state = _state.copyWith(hermesApiKey: key);
+          }
+        }
+        _applyHermesResolution(
+          resolution,
+          replaceUrl: resolution.isAgentApi,
+        );
+        result = ConnectionTestResult(
+          isConnected: resolution.isAgentApi,
+          url: resolution.url,
+          message: resolution.isAgentApi || resolution.isDesktopDashboard
+              ? resolution.message
+              : _mapUserSafeError(_WizardOperation.connectionTest),
+          endpointKind: resolution.kind,
+        );
+        _state = _state.copyWith(
+          isLoading: false,
+          errorMessage: result.isConnected ? null : result.message,
+        );
+      } else {
+        result = await _discovery.testConnection(
+          url,
+          apiKey: apiKey,
+        );
+        _state = _state.copyWith(
+          isLoading: false,
+          errorMessage: result.isConnected
+              ? null
+              : _mapUserSafeError(_WizardOperation.connectionTest),
+        );
+      }
       notifyListeners();
       return result;
     } catch (e, stackTrace) {
+      _hermesAgentApiConnected = false;
       appLogger.error(
         '[SetupWizard] Connection test failed for $url',
         error: e,
@@ -508,19 +613,36 @@ class SetupWizardService extends ChangeNotifier {
     }
   }
 
+  void _applyHermesResolution(
+    HermesEndpointResolution resolution, {
+    required bool replaceUrl,
+  }) {
+    _hermesAgentApiConnected = resolution.isAgentApi;
+    final detectionMessage =
+        resolution.isDesktopDashboard ? resolution.message : null;
+    final provider = ProviderInfo(
+      id: 'hermes_wizard',
+      type: ProviderType.hermes,
+      name: _state.hermesLocation == HermesLocation.tailscale
+          ? 'Hermes Agent (remote)'
+          : 'Hermes Agent',
+      url: resolution.url,
+      isLocal: _state.hermesLocation != HermesLocation.tailscale,
+      isAvailable: resolution.isAgentApi,
+      role: ProviderRole.agentRuntime,
+    );
+    _state = _state.copyWith(
+      hermesUrl: replaceUrl ? resolution.url : _state.hermesUrl,
+      selectedProvider: provider,
+      detectedHermesKind: resolution.kind,
+      hermesDetectionMessage: detectionMessage,
+    );
+  }
+
   /// Select a provider
   void selectProvider(ProviderInfo provider) {
     _state = _state.copyWith(
       selectedProvider: provider,
-      errorMessage: null,
-    );
-    notifyListeners();
-  }
-
-  /// Set OpenClaw Gateway password
-  void setGatewayPassword(String password) {
-    _state = _state.copyWith(
-      gatewayPassword: password.trim(),
       errorMessage: null,
     );
     notifyListeners();
@@ -540,8 +662,11 @@ class SetupWizardService extends ChangeNotifier {
   void setHermesUrl(String url) {
     final trimmedUrl = url.trim();
     final isLocal = _state.hermesLocation != HermesLocation.tailscale;
+    _hermesAgentApiConnected = false;
     _state = _state.copyWith(
       hermesUrl: trimmedUrl,
+      detectedHermesKind: null,
+      hermesDetectionMessage: null,
       errorMessage: null,
     );
 
@@ -601,9 +726,12 @@ class SetupWizardService extends ChangeNotifier {
   Future<bool> writeApiKeyToHermesEnv(String key) async {
     if (kIsWeb) return false;
     try {
-      final envPath = Platform.environment['HERMES_HOME'] != null
-          ? '${Platform.environment['HERMES_HOME']}/.env'
-          : '${Platform.environment['HOME']}/.hermes/.env';
+      final home = hermesHomeDirectory();
+      final envPath = home != null
+          ? '$home${Platform.pathSeparator}.env'
+          : Platform.environment['HERMES_HOME'] != null
+              ? '${Platform.environment['HERMES_HOME']}${Platform.pathSeparator}.env'
+              : '${Platform.environment['HOME']}${Platform.pathSeparator}.hermes${Platform.pathSeparator}.env';
       final file = File(envPath);
 
       if (await file.exists()) {
@@ -733,20 +861,7 @@ class SetupWizardService extends ChangeNotifier {
   }
 
   int _getTotalSteps() {
-    if (_state.selectedMethod == ConnectionMethod.hermes) {
-      return _hermesStepKinds().length;
-    }
-
-    // OpenClaw steps: Welcome, Connection Method, Detection, Password, Test, Complete = 6
-    // Optional: Tailscale (1), Remote (1)
-    int steps = 6;
-    if (_state.selectedMethod == ConnectionMethod.tailscale) {
-      steps++;
-    }
-    if (_state.selectedMethod == ConnectionMethod.custom) {
-      steps++;
-    }
-    return steps;
+    return _hermesStepKinds().length;
   }
 
   List<_HermesStepKind> _hermesStepKinds() {
@@ -794,7 +909,7 @@ class SetupWizardService extends ChangeNotifier {
     }
 
     if (!_state.selectedProvider!.canServeAsAgentRuntime) {
-      return 'Ollama, LM Studio, and raw model providers are support model providers. Select Hermes, OpenClaw, or a compatible agent runtime to complete setup.';
+      return 'Ollama, LM Studio, and raw model providers are support model providers. Select Hermes to complete setup.';
     }
 
     // Hermes-specific validation
@@ -830,12 +945,6 @@ class SetupWizardService extends ChangeNotifier {
       if (customUrlValidationError != null) {
         return customUrlValidationError;
       }
-    }
-
-    final password = _state.gatewayPassword?.trim() ?? '';
-    if (_state.selectedProvider!.type == ProviderType.openclaw &&
-        password.isEmpty) {
-      return 'OpenClaw Gateway password is required.';
     }
 
     return null;
@@ -915,121 +1024,6 @@ class SetupWizardService extends ChangeNotifier {
       case _WizardOperation.completeSetup:
         return 'Setup could not be completed right now. Please verify your settings and try again.';
     }
-  }
-
-  /// Auto-detect OpenClaw Gateway token from config file
-  /// Returns the token if found, null otherwise
-  Future<String?> autoDetectGatewayToken() async {
-    if (kIsWeb) {
-      debugPrint('[SetupWizard] Token auto-detection not available on web');
-      return null;
-    }
-
-    try {
-      // Try to find OpenClaw config file
-      final homeDir = _getHomeDirectory();
-      if (homeDir == null) {
-        debugPrint('[SetupWizard] Could not determine home directory');
-        return null;
-      }
-
-      final configFile = File('$homeDir/.openclaw/openclaw.json');
-      if (!await configFile.exists()) {
-        debugPrint(
-            '[SetupWizard] OpenClaw config file not found at ${configFile.path}');
-        return null;
-      }
-
-      final content = await configFile.readAsString();
-      final config = jsonDecode(content) as Map<String, dynamic>;
-
-      // Navigate to gateway.auth.token
-      final gateway = config['gateway'] as Map<String, dynamic>?;
-      final auth = gateway?['auth'] as Map<String, dynamic>?;
-      final token = auth?['token'] as String?;
-
-      if (token != null && token.isNotEmpty) {
-        debugPrint(
-            '[SetupWizard] Found token in OpenClaw config: ${token.substring(0, token.length > 8 ? 8 : token.length)}...');
-        return token;
-      }
-
-      debugPrint('[SetupWizard] No token found in OpenClaw config');
-      return null;
-    } catch (e) {
-      debugPrint('[SetupWizard] Error detecting token: $e');
-      return null;
-    }
-  }
-
-  /// Get OpenClaw config file path for display
-  String getOpenClawConfigPath() {
-    if (kIsWeb) return '';
-    final homeDir = _getHomeDirectory() ?? '~';
-    return '$homeDir/.openclaw/openclaw.json';
-  }
-
-  String? _getHomeDirectory() {
-    if (kIsWeb) {
-      return null;
-    }
-
-    try {
-      return Platform.environment['HOME'] ??
-          Platform.environment['USERPROFILE'];
-    } catch (e) {
-      debugPrint('[SetupWizard] Failed to read environment: $e');
-      return null;
-    }
-  }
-
-  /// Run openclaw CLI command to get token (fallback method)
-  Future<String?> getTokenFromCli() async {
-    if (kIsWeb) {
-      debugPrint('[SetupWizard] CLI not available on web');
-      return null;
-    }
-
-    try {
-      final result = await Process.run(
-        'openclaw',
-        ['config', 'get', 'gateway.auth.token'],
-      );
-
-      if (result.exitCode == 0) {
-        final token = (result.stdout as String).trim();
-        if (token.isNotEmpty) {
-          debugPrint(
-              '[SetupWizard] Got token from CLI: ${token.substring(0, token.length > 8 ? 8 : token.length)}...');
-          return token;
-        }
-      }
-
-      debugPrint(
-          '[SetupWizard] CLI returned non-zero exit code: ${result.exitCode}');
-      debugPrint('[SetupWizard] stderr: ${result.stderr}');
-      return null;
-    } catch (e) {
-      debugPrint('[SetupWizard] Error running openclaw CLI: $e');
-      return null;
-    }
-  }
-
-  /// Try multiple methods to auto-detect the gateway token
-  Future<String?> detectGatewayToken() async {
-    // Method 1: Try reading config file directly
-    var token = await autoDetectGatewayToken();
-    if (token != null && token.isNotEmpty) {
-      return token;
-    }
-
-    // Method 2: Try CLI command
-    token = await getTokenFromCli();
-    if (token != null && token.isNotEmpty) {
-      return token;
-    }
-
-    return null;
   }
 
   @override

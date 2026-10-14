@@ -7,6 +7,7 @@ import '../models/message.dart';
 import '../models/streaming_message.dart';
 
 import 'streaming_service.dart';
+import 'hermes/hermes_session_transcript.dart';
 import 'hermes/hermes_streaming_service.dart';
 
 import 'connection_manager_service.dart';
@@ -45,9 +46,11 @@ class StreamingChatService extends ChangeNotifier {
     _bindAgentNameListener();
   }
 
-  /// The main channel — a single persistent conversation with the
-  /// user-configured agent.
+  /// The one conversation for this harness. Every connected device uses the
+  /// same `main-channel` session id and loads the transcript from the harness.
   Conversation? _mainChannel;
+  Timer? _sharedChannelTimer;
+  bool _syncingSharedChannel = false;
   AvatarStateService? _avatarState;
 
   String? _selectedModel;
@@ -118,6 +121,7 @@ class StreamingChatService extends ChangeNotifier {
     try {
       await _storageService.initialize();
       await _loadConversations();
+      _startSharedChannelSync();
       appLogger.debug('[StreamingChat] Storage service initialized');
     } catch (e) {
       appLogger.error('[StreamingChat] Failed to initialize storage', error: e);
@@ -138,6 +142,7 @@ class StreamingChatService extends ChangeNotifier {
         notifyListeners();
       }
     }
+    unawaited(_syncSharedChannel());
   }
 
   /// Load the main channel from storage
@@ -169,6 +174,51 @@ class StreamingChatService extends ChangeNotifier {
 
     _storageReady = true;
     notifyListeners();
+    unawaited(_syncSharedChannel());
+  }
+
+  void _startSharedChannelSync() {
+    _sharedChannelTimer ??= Timer.periodic(const Duration(seconds: 8), (_) {
+      unawaited(_syncSharedChannel());
+    });
+  }
+
+  /// Replace the on-screen thread with the harness transcript so every
+  /// device shows the same conversation.
+  Future<void> _syncSharedChannel() async {
+    if (_isStreaming || _syncingSharedChannel || _mainChannel == null) return;
+    final service = _getStreamingService();
+    if (service is! HermesStreamingService) return;
+
+    _syncingSharedChannel = true;
+    try {
+      final harness = await service.fetchSessionMessages(_mainChannel!.id);
+      if (harness == null || _mainChannel == null || _isStreaming) return;
+      final merged = mergeHarnessTranscript(
+        local: _mainChannel!.messages,
+        harness: harness,
+      );
+      if (_sameMessages(merged, _mainChannel!.messages)) return;
+      _mainChannel = _mainChannel!.copyWith(
+        messages: merged,
+        updatedAt: DateTime.now(),
+      );
+      _applyAgentNameToMainChannel(persist: false);
+      await _saveConversationsAsync();
+      notifyListeners();
+    } finally {
+      _syncingSharedChannel = false;
+    }
+  }
+
+  bool _sameMessages(List<Message> left, List<Message> right) {
+    if (left.length != right.length) return false;
+    for (var i = 0; i < left.length; i++) {
+      if (left[i].id != right[i].id || left[i].content != right[i].content) {
+        return false;
+      }
+    }
+    return true;
   }
 
   /// Create a welcome conversation when no conversations exist
@@ -217,17 +267,13 @@ class StreamingChatService extends ChangeNotifier {
     );
   }
 
-  /// Reset the main channel context.
+  /// Stay on the shared harness conversation.
   ///
-  /// Keeps the stable `main-channel` id so Hermes stays on the same session.
-  /// Only the in-app message list is cleared (/new or /reset).
+  /// `/new` and `/reset` used to clear this device's copy. That made each
+  /// device look like it had its own chat. The harness session is the
+  /// conversation, so these commands reload it instead of starting another.
   void resetContext() {
-    _mainChannel = Conversation.mainChannel(
-      model: _selectedModel,
-      agentName: configuredAgentName(),
-    );
-    _saveConversations();
-    notifyListeners();
+    unawaited(_syncSharedChannel());
   }
 
   /// Update conversation title
@@ -251,7 +297,7 @@ class StreamingChatService extends ChangeNotifier {
   }
 
   /// Send a message with streaming support.
-  /// /new or /reset clears context without sending.
+  /// /new or /reset stay on the shared conversation.
   Future<void> sendMessage(String content) async {
     final trimmed = content.trim();
     if (trimmed.isEmpty || _mainChannel == null) return;
@@ -828,6 +874,7 @@ class StreamingChatService extends ChangeNotifier {
   void dispose() {
     appLogger.debug('[StreamingChat] Disposing service');
 
+    _sharedChannelTimer?.cancel();
     _cancelCurrentStream();
     _streamingContentSubject.close();
     _streamingReasoningSubject.close();
@@ -852,7 +899,7 @@ class StreamingChatService extends ChangeNotifier {
 
   void _applyAgentNameToMainChannel({bool persist = true}) {
     if (_mainChannel == null) return;
-    final name = configuredAgentName();
+    final name = connectedAgentDisplayName();
     if (_mainChannel!.title == name) return;
     _mainChannel = _mainChannel!.updateTitle(name);
     if (persist) _saveConversations();

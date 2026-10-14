@@ -159,7 +159,7 @@ class _ChatPaneState extends State<_ChatPane> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Pistisai',
+                      connectedAgentDisplayName(),
                       style: theme.textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.bold,
                         letterSpacing: 0.5,
@@ -424,7 +424,7 @@ class _ChatPaneState extends State<_ChatPane> {
                       widget.onSendMessage(chatService, message),
                   isLoading: chatService.isLoading,
                   placeholder:
-                      'Message ${configuredAgentName()}... (/new to reset)',
+                      'Message ${connectedAgentDisplayName()}...',
                 ),
               ),
             ],
@@ -527,7 +527,7 @@ class _ActionBar extends StatelessWidget {
             icon: Icons.handyman,
             label: 'Tools',
             enabled: true,
-            onTap: () => _showTools(context, configuredAgentName()),
+            onTap: () => _showTools(context, connectedAgentDisplayName()),
           ),
           _PillarButton(
             icon: Icons.favorite,
@@ -569,7 +569,7 @@ class _ActionBar extends StatelessWidget {
                 children: [
                   const Icon(Icons.favorite, size: 24),
                   const SizedBox(width: 8),
-                  Text('${agentPossessive(configuredAgentName())} Mood'),
+                  Text('${agentPossessive(connectedAgentDisplayName())} Mood'),
                 ],
               ),
               content: const Text('Personality engine not ready yet.'),

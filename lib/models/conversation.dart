@@ -33,7 +33,8 @@ class Conversation {
     );
   }
 
-  /// Create the main channel (persistent, fixed ID).
+  /// The one harness conversation. Every device uses this id as the session
+  /// id, then loads the transcript from the harness.
   ///
   /// [agentName] is the companion the user set up — never a hardcoded
   /// personal name like "Zoid Maltek".
