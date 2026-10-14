@@ -96,11 +96,26 @@ jobs:
             exit 1
           fi
           yes | "$SDKMANAGER" --licenses > /dev/null 2>&1 || true
-          # API 37 is published as minor-versioned platforms;android-37.0;
-          # AGP >= 8.9 resolves it from compileSdk 37 + compileSdkMinor 0.
+          # API 37 is published as platforms;android-37.0 but AGP/lint still resolve platforms;android-37.
+          # sdkmanager often installs 37.0 into platforms/android-37 — do not delete that tree before copying.
           if ! "$SDKMANAGER" --install "platforms;android-37.0" > /tmp/sdk.log 2>&1; then
             echo "sdkmanager install failed — output:" >&2
             tail -60 /tmp/sdk.log >&2
+            exit 1
+          fi
+          P37="${ANDROID_HOME}/platforms/android-37"
+          P370="${ANDROID_HOME}/platforms/android-37.0"
+          if [ -d "$P37" ] && [ ! -d "$P370" ]; then
+            mv "$P37" "$P370"
+          fi
+          if [ ! -d "$P37" ]; then
+            cp -r "$P370" "$P37"
+            sed -i 's/PlatformVersion=37\.0/PlatformVersion=37/' "$P37/source.properties"
+            sed -i 's/AndroidVersion.ApiLevel=37\.0/AndroidVersion.ApiLevel=37/' "$P37/source.properties"
+          fi
+          if [ ! -f "$P37/source.properties" ]; then
+            echo "Android platform 37 not present after setup (missing $P37/source.properties)" >&2
+            ls -la "${ANDROID_HOME}/platforms/" >&2
             exit 1
           fi
 
