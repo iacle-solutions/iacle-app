@@ -82,9 +82,9 @@ RUN useradd -m -s /bin/bash testuser && \
 
 WORKDIR /app
 
-# Resolve packages before the full source copy so this layer stays cached
-# when only application code changes. The lockfile is the one from the repo.
-COPY --chown=testuser:testuser pubspec.yaml pubspec.lock ./
+# Resolve from pubspec.yaml. pubspec.lock is excluded from the Docker context
+# so the image matches the web deploy builder.
+COPY --chown=testuser:testuser pubspec.yaml ./
 RUN chown testuser:testuser /app && su -s /bin/bash testuser -c "flutter pub get"
 
 # Build the Flutter Linux app inside the container (matches container's GLIBC)
