@@ -20,6 +20,8 @@ concurrency:
 permissions:
   contents: read
   packages: write
+  # write is required to export the Buildx cache with type=gha
+  actions: write
 
 jobs:
   build_images:

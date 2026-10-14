@@ -30,5 +30,6 @@ data/
 
 # Build artifacts
 build/
+.dart_tool/
 android/
 .pub-cache/
