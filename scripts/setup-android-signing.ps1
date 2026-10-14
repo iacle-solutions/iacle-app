@@ -11,7 +11,7 @@
 
 param(
     [string]$KeystorePath = "android/release-keystore.jks",
-    [string]$KeyAlias = "zoidbot-release",
+    [string]$KeyAlias = "Pistisai-release",
     [int]$Validity = 10000,
     [switch]$SkipKeystoreGeneration,
     [switch]$Force
@@ -223,8 +223,8 @@ Write-Host ""
 
 # Set secrets
 $secrets = @{
-    "ANDROID_KEYSTORE_BASE64" = $keystoreBase64
-    "ANDROID_KEYSTORE_PASSWORD" = $keystorePassword
+    "ANDROID_KEYSTORE_B64" = $keystoreBase64
+    "ANDROID_STORE_PASSWORD" = $keystorePassword
     "ANDROID_KEY_PASSWORD" = $keyPassword
     "ANDROID_KEY_ALIAS" = $KeyAlias
 }
@@ -262,8 +262,8 @@ if ($LASTEXITCODE -ne 0) {
     
     # Check if all required secrets are present
     $requiredSecrets = @(
-        "ANDROID_KEYSTORE_BASE64",
-        "ANDROID_KEYSTORE_PASSWORD",
+        "ANDROID_KEYSTORE_B64",
+        "ANDROID_STORE_PASSWORD",
         "ANDROID_KEY_PASSWORD",
         "ANDROID_KEY_ALIAS"
     )
@@ -307,8 +307,8 @@ Keystore Details:
 - Algorithm: RSA 2048-bit
 
 GitHub Secrets Configured:
-- ANDROID_KEYSTORE_BASE64
-- ANDROID_KEYSTORE_PASSWORD
+- ANDROID_KEYSTORE_B64
+- ANDROID_STORE_PASSWORD
 - ANDROID_KEY_PASSWORD
 - ANDROID_KEY_ALIAS
 

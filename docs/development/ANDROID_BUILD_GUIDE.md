@@ -52,7 +52,7 @@ Artifacts are uploaded as `android-apks` with Flutter's default names (`app-arm6
 
 `storeFile` in that generated file is `../release-keystore.jks`, which is correct relative to the `android/app` module.
 
-`scripts/setup-android-signing.ps1` and `scripts/verify-android-secrets.ps1` still set `ANDROID_KEYSTORE_BASE64` and `ANDROID_KEYSTORE_PASSWORD`. Those names do not feed `build-mobile.yml`. Set the four names in the table above.
+`scripts/setup-android-signing.ps1` and `scripts/verify-android-secrets.ps1` use the four names in the table above. The older names `ANDROID_KEYSTORE_BASE64` and `ANDROID_KEYSTORE_PASSWORD` are not read by the workflow.
 
 The release `signingConfigs` block in `android/app/build.gradle` reads `android/key.properties` only. It does not read `android.injected.signing.*` properties.
 

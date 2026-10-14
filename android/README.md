@@ -44,7 +44,7 @@ The CI/CD workflow automatically creates the signing configuration from GitHub S
 - `ANDROID_KEY_PASSWORD` — key password
 - `ANDROID_KEY_ALIAS` — key alias
 
-`scripts/setup-android-signing.ps1` still writes `ANDROID_KEYSTORE_BASE64` and `ANDROID_KEYSTORE_PASSWORD`. Those secrets are not the ones the workflow reads.
+`scripts/setup-android-signing.ps1` writes the four secret names above. The older names `ANDROID_KEYSTORE_BASE64` and `ANDROID_KEYSTORE_PASSWORD` are not read by the workflow.
 
 **Setup Instructions:**
 

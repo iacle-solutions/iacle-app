@@ -185,6 +185,7 @@ jobs:
   create_release:
     needs: [analyze, build_android, build_ios]
     if: >-
+      always() &&
       needs.analyze.result == 'success' &&
       (needs.build_android.result == 'success' || needs.build_android.result == 'skipped') &&
       (needs.build_ios.result == 'success' || needs.build_ios.result == 'skipped')

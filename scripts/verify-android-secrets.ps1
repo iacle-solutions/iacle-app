@@ -62,8 +62,8 @@ Write-Host ""
 
 # Check required Android secrets
 $requiredSecrets = @(
-    "ANDROID_KEYSTORE_BASE64",
-    "ANDROID_KEYSTORE_PASSWORD",
+    "ANDROID_KEYSTORE_B64",
+    "ANDROID_STORE_PASSWORD",
     "ANDROID_KEY_PASSWORD",
     "ANDROID_KEY_ALIAS"
 )
