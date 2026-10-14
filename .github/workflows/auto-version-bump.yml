@@ -1,8 +1,9 @@
 name: "🔢 Auto Version Bump"
 
 # SINGLE ENTRY POINT for all releases.
-# On every push to main, if version.json was NOT explicitly changed,
+# On every push to main that changes a file other than assets/version.json,
 # auto-bump the patch version and commit it back.
+# An empty commit does not match this path filter.
 #
 # All platform workflows chain: bump → web → (desktop, mobile, backend)
 # Web deploys first (fastest), then desktop/mobile/backend in parallel.
