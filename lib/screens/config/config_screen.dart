@@ -123,23 +123,18 @@ class _ConfigScreenState extends State<ConfigScreen>
 
   Future<void> _applyRuntimeSelection(BackendType? backend) async {
     final connectionManager = context.read<runtime.ConnectionManagerService>();
-    switch (backend) {
-      case BackendType.hermes:
-        connectionManager.switchBackend(runtime.BackendType.hermes);
-        await connectionManager.testConnection();
-      case BackendType.openclaw:
-        // OpenClaw is no longer offered. Clear to an unselected runtime.
-        connectionManager.clearActiveRuntime();
-      case null:
-        connectionManager.clearActiveRuntime();
+    if (backend == BackendType.hermes) {
+      connectionManager.switchBackend(runtime.BackendType.hermes);
+      await connectionManager.testConnection();
+      return;
     }
+    connectionManager.clearActiveRuntime();
   }
 
   String _runtimeLabel(BackendType? backend) {
     return switch (backend) {
       BackendType.hermes => 'Hermes Agent',
-      BackendType.openclaw => 'None',
-      null => 'None',
+      _ => 'None',
     };
   }
 

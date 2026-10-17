@@ -641,10 +641,8 @@ class ConnectionManagerService extends ChangeNotifier {
     if (configuredBackend == preferences.BackendType.hermes || hermesEnabled) {
       _currentBackend = BackendType.hermes;
       _activeRuntimeClient = _createHermesRuntimeClient();
-    } else if (configuredBackend == preferences.BackendType.openclaw) {
-      _currentBackend = BackendType.openclaw;
-      _activeRuntimeClient = null;
     } else {
+      // OpenClaw is no longer offered; a stale preference clears to none.
       _currentBackend = null;
       _activeRuntimeClient = null;
     }
@@ -656,11 +654,8 @@ class ConnectionManagerService extends ChangeNotifier {
       return;
     }
 
-    final preferences.BackendType? preferenceBackend = switch (backend) {
-      BackendType.hermes => preferences.BackendType.hermes,
-      BackendType.openclaw => preferences.BackendType.openclaw,
-      null => null,
-    };
+    final preferences.BackendType? preferenceBackend =
+        backend == BackendType.hermes ? preferences.BackendType.hermes : null;
     unawaited(settings.setActiveBackend(preferenceBackend));
   }
 
