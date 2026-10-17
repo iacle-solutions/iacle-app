@@ -338,20 +338,6 @@ class ConnectionManagerService extends ChangeNotifier {
       _log.info('Hermes HTTP gateway detection: $e');
     }
 
-    // 2. Try OpenClaw gateway
-    try {
-      await openclawGatewayService.checkStatus();
-      if (openclawGatewayService.isRunning) {
-        _log.info('Auto-detected OpenClaw gateway');
-        _currentBackend = BackendType.openclaw;
-        _activeRuntimeClient = null;
-        notifyListeners();
-        return;
-      }
-    } catch (e) {
-      _log.info('OpenClaw gateway detection: $e');
-    }
-
     // No runtime detected — UI will show the setup wizard
     _log.info('No local agent runtime detected');
   }

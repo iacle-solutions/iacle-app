@@ -128,8 +128,8 @@ class _ConfigScreenState extends State<ConfigScreen>
         connectionManager.switchBackend(runtime.BackendType.hermes);
         await connectionManager.testConnection();
       case BackendType.openclaw:
-        connectionManager.switchBackend(runtime.BackendType.openclaw);
-        await connectionManager.testConnection();
+        // OpenClaw is no longer offered. Clear to an unselected runtime.
+        connectionManager.clearActiveRuntime();
       case null:
         connectionManager.clearActiveRuntime();
     }
@@ -138,7 +138,7 @@ class _ConfigScreenState extends State<ConfigScreen>
   String _runtimeLabel(BackendType? backend) {
     return switch (backend) {
       BackendType.hermes => 'Hermes Agent',
-      BackendType.openclaw => 'OpenClaw Gateway',
+      BackendType.openclaw => 'None',
       null => 'None',
     };
   }
@@ -480,10 +480,6 @@ class _ConfigScreenState extends State<ConfigScreen>
                   DropdownMenuItem(
                     value: null,
                     child: Text('None'),
-                  ),
-                  DropdownMenuItem(
-                    value: BackendType.openclaw,
-                    child: Text('OpenClaw Gateway'),
                   ),
                   DropdownMenuItem(
                     value: BackendType.hermes,

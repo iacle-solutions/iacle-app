@@ -399,7 +399,7 @@ class SettingsPreferenceService {
     if (value == null) return null;
     return BackendType.values.firstWhere(
       (e) => e.name == value,
-      orElse: () => BackendType.openclaw,
+      orElse: () => BackendType.hermes,
     );
   }
 

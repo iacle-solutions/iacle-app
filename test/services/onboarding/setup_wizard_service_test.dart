@@ -147,17 +147,21 @@ void main() {
       expect(configManager.saveProviderCallCount, 0);
     });
 
-    test('provider scan selects Hermes before OpenClaw and excludes support',
+    test('provider scan selects Hermes and excludes support providers',
         () async {
       discovery.runtimeProviders = [
-        _openClawRuntimeProvider(),
         _hermesRuntimeProvider(),
       ];
 
       await service.scanForProviders();
 
-      expect(service.state.discoveredProviders, hasLength(2));
+      expect(service.state.discoveredProviders, hasLength(1));
       expect(service.state.selectedProvider?.type, ProviderType.hermes);
+      expect(
+        service.state.discoveredProviders
+            .any((provider) => provider.type == ProviderType.openclaw),
+        isFalse,
+      );
     });
 
     test('deferSetup hides wizard until user completes setup', () async {
