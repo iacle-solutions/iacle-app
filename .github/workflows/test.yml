@@ -236,3 +236,43 @@ jobs:
 
       - name: "🔒 npm run test:ci:security"
         run: npm run test:ci:security
+
+  # Branch protection requires this exact check name. GitHub reports job names,
+  # not the workflow name, so without this job a green PR stays blocked.
+  ci_gate:
+    name: "🧪 CI — Test & Build Every Branch"
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    needs:
+      - changes
+      - flutter_analyze
+      - flutter_smoke_test
+      - build_web
+      - build_linux
+      - backend
+    if: always()
+    steps:
+      - name: "Require every needed job to succeed or skip"
+        env:
+          CHANGES: ${{ needs.changes.result }}
+          ANALYZE: ${{ needs.flutter_analyze.result }}
+          SMOKE: ${{ needs.flutter_smoke_test.result }}
+          WEB: ${{ needs.build_web.result }}
+          LINUX: ${{ needs.build_linux.result }}
+          BACKEND: ${{ needs.backend.result }}
+        run: |
+          fail=0
+          for result in "$CHANGES" "$ANALYZE" "$SMOKE" "$WEB" "$LINUX" "$BACKEND"; do
+            case "$result" in
+              success|skipped) ;;
+              *)
+                echo "Needed job ended with: $result"
+                fail=1
+                ;;
+            esac
+          done
+          if [ "$fail" -ne 0 ]; then
+            echo "CHANGES=$CHANGES ANALYZE=$ANALYZE SMOKE=$SMOKE WEB=$WEB LINUX=$LINUX BACKEND=$BACKEND"
+            exit 1
+          fi
+          echo "All needed jobs succeeded or were skipped."
