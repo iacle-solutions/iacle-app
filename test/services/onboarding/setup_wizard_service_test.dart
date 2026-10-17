@@ -397,18 +397,6 @@ ProviderInfo _localProvider() {
   );
 }
 
-ProviderInfo _openClawRuntimeProvider() {
-  return const ProviderInfo(
-    id: 'openclaw_runtime',
-    name: 'OpenClaw Gateway',
-    type: ProviderType.openclaw,
-    url: 'http://127.0.0.1:18789',
-    isLocal: true,
-    isAvailable: true,
-    role: ProviderRole.agentRuntime,
-  );
-}
-
 ProviderInfo _hermesRuntimeProvider() {
   return const ProviderInfo(
     id: 'hermes_runtime',
