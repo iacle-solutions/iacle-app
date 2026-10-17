@@ -1,4 +1,3 @@
-import 'package:pistisai/config/app_config.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
