@@ -103,9 +103,17 @@ def _person_names():
     global _PERSON_NAMES_OVERRIDE
     if _PERSON_NAMES_OVERRIDE is None:
         override = _env("AIGENT_WATCH_PERSONS")
-        _PERSON_NAMES_OVERRIDE = re.compile(
-            r"\b(" + (override or _DEFAULT_PERSON_NAMES) + r")\b", re.I
-        )
+        if override:
+            parts = [re.escape(p.strip()) for p in override.split(",") if p.strip()]
+            pattern = "|".join(parts) if parts else _DEFAULT_PERSON_NAMES
+        else:
+            pattern = _DEFAULT_PERSON_NAMES
+        try:
+            _PERSON_NAMES_OVERRIDE = re.compile(r"\b(" + pattern + r")\b", re.I)
+        except re.error:
+            _PERSON_NAMES_OVERRIDE = re.compile(
+                r"\b(" + _DEFAULT_PERSON_NAMES + r")\b", re.I
+            )
     return _PERSON_NAMES_OVERRIDE
 
 
@@ -176,7 +184,7 @@ def scan_file(path, content):
                 meaningful_context_patterns = [
                     r"\b(is|was|has been|became|married to|divorced from|father of|mother of|son of|daughter of)\b",
                     r"\b(relationship|role|position|title|alias|also known as|aka)\b",
-                    r"\b(born|died|lived|resides|from|of)\b",
+                    r"\b(born|died|lived|resides)\b",
                     r"\b(plaintiff|defendant|witness|victim|suspect|officer|agent)\b",
                     r"\b(contact|communication|call|message|email|letter)\b",
                     r"\b(date|time|year|month|day)\s*\d",
@@ -191,12 +199,12 @@ def scan_file(path, content):
                 )
 
                 if not has_meaningful_context:
-                    # Likely noise in high-density context - skip the C2 flag but continue processing
-                    continue
+                    # Skip only the C2 flag; still allow C1/C3 below.
+                    person_match = None
 
-            # Either not in high-density file, or has meaningful context - flag as C2
-            findings.append(("C2", s))
-            continue
+            if person_match:
+                findings.append(("C2", s))
+                continue
         if not is_prose(s):
             continue
         if any(h in path for h in _FINDINGS_HINT) and not _SOURCE_MARKER.search(s):

@@ -26,6 +26,8 @@ class PistisaiUiServer {
 
   InternetAddress? get boundAddress => _server?.address;
 
+  bool get isRunning => _server != null;
+
   static String defaultDocumentRoot() {
     return <String>[
       Directory.current.path,
@@ -34,8 +36,16 @@ class PistisaiUiServer {
     ].join(Platform.pathSeparator);
   }
 
+  /// True when [documentRoot] has an `index.html` that can be served.
+  bool get hasDocumentRoot {
+    return File(_join(documentRoot, 'index.html')).existsSync();
+  }
+
   Future<void> start() async {
     if (_server != null) {
+      return;
+    }
+    if (!hasDocumentRoot) {
       return;
     }
     _server = await shelf_io.serve(_handle, address, port);

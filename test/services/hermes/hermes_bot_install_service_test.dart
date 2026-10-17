@@ -92,11 +92,17 @@ void main() {
       final created = calls.singleWhere(
         (call) => call.args.length > 1 && call.args[1] == 'create',
       );
-      expect(created.args, contains(HermesBotInstallService.driftScanCronName));
-      expect(created.args, contains(HermesBotInstallService.driftScanSchedule));
-      expect(created.args, contains('--deliver'));
-      expect(created.args, contains(HermesBotInstallService.driftScanDeliver));
-      expect(created.args.last, HermesBotInstallService.driftScanPrompt);
+      expect(created.args, isNot(contains('--schedule')));
+      expect(created.args, <String>[
+        'cron',
+        'create',
+        '--name',
+        HermesBotInstallService.driftScanCronName,
+        '--deliver',
+        HermesBotInstallService.driftScanDeliver,
+        HermesBotInstallService.driftScanSchedule,
+        HermesBotInstallService.driftScanPrompt,
+      ]);
     });
 
     test('a second install skips unchanged files and an existing routine',
@@ -194,6 +200,25 @@ void main() {
           r'C:\Users\someone\AppData\Local\hermes\hermes-agent\.hermes\bin\hermes.exe',
         ),
         r'C:\Users\someone\AppData\Local\hermes',
+      );
+      expect(
+        hermesHomeFromProcessText('/Users/someone/.hermes/bin/hermes'),
+        '/Users/someone/.hermes',
+      );
+      expect(
+        listeningPidFromNetstat(
+          '  TCP    127.0.0.1:8642    0.0.0.0:0    LISTENING    4242\r\n'
+          '  TCP    127.0.0.1:18642   0.0.0.0:0    LISTENING    9999\r\n',
+          8642,
+        ),
+        '4242',
+      );
+      expect(
+        listeningPidFromNetstat(
+          '  TCP    127.0.0.1:18642   0.0.0.0:0    LISTENING    9999\r\n',
+          8642,
+        ),
+        isNull,
       );
 
       final connected = Directory.systemTemp.createTempSync('connected-hermes');

@@ -114,9 +114,17 @@ def _person_names() -> re.Pattern:
     global _PERSON_NAMES_OVERRIDE
     if _PERSON_NAMES_OVERRIDE is None:
         override = _env("AIGENT_WATCH_PERSONS")
-        _PERSON_NAMES_OVERRIDE = re.compile(
-            r"\b(" + (override or _DEFAULT_PERSON_NAMES) + r")\b", re.I
-        )
+        if override:
+            parts = [re.escape(p.strip()) for p in override.split(",") if p.strip()]
+            pattern = "|".join(parts) if parts else _DEFAULT_PERSON_NAMES
+        else:
+            pattern = _DEFAULT_PERSON_NAMES
+        try:
+            _PERSON_NAMES_OVERRIDE = re.compile(r"\b(" + pattern + r")\b", re.I)
+        except re.error:
+            _PERSON_NAMES_OVERRIDE = re.compile(
+                r"\b(" + _DEFAULT_PERSON_NAMES + r")\b", re.I
+            )
     return _PERSON_NAMES_OVERRIDE
 
 

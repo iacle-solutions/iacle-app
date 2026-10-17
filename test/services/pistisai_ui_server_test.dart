@@ -44,6 +44,22 @@ void main() {
     final escaped = await _get(server.boundPort, '/..%2Fsecret.txt');
     expect(escaped.statusCode, 404);
   });
+
+  test('start is a no-op when the document root has no index.html', () async {
+    final root = Directory.systemTemp.createTempSync('pistisai-ui-missing');
+    addTearDown(() {
+      if (root.existsSync()) {
+        root.deleteSync(recursive: true);
+      }
+    });
+
+    final server = PistisaiUiServer(port: 0, documentRoot: root.path);
+    addTearDown(server.stop);
+    await server.start();
+
+    expect(server.hasDocumentRoot, isFalse);
+    expect(server.isRunning, isFalse);
+  });
 }
 
 Future<_HttpBody> _get(int port, String path) async {

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:pistisai/services/hermes/hermes_local_agent_api.dart';
 
 enum HermesBotInstallStatus { installed, skipped, failed }
 
@@ -263,10 +264,9 @@ class HermesBotInstallService {
           'create',
           '--name',
           driftScanCronName,
-          '--schedule',
-          driftScanSchedule,
           '--deliver',
           driftScanDeliver,
+          driftScanSchedule,
           driftScanPrompt,
         ],
         hermesHome: home,
@@ -334,9 +334,11 @@ class HermesBotInstallService {
     List<String> args, {
     required String hermesHome,
   }) async {
+    final executable = findHermesExecutable(hermesHome) ?? 'hermes';
     final result = await Process.run(
-      'hermes',
+      executable,
       args,
+      workingDirectory: hermesHome,
       environment: <String, String>{
         ...Platform.environment,
         'HERMES_HOME': hermesHome,
@@ -352,20 +354,33 @@ class HermesBotInstallService {
 
 /// Home directory of a Hermes process, taken from its executable or command line.
 ///
-/// The marker is the `hermes-agent` directory inside that install. The parent
-/// of `hermes-agent` is the home, whether or not it sits in a Windows default
-/// location.
+/// Prefers the parent of a `hermes-agent` directory (Windows-style layouts).
+/// Also accepts a path whose home *is* `.hermes` (typical macOS/Linux install
+/// at `~/.hermes/bin/hermes`). Does not invent a home from a folder that merely
+/// exists on disk.
 String? hermesHomeFromProcessText(String text) {
-  final windows = RegExp(
+  final windowsAgent = RegExp(
     r'([A-Za-z]:\\(?:[^\\\r\n"]+\\)*?)hermes-agent(?:\\|"|\s|$)',
   ).firstMatch(text);
-  if (windows != null) {
-    return _trimHome(windows.group(1));
+  if (windowsAgent != null) {
+    return _trimHome(windowsAgent.group(1));
   }
-  final posix = RegExp(
+  final posixAgent = RegExp(
     r'((?:/[^/\s"]+)+)/hermes-agent(?:/|"|\s|$)',
   ).firstMatch(text);
-  return _trimHome(posix?.group(1));
+  if (posixAgent != null) {
+    return _trimHome(posixAgent.group(1));
+  }
+  final windowsDot = RegExp(
+    r'([A-Za-z]:\\(?:[^\\\r\n"]+\\)*?\.hermes)(?:\\|"|\s|$)',
+  ).firstMatch(text);
+  if (windowsDot != null) {
+    return _trimHome(windowsDot.group(1));
+  }
+  final posixDot = RegExp(
+    r'((?:/[^/\s"]+)+/\.hermes)(?:/|"|\s|$)',
+  ).firstMatch(text);
+  return _trimHome(posixDot?.group(1));
 }
 
 String? _trimHome(String? raw) {
@@ -387,7 +402,7 @@ Future<String?> listeningHermesHome(int port) async {
   try {
     if (Platform.isWindows) {
       final net = await Process.run('netstat', <String>['-ano', '-p', 'tcp']);
-      final pid = _listeningPid('${net.stdout}', port);
+      final pid = listeningPidFromNetstat('${net.stdout}', port);
       if (pid == null) {
         return null;
       }
@@ -417,8 +432,9 @@ Future<String?> listeningHermesHome(int port) async {
   }
 }
 
-String? _listeningPid(String netstat, int port) {
-  final portSuffix = ':$port';
+/// PID of the process listening on exactly [port] in `netstat -ano` output.
+String? listeningPidFromNetstat(String netstat, int port) {
+  final expected = '$port';
   for (final line in netstat.split(RegExp(r'\r?\n'))) {
     final trimmed = line.trim();
     if (!trimmed.toUpperCase().contains('LISTEN')) {
@@ -429,7 +445,11 @@ String? _listeningPid(String netstat, int port) {
       continue;
     }
     final local = parts[1];
-    if (!local.endsWith(portSuffix)) {
+    final colon = local.lastIndexOf(':');
+    if (colon < 0) {
+      continue;
+    }
+    if (local.substring(colon + 1) != expected) {
       continue;
     }
     final pid = parts.last;
