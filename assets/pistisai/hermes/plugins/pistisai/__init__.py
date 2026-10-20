@@ -27,6 +27,8 @@ built-in list.
 
 from __future__ import annotations
 
+import datetime
+import json
 import os
 import re
 import time
@@ -252,5 +254,87 @@ def _on_transform_tool_result(tool_name: str = "", args=None, result=None, **_) 
     return result + "\n\n" + _format_block(findings)
 
 
+def _sanitize(value: object, limit: int = 120) -> str:
+    """Strip control chars/newlines and truncate untrusted context values."""
+    text = str(value or "").strip()
+    # Drop newlines and control characters to prevent prompt-injection / bloat.
+    text = "".join(ch for ch in text if ch.isprintable() and ch not in "\r\n\t")
+    if len(text) > limit:
+        text = text[:limit] + "…"
+    return text
+
+
+def _time_bucket(hour: int) -> str:
+    if hour < 6:
+        return "night"
+    if hour < 12:
+        return "morning"
+    if hour < 17:
+        return "afternoon"
+    if hour < 21:
+        return "evening"
+    return "night"
+
+
+def _device_context() -> dict:
+    """Read device/location context from HERMES_HOME/device-context.json or env.
+
+    The client (Flutter app, gateway, or a manual edit) writes this file so
+    the awareness hook can surface device + location without baking them in.
+    Env overrides: AIGENT_DEVICE, AIGENT_LOCATION, AIGENT_CONNECTION.
+    """
+    home = _env("HERMES_HOME", os.path.join(os.path.expanduser("~"), ".hermes"))
+    path = os.path.join(home, "device-context.json")
+    try:
+        with open(path, encoding="utf-8") as f:
+            data = json.load(f)
+        if isinstance(data, dict):
+            out = {k: data[k] for k in ("device", "location", "connection") if k in data}
+            if out:
+                return out
+    except (OSError, ValueError):
+        pass
+    out = {}
+    if _env("AIGENT_DEVICE"):
+        out["device"] = _env("AIGENT_DEVICE")
+    if _env("AIGENT_LOCATION"):
+        out["location"] = _env("AIGENT_LOCATION")
+    if _env("AIGENT_CONNECTION"):
+        out["connection"] = _env("AIGENT_CONNECTION")
+    return out
+
+
+def _on_pre_llm_call(**kw) -> dict | None:
+    """Inject device/location/time awareness into the turn context.
+
+    Warn-mode style: never blocks, only adds context the agent can use to
+    adapt response length and urgency. Disable with AIGENT_AWARENESS_DISABLE=1.
+    """
+    if _env_flag("AIGENT_AWARENESS_DISABLE"):
+        return None
+    now = datetime.datetime.now()
+    platform = _sanitize(kw.get("platform") or "", 60)
+    sender = _sanitize(kw.get("sender_id") or "", 24)
+    device_ctx = _device_context()
+    parts = [
+        f"[Aigent awareness — {now.strftime('%Y-%m-%d %H:%M')} {now.strftime('%A')}]",
+        f"Time of day: {_time_bucket(now.hour)}",
+        f"Platform: {platform or 'unknown'}",
+    ]
+    for key in ("device", "location", "connection"):
+        val = _sanitize(device_ctx.get(key), 120)
+        if val:
+            parts.append(f"{key.title()}: {val}")
+    if sender:
+        parts.append(f"Sender: {sender}")
+    parts.append(
+        "Adapt response length and urgency to the situation: shorter on mobile/"
+        "on-the-go, more detail at the desk; note device/location when it affects "
+        "the answer."
+    )
+    return {"context": "\n".join(parts)}
+
+
 def register(ctx) -> None:
     ctx.register_hook("transform_tool_result", _on_transform_tool_result)
+    ctx.register_hook("pre_llm_call", _on_pre_llm_call)
