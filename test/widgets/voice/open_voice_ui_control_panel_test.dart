@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
-import 'package:pistisai/services/settings_preference_service.dart';
 import 'package:pistisai/services/connection_manager_service.dart';
 import 'package:pistisai/services/hermes/hermes_streaming_service.dart';
 import 'package:pistisai/services/voice/voice_conversation_service.dart';
@@ -9,7 +8,6 @@ import 'package:pistisai/services/voice/local_voice_input_service.dart';
 import 'package:pistisai/widgets/voice/open_voice_ui_control_panel.dart';
 
 Widget buildWidget() {
-  final settings = SettingsPreferenceService();
   final hermesStreaming = HermesStreamingService();
   final connService = ConnectionManagerService(
     hermesStreamingService: hermesStreaming,

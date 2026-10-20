@@ -189,7 +189,7 @@ def _scan(tool_name: str, args) -> list:
         content = args.get("new_string", "") or ""
     elif tool_name == "skill_manage":
         path = args.get("file_path", "") or ""
-        content = args.get("file_content", "") or args.get("new_string", "") or ""
+        content = args.get("file_content", "") or args.get("new_string", "") or args.get("content", "") or ""
     elif tool_name == "memory":
         content = args.get("content", "") or args.get("new_text", "") or ""
         path = "memory"
