@@ -9,7 +9,7 @@ import '../screens/login_screen.dart';
 import '../screens/callback_screen.dart';
 import '../screens/onboarding/setup_wizard_screen.dart';
 import '../screens/home/home_layout.dart';
-import '../widgets/navigation/openclaw_navigation_shell.dart';
+import '../widgets/navigation/app_navigation_shell.dart';
 import '../services/onboarding/setup_wizard_service.dart';
 
 // Settings screens are lazy-loaded
@@ -191,7 +191,7 @@ class AppRouter {
         // Main app with StatefulShellRoute for indexed navigation
         StatefulShellRoute.indexedStack(
           builder: (context, state, navigationShell) {
-            return OpenClawNavigationShell(navigationShell: navigationShell);
+            return AppNavigationShell(navigationShell: navigationShell);
           },
           branches: [
             // Chat (branch index 0)

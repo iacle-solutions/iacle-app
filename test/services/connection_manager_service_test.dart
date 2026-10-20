@@ -1,6 +1,5 @@
 import 'package:pistisai/services/connection_manager_service.dart';
 import 'package:pistisai/services/hermes/hermes_streaming_service.dart';
-import 'package:pistisai/services/openclaw_manager/gateway_control_service.dart';
 import 'package:pistisai/services/settings_preference_service.dart'
     hide BackendType;
 import 'package:flutter_test/flutter_test.dart';
@@ -13,9 +12,6 @@ void main() {
     setUp(() async {
       SharedPreferences.setMockInitialValues({});
       service = ConnectionManagerService(
-        openclawGatewayService: GatewayControlService(
-          SettingsPreferenceService(),
-        ),
         hermesStreamingService: HermesStreamingService(),
         settingsPreferenceService: SettingsPreferenceService(),
         autoDetectOnInitialize: false,

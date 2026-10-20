@@ -234,6 +234,7 @@ String? findHermesExecutable(String home) {
   final candidates = <String>[
     '$home${separator}hermes-agent$separator.hermes${separator}bin${separator}hermes.exe',
     '$home${separator}hermes-agent$separator.hermes${separator}bin${separator}hermes.cmd',
+    '$home${separator}hermes-agent$separator.hermes${separator}bin${separator}hermes',
     '$home${separator}bin${separator}hermes.exe',
     '$home${separator}bin${separator}hermes',
   ];
@@ -242,5 +243,5 @@ String? findHermesExecutable(String home) {
       return candidate;
     }
   }
-  return 'hermes';
+  return null;
 }

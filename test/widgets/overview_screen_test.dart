@@ -2,8 +2,6 @@ import 'package:pistisai/di/locator.dart' as di;
 import 'package:pistisai/screens/dashboard/overview_screen.dart';
 import 'package:pistisai/services/connection_manager_service.dart';
 import 'package:pistisai/services/hermes/hermes_streaming_service.dart';
-import 'package:pistisai/services/openclaw_manager/gateway_control_service.dart';
-import 'package:pistisai/services/settings_preference_service.dart';
 import 'package:pistisai/services/voice/voice_conversation_service.dart';
 import 'package:pistisai/services/voice/local_voice_input_service.dart';
 import 'package:flutter/material.dart';
@@ -15,9 +13,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 class _FakeOverviewConnectionManager extends ConnectionManagerService {
   _FakeOverviewConnectionManager()
       : super(
-          openclawGatewayService: GatewayControlService(
-            SettingsPreferenceService(),
-          ),
           hermesStreamingService: HermesStreamingService(),
         );
 
@@ -31,10 +26,6 @@ class _FakeOverviewConnectionManager extends ConnectionManagerService {
         'isConnected': true,
         'backend': 'hermes',
         'backendLabel': 'Hermes Agent',
-        'openclaw': <String, dynamic>{
-          'state': 'stopped',
-          'isRunning': false,
-        },
         'hermes': <String, dynamic>{
           'state': 'running',
           'isRunning': true,

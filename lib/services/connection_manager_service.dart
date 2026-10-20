@@ -9,11 +9,7 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 import '../config/app_config.dart';
 import 'agent_runtime/agent_runtime_client.dart';
 import 'agent_runtime/hermes_runtime_client.dart';
-import '../auth/providers/noop_auth_provider.dart';
-import 'auth_service.dart';
-import 'cloud_streaming_service.dart';
 import 'hermes/hermes_streaming_service.dart';
-import 'openclaw_manager/gateway_control_service.dart';
 import 'settings_preference_service.dart' as preferences;
 import 'streaming_service.dart';
 
@@ -21,7 +17,6 @@ final Logger _log = Logger('ConnectionManagerService');
 
 /// Supported backend types.
 enum BackendType {
-  openclaw,
   hermes,
 }
 
@@ -29,7 +24,6 @@ enum BackendType {
 enum ConnectionType {
   local,
   hermes,
-  openclaw,
 }
 
 /// Manages the selected agent runtime session.
@@ -42,14 +36,8 @@ class ConnectionManagerService extends ChangeNotifier {
   BackendType? get currentBackend => _currentBackend;
   BackendType? _currentBackend;
 
-  /// The OpenClaw gateway control service.
-  final GatewayControlService openclawGatewayService;
-
   /// The Hermes HTTP/SSE streaming service.
   final HermesStreamingService hermesStreamingService;
-
-  /// The OpenClaw streaming service (for WebSocket connections).
-  CloudStreamingService? _openclawStreamingService;
 
   /// The active runtime client. Hermes is the first fully wired runtime.
   AgentRuntimeClient? _activeRuntimeClient;
@@ -135,7 +123,6 @@ class ConnectionManagerService extends ChangeNotifier {
   // ---------------------------------------------------------------------------
   String? get preferredConnectionType => switch (_currentBackend) {
         BackendType.hermes => 'hermes',
-        BackendType.openclaw => 'openclaw',
         null => null,
       };
 
@@ -157,7 +144,6 @@ class ConnectionManagerService extends ChangeNotifier {
   // Constructor
   // ---------------------------------------------------------------------------
   ConnectionManagerService({
-    required this.openclawGatewayService,
     required this.hermesStreamingService,
     preferences.SettingsPreferenceService? settingsPreferenceService,
     @visibleForTesting bool autoDetectOnInitialize = true,
@@ -187,46 +173,10 @@ class ConnectionManagerService extends ChangeNotifier {
         notifyListeners();
         _messageStreamController.addError(StateError(_lastError!));
         return _messageStreamController.stream;
-      case BackendType.openclaw:
-        return _connectToOpenClaw();
       case BackendType.hermes:
         unawaited(_connectToActiveRuntime());
         return _messageStreamController.stream;
     }
-  }
-
-  Stream<Map<String, dynamic>> _connectToOpenClaw() {
-    _log.info('Connecting to OpenClaw gateway');
-
-    // Initialize CloudStreamingService if not already created
-    _openclawStreamingService ??= CloudStreamingService(
-      baseUrl: 'http://127.0.0.1:8080',
-      authService: AuthService(NoopAuthProvider()),
-    );
-
-    // Pass the gateway token to the shared WebSocket
-    final ws = SharedWebSocket.instance;
-    ws.setGatewayToken(_gatewayToken);
-
-    // Connect via CloudStreamingService
-    _openclawStreamingService!.establishConnection().then((_) {
-      _isConnected = _openclawStreamingService!.connection.isActive;
-      if (_isConnected) {
-        _lastSuccessfulConnection = DateTime.now();
-        _lastError = null;
-      } else {
-        _lastError = 'Failed to connect to OpenClaw gateway';
-      }
-      notifyListeners();
-    }).catchError((e, st) {
-      _log.severe('OpenClaw connection error', e, st);
-      _isConnected = false;
-      _lastError = e.toString();
-      notifyListeners();
-    });
-
-    return _openclawStreamingService!.messageStream
-        .map((msg) => {'type': 'message', 'data': msg.toJson()});
   }
 
   // ---------------------------------------------------------------------------
@@ -261,7 +211,6 @@ class ConnectionManagerService extends ChangeNotifier {
     if (runtimeClient != null) {
       unawaited(runtimeClient.disconnect());
     }
-    _openclawStreamingService?.closeConnection();
     _activeWsChannel = null;
     _isConnected = false;
     notifyListeners();
@@ -338,20 +287,6 @@ class ConnectionManagerService extends ChangeNotifier {
       _log.info('Hermes HTTP gateway detection: $e');
     }
 
-    // 2. Try OpenClaw gateway
-    try {
-      await openclawGatewayService.checkStatus();
-      if (openclawGatewayService.isRunning) {
-        _log.info('Auto-detected OpenClaw gateway');
-        _currentBackend = BackendType.openclaw;
-        _activeRuntimeClient = null;
-        notifyListeners();
-        return;
-      }
-    } catch (e) {
-      _log.info('OpenClaw gateway detection: $e');
-    }
-
     // No runtime detected — UI will show the setup wizard
     _log.info('No local agent runtime detected');
   }
@@ -381,15 +316,7 @@ class ConnectionManagerService extends ChangeNotifier {
           _lastError = health.isHealthy ? null : health.message;
           notifyListeners();
           return health.isHealthy;
-        case BackendType.openclaw:
-          await openclawGatewayService.checkStatus();
-          break;
       }
-      _isConnected = true;
-      _lastSuccessfulConnection = DateTime.now();
-      _lastError = null;
-      notifyListeners();
-      return true;
     } catch (e) {
       _lastError = e.toString();
       _isConnected = false;
@@ -400,7 +327,6 @@ class ConnectionManagerService extends ChangeNotifier {
 
   Map<String, dynamic> getGatewayStatus() {
     final activeBackend = _currentBackend;
-    final openclawStatus = openclawGatewayService.state;
     final hermesHealthy = hermesStreamingService.connection.isActive;
 
     if (activeBackend == null) {
@@ -410,10 +336,6 @@ class ConnectionManagerService extends ChangeNotifier {
         'isConnected': false,
         'backend': null,
         'backendLabel': 'No agent runtime selected',
-        'openclaw': {
-          'state': openclawStatus.name,
-          'isRunning': openclawStatus == GatewayState.running,
-        },
         'hermes': {
           'service': 'hermes-http',
           'running': hermesHealthy,
@@ -422,31 +344,12 @@ class ConnectionManagerService extends ChangeNotifier {
       };
     }
 
-    final activeBackendLabel = activeBackend == BackendType.hermes
-        ? 'Hermes Agent'
-        : 'OpenClaw Gateway';
-    final activeStatus = activeBackend == BackendType.hermes
-        ? {
-            'state': _isConnected ? 'connected' : 'disconnected',
-            'running': _isConnected,
-          }
-        : {
-            'state': openclawStatus.name,
-            'running': openclawStatus == GatewayState.running,
-          };
-
     return {
-      'state': activeStatus['state']?.toString() ?? 'unknown',
-      'isRunning': activeBackend == BackendType.hermes
-          ? activeStatus['running'] == true
-          : openclawStatus == GatewayState.running,
+      'state': _isConnected ? 'connected' : 'disconnected',
+      'isRunning': _isConnected,
       'isConnected': _isConnected,
       'backend': activeBackend.name,
-      'backendLabel': activeBackendLabel,
-      'openclaw': {
-        'state': openclawStatus.name,
-        'isRunning': openclawStatus == GatewayState.running,
-      },
+      'backendLabel': 'Hermes Agent',
       'hermes': {
         'service': 'hermes-http',
         'running': hermesHealthy,
@@ -458,7 +361,6 @@ class ConnectionManagerService extends ChangeNotifier {
   bool isGatewayHealthy() {
     return switch (_currentBackend) {
       null => false,
-      BackendType.openclaw => _isConnected && openclawGatewayService.isRunning,
       BackendType.hermes => _isConnected,
     };
   }
@@ -466,7 +368,6 @@ class ConnectionManagerService extends ChangeNotifier {
   Future<bool> startActiveGateway() {
     return switch (_currentBackend) {
       null => Future<bool>.value(false),
-      BackendType.openclaw => openclawGatewayService.start(),
       BackendType.hermes => hermesStreamingService.testConnection(),
     };
   }
@@ -474,7 +375,6 @@ class ConnectionManagerService extends ChangeNotifier {
   Future<bool> stopActiveGateway() {
     return switch (_currentBackend) {
       null => Future<bool>.value(false),
-      BackendType.openclaw => openclawGatewayService.stop(),
       BackendType.hermes => Future<bool>.value(true),
     };
   }
@@ -482,7 +382,6 @@ class ConnectionManagerService extends ChangeNotifier {
   Future<bool> restartActiveGateway() {
     return switch (_currentBackend) {
       null => Future<bool>.value(false),
-      BackendType.openclaw => openclawGatewayService.restart(),
       BackendType.hermes => hermesStreamingService.testConnection(),
     };
   }
@@ -551,7 +450,6 @@ class ConnectionManagerService extends ChangeNotifier {
   StreamingService? getStreamingService() {
     return switch (_currentBackend) {
       BackendType.hermes => _ensureHermesRuntimeClient().streamingService,
-      BackendType.openclaw => null,
       null => null,
     };
   }
@@ -571,8 +469,6 @@ class ConnectionManagerService extends ChangeNotifier {
     switch (type) {
       case ConnectionType.hermes:
         switchBackend(BackendType.hermes);
-      case ConnectionType.openclaw:
-        switchBackend(BackendType.openclaw);
       case ConnectionType.local:
         clearActiveRuntime();
     }
@@ -655,9 +551,6 @@ class ConnectionManagerService extends ChangeNotifier {
     if (configuredBackend == preferences.BackendType.hermes || hermesEnabled) {
       _currentBackend = BackendType.hermes;
       _activeRuntimeClient = _createHermesRuntimeClient();
-    } else if (configuredBackend == preferences.BackendType.openclaw) {
-      _currentBackend = BackendType.openclaw;
-      _activeRuntimeClient = null;
     } else {
       _currentBackend = null;
       _activeRuntimeClient = null;
@@ -672,7 +565,6 @@ class ConnectionManagerService extends ChangeNotifier {
 
     final preferences.BackendType? preferenceBackend = switch (backend) {
       BackendType.hermes => preferences.BackendType.hermes,
-      BackendType.openclaw => preferences.BackendType.openclaw,
       null => null,
     };
     unawaited(settings.setActiveBackend(preferenceBackend));

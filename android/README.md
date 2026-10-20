@@ -39,8 +39,8 @@ The CI/CD workflow automatically creates the signing configuration from GitHub S
 
 **Required GitHub Secrets** (names read by `.github/workflows/build-mobile.yml`):
 
-- `ANDROID_KEYSTORE_B64` — base64-encoded keystore file
-- `ANDROID_STORE_PASSWORD` — keystore password
+- `ANDROID_KEYSTORE_BASE64` or `ANDROID_KEYSTORE_B64` - Base64-encoded keystore file
+- `ANDROID_KEYSTORE_PASSWORD` or `ANDROID_STORE_PASSWORD` - Keystore password
 - `ANDROID_KEY_PASSWORD` — key password
 - `ANDROID_KEY_ALIAS` — key alias
 

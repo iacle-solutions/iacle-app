@@ -1,7 +1,5 @@
 import 'package:pistisai/services/connection_manager_service.dart';
 import 'package:pistisai/services/hermes/hermes_streaming_service.dart';
-import 'package:pistisai/services/openclaw_manager/gateway_control_service.dart';
-import 'package:pistisai/services/settings_preference_service.dart';
 import 'package:pistisai/services/voice/voice_conversation_service.dart';
 import 'package:pistisai/services/voice/local_voice_input_service.dart';
 import 'package:pistisai/widgets/voice/open_voice_ui_control_panel.dart';
@@ -13,9 +11,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 class _FakeConnectionManager extends ConnectionManagerService {
   _FakeConnectionManager()
       : super(
-          openclawGatewayService: GatewayControlService(
-            SettingsPreferenceService(),
-          ),
           hermesStreamingService: HermesStreamingService(),
         );
 
@@ -29,10 +24,6 @@ class _FakeConnectionManager extends ConnectionManagerService {
         'isConnected': true,
         'backend': 'hermes',
         'backendLabel': 'Hermes Agent',
-        'openclaw': <String, dynamic>{
-          'state': 'stopped',
-          'isRunning': false,
-        },
         'hermes': <String, dynamic>{
           'state': 'running',
           'isRunning': true,

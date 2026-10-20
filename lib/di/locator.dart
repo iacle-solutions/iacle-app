@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io' show Platform, Directory;
 
 import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
@@ -40,6 +39,7 @@ import 'package:pistisai/database/local_brain.dart';
 import 'package:pistisai/services/brain_sync_service.dart';
 import 'package:pistisai/services/full_context_indexer.dart';
 import 'package:pistisai/services/rate_limit_manager.dart';
+import 'package:pistisai/services/pistisai_ui_server.dart';
 import 'package:pistisai/services/router_server.dart';
 import 'package:pistisai/services/providers/zhipu_adapter.dart';
 import 'package:pistisai/services/providers/google_adapter.dart';
@@ -76,7 +76,6 @@ import 'package:pistisai/services/popout/popout_manager.dart';
 import 'package:pistisai/services/auto_update_service.dart';
 import 'package:pistisai/services/logging_service.dart';
 import 'package:pistisai/services/skill_service.dart';
-import 'package:pistisai/services/openclaw_skill_install_service.dart';
 import 'package:pistisai/services/cron_service.dart';
 import 'package:pistisai/services/session_service.dart';
 import 'package:pistisai/services/channel_service.dart';
@@ -86,45 +85,6 @@ final GetIt serviceLocator = GetIt.instance;
 bool _coreServicesRegistered = false;
 bool _authenticatedServicesRegistered = false;
 bool _isRegisteringAuthenticatedServices = false;
-
-/// Determines the OpenClaw skills directory path for the current platform.
-/// Checks common locations and creates the directory if it doesn't exist.
-String _getOpenClawSkillsPath() {
-  if (kIsWeb) {
-    // Web has no dart:io environment variables or writable local filesystem.
-    return 'web-skills';
-  }
-
-  String? home;
-  try {
-    home = Platform.environment['HOME'] ?? Platform.environment['USERPROFILE'];
-  } catch (e) {
-    debugPrint('[ServiceLocator] Failed to read home directory: $e');
-  }
-
-  // Check common locations for OpenClaw skills directory
-  if (home == null) {
-    // Fallback to temp directory
-    return Directory.systemTemp.path;
-  }
-
-  final possiblePaths = [
-    '$home/.openclaw/skills/pistisai',
-    '$home/.config/openclaw/skills/pistisai',
-    '$home/AppData/Roaming/openclaw/skills/pistisai', // Windows
-  ];
-
-  for (final path in possiblePaths) {
-    if (Directory(path).existsSync()) {
-      return path;
-    }
-  }
-
-  // Create default path if it doesn't exist
-  final defaultPath = '$home/.openclaw/skills/pistisai';
-  Directory(defaultPath).createSync(recursive: true);
-  return defaultPath;
-}
 
 /// Registers core services that are needed before authentication.
 /// These services don't require authentication tokens and can be safely
@@ -197,7 +157,7 @@ Future<void> setupCoreServices() async {
 
       final markdownSyncService = MarkdownSyncService(
         database: localBrain,
-        markdownPath: _getOpenClawSkillsPath(),
+        markdownPath: '',
       );
       serviceLocator.registerLazySingleton<MarkdownSyncService>(
           () => markdownSyncService);
@@ -303,6 +263,11 @@ Future<void> setupCoreServices() async {
 
       // Start the router server in the background.
       unawaited(routerServer.start());
+
+      // Loopback UI for the app, separate from the router on 1337.
+      final pistisaiUiServer = PistisaiUiServer();
+      serviceLocator.registerSingleton<PistisaiUiServer>(pistisaiUiServer);
+      unawaited(pistisaiUiServer.start());
     } else {
       debugPrint(
         '[ServiceLocator] Skipping desktop-only LocalBrain/router core services on web',
@@ -408,13 +373,6 @@ Future<void> setupCoreServices() async {
     debugPrint('[ServiceLocator] Initializing SkillService...');
     final skillService = SkillService();
     serviceLocator.registerSingleton<SkillService>(skillService);
-
-    // OpenClaw skill install service — manages OpenClaw skill installation
-    debugPrint('[ServiceLocator] Initializing OpenClawSkillInstallService...');
-    final openclawSkillInstallService = OpenClawSkillInstallService();
-    serviceLocator.registerSingleton<OpenClawSkillInstallService>(
-      openclawSkillInstallService,
-    );
 
     // Cron service — shells out to `hermes cron list`
     debugPrint('[ServiceLocator] Initializing CronService...');
@@ -795,7 +753,6 @@ Future<void> setupAuthenticatedServices() async {
     final gatewayControlService = serviceLocator.get<GatewayControlService>();
     final hermesStreamingService = serviceLocator.get<HermesStreamingService>();
     final connectionManager = ConnectionManagerService(
-      openclawGatewayService: gatewayControlService,
       hermesStreamingService: hermesStreamingService,
       settingsPreferenceService:
           serviceLocator.get<SettingsPreferenceService>(),
@@ -977,21 +934,6 @@ Future<void> _initializeProviderDiscoveryAndAutoConfig(
         ProviderConfiguration? config;
 
         switch (providerInfo.type) {
-          case ProviderType.openclaw:
-            config = OpenAICompatibleProviderConfiguration(
-              providerId: providerId,
-              baseUrl: providerInfo.baseUrl,
-              port: providerInfo.port,
-              timeout: const Duration(seconds: 90),
-              customSettings: {
-                'auto_configured': true,
-                'discovered_at': DateTime.now().toIso8601String(),
-                'role': ProviderRole.agentRuntime.name,
-                'type': providerInfo.type.name,
-              },
-            );
-            break;
-
           case ProviderType.hermes:
             config = HermesProviderConfiguration(
               providerId: providerId,
