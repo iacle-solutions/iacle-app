@@ -46,8 +46,47 @@ class _HermesBotStepState extends State<HermesBotStep> {
       _report = null;
     });
 
-    final installer = widget.installer ?? HermesBotInstallService();
-    final report = await installer.install(agentPort: _agentPort());
+    // Capture the wizard while mounted so we can still record the report
+    // (and clear the loading flag) if the widget is disposed mid-install.
+    SetupWizardService? wizard;
+    try {
+      wizard = context.read<SetupWizardService>();
+    } catch (_) {
+      wizard = null;
+    }
+
+    try {
+      wizard?.setBotInstallRunning(true);
+    } catch (_) {
+      // Wizard may not be available in isolated tests; ignore.
+    }
+
+    HermesBotInstallReport report;
+    try {
+      final installer = widget.installer ?? HermesBotInstallService();
+      report = await installer.install(agentPort: _agentPort());
+    } catch (error, stackTrace) {
+      debugPrint('[HermesBotStep] install failed: $error\n$stackTrace');
+      report = HermesBotInstallReport(<HermesBotInstallStep>[
+        HermesBotInstallStep(
+          name: HermesBotInstallService.agentStep,
+          status: HermesBotInstallStatus.failed,
+          detail: '$error',
+        ),
+      ]);
+    } finally {
+      try {
+        wizard?.setBotInstallRunning(false);
+      } catch (_) {
+        // Wizard may be unavailable; ignore.
+      }
+    }
+
+    try {
+      wizard?.recordBotInstall(report);
+    } catch (error, stackTrace) {
+      debugPrint('[HermesBotStep] recordBotInstall skipped: $error\n$stackTrace');
+    }
 
     if (!mounted) return;
     setState(() {
