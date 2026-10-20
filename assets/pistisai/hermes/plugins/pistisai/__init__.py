@@ -286,7 +286,7 @@ def _device_context_path() -> str:
 def _device_context() -> dict:
     """Read device/session/location context from HERMES_HOME/device-context.json or env.
 
-    The client (Flutter app via /api/plugins/pistisai/device-context, gateway,
+    The client (Flutter app via /api/pistisai/device-context, gateway,
     or a manual edit) writes this file so the awareness hook can surface
     device + session + location without baking them in.
     Env overrides: AIGENT_DEVICE, AIGENT_LOCATION, AIGENT_CONNECTION, AIGENT_SESSION.
@@ -379,7 +379,12 @@ def _api_server_route_factory(native, adapter):
         try:
             return adapter._check_auth(request)
         except Exception:
-            return None
+            # Fail closed: an erroring auth check must never grant access.
+            return web.json_response(
+                {"error": {"message": "auth check failed",
+                           "type": "gateway_auth_error"}},
+                status=500,
+            )
 
     async def _get(request):
         if (err := _auth(request)) is not None:
@@ -397,7 +402,7 @@ def _api_server_route_factory(native, adapter):
             return web.json_response({"detail": "object body required"}, status=400)
         incoming = {
             key: _sanitize(body[key], 200)
-            for key in ("device", "session", "location", "connection", "host")
+            for key in ("device", "session", "location", "connection")
             if body.get(key) is not None
         }
         incoming = {k: v for k, v in incoming.items() if v}
@@ -405,7 +410,11 @@ def _api_server_route_factory(native, adapter):
             return web.json_response({"detail": "no fields provided"}, status=400)
         ctx = _device_context()
         ctx.update(incoming)
-        _write_device_context(ctx)
+        try:
+            _write_device_context(ctx)
+        except OSError as e:
+            return web.json_response(
+                {"detail": f"could not write context: {e}"}, status=500)
         return web.json_response({"context": ctx})
 
     async def _delete(request):
@@ -415,6 +424,9 @@ def _api_server_route_factory(native, adapter):
             os.remove(_device_context_path())
         except FileNotFoundError:
             pass
+        except OSError as e:
+            return web.json_response(
+                {"detail": f"could not clear context: {e}"}, status=500)
         return web.json_response({"detail": "cleared"})
 
     router = native.router

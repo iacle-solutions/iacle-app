@@ -59,7 +59,9 @@ class HermesDeviceContextService {
       if (key != null && key.isNotEmpty) {
         headers['Authorization'] = 'Bearer $key';
       }
-      final res = await _client.post(_uri, headers: headers, body: body);
+      final res = await _client
+          .post(_uri, headers: headers, body: body)
+          .timeout(const Duration(seconds: 5));
       debugPrint('[HermesDeviceContext] report -> ${res.statusCode}');
     } catch (e) {
       debugPrint('[HermesDeviceContext] report failed: $e');
