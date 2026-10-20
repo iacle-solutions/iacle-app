@@ -334,8 +334,8 @@ class SetupWizardService extends ChangeNotifier {
           ? const []
           : _state.tailscaleDevices,
       errorMessage: null,
+      lastBotInstall: null,
     );
-
     final totalSteps = _getTotalSteps();
     if (_state.currentStep >= totalSteps) {
       _state = _state.copyWith(currentStep: 2);
@@ -718,8 +718,8 @@ class SetupWizardService extends ChangeNotifier {
       detectedHermesKind: null,
       hermesDetectionMessage: null,
       errorMessage: null,
+      lastBotInstall: null,
     );
-
     final hermesProvider = ProviderInfo(
       id: 'hermes_wizard',
       type: ProviderType.hermes,
