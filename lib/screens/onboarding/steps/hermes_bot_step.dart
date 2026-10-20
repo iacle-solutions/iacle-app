@@ -46,14 +46,27 @@ class _HermesBotStepState extends State<HermesBotStep> {
       _report = null;
     });
 
+    try {
+      context.read<SetupWizardService>().setBotInstallRunning(true);
+    } catch (_) {
+      // Wizard may not be available in isolated tests; ignore.
+    }
+
     final installer = widget.installer ?? HermesBotInstallService();
     final report = await installer.install(agentPort: _agentPort());
 
     if (!mounted) return;
+
     try {
-      context.read<SetupWizardService>().recordBotInstall(report);
+      context.read<SetupWizardService>().setBotInstallRunning(false);
     } catch (_) {
       // Wizard may not be available in isolated tests; ignore.
+    }
+
+    try {
+      context.read<SetupWizardService>().recordBotInstall(report);
+    } catch (error, stackTrace) {
+      debugPrint('[HermesBotStep] recordBotInstall skipped: $error\n$stackTrace');
     }
     setState(() {
       _report = report;

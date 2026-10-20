@@ -197,6 +197,14 @@ class SetupWizardService extends ChangeNotifier {
   bool get showsLocalHermesBotStep =>
       _state.hermesLocation == HermesLocation.local;
 
+  /// Toggle loading state while the UI step runs the package install, so the
+  /// wizard's Complete button stays disabled until it finishes (avoids a
+  /// concurrent second install).
+  void setBotInstallRunning(bool running) {
+    _state = _state.copyWith(isLoading: running);
+    notifyListeners();
+  }
+
   /// Record a package install that ran in the UI step so [completeSetup]
   /// does not run it a second time.
   void recordBotInstall(HermesBotInstallReport report) {
@@ -849,7 +857,11 @@ class SetupWizardService extends ChangeNotifier {
       await _settings?.setSetupWizardDeferred(false);
       appLogger.info('[SetupWizard] Setup completed successfully');
 
-      HermesBotInstallReport? botReport = _state.lastBotInstall;
+      HermesBotInstallReport? botReport;
+      if (_state.hermesLocation == HermesLocation.local &&
+          _state.lastBotInstall?.succeeded == true) {
+        botReport = _state.lastBotInstall;
+      }
       if (botReport == null && _state.hermesLocation == HermesLocation.local) {
         try {
           botReport = await (_botInstaller ?? HermesBotInstallService())
