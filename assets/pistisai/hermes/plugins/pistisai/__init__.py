@@ -31,6 +31,7 @@ import datetime
 import json
 import os
 import re
+import socket
 import time
 
 _TRUTHY = {"1", "true", "yes", "on"}
@@ -276,20 +277,27 @@ def _time_bucket(hour: int) -> str:
     return "night"
 
 
-def _device_context() -> dict:
-    """Read device/location context from HERMES_HOME/device-context.json or env.
-
-    The client (Flutter app, gateway, or a manual edit) writes this file so
-    the awareness hook can surface device + location without baking them in.
-    Env overrides: AIGENT_DEVICE, AIGENT_LOCATION, AIGENT_CONNECTION.
-    """
+def _device_context_path() -> str:
+    """Where the client-reported device/session context lives."""
     home = _env("HERMES_HOME", os.path.join(os.path.expanduser("~"), ".hermes"))
-    path = os.path.join(home, "device-context.json")
+    return os.path.join(home, "device-context.json")
+
+
+def _device_context() -> dict:
+    """Read device/session/location context from HERMES_HOME/device-context.json or env.
+
+    The client (Flutter app via /api/plugins/pistisai/device-context, gateway,
+    or a manual edit) writes this file so the awareness hook can surface
+    device + session + location without baking them in.
+    Env overrides: AIGENT_DEVICE, AIGENT_LOCATION, AIGENT_CONNECTION, AIGENT_SESSION.
+    """
+    path = _device_context_path()
     try:
         with open(path, encoding="utf-8") as f:
             data = json.load(f)
         if isinstance(data, dict):
-            out = {k: data[k] for k in ("device", "location", "connection") if k in data}
+            keys = ("device", "session", "location", "connection")
+            out = {k: data[k] for k in keys if k in data}
             if out:
                 return out
     except (OSError, ValueError):
@@ -297,6 +305,8 @@ def _device_context() -> dict:
     out = {}
     if _env("AIGENT_DEVICE"):
         out["device"] = _env("AIGENT_DEVICE")
+    if _env("AIGENT_SESSION"):
+        out["session"] = _env("AIGENT_SESSION")
     if _env("AIGENT_LOCATION"):
         out["location"] = _env("AIGENT_LOCATION")
     if _env("AIGENT_CONNECTION"):
@@ -316,12 +326,18 @@ def _on_pre_llm_call(**kw) -> dict | None:
     platform = _sanitize(kw.get("platform") or "", 60)
     sender = _sanitize(kw.get("sender_id") or "", 24)
     device_ctx = _device_context()
+    try:
+        host = _sanitize(socket.gethostname(), 60)
+    except OSError:
+        host = ""
     parts = [
         f"[Aigent awareness — {now.strftime('%Y-%m-%d %H:%M')} {now.strftime('%A')}]",
         f"Time of day: {_time_bucket(now.hour)}",
         f"Platform: {platform or 'unknown'}",
     ]
-    for key in ("device", "location", "connection"):
+    if host:
+        parts.append(f"Host (PC): {host}")
+    for key in ("session", "device", "location", "connection"):
         val = _sanitize(device_ctx.get(key), 120)
         if val:
             parts.append(f"{key.title()}: {val}")
@@ -335,6 +351,79 @@ def _on_pre_llm_call(**kw) -> dict | None:
     return {"context": "\n".join(parts)}
 
 
+def _write_device_context(ctx: dict) -> None:
+    """Atomically write the client-reported device/session context."""
+    path = _device_context_path()
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    tmp = path + ".tmp"
+    with open(tmp, "w", encoding="utf-8") as f:
+        json.dump(ctx, f, indent=2, sort_keys=True)
+    os.replace(tmp, path)
+
+
+def _api_server_route_factory(native, adapter):
+    """Mount /api/pistisai/device-context on the Hermes API server (port 8642).
+
+    The desktop app POSTs its device/session context here; the awareness
+    ``pre_llm_call`` hook reads the same file. Auth reuses the API server's
+    own ``_check_auth`` so the route cannot drift from core auth.
+    """
+    if native is None:
+        return
+    try:
+        from aiohttp import web
+    except Exception:  # pragma: no cover - aiohttp always present with the gateway
+        return
+
+    def _auth(request):
+        try:
+            return adapter._check_auth(request)
+        except Exception:
+            return None
+
+    async def _get(request):
+        if (err := _auth(request)) is not None:
+            return err
+        return web.json_response({"context": _device_context()})
+
+    async def _post(request):
+        if (err := _auth(request)) is not None:
+            return err
+        try:
+            body = await request.json()
+        except Exception:
+            return web.json_response({"detail": "invalid JSON"}, status=400)
+        if not isinstance(body, dict):
+            return web.json_response({"detail": "object body required"}, status=400)
+        incoming = {
+            key: _sanitize(body[key], 200)
+            for key in ("device", "session", "location", "connection", "host")
+            if body.get(key) is not None
+        }
+        incoming = {k: v for k, v in incoming.items() if v}
+        if not incoming:
+            return web.json_response({"detail": "no fields provided"}, status=400)
+        ctx = _device_context()
+        ctx.update(incoming)
+        _write_device_context(ctx)
+        return web.json_response({"context": ctx})
+
+    async def _delete(request):
+        if (err := _auth(request)) is not None:
+            return err
+        try:
+            os.remove(_device_context_path())
+        except FileNotFoundError:
+            pass
+        return web.json_response({"detail": "cleared"})
+
+    router = native.router
+    router.add_get("/api/pistisai/device-context", _get)
+    router.add_post("/api/pistisai/device-context", _post)
+    router.add_delete("/api/pistisai/device-context", _delete)
+
+
 def register(ctx) -> None:
     ctx.register_hook("transform_tool_result", _on_transform_tool_result)
     ctx.register_hook("pre_llm_call", _on_pre_llm_call)
+    ctx.register_platform_handler("api_server", _api_server_route_factory)

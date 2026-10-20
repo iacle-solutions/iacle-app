@@ -46,6 +46,7 @@ import 'package:pistisai/services/providers/google_adapter.dart';
 import 'package:pistisai/services/providers/moonshot_adapter.dart';
 import 'package:pistisai/services/hermes/hermes_local_agent_api.dart';
 import 'package:pistisai/services/hermes/hermes_streaming_service.dart';
+import 'package:pistisai/services/hermes/hermes_device_context_service.dart';
 import 'package:pistisai/models/provider_configuration.dart';
 import 'package:pistisai/services/agent_status_service.dart';
 import 'package:pistisai/services/agent_lifecycle_service.dart';
@@ -232,6 +233,16 @@ Future<void> setupCoreServices() async {
       );
       serviceLocator
           .registerSingleton<HermesStreamingService>(hermesStreamingService);
+
+      // Report this desktop/mobile session so the agent's awareness hook can
+      // name the PC + session in the context (Hermes host adds its hostname).
+      final deviceContextService = HermesDeviceContextService(
+        baseUrl: hermesStreamingService.baseUrl,
+        apiKey: hermesApiKey,
+      );
+      serviceLocator
+          .registerSingleton<HermesDeviceContextService>(deviceContextService);
+      unawaited(deviceContextService.report());
 
       final voiceConversationService = VoiceConversationService();
       serviceLocator.registerLazySingleton<VoiceConversationService>(
