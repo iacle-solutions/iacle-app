@@ -1,6 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pistisai/screens/onboarding/steps/completion_step.dart';
 import 'package:pistisai/screens/onboarding/steps/hermes_bot_step.dart';
 import 'package:pistisai/services/auth_service.dart';
 import 'package:pistisai/services/hermes/hermes_bot_install_service.dart';
@@ -19,29 +20,77 @@ void main() {
     SharedPreferences.setMockInitialValues({});
   });
 
-  testWidgets('the first-time step describes the package install',
-      (tester) async {
-    final service = SetupWizardService(
-      _FakeProviderDiscoveryService(),
-      _FakeSetupStatusService(),
-      _FakeProviderConfigurationManager(),
+  testWidgets('initial state shows the description', (tester) async {
+    final pending = Completer<HermesBotInstallReport>();
+    final installer = _RecordingInstaller(
+      const HermesBotInstallReport(<HermesBotInstallStep>[]),
+      pending: pending,
     );
 
-    await tester.pumpWidget(_host(service, const HermesBotStep()));
-    await tester.pumpAndSettle();
+    await tester.pumpWidget(
+      _host(_wizard(), HermesBotStep(installer: installer)),
+    );
+    await tester.pump();
 
     expect(find.textContaining('first-time setup'), findsOneWidget);
     expect(find.textContaining('aigent-watch'), findsOneWidget);
     expect(find.textContaining('drift-scan'), findsOneWidget);
     expect(find.textContaining('6 hours'), findsOneWidget);
     expect(find.textContaining('Windows'), findsOneWidget);
-    expect(find.byType(SwitchListTile), findsNothing);
+    expect(find.textContaining('Installing PistisAI package'), findsOneWidget);
+
+    pending.complete(const HermesBotInstallReport(<HermesBotInstallStep>[]));
+    await tester.pumpAndSettle();
   });
 
-  testWidgets('completion lists each install step status', (tester) async {
-    await tester.binding.setSurfaceSize(const Size(1200, 2000));
-    addTearDown(() => tester.binding.setSurfaceSize(null));
+  testWidgets('install success shows all steps installed', (tester) async {
+    final installer = _RecordingInstaller(
+      const HermesBotInstallReport(<HermesBotInstallStep>[
+        HermesBotInstallStep(
+          name: HermesBotInstallService.agentStep,
+          status: HermesBotInstallStatus.installed,
+          detail: 'Wrote 2 file(s).',
+        ),
+        HermesBotInstallStep(
+          name: HermesBotInstallService.desktopStep,
+          status: HermesBotInstallStatus.skipped,
+          detail: HermesBotInstallService.desktopSkipDetail,
+        ),
+        HermesBotInstallStep(
+          name: HermesBotInstallService.profileStep,
+          status: HermesBotInstallStatus.installed,
+          detail: 'Wrote 3 file(s).',
+        ),
+        HermesBotInstallStep(
+          name: HermesBotInstallService.enableStep,
+          status: HermesBotInstallStatus.installed,
+          detail: 'hermes plugins enable pistisai',
+        ),
+        HermesBotInstallStep(
+          name: HermesBotInstallService.routineStep,
+          status: HermesBotInstallStatus.installed,
+          detail: 'Created drift-scan every 6h.',
+        ),
+      ]),
+    );
 
+    await tester.pumpWidget(
+      _host(_wizard(), HermesBotStep(installer: installer)),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('PistisAI package: Installed'), findsOneWidget);
+    expect(find.textContaining('Desktop embed: Skipped'), findsOneWidget);
+    expect(find.textContaining('aigent-watch profile: Installed'), findsOneWidget);
+    expect(find.textContaining('Enable pistisai: Installed'), findsOneWidget);
+    expect(find.textContaining('drift-scan routine: Installed'), findsOneWidget);
+    expect(find.textContaining('Install complete'), findsOneWidget);
+    expect(find.text('Retry'), findsNothing);
+    expect(installer.calls, 1);
+  });
+
+  testWidgets('install failure shows the failed step and retry button',
+      (tester) async {
     final installer = _RecordingInstaller(
       const HermesBotInstallReport(<HermesBotInstallStep>[
         HermesBotInstallStep(
@@ -56,33 +105,48 @@ void main() {
         ),
       ]),
     );
-    final service = SetupWizardService(
-      _FakeProviderDiscoveryService(),
-      _FakeSetupStatusService(),
-      _FakeProviderConfigurationManager(),
-      botInstaller: installer,
+
+    await tester.pumpWidget(
+      _host(_wizard(), HermesBotStep(installer: installer)),
     );
-    service.selectConnectionMethod(ConnectionMethod.hermes);
-    service.selectHermesLocation(HermesLocation.local);
-    service.setHermesUrl('http://127.0.0.1:8642');
-    service.selectProvider(const ProviderInfo(
-      id: 'hermes_runtime',
-      name: 'Hermes Agent',
-      type: ProviderType.hermes,
-      url: 'http://127.0.0.1:8642',
-      isLocal: true,
-      isAvailable: true,
-      role: ProviderRole.agentRuntime,
-    ));
-
-    expect(await service.completeSetup(), isTrue);
-
-    await tester.pumpWidget(_host(service, const CompletionStep()));
     await tester.pumpAndSettle();
 
-    expect(find.textContaining('PistisAI package: Installed'), findsOneWidget);
     expect(find.textContaining('Enable pistisai: Failed'), findsOneWidget);
+    expect(find.textContaining('hermes missing'), findsOneWidget);
+    expect(find.textContaining('Install failed: Enable pistisai'), findsOneWidget);
+    expect(find.text('Retry'), findsOneWidget);
   });
+
+  testWidgets('retry re-calls install', (tester) async {
+    final installer = _RecordingInstaller(
+      const HermesBotInstallReport(<HermesBotInstallStep>[
+        HermesBotInstallStep(
+          name: HermesBotInstallService.enableStep,
+          status: HermesBotInstallStatus.failed,
+          detail: 'hermes missing',
+        ),
+      ]),
+    );
+
+    await tester.pumpWidget(
+      _host(_wizard(), HermesBotStep(installer: installer)),
+    );
+    await tester.pumpAndSettle();
+    expect(installer.calls, 1);
+
+    await tester.tap(find.text('Retry'));
+    await tester.pumpAndSettle();
+
+    expect(installer.calls, 2);
+  });
+}
+
+SetupWizardService _wizard() {
+  return SetupWizardService(
+    _FakeProviderDiscoveryService(),
+    _FakeSetupStatusService(),
+    _FakeProviderConfigurationManager(),
+  );
 }
 
 Widget _host(SetupWizardService service, Widget child) {
@@ -95,15 +159,19 @@ Widget _host(SetupWizardService service, Widget child) {
 }
 
 class _RecordingInstaller extends HermesBotInstallService {
-  _RecordingInstaller(this.report);
+  _RecordingInstaller(this.report, {this.pending});
 
   final HermesBotInstallReport report;
-
-  int? port;
+  final Completer<HermesBotInstallReport>? pending;
+  int calls = 0;
 
   @override
   Future<HermesBotInstallReport> install({int? agentPort}) async {
-    port = agentPort;
+    calls++;
+    final gate = pending;
+    if (gate != null && !gate.isCompleted) {
+      return gate.future;
+    }
     return report;
   }
 }
