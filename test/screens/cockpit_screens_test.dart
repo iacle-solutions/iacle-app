@@ -38,7 +38,7 @@ class _FakeProviderDiscoveryService implements ProviderDiscoveryService {
   Future<List<ProviderInfo>> scanForProviders() async => [];
 
   @override
-  Future<ConnectionTestResult> testConnection(String url) async =>
+  Future<ConnectionTestResult> testConnection(String url, {String? apiKey}) async =>
       ConnectionTestResult(isConnected: false, url: url, message: 'Mock');
 
   @override

@@ -242,5 +242,5 @@ String? findHermesExecutable(String home) {
       return candidate;
     }
   }
-  return 'hermes';
+  return null;
 }

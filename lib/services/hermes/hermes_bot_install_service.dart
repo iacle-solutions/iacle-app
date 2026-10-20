@@ -334,7 +334,10 @@ class HermesBotInstallService {
     List<String> args, {
     required String hermesHome,
   }) async {
-    final executable = findHermesExecutable(hermesHome) ?? 'hermes';
+    final executable = findHermesExecutable(hermesHome);
+    if (executable == null) {
+      throw StateError('No hermes executable found for $hermesHome');
+    }
     final result = await Process.run(
       executable,
       args,

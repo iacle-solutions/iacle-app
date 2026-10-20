@@ -41,7 +41,7 @@ _FINDINGS_HINT = ("file-dig-findings", "docs/personal", "docs\\personal")
 # A sourced line carries at least one of these. Absence of all = assertion.
 # A Windows drive letter counts as a path marker without naming a machine.
 _SOURCE_MARKER = re.compile(
-    r"(?:19|20)\d\d|\bJan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec|\d{1,2}/\d{1,2}|[A-Za-z]:[/\\]|~/|"
+    r"(?:19|20)\d\d|\b(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\b|\d{1,2}/\d{1,2}|[A-Za-z]:[/\\]|~/|"
     r"VERIFIED|RETRACTED|CONFLICT|UNVERIFIED|CORRECTED|SUPERSEDED|"
     r"HARD RULE|his-words|posts-extracted|\.txt:|\.json:|\.md:|"
     r"per the corpus|from the corpus|his own words|his words|"

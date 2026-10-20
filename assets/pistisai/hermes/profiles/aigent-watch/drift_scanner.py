@@ -15,7 +15,7 @@ import json, os, re, time
 _FINDINGS_HINT = ("file-dig-findings", "docs/personal", "docs\\personal")
 
 _SOURCE_MARKER = re.compile(
-    r"(?:19|20)\d\d|\bJan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec|\d{1,2}/\d{1,2}|[A-Za-z]:[/\\]|~/|"
+    r"(?:19|20)\d\d|\b(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\b|\d{1,2}/\d{1,2}|[A-Za-z]:[/\\]|~/|"
     r"VERIFIED|RETRACTED|CONFLICT|UNVERIFIED|CORRECTED|SUPERSEDED|"
     r"HARD RULE|his-words|posts-extracted|\.txt:|\.json:|\.md:|"
     r"per the corpus|from the corpus|his own words|his words|"
@@ -177,7 +177,7 @@ def scan_file(path, content):
         if person_match and not _SOURCE_MARKER.search(s):
             # In high-person-density files (identity files, bios, etc.), apply smarter logic
             # to reduce false positives while preserving signal
-            if _HIGH_PERSON_DENSITY_FILES.search(path):
+            if _HIGH_PERSON_DENSITY_FILES.search(path.replace(os.sep, "/")):
                 # Check if this is likely a legitimate person claim vs. just expected naming
                 # Look for relationship verbs, legal terminology, or other context that suggests
                 # this is a meaningful assertion rather than just a name in a bio/list
@@ -241,6 +241,7 @@ def scan_targets(targets=None):
 
 def _default_targets():
     targets = []
+    seen = set()
     scan_dirs = []
     for base in _roots():
         scan_dirs.append((os.path.join(base, "ZoidBot", "vault"), ".md"))
@@ -254,11 +255,12 @@ def _default_targets():
             for f in files:
                 if not f.endswith(ext):
                     continue
-                # Never scan our own output log. Findings are appended there, so
-                # scanning it makes the log quote itself and re-flag on every run.
                 if os.path.basename(f) == os.path.basename(_drift_log()):
                     continue
                 path = os.path.join(root, f)
+                if path in seen:
+                    continue
+                seen.add(path)
                 try:
                     with open(path, encoding="utf-8", errors="replace") as fh:
                         targets.append((path, fh.read()))
