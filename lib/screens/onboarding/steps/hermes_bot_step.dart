@@ -50,6 +50,11 @@ class _HermesBotStepState extends State<HermesBotStep> {
     final report = await installer.install(agentPort: _agentPort());
 
     if (!mounted) return;
+    try {
+      context.read<SetupWizardService>().recordBotInstall(report);
+    } catch (_) {
+      // Wizard may not be available in isolated tests; ignore.
+    }
     setState(() {
       _report = report;
       _phase = _HermesBotStepPhase.done;

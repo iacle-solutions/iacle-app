@@ -197,6 +197,13 @@ class SetupWizardService extends ChangeNotifier {
   bool get showsLocalHermesBotStep =>
       _state.hermesLocation == HermesLocation.local;
 
+  /// Record a package install that ran in the UI step so [completeSetup]
+  /// does not run it a second time.
+  void recordBotInstall(HermesBotInstallReport report) {
+    _state = _state.copyWith(lastBotInstall: report);
+    notifyListeners();
+  }
+
   int? _localHermesPort() {
     final uri = Uri.tryParse(_state.hermesUrl?.trim() ?? '');
     if (uri != null && uri.hasPort && uri.port > 0) {
@@ -842,8 +849,8 @@ class SetupWizardService extends ChangeNotifier {
       await _settings?.setSetupWizardDeferred(false);
       appLogger.info('[SetupWizard] Setup completed successfully');
 
-      HermesBotInstallReport? botReport;
-      if (_state.hermesLocation == HermesLocation.local) {
+      HermesBotInstallReport? botReport = _state.lastBotInstall;
+      if (botReport == null && _state.hermesLocation == HermesLocation.local) {
         try {
           botReport = await (_botInstaller ?? HermesBotInstallService())
               .install(agentPort: _localHermesPort());
