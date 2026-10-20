@@ -180,9 +180,9 @@ class AgentLifecycleService extends ChangeNotifier {
   /// Last error message
   String? get lastError => _lastError;
 
-  /// Check if service is ready (connected to OpenClaw Gateway)
+  /// Check if service is ready (connected to Hermes Agent)
   bool get isReady =>
-      _connectionManager.currentBackend == BackendType.openclaw &&
+      _connectionManager.currentBackend == BackendType.hermes &&
       _connectionManager.isConnected &&
       _connectionManager.isGatewayHealthy();
 

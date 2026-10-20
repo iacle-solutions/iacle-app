@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-class OpenClawNavItem extends StatelessWidget {
+class AppNavItem extends StatelessWidget {
   final String title;
   final int branchIndex;
   final IconData icon;
@@ -9,7 +9,7 @@ class OpenClawNavItem extends StatelessWidget {
   final bool collapsed;
   final StatefulNavigationShell navigationShell;
 
-  const OpenClawNavItem({
+  const AppNavItem({
     required this.title,
     required this.branchIndex,
     required this.icon,

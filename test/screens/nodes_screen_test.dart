@@ -3,7 +3,6 @@ import 'package:pistisai/models/provider_configuration.dart';
 import 'package:pistisai/screens/nodes/nodes_screen.dart';
 import 'package:pistisai/services/connection_manager_service.dart';
 import 'package:pistisai/services/hermes/hermes_streaming_service.dart';
-import 'package:pistisai/services/openclaw_manager/gateway_control_service.dart';
 import 'package:pistisai/services/provider_discovery_service.dart';
 import 'package:pistisai/services/settings_preference_service.dart';
 import 'package:pistisai/services/popout/popout_manager.dart';
@@ -21,9 +20,6 @@ void main() {
   setUp(() {
     SharedPreferences.setMockInitialValues({});
     connectionManager = ConnectionManagerService(
-      openclawGatewayService: GatewayControlService(
-        SettingsPreferenceService(),
-      ),
       hermesStreamingService: HermesStreamingService(),
       settingsPreferenceService: SettingsPreferenceService(),
       autoDetectOnInitialize: false,

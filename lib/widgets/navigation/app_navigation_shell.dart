@@ -9,20 +9,20 @@ import '../../config/app_config.dart';
 import '../../services/connection_manager_service.dart';
 import '../../services/theme_provider.dart';
 
-class OpenClawNavigationShell extends StatefulWidget {
+class AppNavigationShell extends StatefulWidget {
   final StatefulNavigationShell navigationShell;
 
-  const OpenClawNavigationShell({
+  const AppNavigationShell({
     required this.navigationShell,
     super.key,
   });
 
   @override
-  State<OpenClawNavigationShell> createState() =>
-      _OpenClawNavigationShellState();
+  State<AppNavigationShell> createState() =>
+      _AppNavigationShellState();
 }
 
-class _OpenClawNavigationShellState extends State<OpenClawNavigationShell> {
+class _AppNavigationShellState extends State<AppNavigationShell> {
   bool _sidebarCollapsed = false;
   final bool _focusMode = false;
 
@@ -154,7 +154,7 @@ class _OpenClawNavigationShellState extends State<OpenClawNavigationShell> {
           title: '',
           initiallyExpanded: true,
           destinations: [
-            OpenClawNavItem(
+            AppNavItem(
               collapsed: _sidebarCollapsed,
               title: 'Home',
               branchIndex: 0,
@@ -170,7 +170,7 @@ class _OpenClawNavigationShellState extends State<OpenClawNavigationShell> {
           title: 'Navigation',
           initiallyExpanded: true,
           destinations: [
-            OpenClawNavItem(
+            AppNavItem(
               collapsed: _sidebarCollapsed,
               title: 'Overview',
               branchIndex: 1,
@@ -178,7 +178,7 @@ class _OpenClawNavigationShellState extends State<OpenClawNavigationShell> {
               icon: Icons.dashboard_outlined,
               selected: widget.navigationShell.currentIndex == 1,
             ),
-            OpenClawNavItem(
+            AppNavItem(
               collapsed: _sidebarCollapsed,
               title: 'Channels',
               branchIndex: 2,
@@ -186,7 +186,7 @@ class _OpenClawNavigationShellState extends State<OpenClawNavigationShell> {
               icon: Icons.cable_outlined,
               selected: widget.navigationShell.currentIndex == 2,
             ),
-            OpenClawNavItem(
+            AppNavItem(
               collapsed: _sidebarCollapsed,
               title: 'Sessions',
               branchIndex: 4,
@@ -194,7 +194,7 @@ class _OpenClawNavigationShellState extends State<OpenClawNavigationShell> {
               icon: Icons.history_outlined,
               selected: widget.navigationShell.currentIndex == 4,
             ),
-            OpenClawNavItem(
+            AppNavItem(
               collapsed: _sidebarCollapsed,
               title: 'Runtimes',
               branchIndex: 3,
@@ -202,7 +202,7 @@ class _OpenClawNavigationShellState extends State<OpenClawNavigationShell> {
               icon: Icons.devices_outlined,
               selected: widget.navigationShell.currentIndex == 3,
             ),
-            OpenClawNavItem(
+            AppNavItem(
               collapsed: _sidebarCollapsed,
               title: 'Usage',
               branchIndex: 5,
@@ -218,7 +218,7 @@ class _OpenClawNavigationShellState extends State<OpenClawNavigationShell> {
           title: 'Management',
           initiallyExpanded: false,
           destinations: [
-            OpenClawNavItem(
+            AppNavItem(
               collapsed: _sidebarCollapsed,
               title: 'Agents',
               branchIndex: 7,
@@ -226,7 +226,7 @@ class _OpenClawNavigationShellState extends State<OpenClawNavigationShell> {
               icon: Icons.smart_toy_outlined,
               selected: widget.navigationShell.currentIndex == 7,
             ),
-            OpenClawNavItem(
+            AppNavItem(
               collapsed: _sidebarCollapsed,
               title: 'Skills',
               branchIndex: 8,
@@ -234,7 +234,7 @@ class _OpenClawNavigationShellState extends State<OpenClawNavigationShell> {
               icon: Icons.extension_outlined,
               selected: widget.navigationShell.currentIndex == 8,
             ),
-            OpenClawNavItem(
+            AppNavItem(
               collapsed: _sidebarCollapsed,
               title: 'Nodes',
               branchIndex: 9,
@@ -242,7 +242,7 @@ class _OpenClawNavigationShellState extends State<OpenClawNavigationShell> {
               icon: Icons.hub_outlined,
               selected: widget.navigationShell.currentIndex == 9,
             ),
-            OpenClawNavItem(
+            AppNavItem(
               collapsed: _sidebarCollapsed,
               title: 'Cron Jobs',
               branchIndex: 6,
@@ -258,7 +258,7 @@ class _OpenClawNavigationShellState extends State<OpenClawNavigationShell> {
           title: 'Advanced',
           initiallyExpanded: false,
           destinations: [
-            OpenClawNavItem(
+            AppNavItem(
               collapsed: _sidebarCollapsed,
               title: 'Config',
               branchIndex: 10,
@@ -266,7 +266,7 @@ class _OpenClawNavigationShellState extends State<OpenClawNavigationShell> {
               icon: Icons.settings_outlined,
               selected: widget.navigationShell.currentIndex == 10,
             ),
-            OpenClawNavItem(
+            AppNavItem(
               collapsed: _sidebarCollapsed,
               title: 'Debug',
               branchIndex: 11,
@@ -274,7 +274,7 @@ class _OpenClawNavigationShellState extends State<OpenClawNavigationShell> {
               icon: Icons.bug_report_outlined,
               selected: widget.navigationShell.currentIndex == 11,
             ),
-            OpenClawNavItem(
+            AppNavItem(
               collapsed: _sidebarCollapsed,
               title: 'Logs',
               branchIndex: 12,

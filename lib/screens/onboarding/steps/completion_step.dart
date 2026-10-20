@@ -226,8 +226,6 @@ class _CompletionStepState extends State<CompletionStep> {
 
   String _getProviderTypeLabel(ProviderType type) {
     switch (type) {
-      case ProviderType.openclaw:
-        return 'OpenClaw Gateway';
       case ProviderType.hermes:
         return 'Hermes Agent';
       case ProviderType.lmStudio:

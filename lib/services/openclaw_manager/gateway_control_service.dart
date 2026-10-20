@@ -45,7 +45,7 @@ class GatewayControlService extends ChangeNotifier {
 
   void _onConnectionChanged() {
     // Auto-check status when WebSocket connects
-    if (_connectionManager!.currentBackend == BackendType.openclaw &&
+    if (_connectionManager!.currentBackend == BackendType.hermes &&
         _connectionManager!.isConnected &&
         _connectionManager!.isGatewayHealthy()) {
       debugPrint(

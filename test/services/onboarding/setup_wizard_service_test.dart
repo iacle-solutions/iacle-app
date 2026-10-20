@@ -153,16 +153,15 @@ void main() {
       expect(configManager.saveProviderCallCount, 0);
     });
 
-    test('provider scan selects Hermes before OpenClaw and excludes support',
+    test('provider scan selects Hermes and excludes support',
         () async {
       discovery.runtimeProviders = [
-        _openClawRuntimeProvider(),
         _hermesRuntimeProvider(),
       ];
 
       await service.scanForProviders();
 
-      expect(service.state.discoveredProviders, hasLength(2));
+      expect(service.state.discoveredProviders, hasLength(1));
       expect(service.state.selectedProvider?.type, ProviderType.hermes);
     });
 
@@ -535,18 +534,6 @@ ProviderInfo _localProvider() {
     isLocal: true,
     isAvailable: true,
     role: ProviderRole.supportModelProvider,
-  );
-}
-
-ProviderInfo _openClawRuntimeProvider() {
-  return const ProviderInfo(
-    id: 'openclaw_runtime',
-    name: 'OpenClaw Gateway',
-    type: ProviderType.openclaw,
-    url: 'http://127.0.0.1:18789',
-    isLocal: true,
-    isAvailable: true,
-    role: ProviderRole.agentRuntime,
   );
 }
 

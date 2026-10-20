@@ -6,7 +6,6 @@ library;
 
 /// Provider type enumeration
 enum ProviderType {
-  openclaw,
   hermes,
   ollama,
   lmStudio,
@@ -23,7 +22,6 @@ enum ProviderRole {
 extension ProviderTypeRole on ProviderType {
   bool get isAgentRuntime {
     return switch (this) {
-      ProviderType.openclaw ||
       ProviderType.hermes ||
       ProviderType.custom =>
         true,

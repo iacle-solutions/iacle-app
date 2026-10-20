@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:pistisai/config/app_config.dart';
 import 'package:pistisai/utils/logger.dart';
@@ -832,12 +831,6 @@ class SetupWizardService extends ChangeNotifier {
 
       await _persistRuntimeSelection(providerUrl);
 
-      // Save gateway password to secure storage
-      if (_state.selectedProvider!.type == ProviderType.openclaw &&
-          _state.gatewayPassword != null &&
-          _state.gatewayPassword!.isNotEmpty) {
-        await _saveGatewayPassword(_state.gatewayPassword!);
-      }
 
       // Mark setup as complete
       // Hardcoded local_user as auth service is not currently integrated in wizard
@@ -892,22 +885,6 @@ class SetupWizardService extends ChangeNotifier {
     }
   }
 
-  /// Save gateway password to secure storage
-  Future<void> _saveGatewayPassword(String password) async {
-    try {
-      final storage = const FlutterSecureStorage();
-      // Use the same key as ConnectionManagerService._gatewayTokenKey
-      await storage.write(key: 'openclaw_gateway_token', value: password);
-      appLogger.info('[SetupWizard] Saved gateway password to secure storage');
-    } catch (e, stackTrace) {
-      appLogger.error(
-        '[SetupWizard] Failed to save gateway password',
-        error: e,
-        stackTrace: stackTrace,
-      );
-      rethrow;
-    }
-  }
 
   /// Clear error message
   void clearError() {
@@ -952,7 +929,6 @@ class SetupWizardService extends ChangeNotifier {
 
     for (final type in [
       ProviderType.hermes,
-      ProviderType.openclaw,
       ProviderType.custom,
     ]) {
       final matches = providers.where((provider) => provider.type == type);
@@ -1033,10 +1009,6 @@ class SetupWizardService extends ChangeNotifier {
         if (key != null && key.isNotEmpty) {
           await settings.setHermesApiKey(key);
         }
-        break;
-      case ProviderType.openclaw:
-        await settings.setHermesEnabled(false);
-        await settings.setActiveBackend(BackendType.openclaw);
         break;
       case ProviderType.custom:
         await settings.setActiveBackend(null);

@@ -5,7 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../config/app_config.dart';
 
-enum BackendType { openclaw, hermes }
+enum BackendType { hermes }
 
 class SettingsPreferenceService {
   static const String _proModeKey = 'settings_pro_mode';
@@ -399,7 +399,7 @@ class SettingsPreferenceService {
     if (value == null) return null;
     return BackendType.values.firstWhere(
       (e) => e.name == value,
-      orElse: () => BackendType.openclaw,
+      orElse: () => BackendType.hermes,
     );
   }
 

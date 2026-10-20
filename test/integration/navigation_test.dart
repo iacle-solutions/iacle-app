@@ -5,7 +5,6 @@ import 'package:pistisai/screens/config/config_screen.dart';
 import 'package:pistisai/services/auto_update_service.dart';
 import 'package:pistisai/services/connection_manager_service.dart';
 import 'package:pistisai/services/hermes/hermes_streaming_service.dart';
-import 'package:pistisai/services/openclaw_manager/gateway_control_service.dart';
 import 'package:pistisai/services/settings_import_export_service.dart';
 import 'package:pistisai/services/settings_preference_service.dart'
     as settings;
@@ -36,7 +35,6 @@ void main() {
     );
 
     connectionManager = ConnectionManagerService(
-      openclawGatewayService: GatewayControlService(settingsService),
       hermesStreamingService: HermesStreamingService(),
       settingsPreferenceService: settingsService,
       autoDetectOnInitialize: false,
