@@ -254,6 +254,16 @@ def _on_transform_tool_result(tool_name: str = "", args=None, result=None, **_) 
     return result + "\n\n" + _format_block(findings)
 
 
+def _sanitize(value: object, limit: int = 120) -> str:
+    """Strip control chars/newlines and truncate untrusted context values."""
+    text = str(value or "").strip()
+    # Drop newlines and control characters to prevent prompt-injection / bloat.
+    text = "".join(ch for ch in text if ch.isprintable() and ch not in "\r\n\t")
+    if len(text) > limit:
+        text = text[:limit] + "…"
+    return text
+
+
 def _time_bucket(hour: int) -> str:
     if hour < 6:
         return "night"
@@ -303,19 +313,20 @@ def _on_pre_llm_call(**kw) -> dict | None:
     if _env_flag("AIGENT_AWARENESS_DISABLE"):
         return None
     now = datetime.datetime.now()
-    platform = str(kw.get("platform") or "").strip()
-    sender = str(kw.get("sender_id") or "").strip()
+    platform = _sanitize(kw.get("platform") or "", 60)
+    sender = _sanitize(kw.get("sender_id") or "", 24)
+    device_ctx = _device_context()
     parts = [
         f"[Aigent awareness — {now.strftime('%Y-%m-%d %H:%M')} {now.strftime('%A')}]",
         f"Time of day: {_time_bucket(now.hour)}",
         f"Platform: {platform or 'unknown'}",
     ]
     for key in ("device", "location", "connection"):
-        val = _device_context().get(key)
+        val = _sanitize(device_ctx.get(key), 120)
         if val:
             parts.append(f"{key.title()}: {val}")
     if sender:
-        parts.append(f"Sender: {sender[:12]}")
+        parts.append(f"Sender: {sender}")
     parts.append(
         "Adapt response length and urgency to the situation: shorter on mobile/"
         "on-the-go, more detail at the desk; note device/location when it affects "
