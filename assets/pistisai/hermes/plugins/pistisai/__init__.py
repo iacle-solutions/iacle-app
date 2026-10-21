@@ -283,25 +283,11 @@ def _device_context_path() -> str:
     return os.path.join(home, "device-context.json")
 
 
-def _device_context() -> dict:
-    """Read device/session/location context from HERMES_HOME/device-context.json or env.
+_DEVICE_CONTEXT_FIELDS = ("device", "session", "location", "connection")
 
-    The client (Flutter app via /api/pistisai/device-context, gateway,
-    or a manual edit) writes this file so the awareness hook can surface
-    device + session + location without baking them in.
-    Env overrides: AIGENT_DEVICE, AIGENT_LOCATION, AIGENT_CONNECTION, AIGENT_SESSION.
-    """
-    path = _device_context_path()
-    try:
-        with open(path, encoding="utf-8") as f:
-            data = json.load(f)
-        if isinstance(data, dict):
-            keys = ("device", "session", "location", "connection")
-            out = {k: data[k] for k in keys if k in data}
-            if out:
-                return out
-    except (OSError, ValueError):
-        pass
+
+def _env_device_context() -> dict:
+    """Env-overridden device/session/location/connection (applies to all sources)."""
     out = {}
     if _env("AIGENT_DEVICE"):
         out["device"] = _env("AIGENT_DEVICE")
@@ -312,6 +298,66 @@ def _device_context() -> dict:
     if _env("AIGENT_CONNECTION"):
         out["connection"] = _env("AIGENT_CONNECTION")
     return out
+
+
+def _read_device_context_map() -> dict:
+    """Read the device-context store as a source-keyed map.
+
+    New format: ``{"api_server:sess-1": {"device":...}, "slack:U123": {...}}``.
+    Legacy format (flat dict with device/session/...) is wrapped under the
+    ``api_server`` key for backwards compatibility.
+    """
+    path = _device_context_path()
+    try:
+        with open(path, encoding="utf-8") as f:
+            data = json.load(f)
+        if isinstance(data, dict):
+            # Legacy flat format: top-level has one of the device fields.
+            if any(k in data for k in _DEVICE_CONTEXT_FIELDS):
+                return {"api_server": {k: data[k] for k in _DEVICE_CONTEXT_FIELDS if k in data}}
+            # New source-keyed format: values are dicts.
+            out = {}
+            for key, val in data.items():
+                if isinstance(val, dict):
+                    entry = {k: val[k] for k in _DEVICE_CONTEXT_FIELDS if k in val}
+                    if entry:
+                        out[key] = entry
+            if out:
+                return out
+    except (OSError, ValueError):
+        pass
+    env_ctx = _env_device_context()
+    if env_ctx:
+        return {"api_server": env_ctx}
+    return {}
+
+
+def _source_key(platform: str, sender_id: str, session_id: str) -> str:
+    """Key used to look up a client's device context for this message."""
+    if sender_id:
+        return f"{platform}:{sender_id}"
+    if session_id:
+        return f"{platform}:{session_id}"
+    return platform or "api_server"
+
+
+def _device_context_for(platform: str, sender_id: str, session_id: str) -> dict:
+    """Look up the device context for the source of this message.
+
+    Returns the entry for ``platform:sender`` (or ``platform:session`` /
+    ``platform`` as fallbacks). Empty dict when no client reported for it.
+    """
+    m = _read_device_context_map()
+    key = _source_key(platform, sender_id, session_id)
+    if key in m:
+        return m[key]
+    # Fall back to platform-only key (single client per platform).
+    if platform in m:
+        return m[platform]
+    # Last resort: the first api_server entry (legacy single-client).
+    if platform == "api_server" and m:
+        return next(iter(m.values()))
+    return {}
 
 
 def _on_pre_llm_call(**kw) -> dict | None:
@@ -325,7 +371,8 @@ def _on_pre_llm_call(**kw) -> dict | None:
     now = datetime.datetime.now()
     platform = _sanitize(kw.get("platform") or "", 60)
     sender = _sanitize(kw.get("sender_id") or "", 24)
-    device_ctx = _device_context()
+    session_id = _sanitize(kw.get("session_id") or "", 80)
+    device_ctx = _device_context_for(platform, sender, session_id)
     try:
         host = _sanitize(socket.gethostname(), 60)
     except OSError:
@@ -351,13 +398,19 @@ def _on_pre_llm_call(**kw) -> dict | None:
     return {"context": "\n".join(parts)}
 
 
-def _write_device_context(ctx: dict) -> None:
-    """Atomically write the client-reported device/session context."""
+def _write_device_context(source: str, ctx: dict) -> None:
+    """Atomically merge the client-reported device/session context under ``source``.
+
+    ``source`` is the key identifying the client (e.g. ``api_server:<device_id>``,
+    ``slack:<user_id>``). Other sources' entries are preserved.
+    """
     path = _device_context_path()
     os.makedirs(os.path.dirname(path), exist_ok=True)
+    m = _read_device_context_map()
+    m[source or "api_server"] = {k: ctx[k] for k in _DEVICE_CONTEXT_FIELDS if k in ctx}
     tmp = path + ".tmp"
     with open(tmp, "w", encoding="utf-8") as f:
-        json.dump(ctx, f, indent=2, sort_keys=True)
+        json.dump(m, f, indent=2, sort_keys=True)
     os.replace(tmp, path)
 
 
@@ -389,7 +442,7 @@ def _api_server_route_factory(native, adapter):
     async def _get(request):
         if (err := _auth(request)) is not None:
             return err
-        return web.json_response({"context": _device_context()})
+        return web.json_response({"context": _read_device_context_map()})
 
     async def _post(request):
         if (err := _auth(request)) is not None:
@@ -408,14 +461,15 @@ def _api_server_route_factory(native, adapter):
         incoming = {k: v for k, v in incoming.items() if v}
         if not incoming:
             return web.json_response({"detail": "no fields provided"}, status=400)
-        ctx = _device_context()
-        ctx.update(incoming)
+        source = _sanitize(body.get("source") or "api_server", 120)
+        if not source:
+            source = "api_server"
         try:
-            _write_device_context(ctx)
+            _write_device_context(source, incoming)
         except OSError as e:
             return web.json_response(
                 {"detail": f"could not write context: {e}"}, status=500)
-        return web.json_response({"context": ctx})
+        return web.json_response({"context": _read_device_context_map()})
 
     async def _delete(request):
         if (err := _auth(request)) is not None:

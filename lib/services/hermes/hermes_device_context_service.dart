@@ -26,6 +26,18 @@ class HermesDeviceContextService {
   static String? _sessionId;
   static String get sessionId => _sessionId ??= _newSessionId();
 
+  /// Stable device id for this install/launch. Used as the per-source key so
+  /// multiple desktops on one Hermes host don't stomp each other's context.
+  static String? _deviceId;
+  static String get deviceId => _deviceId ??= _newDeviceId();
+
+  static String _newDeviceId() {
+    final rnd = Random.secure();
+    final suffix =
+        List<int>.generate(8, (_) => rnd.nextInt(16)).map((n) => n.toRadixString(16)).join();
+    return 'dev-${DateTime.now().millisecondsSinceEpoch}-$suffix';
+  }
+
   static String _newSessionId() {
     final rnd = Random.secure();
     final suffix =
@@ -49,12 +61,16 @@ class HermesDeviceContextService {
   Future<void> report({String? location, String? connection}) async {
     try {
       final body = jsonEncode(<String, dynamic>{
+        'source': 'api_server:$deviceId',
         'session': sessionId,
         'device': deviceKind,
         if (location != null && location.isNotEmpty) 'location': location,
         if (connection != null && connection.isNotEmpty) 'connection': connection,
       });
-      final headers = <String, String>{'Content-Type': 'application/json'};
+      final headers = <String, String>{
+        'Content-Type': 'application/json',
+        'X-Device-Id': deviceId,
+      };
       final key = apiKey;
       if (key != null && key.isNotEmpty) {
         headers['Authorization'] = 'Bearer $key';
