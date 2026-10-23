@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:pistisai/config/app_config.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart' as shelf_io;
@@ -29,6 +30,19 @@ class PistisaiUiServer {
   bool get isRunning => _server != null;
 
   static String defaultDocumentRoot() {
+    // 1. Packaged install: build/web beside the executable
+    final exeDir = Directory(Platform.resolvedExecutable).parent;
+    final candidate1 = File('${exeDir.path}${Platform.pathSeparator}build${Platform.pathSeparator}web${Platform.pathSeparator}index.html');
+    if (candidate1.existsSync()) {
+      return candidate1.parent.path;
+    }
+    // 2. Known install dir: /opt/pistisai/build/web (Linux AppImage/FPM)
+    const installCandidate = '/opt/pistisai/build/web';
+    final candidate2 = File('$installCandidate/index.html');
+    if (candidate2.existsSync()) {
+      return installCandidate;
+    }
+    // 3. Dev fallback: Directory.current/build/web
     return <String>[
       Directory.current.path,
       'build',
@@ -46,6 +60,7 @@ class PistisaiUiServer {
       return;
     }
     if (!hasDocumentRoot) {
+      debugPrint('[PistisaiUiServer] No document root found at $documentRoot — UI server not started. Run `flutter build web` or ensure build/web is packaged with the executable.');
       return;
     }
     _server = await shelf_io.serve(_handle, address, port);
