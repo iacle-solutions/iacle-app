@@ -35,11 +35,7 @@ void main() {
       );
       expect(
         report.stepNamed(HermesBotInstallService.desktopStep)!.status,
-        HermesBotInstallStatus.skipped,
-      );
-      expect(
-        report.stepNamed(HermesBotInstallService.desktopStep)!.detail,
-        contains('webview'),
+        HermesBotInstallStatus.installed,
       );
       expect(
         report.stepNamed(HermesBotInstallService.profileStep)!.status,
@@ -66,10 +62,8 @@ void main() {
       expect(skill.existsSync(), isTrue);
       expect(plugin.readAsStringSync(), contains('name: pistisai'));
       expect(
-        Directory(_join(home.path, 'plugins/pistisai'))
-            .listSync()
-            .any((entity) => entity.path.endsWith('plugin.js')),
-        isFalse,
+        File(_join(home.path, 'plugins/pistisai/desktop/plugin.js')).existsSync(),
+        isTrue,
       );
 
       for (final file in <File>[plugin, hook, soul, scanner, skill]) {
@@ -123,6 +117,10 @@ void main() {
       );
       expect(
         again.stepNamed(HermesBotInstallService.profileStep)!.status,
+        HermesBotInstallStatus.skipped,
+      );
+      expect(
+        again.stepNamed(HermesBotInstallService.desktopStep)!.status,
         HermesBotInstallStatus.skipped,
       );
       expect(
@@ -269,7 +267,7 @@ void main() {
       );
       expect(
         report.stepNamed(HermesBotInstallService.desktopStep)!.status,
-        HermesBotInstallStatus.skipped,
+        HermesBotInstallStatus.failed,
       );
     });
   });
