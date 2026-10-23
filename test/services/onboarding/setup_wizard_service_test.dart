@@ -75,7 +75,9 @@ void main() {
 
     test('complete setup persistence failure is deterministic and not loading',
         () async {
+      service.selectConnectionMethod(ConnectionMethod.custom);
       service.selectProvider(_customRuntimeProvider());
+      service.setCustomUrl('https://example.com');
       configManager.throwOnSave = true;
 
       final bool success = await service.completeSetup();
@@ -89,6 +91,7 @@ void main() {
     });
 
     test('invalid custom URL is rejected before persistence', () async {
+      service.selectConnectionMethod(ConnectionMethod.custom);
       service.selectProvider(_customRuntimeProvider());
       service.setCustomUrl('not-a-valid-url');
 
@@ -106,6 +109,7 @@ void main() {
     test('blank custom URL is rejected before persistence in custom mode',
         () async {
       service.selectConnectionMethod(ConnectionMethod.custom);
+      service.selectConnectionMethod(ConnectionMethod.custom);
       service.selectProvider(_customRuntimeProvider());
       service.setCustomUrl('   ');
 
@@ -121,11 +125,9 @@ void main() {
     });
 
     test('stale custom URL does not block Hermes runtime completion', () async {
-      service.selectConnectionMethod(ConnectionMethod.custom);
       service.selectProvider(_customRuntimeProvider());
       service.setCustomUrl('not-a-valid-url');
 
-      service.selectConnectionMethod(ConnectionMethod.hermes);
       service.selectHermesLocation(HermesLocation.local);
       service.setHermesUrl('http://127.0.0.1:8642');
 
@@ -183,7 +185,6 @@ void main() {
     });
 
     test('Hermes tailscale setup requires API key before completion', () async {
-      service.selectConnectionMethod(ConnectionMethod.hermes);
       service.selectHermesLocation(HermesLocation.tailscale);
       service.setHermesUrl('http://100.64.0.5:8642');
       service.selectProvider(_hermesRuntimeProvider().copyWith(
@@ -201,7 +202,6 @@ void main() {
     });
 
     test('Hermes tailscale setup completes with URL and API key', () async {
-      service.selectConnectionMethod(ConnectionMethod.hermes);
       service.selectHermesLocation(HermesLocation.tailscale);
       service.setHermesUrl('http://100.64.0.5:8642');
       service.setHermesApiKey('psk_test_key');
@@ -227,15 +227,14 @@ void main() {
           listServePorts: () async => <int>[],
         ),
       );
-      service.selectConnectionMethod(ConnectionMethod.hermes);
       service.selectHermesLocation(HermesLocation.local);
       service.setHermesUrl('http://127.0.0.1:8642');
-      service.goToStep(4);
+      service.goToStep(3);
 
       await service.testConnection('http://127.0.0.1:8642');
       service.nextStep();
 
-      expect(service.state.currentStep, 4);
+      expect(service.state.currentStep, 3);
       expect(service.state.errorMessage, hermesUnreachableMessage);
     });
 
@@ -254,7 +253,6 @@ void main() {
           listServePorts: () async => <int>[51910],
         ),
       );
-      service.selectConnectionMethod(ConnectionMethod.hermes);
       service.selectHermesLocation(HermesLocation.local);
 
       await service.resolveLocalHermes();
@@ -264,11 +262,11 @@ void main() {
       expect(service.state.detectedHermesKind,
           HermesEndpointKind.desktopDashboard);
 
-      service.goToStep(4);
+      service.goToStep(3);
       await service.testConnection(service.state.hermesUrl!);
       service.nextStep();
 
-      expect(service.state.currentStep, 4);
+      expect(service.state.currentStep, 3);
       expect(service.state.errorMessage, contains('51910'));
       expect(service.state.errorMessage, contains('agent API'));
     });
@@ -304,46 +302,26 @@ void main() {
           generateKey: () => 'psk_0123456789abcdef',
         ),
       );
-      service.selectConnectionMethod(ConnectionMethod.hermes);
       service.selectHermesLocation(HermesLocation.local);
       service.setHermesUrl('http://127.0.0.1:51910');
-      service.goToStep(4);
+      service.goToStep(3);
 
       await service.testConnection('http://127.0.0.1:51910');
       service.nextStep();
 
       expect(service.state.hermesUrl, 'http://127.0.0.1:8642');
       expect(service.state.hermesApiKey, 'psk_0123456789abcdef');
-      expect(service.state.currentStep, 5);
-      expect(service.state.errorMessage, isNull);
-    });
-
-    test('nextStep blocks the connection step until Hermes is chosen', () {
-      service.goToStep(1);
-
-      service.nextStep();
-
-      expect(service.state.currentStep, 1);
-      expect(
-        service.state.errorMessage,
-        'Choose Hermes Agent before continuing.',
-      );
-
-      service.selectConnectionMethod(ConnectionMethod.hermes);
-      service.nextStep();
-
-      expect(service.state.currentStep, 2);
+      expect(service.state.currentStep, 4);
       expect(service.state.errorMessage, isNull);
     });
 
     test('nextStep blocks Hermes location step until a location is chosen',
         () {
-      service.selectConnectionMethod(ConnectionMethod.hermes);
-      service.goToStep(2);
+      service.goToStep(1);
 
       service.nextStep();
 
-      expect(service.state.currentStep, 2);
+      expect(service.state.currentStep, 1);
       expect(
         service.state.errorMessage,
         'Choose where Hermes is running before continuing.',
@@ -352,7 +330,7 @@ void main() {
       service.selectHermesLocation(HermesLocation.local);
       service.nextStep();
 
-      expect(service.state.currentStep, 3);
+      expect(service.state.currentStep, 2);
       expect(service.state.errorMessage, isNull);
     });
 
@@ -373,16 +351,15 @@ void main() {
     });
 
     test('local Hermes shows the package step and Tailscale does not', () {
-      service.selectConnectionMethod(ConnectionMethod.hermes);
       service.selectHermesLocation(HermesLocation.local);
-      service.goToStep(5);
+      service.goToStep(4);
 
       expect(service.showsLocalHermesBotStep, isTrue);
       expect(service.isHermesBotStep, isTrue);
 
       service.nextStep();
 
-      expect(service.state.currentStep, 6);
+      expect(service.state.currentStep, 5);
       expect(service.isHermesBotStep, isFalse);
 
       service.selectHermesLocation(HermesLocation.tailscale);
@@ -453,7 +430,6 @@ void main() {
         configManager,
         botInstaller: installer,
       );
-      service.selectConnectionMethod(ConnectionMethod.hermes);
       service.selectHermesLocation(HermesLocation.tailscale);
       service.setHermesUrl('http://100.64.0.5:8642');
       service.setHermesApiKey('psk_test_key');

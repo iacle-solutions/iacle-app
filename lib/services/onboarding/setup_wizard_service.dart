@@ -127,7 +127,6 @@ enum _WizardOperation {
 
 enum _HermesStepKind {
   welcome,
-  connectionMethod,
   location,
   tailscaleDiscovery,
   hermesUrl,
@@ -146,7 +145,7 @@ class SetupWizardService extends ChangeNotifier {
   final HermesLocalAgentApi? _localAgentApi;
   final HermesBotInstallService? _botInstaller;
 
-  WizardState _state = const WizardState();
+  WizardState _state = const WizardState(selectedMethod: ConnectionMethod.hermes);
   Timer? _testTimeoutTimer;
   bool _setupCompleted = false; // Track if setup was completed this session
   bool _hermesAgentApiConnected = false;
@@ -287,11 +286,11 @@ class SetupWizardService extends ChangeNotifier {
       errorMessage: null,
     );
 
-    // If current step is beyond the new total, reset to step 1 (ConnectionMethodStep)
+    // If current step is beyond the new total, reset to step 0 (WelcomeStep)
     // This can happen if user goes back and changes method after progressing
     final totalSteps = _getTotalSteps();
     if (_state.currentStep >= totalSteps) {
-      _state = _state.copyWith(currentStep: 1);
+      _state = _state.copyWith(currentStep: 0);
     }
 
     notifyListeners();
@@ -338,7 +337,7 @@ class SetupWizardService extends ChangeNotifier {
     );
     final totalSteps = _getTotalSteps();
     if (_state.currentStep >= totalSteps) {
-      _state = _state.copyWith(currentStep: 2);
+      _state = _state.copyWith(currentStep: 1);
     }
 
     notifyListeners();
@@ -380,11 +379,6 @@ class SetupWizardService extends ChangeNotifier {
     }
 
     switch (steps[_state.currentStep]) {
-      case _HermesStepKind.connectionMethod:
-        if (_state.selectedMethod != ConnectionMethod.hermes) {
-          return 'Choose Hermes Agent before continuing.';
-        }
-        return null;
       case _HermesStepKind.location:
         if (_state.hermesLocation == null) {
           return 'Choose where Hermes is running before continuing.';
@@ -913,7 +907,7 @@ class SetupWizardService extends ChangeNotifier {
 
   /// Reset wizard state
   void reset() {
-    _state = const WizardState();
+    _state = const WizardState(selectedMethod: ConnectionMethod.hermes);
     notifyListeners();
   }
 
@@ -924,7 +918,6 @@ class SetupWizardService extends ChangeNotifier {
   List<_HermesStepKind> _hermesStepKinds() {
     final kinds = <_HermesStepKind>[
       _HermesStepKind.welcome,
-      _HermesStepKind.connectionMethod,
       _HermesStepKind.location,
     ];
     if (_state.hermesLocation == HermesLocation.tailscale) {
