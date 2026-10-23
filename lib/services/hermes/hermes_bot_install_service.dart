@@ -96,13 +96,13 @@ class HermesBotInstallService {
       'If the JSON contains C3 or C4 findings, message the main agent with '
       'the file, line, and check. If there are no C3 or C4 findings, stay silent.';
 
-  static const desktopSkipDetail =
-      'Hermes Desktop cannot embed a page. view.showBrowser is a toggle '
-      'and the plugin SDK has no webview.';
-
   static const List<String> agentFiles = <String>[
     'plugins/pistisai/plugin.yaml',
     'plugins/pistisai/__init__.py',
+  ];
+
+  static const List<String> desktopFiles = <String>[
+    'plugins/pistisai/desktop/plugin.js',
   ];
 
   static const List<String> profileFiles = <String>[
@@ -133,7 +133,7 @@ class HermesBotInstallService {
       if (home == null || home.isEmpty) {
         return HermesBotInstallReport(<HermesBotInstallStep>[
           _failed(agentStep, 'Hermes home was not found.'),
-          _skipped(desktopStep, desktopSkipDetail),
+          _failed(desktopStep, 'Hermes home was not found.'),
           _failed(profileStep, 'Hermes home was not found.'),
           _failed(enableStep, 'Hermes home was not found.'),
           _failed(routineStep, 'Hermes home was not found.'),
@@ -142,7 +142,7 @@ class HermesBotInstallService {
 
       final steps = <HermesBotInstallStep>[
         await _copyGroup(name: agentStep, files: agentFiles, home: home),
-        _skipped(desktopStep, desktopSkipDetail),
+        await _copyGroup(name: desktopStep, files: desktopFiles, home: home),
         await _copyGroup(name: profileStep, files: profileFiles, home: home),
         await _enablePlugin(home),
         await _ensureRoutine(home),
