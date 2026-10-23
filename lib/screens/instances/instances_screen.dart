@@ -815,7 +815,7 @@ class _HermesSettingsCardState extends State<_HermesSettingsCard> {
       title: '🦞 Hermes Agent',
       subtitle: _hermesEnabled
           ? 'Active — routing chat through Hermes API server'
-          : 'Disabled — using default OpenClaw gateway',
+          : 'Disabled — using default Hermes gateway',
       children: [
         Padding(
           padding: const EdgeInsets.all(16),

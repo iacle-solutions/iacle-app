@@ -42,9 +42,9 @@ class UnifiedConnectionService extends ChangeNotifier {
       _version = isConnected ? 'Hermes Agent' : null;
       _error = isConnected ? null : 'Hermes Agent disconnected';
     } else {
-      _connectionType = 'openclaw';
-      _version = isConnected ? 'OpenClaw Gateway' : null;
-      _error = isConnected ? null : 'OpenClaw Gateway disconnected';
+      _connectionType = 'hermes';
+      _version = isConnected ? 'Hermes Gateway' : null;
+      _error = isConnected ? null : 'Hermes Gateway disconnected';
     }
 
     notifyListeners();

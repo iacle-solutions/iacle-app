@@ -96,7 +96,7 @@ class _AgentStatusScreenState extends State<AgentStatusScreen> {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    'Real-time monitoring of OpenClaw agent sessions',
+                    'Real-time monitoring of Hermes agent sessions',
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           color: Theme.of(context)
                               .colorScheme

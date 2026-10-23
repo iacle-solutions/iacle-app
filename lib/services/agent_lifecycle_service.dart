@@ -198,10 +198,10 @@ class AgentLifecycleService extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// List all available agents from OpenClaw Gateway
+  /// List all available agents from Hermes Gateway
   Future<List<AgentInfo>> listAgents() async {
     if (!isReady) {
-      _lastError = 'Not connected to OpenClaw Gateway';
+      _lastError = 'Not connected to Hermes Gateway';
       notifyListeners();
       throw Exception(_lastError);
     }
@@ -260,7 +260,7 @@ class AgentLifecycleService extends ChangeNotifier {
   /// Start an agent
   Future<AgentOperationResult> startAgent(String agentId) async {
     if (!isReady) {
-      return AgentOperationResult.failure('Not connected to OpenClaw Gateway');
+      return AgentOperationResult.failure('Not connected to Hermes Gateway');
     }
 
     try {
@@ -332,7 +332,7 @@ class AgentLifecycleService extends ChangeNotifier {
   /// Stop an agent
   Future<AgentOperationResult> stopAgent(String agentId) async {
     if (!isReady) {
-      return AgentOperationResult.failure('Not connected to OpenClaw Gateway');
+      return AgentOperationResult.failure('Not connected to Hermes Gateway');
     }
 
     try {
@@ -405,7 +405,7 @@ class AgentLifecycleService extends ChangeNotifier {
   /// Get agent status
   Future<AgentInfo?> getAgentStatus(String agentId) async {
     if (!isReady) {
-      _lastError = 'Not connected to OpenClaw Gateway';
+      _lastError = 'Not connected to Hermes Gateway';
       return null;
     }
 

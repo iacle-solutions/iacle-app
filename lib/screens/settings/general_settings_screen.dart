@@ -64,8 +64,8 @@ class GeneralSettingsScreen extends StatelessWidget {
                 Card(
                   child: ListTile(
                     leading: const Icon(Icons.extension),
-                    title: const Text('OpenClaw Skills'),
-                    subtitle: const Text('Install and manage OpenClaw skills'),
+                    title: const Text('Hermes Skills'),
+                    subtitle: const Text('Install and manage Hermes skills'),
                     trailing: const Icon(Icons.chevron_right),
                     onTap: () => context.go('/settings/openclaw-skills'),
                   ),

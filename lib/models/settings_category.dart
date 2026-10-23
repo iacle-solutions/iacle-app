@@ -264,7 +264,7 @@ class SettingsCategoryMetadata {
       case SettingsCategoryIds.localLLMProviders:
         return 'Local LLM Providers';
       case SettingsCategoryIds.openClawGateway:
-        return 'OpenClaw Gateway';
+        return 'Hermes Gateway';
       case SettingsCategoryIds.account:
         return 'Account';
       case SettingsCategoryIds.privacy:

@@ -41,16 +41,16 @@ class LLMProviderSettingsScreen extends StatelessWidget {
                         ),
                         const SizedBox(width: 8),
                         Text(
-                          'OpenClaw Powered',
+                          'Hermes Powered',
                           style: Theme.of(context).textTheme.titleMedium,
                         ),
                       ],
                     ),
                     const SizedBox(height: 16),
                     const Text(
-                      'This application is powered by OpenClaw. '
+                      'This application is powered by Hermes. '
                       'All LLM processing, including Chat and Vision-based GUI Automation, '
-                      'is handled via your local OpenClaw Gateway.',
+                      'is handled via your local Hermes Gateway.',
                     ),
                     const SizedBox(height: 16),
                     ElevatedButton.icon(
@@ -79,7 +79,7 @@ class LLMProviderSettingsScreen extends StatelessWidget {
                     const SizedBox(height: 8),
                     ListTile(
                       leading: Icon(Icons.check_circle, color: colors.success),
-                      title: const Text('OpenClaw Gateway'),
+                      title: const Text('Hermes Gateway'),
                       subtitle: const Text('Primary LLM provider (Connected)'),
                     ),
                     ListTile(
@@ -90,7 +90,7 @@ class LLMProviderSettingsScreen extends StatelessWidget {
                     ListTile(
                       leading: Icon(Icons.check_circle, color: colors.success),
                       title: const Text('Cloud Relay'),
-                      subtitle: const Text('Secure remote access via OpenClaw'),
+                      subtitle: const Text('Secure remote access via Hermes'),
                     ),
                   ],
                 ),
