@@ -88,7 +88,7 @@ class SharedWebSocket {
     if (isLocalConnection &&
         (_gatewayToken == null || _gatewayToken!.isEmpty)) {
       throw Exception(
-          'OpenClaw Gateway token not configured. Please run: openclaw gateway token');
+          'Hermes Gateway token not configured. Please run: hermes gateway token');
     }
 
     // Listen and broadcast messages, handling challenge in listener
@@ -351,7 +351,7 @@ class CloudStreamingService extends StreamingService {
       notifyListeners();
 
       debugPrint(
-        '☁ [CloudStreaming] Connected to OpenClaw Gateway '
+        '☁ [CloudStreaming] Connected to Hermes Gateway '
         '(${stopwatch.elapsedMilliseconds}ms)',
       );
     } catch (e) {

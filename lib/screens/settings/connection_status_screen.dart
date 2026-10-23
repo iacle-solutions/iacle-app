@@ -277,7 +277,7 @@ class _ConnectionStatusScreenState extends State<ConnectionStatusScreen> {
           gatewayLabel = 'Hermes Agent';
           gatewayUrl = AppConfig.defaultHermesUrl;
         } else {
-          gatewayLabel = 'OpenClaw Gateway';
+          gatewayLabel = 'Hermes Gateway';
           gatewayUrl = AppConfig.gatewayUrl;
         }
 

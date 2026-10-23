@@ -120,7 +120,7 @@ class _AgentStatusWidgetState extends State<AgentStatusWidget> {
             const CircularProgressIndicator(),
             const SizedBox(height: 16),
             Text(
-              'Connecting to OpenClaw...',
+              'Connecting to Hermes...',
               style: Theme.of(context).textTheme.bodyMedium,
             ),
           ],

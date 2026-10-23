@@ -242,7 +242,7 @@ class AppConfig {
   // Debug logging for configuration
   static void logConfiguration() {
     debugPrint('[DEBUG] AppConfig loaded:');
-    debugPrint('[DEBUG] - OpenClaw Gateway: $defaultGatewayUrl');
+    debugPrint('[DEBUG] - Hermes Gateway: $defaultGatewayUrl');
     debugPrint('[DEBUG] - Bridge Status URL: $bridgeStatusUrl');
     debugPrint('[DEBUG] - Bridge Register URL: $bridgeRegisterUrl');
     debugPrint('[DEBUG] - Admin Server URL: $adminServerUrl');

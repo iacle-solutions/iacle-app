@@ -30,16 +30,16 @@ class GuiAutomationService extends ChangeNotifier {
     notifyListeners();
 
     try {
-      // Check if OpenClaw Gateway is running
+      // Check if Hermes Gateway is running
       final response = await http.get(Uri.parse('$_modelEndpoint/status'));
       if (response.statusCode == 200) {
         _isInitialized = true;
-        _status = 'Ready - OpenClaw connected';
+        _status = 'Ready - Hermes connected';
       } else {
-        _status = 'Warning: OpenClaw Gateway not running';
+        _status = 'Warning: Hermes Gateway not running';
       }
     } catch (e) {
-      _status = 'OpenClaw not available - GUI features limited';
+      _status = 'Hermes not available - GUI features limited';
     }
 
     notifyListeners();
