@@ -140,10 +140,7 @@ jobs:
           arch: x86_64
           profile: pixel_6
           disable-animations: true
-          script: |
-            bash scripts/run_integration_test_rig.sh \
-              --android-only --no-hub --no-docker-build --no-flutter-build --no-cleanup \
-              --hub-host 10.0.2.2
+          script: bash scripts/run_integration_test_rig.sh --android-only --emulator-android --no-hub --no-docker-build --no-flutter-build --no-cleanup --hub-host 10.0.2.2
 
       - name: "📹 Download test recording"
         if: always()
