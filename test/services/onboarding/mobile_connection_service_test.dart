@@ -35,6 +35,41 @@ void main() {
     });
   });
 
+  group('isAllowedTailscaleHubHost', () {
+    test('allows MagicDNS and CGNAT, rejects LAN and public hosts', () {
+      expect(
+        MobileConnectionService.isAllowedTailscaleHubHost(
+          'pc.tailnet.ts.net',
+        ),
+        isTrue,
+      );
+      expect(
+        MobileConnectionService.isAllowedTailscaleHubHost('100.64.1.20'),
+        isTrue,
+      );
+      expect(
+        MobileConnectionService.isAllowedTailscaleHubHost('100.127.0.1'),
+        isTrue,
+      );
+      expect(
+        MobileConnectionService.isAllowedTailscaleHubHost('192.168.1.20'),
+        isFalse,
+      );
+      expect(
+        MobileConnectionService.isAllowedTailscaleHubHost('8.8.8.8'),
+        isFalse,
+      );
+      expect(
+        MobileConnectionService.isAllowedTailscaleHubHost('evil.example.com'),
+        isFalse,
+      );
+      expect(
+        MobileConnectionService.isAllowedTailscaleHubHost('desktop'),
+        isFalse,
+      );
+    });
+  });
+
   group('MobileConnectionService', () {
     test('shows the connection screen until a mode is saved', () async {
       final service = MobileConnectionService();
@@ -88,10 +123,26 @@ void main() {
         },
       );
 
-      final result = await service.probeHub('desktop');
+      final result = await service.probeHub('pc.tailnet.ts.net');
       expect(result.success, isTrue);
       expect(result.foundPrimaryHub, isFalse);
-      expect(result.hermesUrl, 'http://desktop:8642');
+      expect(result.hermesUrl, 'http://pc.tailnet.ts.net:8642');
+    });
+
+    test('does not probe a non-tailnet host even if it answers /health',
+        () async {
+      var probed = false;
+      final service = MobileConnectionService(
+        httpGet: (uri) async {
+          probed = true;
+          return http.Response('OK', 200);
+        },
+      );
+
+      final result = await service.probeHub('192.168.1.20');
+      expect(result.success, isFalse);
+      expect(probed, isFalse);
+      expect(result.message, contains('.ts.net'));
     });
   });
 }

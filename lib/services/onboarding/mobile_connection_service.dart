@@ -79,7 +79,7 @@ class MobileConnectionService extends ChangeNotifier {
     return !_complete;
   }
 
-  /// Accepts a Tailscale IP, MagicDNS name, or full HTTP URL.
+  /// Accepts a Tailscale MagicDNS name, CGNAT address, or full HTTP URL.
   static String? normalizeHubHost(String raw) {
     final trimmed = raw.trim();
     if (trimmed.isEmpty) {
@@ -97,13 +97,45 @@ class MobileConnectionService extends ChangeNotifier {
     return host.isEmpty ? null : host;
   }
 
+  /// Tailscale MagicDNS (`*.ts.net`) or CGNAT (`100.64.0.0/10`) only.
+  static bool isAllowedTailscaleHubHost(String host) {
+    final normalized = host.trim().toLowerCase();
+    if (normalized.isEmpty) {
+      return false;
+    }
+    if (normalized.endsWith('.ts.net') && normalized != '.ts.net') {
+      return true;
+    }
+    final parts = normalized.split('.');
+    if (parts.length != 4) {
+      return false;
+    }
+    final octets = <int>[];
+    for (final part in parts) {
+      final value = int.tryParse(part);
+      if (value == null || value < 0 || value > 255) {
+        return false;
+      }
+      octets.add(value);
+    }
+    return octets[0] == 100 && octets[1] >= 64 && octets[1] <= 127;
+  }
+
   Future<MobileHubProbeResult> probeHub(String rawHost) async {
     final host = normalizeHubHost(rawHost);
     if (host == null) {
       return const MobileHubProbeResult(
         success: false,
         hermesUrl: '',
-        message: 'Enter the Tailscale address of your desktop hub.',
+        message: 'Enter the Tailscale MagicDNS name of your desktop hub.',
+      );
+    }
+    if (!isAllowedTailscaleHubHost(host)) {
+      return const MobileHubProbeResult(
+        success: false,
+        hermesUrl: '',
+        message:
+            'Use a Tailscale MagicDNS name ending in .ts.net, or a 100.x address on your tailnet.',
       );
     }
 

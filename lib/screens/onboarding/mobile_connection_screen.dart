@@ -113,7 +113,7 @@ class _MobileConnectionScreenState extends State<MobileConnectionScreen> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          'Desktop Tailscale name or 100.x address',
+          'Desktop Tailscale MagicDNS name',
           style: Theme.of(context).textTheme.titleSmall,
         ),
         const SizedBox(height: 8),
@@ -122,9 +122,9 @@ class _MobileConnectionScreenState extends State<MobileConnectionScreen> {
           autocorrect: false,
           keyboardType: TextInputType.url,
           decoration: InputDecoration(
-            hintText: 'pc-name or 100.x.y.z',
+            hintText: 'pc-name.tailnet.ts.net',
             helperText:
-                'Same tailnet as the PC running Pistisai. Hermes stays on port ${AppConfig.defaultHermesPort}.',
+                'Same tailnet as the PC. Android allows cleartext only to *.ts.net. Hermes stays on port ${AppConfig.defaultHermesPort}.',
           ),
         ),
         const SizedBox(height: 16),
