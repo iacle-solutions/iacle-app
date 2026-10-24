@@ -45,6 +45,8 @@ import 'package:pistisai/config/navigator_key.dart';
 import 'package:pistisai/utils/platform_file_utils.dart'
     if (dart.library.html) 'package:pistisai/utils/platform_file_utils_web.dart';
 import 'package:pistisai/utils/single_instance.dart';
+import 'package:pistisai/utils/platform_helper.dart';
+import 'package:pistisai/services/onboarding/mobile_connection_service.dart';
 
 // navigatorKey is now imported from config/navigator_key.dart
 
@@ -69,8 +71,9 @@ void main([List<String> args = const []]) async {
   // Flutter requires WidgetsFlutterBinding to be initialized first
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Ensure only one instance runs at a time (desktop only, no-op on web)
-  if (!kIsWeb) {
+  // Ensure only one instance runs at a time (desktop hub only).
+  // Android/iOS must not bind the desktop lock port or they will exit.
+  if (PlatformHelper.isDesktop) {
     final isFirst = await SingleInstance.acquireLock();
     if (!isFirst) {
       debugPrint('[Main] Another instance is already running. Exiting.');
@@ -88,7 +91,9 @@ void main([List<String> args = const []]) async {
   // Register the desktop camera backend (Linux/macOS/Windows) for the
   // `camera` plugin. The official plugin has no Linux impl; camera_desktop
   // provides one via camera_platform_interface. No-op on web (stub).
-  CameraDesktopPlugin.registerWith();
+  if (PlatformHelper.isDesktop) {
+    CameraDesktopPlugin.registerWith();
+  }
 
   // Immediate logging to verify Dart entry point is reached
   // Build trigger: force new release tag
@@ -252,7 +257,8 @@ class _PistisaiAppState extends State<PistisaiApp> {
               backgroundColor: AppTheme.colorsOf(context).backgroundCard,
               body: Center(
                 child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(AppTheme.colorsOf(context).info),
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                      AppTheme.colorsOf(context).info),
                 ),
               ),
             ),
@@ -343,9 +349,11 @@ class _PistisaiAppState extends State<PistisaiApp> {
       _addProviderIfAvailable<PlatformDetectionService>(
           providersList, 'PlatformDetectionService');
 
-        // Add Setup Wizard Service
+      // Add Setup Wizard Service
       _addProviderIfAvailable<SetupWizardService>(
           providersList, 'SetupWizardService');
+      _addProviderIfAvailable<MobileConnectionService>(
+          providersList, 'MobileConnectionService');
 
       debugPrint(
           '[App] Returning MultiProvider with ${providersList.length} providers');
@@ -365,7 +373,8 @@ class _PistisaiAppState extends State<PistisaiApp> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.error_outline, size: 64, color: AppTheme.colorsOf(context).danger),
+                Icon(Icons.error_outline,
+                    size: 64, color: AppTheme.colorsOf(context).danger),
                 const SizedBox(height: 16),
                 const Text('Initialization Error'),
                 const SizedBox(height: 8),
@@ -489,8 +498,10 @@ Future<void> _handleCommandLineArgs(List<String> args) async {
 
         // Process the OAuth callback directly
         // This completes the authentication flow
-        final session = await Supabase.instance.client.auth.getSessionFromUrl(Uri.parse(callbackUrl));
-        debugPrint('[Main] OAuth callback processed, session: ${session.session}');
+        final session = await Supabase.instance.client.auth
+            .getSessionFromUrl(Uri.parse(callbackUrl));
+        debugPrint(
+            '[Main] OAuth callback processed, session: ${session.session}');
 
         debugPrint('[Main] OAuth session user: ${session.session.user.email}');
       } catch (e) {
@@ -545,7 +556,8 @@ class _AppRouterHostState extends State<_AppRouterHost> {
           backgroundColor: AppTheme.colorsOf(context).backgroundCard,
           body: Center(
             child: CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(AppTheme.colorsOf(context).info),
+              valueColor: AlwaysStoppedAnimation<Color>(
+                  AppTheme.colorsOf(context).info),
             ),
           ),
         ),
@@ -593,11 +605,14 @@ class _AppRouterHostState extends State<_AppRouterHost> {
 
   void _initializeRouter(AuthService authService) {
     final setupWizardService = di.serviceLocator.get<SetupWizardService>();
+    final mobileConnectionService =
+        di.serviceLocator.get<MobileConnectionService>();
     setState(() {
       _router = AppRouter.createRouter(
         navigatorKey: navigatorKey,
         authService: authService,
         setupWizardService: setupWizardService,
+        mobileConnectionService: mobileConnectionService,
       );
     });
   }

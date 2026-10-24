@@ -13,8 +13,7 @@ class AppConfig {
   static const String homepageUrl = 'https://pistisai.app';
   static const String appUrl = 'https://app.pistisai.app';
   static const String adminCenterUrl = 'https://admin.pistisai.app';
-  static const String githubUrl =
-      'https://github.com/pistisAI/pistisai-app';
+  static const String githubUrl = 'https://github.com/pistisAI/pistisai-app';
   static const String githubReleasesUrl =
       'https://github.com/pistisAI/pistisai-app/releases/latest';
 
@@ -56,10 +55,8 @@ class AppConfig {
   static const String apiBaseUrl = 'https://api.pistisai.app';
   static const Duration apiTimeout = Duration(seconds: 30);
   // Tunnel Configuration (SSH over WebSocket)
-  static const String tunnelSshUrl =
-      'wss://api.pistisai.app/ssh';
-  static const String tunnelSshUrlDev =
-      'wss://api.pistisai.app/ssh';
+  static const String tunnelSshUrl = 'wss://api.pistisai.app/ssh';
+  static const String tunnelSshUrlDev = 'wss://api.pistisai.app/ssh';
   // UI Configuration
   static const double maxContentWidth = 1200.0;
   static const double mobileBreakpoint = 768.0;
@@ -104,6 +101,12 @@ class AppConfig {
   static String get defaultHermesUrl =>
       'http://$defaultHermesHost:$defaultHermesPort';
 
+  /// OpenAI-compatible router hosted by the primary desktop app hub.
+  static const int defaultRouterPort = 1337;
+
+  /// Unauthenticated discovery path advertised by the desktop hub.
+  static const String hubPath = '/api/pistisai/hub';
+
   /// Restore the Hermes API port when a loopback URL was saved without one.
   ///
   /// `ProviderInfo.baseUrl` strips the port, and that host-only value used to
@@ -125,6 +128,7 @@ class AppConfig {
     }
     return trimmed;
   }
+
   static const Duration gatewayTimeout = Duration(seconds: 60);
 
   // Runtime values (initialized from env vars or defaults)

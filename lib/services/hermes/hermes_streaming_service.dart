@@ -29,7 +29,7 @@ import '../../utils/logger.dart';
 /// - GET  /v1/models              — list available models
 /// - GET  /health                 — health check
 class HermesStreamingService extends StreamingService {
-  final String _baseUrl;
+  String _baseUrl;
   final String? _apiKey;
 
   /// HTTP client — kept alive for connection pooling.
@@ -67,6 +67,17 @@ class HermesStreamingService extends StreamingService {
         _apiKey = apiKey;
 
   String get baseUrl => _baseUrl;
+
+  /// Point this client at a newly discovered desktop hub (mobile Tailscale).
+  void updateBaseUrl(String url) {
+    final trimmed = url.trim();
+    if (trimmed.isEmpty) {
+      return;
+    }
+    _baseUrl = trimmed.endsWith('/')
+        ? trimmed.substring(0, trimmed.length - 1)
+        : trimmed;
+  }
 
   /// Stream of structured agent events for consumers who want full
   /// agent awareness (tool calls, reasoning, lifecycle).
@@ -813,18 +824,16 @@ class HermesStreamingService extends StreamingService {
   Future<List<Message>?> fetchSessionMessages(String sessionId) async {
     try {
       final client = _client ?? http.Client();
-      final response = await client
-          .get(
-            Uri.parse(
-              '$_baseUrl/api/sessions/${Uri.encodeComponent(sessionId)}/messages'
-              '?order=oldest&limit=500',
-            ),
-            headers: {
-              ..._headers(),
-              'Accept': 'application/json',
-            },
-          )
-          .timeout(const Duration(seconds: 8));
+      final response = await client.get(
+        Uri.parse(
+          '$_baseUrl/api/sessions/${Uri.encodeComponent(sessionId)}/messages'
+          '?order=oldest&limit=500',
+        ),
+        headers: {
+          ..._headers(),
+          'Accept': 'application/json',
+        },
+      ).timeout(const Duration(seconds: 8));
 
       if (response.statusCode == 404) return const [];
       if (response.statusCode != 200) return null;

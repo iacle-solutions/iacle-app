@@ -6,6 +6,11 @@ void main() {
     expect(AppConfig.skipDeviceIdentity, isFalse);
   });
 
+  test('desktop hub discovery constants stay aligned with the router', () {
+    expect(AppConfig.defaultRouterPort, 1337);
+    expect(AppConfig.hubPath, '/api/pistisai/hub');
+  });
+
   group('normalizeHermesUrl', () {
     test('adds the default port to loopback URLs that stripped it', () {
       expect(

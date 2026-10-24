@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
 import 'package:window_manager/window_manager.dart';
 import '../services/window_manager_service.dart';
+import '../utils/platform_helper.dart';
 
 /// Widget that listens to window events and handles them appropriately
 class WindowListenerWidget extends StatefulWidget {
@@ -24,7 +24,7 @@ class _WindowListenerWidgetState extends State<WindowListenerWidget>
   }
 
   Future<void> _initializeWindowListener() async {
-    if (!kIsWeb) {
+    if (PlatformHelper.isDesktop) {
       try {
         // Initialize window manager service
         await _windowManager.initialize();
@@ -43,7 +43,7 @@ class _WindowListenerWidgetState extends State<WindowListenerWidget>
 
   @override
   void dispose() {
-    if (!kIsWeb) {
+    if (PlatformHelper.isDesktop) {
       try {
         windowManager.removeListener(this);
         debugPrint(' [WindowListener] Window listener disposed');

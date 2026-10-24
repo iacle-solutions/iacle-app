@@ -12,6 +12,7 @@ import 'avatar/personality_engine.dart';
 import 'avatar/evolution_tracker.dart';
 import 'conscience_storage_service.dart';
 import 'voice/cloud_tts_service.dart';
+import 'package:pistisai/config/app_config.dart';
 import 'package:pistisai/models/avatar/personality_models.dart';
 import 'package:pistisai/utils/http_constants.dart';
 
@@ -37,7 +38,11 @@ class RouterServer {
   HttpServer? _server;
 
   /// Endpoints that remain accessible without authentication.
-  static const _publicPaths = {'/health', '/v1/models'};
+  static const _publicPaths = {
+    '/health',
+    '/v1/models',
+    AppConfig.hubPath,
+  };
 
   RouterServer({
     this.port = 1337,
@@ -62,6 +67,9 @@ class RouterServer {
 
     // GET /health
     router.get('/health', (Request request) => Response.ok('OK'));
+
+    // GET /api/pistisai/hub — mobile clients discover the primary desktop hub.
+    router.get(AppConfig.hubPath, _handleHub);
 
     // OpenAI-compatible local speech endpoint for Hermes voice output.
     if (ttsService != null) {
@@ -141,6 +149,18 @@ class RouterServer {
         return innerHandler(request);
       };
     };
+  }
+
+  Response _handleHub(Request request) {
+    return Response.ok(
+      jsonEncode(<String, Object>{
+        'role': 'primary_hub',
+        'product': 'Pistisai',
+        'hermesPort': AppConfig.defaultHermesPort,
+        'routerPort': _server?.port ?? port,
+      }),
+      headers: {'Content-Type': 'application/json'},
+    );
   }
 
   Response _handleListModels(Request request) {

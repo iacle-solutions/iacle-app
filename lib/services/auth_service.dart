@@ -6,6 +6,7 @@ import '../models/user_model.dart';
 import '../auth/auth_provider.dart';
 
 import 'session_bootstrap_service.dart';
+import '../utils/platform_helper.dart';
 
 /// Provider-Agnostic Authentication Service
 class AuthService extends ChangeNotifier {
@@ -88,8 +89,9 @@ class AuthService extends ChangeNotifier {
         await _handleAuthenticatedUser(currentUser);
       } else {
         debugPrint('[AuthService] No current user found');
-        // For desktop: set services loaded even without auth (local mode)
-        if (!kIsWeb) {
+        // For desktop: set services loaded even without auth (local hub mode).
+        // Mobile waits for the connection screen before this flag is set.
+        if (PlatformHelper.isDesktop) {
           debugPrint(
               '[AuthService] Desktop mode: setting services loaded = true for local use');
           _areAuthenticatedServicesLoaded.value = true;

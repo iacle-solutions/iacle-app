@@ -6,6 +6,7 @@ import 'auth_service.dart';
 import 'connection_manager_service.dart';
 import 'desktop_client_detection_service.dart';
 import '../utils/logger.dart';
+import '../utils/platform_helper.dart';
 
 /// Service that manages the initialization order of other services
 /// Ensures services that require authentication are only initialized after login
@@ -21,7 +22,7 @@ class AppInitializationService extends ChangeNotifier {
     _authService.addListener(_onAuthStateChanged);
 
     // If already authenticated or on Desktop, initialize immediately
-    if (_authService.isAuthenticated.value || !kIsWeb) {
+    if (_authService.isAuthenticated.value || PlatformHelper.isDesktop) {
       _initializeServices();
     }
   }
@@ -80,7 +81,8 @@ class AppInitializationService extends ChangeNotifier {
         '[AppInit] initializeWithContext called. isAuthenticated: ${_authService.isAuthenticated.value}, isInitialized: $_isInitialized');
 
     // Allow initialization without auth on Desktop
-    final canInitialize = _authService.isAuthenticated.value || !kIsWeb;
+    final canInitialize =
+        _authService.isAuthenticated.value || PlatformHelper.isDesktop;
 
     if (!canInitialize || _isInitialized) return;
 

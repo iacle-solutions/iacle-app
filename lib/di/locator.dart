@@ -54,6 +54,8 @@ import 'package:pistisai/services/subagent_registry_service.dart';
 import 'package:pistisai/services/desktop_control/clipboard_service.dart';
 import 'package:pistisai/services/setup_status_service.dart';
 import 'package:pistisai/services/onboarding/setup_wizard_service.dart';
+import 'package:pistisai/services/onboarding/mobile_connection_service.dart';
+import 'package:pistisai/utils/platform_helper.dart';
 import 'package:pistisai/services/openclaw_manager/gateway_control_service.dart';
 import 'package:pistisai/services/avatar/personality_engine.dart';
 import 'package:pistisai/services/avatar/evolution_tracker.dart';
@@ -249,36 +251,42 @@ Future<void> setupCoreServices() async {
         () => voiceConversationService,
       );
 
-      final hermesVoiceBridgeService = HermesVoiceBridgeService(
-        voiceConversationService: voiceConversationService,
-      );
-      serviceLocator.registerSingleton<HermesVoiceBridgeService>(
-        hermesVoiceBridgeService,
-      );
-      hermesVoiceBridgeService.start();
+      if (PlatformHelper.isDesktop) {
+        final hermesVoiceBridgeService = HermesVoiceBridgeService(
+          voiceConversationService: voiceConversationService,
+        );
+        serviceLocator.registerSingleton<HermesVoiceBridgeService>(
+          hermesVoiceBridgeService,
+        );
+        hermesVoiceBridgeService.start();
 
-      // Local microphone capture → STT → voice conversation service
-      final localVoiceInputService = LocalVoiceInputService(
-        voiceConversationService: voiceConversationService,
-        sttUrl: 'http://127.0.0.1:8646/v1/audio/transcriptions',
-      );
-      serviceLocator.registerSingleton<LocalVoiceInputService>(
-        localVoiceInputService,
-      );
+        // Local microphone capture → STT → voice conversation service
+        final localVoiceInputService = LocalVoiceInputService(
+          voiceConversationService: voiceConversationService,
+          sttUrl: 'http://127.0.0.1:8646/v1/audio/transcriptions',
+        );
+        serviceLocator.registerSingleton<LocalVoiceInputService>(
+          localVoiceInputService,
+        );
 
-      // Local Piper TTS service
-      final localTtsService = LocalTtsService();
-      serviceLocator.registerSingleton<LocalTtsService>(
-        localTtsService,
-      );
+        // Local Piper TTS service
+        final localTtsService = LocalTtsService();
+        serviceLocator.registerSingleton<LocalTtsService>(
+          localTtsService,
+        );
 
-      // Start the router server in the background.
-      unawaited(routerServer.start());
+        // Start the router server in the background.
+        unawaited(routerServer.start());
 
-      // Loopback UI for the app, separate from the router on 1337.
-      final pistisaiUiServer = PistisaiUiServer();
-      serviceLocator.registerSingleton<PistisaiUiServer>(pistisaiUiServer);
-      unawaited(pistisaiUiServer.start());
+        // Loopback UI for the app, separate from the router on 1337.
+        final pistisaiUiServer = PistisaiUiServer();
+        serviceLocator.registerSingleton<PistisaiUiServer>(pistisaiUiServer);
+        unawaited(pistisaiUiServer.start());
+      } else {
+        debugPrint(
+          '[ServiceLocator] Mobile client: skipping desktop hub servers and local STT/TTS',
+        );
+      }
     } else {
       debugPrint(
         '[ServiceLocator] Skipping desktop-only LocalBrain/router core services on web',
@@ -439,6 +447,17 @@ Future<void> setupCoreServices() async {
     );
     serviceLocator.registerSingleton<SetupWizardService>(setupWizardService);
 
+    final mobileConnectionService = MobileConnectionService(
+      settings: settingsPreferenceService,
+      hermesStreamingService:
+          serviceLocator.isRegistered<HermesStreamingService>()
+              ? serviceLocator.get<HermesStreamingService>()
+              : null,
+    );
+    serviceLocator
+        .registerSingleton<MobileConnectionService>(mobileConnectionService);
+    unawaited(mobileConnectionService.load());
+
     // Web download prompt service - can be created but won't do heavy work until auth
     final webDownloadPromptService = WebDownloadPromptService(
       authService: authService,
@@ -474,8 +493,9 @@ Future<void> setupCoreServices() async {
       debugPrint('[Locator] ✓ AuthService initialized successfully');
 
       // On Desktop, auto-bootstrap authenticated services immediately
-      // This allows local use without mandatory login
-      if (!kIsWeb) {
+      // This allows local use without mandatory login. Mobile waits for the
+      // connection screen (Tailscale hub or pistisai.app) before doing this.
+      if (PlatformHelper.isDesktop) {
         debugPrint(
             '[Locator] Desktop detected, auto-bootstrapping services for local use...');
         // Wait for authenticated services to complete initialization
@@ -588,6 +608,16 @@ Future<void> _registerWebFallbackCoreServices() async {
     serviceLocator.registerSingleton<AppInitializationService>(
       AppInitializationService(
         authService: serviceLocator.get<AuthService>(),
+      ),
+    );
+  }
+
+  if (!serviceLocator.isRegistered<MobileConnectionService>()) {
+    serviceLocator.registerSingleton<MobileConnectionService>(
+      MobileConnectionService(
+        settings: serviceLocator.isRegistered<SettingsPreferenceService>()
+            ? serviceLocator.get<SettingsPreferenceService>()
+            : SettingsPreferenceService(),
       ),
     );
   }

@@ -2,8 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:pistisai/database/drift_local_brain.dart' as brain;
-import 'package:pistisai/services/providers/base_provider.dart'
-    as provider;
+import 'package:pistisai/services/providers/base_provider.dart' as provider;
 import 'package:pistisai/services/rate_limit_manager.dart';
 import 'package:pistisai/services/router_server.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -100,6 +99,19 @@ void main() {
       expect(health.body, 'OK');
       expect(models.statusCode, HttpStatus.ok);
       expect(jsonDecode(models.body), containsPair('object', 'list'));
+    });
+
+    test('advertises an unauthenticated primary hub discovery document',
+        () async {
+      final baseUrl = await _startRouter(serverRef: (value) => server = value);
+
+      final response =
+          await http.get(baseUrl.replace(path: '/api/pistisai/hub'));
+      expect(response.statusCode, HttpStatus.ok);
+      final dynamic body = jsonDecode(response.body);
+      expect(body, containsPair('role', 'primary_hub'));
+      expect(body, containsPair('product', 'Pistisai'));
+      expect(body, containsPair('hermesPort', 8642));
     });
   });
 }

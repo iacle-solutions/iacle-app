@@ -11,6 +11,7 @@ import '../services/native_tray_service.dart'
 import '../services/window_manager_service.dart'
     if (dart.library.html) '../services/window_manager_service_stub.dart';
 import '../utils/logger.dart';
+import '../utils/platform_helper.dart';
 
 /// Ensures the native tray is configured once all required providers exist.
 /// Enhanced with improved error handling and resource monitoring.
@@ -35,8 +36,9 @@ class _TrayInitializerState extends State<TrayInitializer> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     appLogger.info('[TrayInitializer] didChangeDependencies called');
-    if (_trayInitialized || kIsWeb) {
-      appLogger.info('[TrayInitializer] Already initialized or web, skipping');
+    if (_trayInitialized || kIsWeb || PlatformHelper.isMobile) {
+      appLogger.info(
+          '[TrayInitializer] Already initialized, web, or mobile, skipping');
       return;
     }
     _trayInitialized = true;

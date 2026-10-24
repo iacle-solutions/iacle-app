@@ -12,4 +12,6 @@ class PlatformHelper {
   static bool get isLinux => PlatformHelperImpl.isLinux;
   static bool get isAndroid => PlatformHelperImpl.isAndroid;
   static bool get isIOS => PlatformHelperImpl.isIOS;
+  static bool get isMobile => isAndroid || isIOS;
+  static bool get isDesktop => isWindows || isMacOS || isLinux;
 }

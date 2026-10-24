@@ -23,11 +23,17 @@ void main() {
         service.dispose();
       });
 
+      test('updateBaseUrl points the client at a desktop hub', () {
+        final service = HermesStreamingService();
+        service.updateBaseUrl('http://100.64.1.20:8642/');
+        expect(service.baseUrl, 'http://100.64.1.20:8642');
+        service.dispose();
+      });
+
       test('initial connection state is disconnected', () {
         final service = HermesStreamingService();
         expect(service.connection.isActive, isFalse);
-        expect(
-            service.connection.state, StreamingConnectionState.disconnected);
+        expect(service.connection.state, StreamingConnectionState.disconnected);
         service.dispose();
       });
 
@@ -57,8 +63,7 @@ void main() {
         final service = HermesStreamingService();
         await service.closeConnection();
         expect(service.connection.isActive, isFalse);
-        expect(
-            service.connection.state, StreamingConnectionState.disconnected);
+        expect(service.connection.state, StreamingConnectionState.disconnected);
         service.dispose();
       });
     });
@@ -134,8 +139,7 @@ void main() {
       test('closes streams and resets state', () {
         final service = HermesStreamingService();
         service.dispose();
-        expect(
-            service.connection.state, StreamingConnectionState.disconnected);
+        expect(service.connection.state, StreamingConnectionState.disconnected);
       });
     });
 

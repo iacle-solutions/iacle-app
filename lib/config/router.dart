@@ -8,9 +8,13 @@ import '../services/streaming_chat_service.dart';
 import '../screens/login_screen.dart';
 import '../screens/callback_screen.dart';
 import '../screens/onboarding/setup_wizard_screen.dart';
+import '../screens/onboarding/mobile_connection_screen.dart';
 import '../screens/home/home_layout.dart';
 import '../widgets/navigation/app_navigation_shell.dart';
 import '../services/onboarding/setup_wizard_service.dart';
+import '../services/onboarding/mobile_connection_service.dart';
+import '../utils/platform_helper.dart';
+import 'router_redirect.dart';
 
 // Settings screens are lazy-loaded
 import '../screens/settings/settings_lazy.dart' as settings_lazy;
@@ -69,7 +73,6 @@ import '../screens/debug/debug_screen.dart';
 
 // Config screen
 import '../screens/config/config_screen.dart';
-
 
 /// Wrapper widget that provides HomeLayout with its required dependencies
 class _HomeLayoutWrapper extends StatefulWidget {
@@ -149,6 +152,7 @@ class AppRouter {
     GlobalKey<NavigatorState>? navigatorKey,
     required AuthService authService,
     required SetupWizardService setupWizardService,
+    required MobileConnectionService mobileConnectionService,
   }) {
     debugPrint('[Router] createRouter called');
 
@@ -178,13 +182,23 @@ class AppRouter {
       debugLogDiagnostics: true,
       refreshListenable: authService,
       routes: [
-        // Setup Wizard route (must be before shell route)
+        // Setup Wizard route (desktop first-run; must be before shell route)
         GoRoute(
           path: '/setup',
           name: 'setup',
           pageBuilder: (context, state) => MaterialPage(
             key: state.pageKey,
             child: const SetupWizardScreen(),
+          ),
+        ),
+
+        // Mobile connection screen (Android/iOS first-run; bypasses /setup)
+        GoRoute(
+          path: '/connect',
+          name: 'connect',
+          pageBuilder: (context, state) => MaterialPage(
+            key: state.pageKey,
+            child: const MobileConnectionScreen(),
           ),
         ),
 
@@ -413,33 +427,7 @@ class AppRouter {
         debugPrint('[Router] Redirect check: ${state.matchedLocation}');
 
         final location = state.matchedLocation;
-        final isAdminRoute = location.startsWith('/admin') || location == '/admin-center';
-        if (isAdminRoute && !kIsWeb) {
-          debugPrint('[Router] Redirecting native/mobile client away from web-only admin routes.');
-          return '/chat';
-        }
-
-        final isAuthenticated = authService.isAuthenticated.value;
-        final isAuthLoading = authService.isLoading.value;
-        final isLoggingIn = location == '/login';
-        final isCallback = location == '/callback';
-        final isSetup = location == '/setup';
-        final isAppSubdomain = _isAppSubdomain();
-        final isShellRoute = location.startsWith('/chat') ||
-            location.startsWith('/overview') ||
-            location.startsWith('/channels') ||
-            location.startsWith('/instances') ||
-            location.startsWith('/sessions') ||
-            location.startsWith('/usage') ||
-            location.startsWith('/cron') ||
-            location.startsWith('/agents') ||
-            location.startsWith('/skills') ||
-            location.startsWith('/nodes') ||
-            location.startsWith('/config') ||
-            location.startsWith('/debug') ||
-            location.startsWith('/logs');
-
-        // 1. Handle auth callbacks first
+        final isCallback = location == AppRoutePaths.callback;
         final hasCallbackParams = _hasCallbackParameters(state.uri) ||
             (kIsWeb && _hasCallbackParameters(Uri.base));
         if (hasCallbackParams && !isCallback && kIsWeb) {
@@ -447,59 +435,35 @@ class AppRouter {
           final params = state.uri.queryParameters.isNotEmpty
               ? state.uri.queryParameters
               : Uri.base.queryParameters;
-          return Uri(path: '/callback', queryParameters: params).toString();
+          return Uri(path: AppRoutePaths.callback, queryParameters: params)
+              .toString();
         }
 
-        // 2. While auth is loading, don't redirect unless necessary
-        if (isAuthLoading && !isCallback && !isSetup) return null;
+        final isMobile = PlatformHelper.isMobile;
+        final shouldShowDesktopWizard =
+            !kIsWeb && !isMobile && await setupWizardService.shouldShowWizard();
+        final shouldShowMobileConnection = isMobile &&
+            await mobileConnectionService.shouldShowConnectionScreen();
 
-        // 3. Marketing domain access
-        if (kIsWeb && !isAppSubdomain) {
-          if (_isMarketingPath(location)) {
-            return null;
-          }
-          // Keep non-app host constrained to marketing pages.
-          return '/';
+        final next = resolveAppRedirect(
+          RouterRedirectInput(
+            location: location,
+            isAuthenticated: authService.isAuthenticated.value,
+            isAuthLoading: authService.isLoading.value,
+            isWeb: kIsWeb,
+            isMobile: isMobile,
+            isAppSubdomain: _isAppSubdomain(),
+            isMarketingPath: _isMarketingPath(location),
+            hasCallbackParams: false,
+            shouldShowDesktopWizard: shouldShowDesktopWizard,
+            shouldShowMobileConnection: shouldShowMobileConnection,
+            requireCloudLogin: mobileConnectionService.requireCloudLogin,
+          ),
+        );
+        if (next != null) {
+          debugPrint('[Router] Redirecting $location -> $next');
         }
-
-        // 4. Handle root route redirect
-        if (location == '/') {
-          // If authenticated, on native desktop, or on the app subdomain web landing page,
-          // redirect to '/chat' (which will trigger standard Supabase login if unauthenticated).
-          // This ensures that accessing https://app.pistisai.app/ correctly redirects to Supabase login.
-          if (isAuthenticated || !kIsWeb || isAppSubdomain) {
-            return '/chat';
-          }
-          return null; // Let marketing/home logic handle it
-        }
-
-        // 5. Authenticated state
-        if (isAuthenticated) {
-          if (isLoggingIn) return '/chat'; // Already logged in, go to chat
-          return null; // Allow access to all routes
-        }
-
-        // 6. Unauthenticated state on App domain or Desktop
-        if (isLoggingIn || isCallback || isSetup || !kIsWeb) {
-          // Check if first-time user on desktop needs setup wizard
-          if (!kIsWeb && !isAuthenticated && !isSetup) {
-            final shouldShowWizard = await setupWizardService.shouldShowWizard();
-            if (shouldShowWizard) {
-              debugPrint('[Router] First-time desktop user, redirecting to setup wizard');
-              return '/setup';
-            }
-          }
-          return null; // Allow these (Desktop is always allowed)
-        }
-
-        // 7. Redirect protected shell routes to login
-        if (isShellRoute) {
-          debugPrint(
-              '[Router] Protected route $location accessed, redirecting to login');
-          return '/login';
-        }
-
-        return null; // Allow all other routes
+        return next;
       },
       errorBuilder: (context, state) => Scaffold(
         body: Center(
