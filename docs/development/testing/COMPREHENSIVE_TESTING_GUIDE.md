@@ -12,7 +12,7 @@ Every PR to `main` runs:
 | Flutter smoke | `npm run test:ci:flutter` | Security + basic allowlist (see `scripts/ci/flutter_security_basic_tests.sh`) |
 | Backend lint | `cd services/api-backend && npm run lint` | ESLint |
 | Backend security | `cd services/api-backend && npm run test:ci:security` | Auth, RBAC, validation, rate limits, connector hardening |
-| Linux desktop smoke | `.github/workflows/linux-integration-test.yml` | Docker desktop boot + `/health` |
+| Linux + Android integration rig | `.github/workflows/integration-test-rig.yml` | Shared Docker hub; Linux `dart test` + emulator |
 | Web E2E smoke | `.github/workflows/web-e2e.yml` | Playwright splash/smoke |
 
 Workflow triggers: **push to `main`** and **pull requests to `main`** only (no duplicate runs on feature-branch push).
@@ -70,7 +70,8 @@ Security CI config: `services/api-backend/jest.ci-security.config.js`
 Requires Hermes, Ollama, and/or api-backend running locally:
 
 ```bash
-./scripts/run_local_integration_tests.sh
+./scripts/run_integration_test_rig.sh
+# Linux only: ./scripts/run_local_integration_tests.sh
 dart test test/archive/integration/local_demo_test.dart
 dart test test/archive/integration/setup_wizard_test.dart
 ```

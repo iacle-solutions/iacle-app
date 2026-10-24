@@ -21,7 +21,7 @@ This guide is the current entry point for working on Pistisai.
 
 ## Required Tools
 
-- Flutter with Dart compatible with `pubspec.yaml` (`>=3.5.0 <4.0.0`). CI pins Flutter `3.44.6` stable.
+- Flutter matching `environment.flutter` in `pubspec.yaml` (currently `3.47.7`) with Dart `>=3.5.0 <4.0.0`.
 - Node.js `>=22 <27` for `services/api-backend/` and `services/streaming-proxy/` (CI pins Node `26` via `.nvmrc`).
 - Node.js `>=18` is sufficient for `services/sdk/`.
 - Docker or a compatible container runtime for backend/deployment work.

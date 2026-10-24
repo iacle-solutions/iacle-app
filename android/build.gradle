@@ -1,12 +1,12 @@
 buildscript {
-    ext.kotlin_version = '2.1.0'
+    ext.kotlin_version = '2.4.0'
     repositories {
         google()
         mavenCentral()
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.10.1'
+        classpath 'com.android.tools.build:gradle:8.11.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
@@ -32,12 +32,14 @@ subprojects {
     project.buildDir = "${rootProject.buildDir}/${project.name}"
 }
 
-// Force K2 to produce 1.9-compatible bytecode for old plugins (tesseract_ocr 0.5.0)
-allprojects {
-    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
-        kotlinOptions {
-            languageVersion = "1.9"
-            apiVersion = "1.9"
+// tesseract_ocr 0.5.0 still targets older Kotlin; limit the downgrade to that plugin.
+subprojects { subproject ->
+    if (subproject.name == 'tesseract_ocr') {
+        subproject.tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+            kotlinOptions {
+                languageVersion = "2.0"
+                apiVersion = "2.0"
+            }
         }
     }
 }
@@ -48,14 +50,9 @@ allprojects {
 subprojects { subproject ->
     subproject.pluginManager.withPlugin('com.android.library') {
         if (subproject.name == 'tesseract_ocr') {
-            subproject.android {
-                sourceSets {
-                    main {
-                        java {
-                            exclude '**/TesseractOcrPlugin.java'
-                        }
-                    }
-                }
+            // Plugin ships duplicate Java + Kotlin plugin classes; keep Java only.
+            subproject.tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+                enabled = false
             }
         }
     }

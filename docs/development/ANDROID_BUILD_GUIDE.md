@@ -12,18 +12,19 @@ Checked in as of the SDK 37 fixes:
 
 | Piece | Value | Where |
 | --- | --- | --- |
-| Android Gradle Plugin | `8.10.1` | `android/settings.gradle` |
-| Gradle | `8.11.1` | `android/gradle/wrapper/gradle-wrapper.properties` |
+| Android Gradle Plugin | `8.11.1` | `android/settings.gradle` |
+| Gradle | `8.14.3` | `android/gradle/wrapper/gradle-wrapper.properties` |
+| Kotlin Gradle Plugin | `2.4.0` | `android/settings.gradle` |
 | Kotlin Android plugin | `2.1.0` | `android/settings.gradle` |
 | `compileSdk` | `37` | `android/app/build.gradle` |
 | `compileSdkMinor` | `0` | `android/app/build.gradle` |
 | Platform package | `platforms;android-37.0` | `build-mobile.yml` |
 | NDK | `flutter.ndkVersion` | `android/app/build.gradle` |
 | min / target SDK | `flutter.minSdkVersion` / `flutter.targetSdkVersion` | `android/app/build.gradle` |
-| Flutter | `3.44.6` | `build-mobile.yml` |
+| Flutter | `3.47.7` (`pubspec.yaml` `environment.flutter`) | `build-mobile.yml` |
 | Runner | `ubuntu-24.04` | `build-mobile.yml` |
 
-API 37 is published as the minor-versioned package `platforms;android-37.0`. `compileSdkMinor` exists from AGP 8.10.1, so this repo uses AGP `8.10.1` with `compileSdk 37` and `compileSdkMinor 0`. Installing `platforms;android-37` (no minor) does not satisfy the build. Gradle `8.11.1` is the wrapper version paired with AGP `8.10.1`.
+API 37 is published as the minor-versioned package `platforms;android-37.0`. This repo uses AGP `8.11.1` with `compileSdk 37` and `compileSdkMinor 0`. Installing `platforms;android-37` (no minor) does not satisfy the build. Gradle `8.14.3` is paired with AGP `8.11.1` (Flutter `3.47.7` minimum; AGP 9 waits on `tesseract_ocr` removing `jcenter()`).
 
 `minSdkVersion` and `targetSdkVersion` are not numeric literals in this repo. They come from the Flutter Gradle plugin for the Flutter version that runs the build.
 
@@ -287,7 +288,7 @@ The Android job is `build_android` in `.github/workflows/build-mobile.yml`. Ther
 ### Build Steps
 
 1. Check out `main` and rewrite `pubspec.yaml` / `assets/version.json` with the version from `version.json` and `github.run_number` as the build number.
-2. Install Flutter `3.44.6`.
+2. Install Flutter `3.47.7` (match `environment.flutter` in `pubspec.yaml`).
 3. Install `platforms;android-37.0` with `sdkmanager` resolved from `ANDROID_HOME`.
 4. Decode `ANDROID_KEYSTORE_B64` to `android/release-keystore.jks` and write `android/key.properties`.
 5. `flutter pub get`, then `flutter build apk --release --split-per-abi --android-skip-build-dependency-validation`.
@@ -438,7 +439,7 @@ App Bundles are smaller and optimized per-device by Google Play.
 
 ### Updating Android SDK
 
-Keep the package id, `compileSdk`, and `compileSdkMinor` together. API 37 is `platforms;android-37.0` with `compileSdk 37` and `compileSdkMinor 0` in `android/app/build.gradle`, installed from `build-mobile.yml`. AGP is `8.10.1` in `android/settings.gradle` and `android/build.gradle`, and the wrapper is Gradle `8.11.1`. Changing only one of those leaves the build looking for a platform package that is not installed.
+Keep the package id, `compileSdk`, and `compileSdkMinor` together. API 37 is `platforms;android-37.0` with `compileSdk 37` and `compileSdkMinor 0` in `android/app/build.gradle`, installed from `build-mobile.yml`. AGP is `8.11.1` in `android/settings.gradle` and `android/build.gradle`, and the wrapper is Gradle `8.14.3`. Changing only one of those leaves the build looking for a platform package that is not installed.
 
 ### Updating Java Version
 

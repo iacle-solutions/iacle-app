@@ -6,7 +6,7 @@ A second Dockerfile, [`config/docker/Dockerfile.web`](../../../config/docker/Doc
 
 ## What the production image does
 
-The builder is `gmeligio/flutter-android:3.44.6`. That image does not enable Flutter web on its own, so the Dockerfile runs `flutter config --enable-web` before `flutter build web`.
+The builder is `gmeligio/flutter-android:3.47.7` (match `environment.flutter` in `pubspec.yaml`). That image does not enable Flutter web on its own, so the Dockerfile runs `flutter config --enable-web` before `flutter build web`.
 
 The release build passes `--no-web-resources-cdn`. The site content policy blocks the Google-hosted CanvasKit script. With the CDN build, the Flutter view never paints and the splash clears to a white page. CanvasKit must be served from this origin.
 
@@ -39,7 +39,7 @@ The exact `flutter_bootstrap.js` location exists because the long-cache regex wo
 
 `deploy-web.yml` runs when [Auto Version Bump](../../../.github/workflows/auto-version-bump.yml) completes on `main`, or on `workflow_dispatch`.
 
-1. **analyze** — Flutter `3.44.6` on `ubuntu-24.04`, `flutter pub get`, `flutter analyze lib/`. Skipped when the triggering bump workflow failed.
+1. **analyze** — Flutter pin from `pubspec.yaml` on `ubuntu-24.04`, `flutter pub get`, `flutter analyze lib/`. Skipped when the triggering bump workflow failed.
 2. **build_and_push** — Build `Dockerfile.web` and push `ghcr.io/pistisai/pistisai-app-web:{version}` and `:latest`. `{version}` is the `version` field in `assets/version.json`. The job fails if the build action returns no digest.
 3. **deploy_coolify** — Log the Coolify host into GHCR, trigger the deploy, wait, then check the public sites.
 

@@ -54,8 +54,10 @@ See [Android Build Guide](../docs/development/ANDROID_BUILD_GUIDE.md).
 
 | Piece | Value |
 | --- | --- |
-| Android Gradle Plugin | 8.10.1 (`android/settings.gradle`) |
-| Gradle wrapper | 8.11.1 |
+| Android Gradle Plugin | 8.11.1 (`android/settings.gradle`) |
+| Gradle wrapper | 8.14.3 |
+| Kotlin Gradle Plugin | 2.4.0 |
+| Flutter CI pin | `pubspec.yaml` → `environment.flutter` (3.47.7) |
 | `compileSdk` / `compileSdkMinor` | 37 / 0 |
 | SDK package CI installs | `platforms;android-37.0` |
 | NDK, minSdk, targetSdk | Flutter's values (`flutter.ndkVersion`, `flutter.minSdkVersion`, `flutter.targetSdkVersion`) |
@@ -70,6 +72,45 @@ See [Android Build Guide](../docs/development/ANDROID_BUILD_GUIDE.md).
 - `*.keystore` - Keystore files
 
 These files are already listed in `.gitignore` to prevent accidental commits.
+
+## Android test rig (hub in Docker + phone/emulator)
+
+Same idea as the Linux **test-desktop** rig (`docker-compose.test.yml`): a containerized Pistisai desktop hub (router on **:1337**, `/api/pistisai/hub`) plus on-device Flutter integration tests.
+
+```bash
+# Hub + on-device tests (or use run_android_test_rig.sh — same flags)
+bash scripts/run_integration_test_rig.sh --android-only
+
+# Hub only — manual testing, VNC on :5900
+bash scripts/run_integration_test_rig.sh --android-only --no-tests --keep-running
+
+# Hub already running
+bash scripts/run_integration_test_rig.sh --android-only --no-hub --hub-host 10.0.2.2   # emulator
+bash scripts/run_integration_test_rig.sh --android-only --no-hub --hub-host 100.x.x.x  # phone → PC Tailscale IP
+
+# Desktop + phone in one run (skips Android if no device)
+bash scripts/run_integration_test_rig.sh
+```
+
+Same hub as the Linux rig: `docker-compose.test.yml`.
+
+**On your PC (automated rig uses an emulator, not your USB phone):**
+
+```bash
+bash scripts/setup-android-test-emulator.sh   # once
+bash scripts/run_pc_integration_test_rig.sh
+```
+
+USB phone smoke: `scripts/test-android-phone.sh`. Docs: `docs/development/testing/PHYSICAL_INTEGRATION_TEST_RIG.md`. Cloud CI: `integration-test-rig.yml`. Optional self-hosted PC: `integration-test-rig-physical.yml`.
+
+### Phone-only smoke (no Docker hub)
+
+```bash
+bash scripts/test-android-phone.sh
+PISTISAI_SELF_TEST_HUB_HOST=your-pc.tailnet.ts.net bash scripts/test-android-phone.sh
+```
+
+Optional: `ANDROID_DEVICE_ID` if multiple devices are attached.
 
 ## Building Android APK
 
