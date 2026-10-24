@@ -37,7 +37,7 @@ jobs:
       - uses: subosito/flutter-action@v2
         if: steps.open-pr.outputs.skip != 'true'
         with:
-          flutter-version: 3.44.6
+          flutter-version-file: pubspec.yaml
           channel: "stable"
           cache: true
       - name: flutter pub get

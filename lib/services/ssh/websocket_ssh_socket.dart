@@ -59,6 +59,9 @@ class WebSocketSSHSocket implements SSHSocket {
   }
 
   @override
+  Future<void> flush() async {}
+
+  @override
   Future<void> close() async {
     if (_isClosed) return;
 

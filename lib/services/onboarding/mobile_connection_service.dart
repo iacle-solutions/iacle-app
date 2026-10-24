@@ -97,11 +97,35 @@ class MobileConnectionService extends ChangeNotifier {
     return host.isEmpty ? null : host;
   }
 
+  /// Loopback / emulator bridge hosts allowed only in Android test-rig builds.
+  @visibleForTesting
+  static bool isAndroidTestRigLoopbackHost(String host) {
+    switch (host.trim().toLowerCase()) {
+      case '10.0.2.2':
+      case '127.0.0.1':
+      case 'localhost':
+      case 'host.docker.internal':
+        return true;
+      default:
+        return false;
+    }
+  }
+
   /// Tailscale MagicDNS (`*.ts.net`) or CGNAT (`100.64.0.0/10`) only.
+  ///
+  /// With `--dart-define=PISTISAI_ANDROID_TEST_RIG=true`, also allows emulator
+  /// and local Docker hub targets (see [isAndroidTestRigLoopbackHost]).
   static bool isAllowedTailscaleHubHost(String host) {
     final normalized = host.trim().toLowerCase();
     if (normalized.isEmpty) {
       return false;
+    }
+    const androidTestRig = bool.fromEnvironment(
+      'PISTISAI_ANDROID_TEST_RIG',
+      defaultValue: false,
+    );
+    if (androidTestRig && isAndroidTestRigLoopbackHost(normalized)) {
+      return true;
     }
     if (normalized.endsWith('.ts.net') && normalized != '.ts.net') {
       return true;

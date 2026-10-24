@@ -625,7 +625,7 @@ If you exceed free tier, consider:
 
 1. **Check minimum SDK version**:
    - `minSdkVersion` is `flutter.minSdkVersion` in `android/app/build.gradle`
-   - The floor is whatever Flutter `3.44.6` supplies. It is not a literal in this repo.
+   - The floor is whatever the pinned `environment.flutter` in `pubspec.yaml` supplies. It is not a literal in this repo.
 
 2. **Enable unknown sources**:
    - Settings → Security → Enable "Install from Unknown Sources"

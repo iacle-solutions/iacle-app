@@ -42,7 +42,7 @@ jobs:
       - uses: actions/checkout@v7
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: 3.44.6
+          flutter-version-file: pubspec.yaml
           channel: "stable"
           cache: true
       - name: flutter analyze
@@ -66,6 +66,11 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
       - name: Set Version
         run: |
           VERSION=${{ needs.analyze.outputs.version }}
@@ -74,7 +79,7 @@ jobs:
 
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: 3.44.6
+          flutter-version-file: pubspec.yaml
           channel: "stable"
           cache: true
 
@@ -91,7 +96,7 @@ jobs:
             exit 1
           fi
           yes | "$SDKMANAGER" --licenses > /dev/null 2>&1 || true
-          # API 37 is published only as platforms;android-37.0. AGP 8.10.1+
+          # API 37 is published only as platforms;android-37.0. AGP 8.11.1+
           # resolves that id from compileSdk 37 + compileSdkMinor 0.
           # sdkmanager sometimes unpacks that package into platforms/android-37.
           if ! "$SDKMANAGER" --install "platforms;android-37.0" > /tmp/sdk.log 2>&1; then
@@ -148,7 +153,7 @@ jobs:
       - name: Flutter Build APK
         run: |
           flutter pub get
-          flutter build apk --release --split-per-abi --android-skip-build-dependency-validation
+          flutter build apk --release --split-per-abi
 
       - name: Upload APKs
         uses: actions/upload-artifact@v7
@@ -182,7 +187,7 @@ jobs:
 
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: 3.44.6
+          flutter-version-file: pubspec.yaml
           channel: "stable"
           cache: true
 

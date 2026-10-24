@@ -7,6 +7,7 @@ version: 1.1.82+81
 
 environment:
   sdk: ">=3.5.0 <4.0.0"
+  flutter: 3.47.7
 
 dependencies:
   # HTTP Server for LLM Router
@@ -80,7 +81,7 @@ dependencies:
   cryptography: ^2.9.0
 
   # SSH tunneling
-  dartssh2: ^2.14.0
+  dartssh2: ^2.22.5
 
   get_it: ^9.2.1
   logger: ^2.7.0
@@ -170,6 +171,8 @@ flutter_launcher_icons:
 dependency_overrides:
   material_ui: 1.1.0
   cupertino_ui: 1.0.1
+  # dartssh2 >=2.15 needs pointycastle 4; encrypt 5.0.3 still resolves at runtime.
+  pointycastle: ^4.0.0
 
 flutter:
   uses-material-design: true

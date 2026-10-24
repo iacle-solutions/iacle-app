@@ -35,6 +35,18 @@ void main() {
     });
   });
 
+  group('isAndroidTestRigLoopbackHost', () {
+    test('recognizes emulator and local Docker bridge hosts', () {
+      expect(MobileConnectionService.isAndroidTestRigLoopbackHost('10.0.2.2'), isTrue);
+      expect(MobileConnectionService.isAndroidTestRigLoopbackHost('127.0.0.1'), isTrue);
+      expect(
+        MobileConnectionService.isAndroidTestRigLoopbackHost('host.docker.internal'),
+        isTrue,
+      );
+      expect(MobileConnectionService.isAndroidTestRigLoopbackHost('192.168.1.1'), isFalse);
+    });
+  });
+
   group('isAllowedTailscaleHubHost', () {
     test('allows MagicDNS and CGNAT, rejects LAN and public hosts', () {
       expect(
