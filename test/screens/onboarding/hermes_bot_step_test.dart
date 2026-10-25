@@ -53,8 +53,8 @@ void main() {
         ),
         HermesBotInstallStep(
           name: HermesBotInstallService.desktopStep,
-          status: HermesBotInstallStatus.skipped,
-          detail: HermesBotInstallService.desktopSkipDetail,
+          status: HermesBotInstallStatus.installed,
+          detail: 'Wrote 1 file(s).',
         ),
         HermesBotInstallStep(
           name: HermesBotInstallService.profileStep,
@@ -80,7 +80,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.textContaining('PistisAI package: Installed'), findsOneWidget);
-    expect(find.textContaining('Desktop embed: Skipped'), findsOneWidget);
+    expect(find.textContaining('Desktop embed: Installed'), findsOneWidget);
     expect(find.textContaining('aigent-watch profile: Installed'), findsOneWidget);
     expect(find.textContaining('Enable pistisai: Installed'), findsOneWidget);
     expect(find.textContaining('drift-scan routine: Installed'), findsOneWidget);
