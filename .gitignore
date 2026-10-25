@@ -149,3 +149,6 @@ scripts/run_init.sh
 
 # Kilo Code local agent state
 .kilo/
+
+# Archived tests
+test/archive/
