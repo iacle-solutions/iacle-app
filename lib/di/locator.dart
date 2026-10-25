@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io' show Platform, Directory;
 
 import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
@@ -39,14 +40,12 @@ import 'package:pistisai/database/local_brain.dart';
 import 'package:pistisai/services/brain_sync_service.dart';
 import 'package:pistisai/services/full_context_indexer.dart';
 import 'package:pistisai/services/rate_limit_manager.dart';
-import 'package:pistisai/services/pistisai_ui_server.dart';
 import 'package:pistisai/services/router_server.dart';
 import 'package:pistisai/services/providers/zhipu_adapter.dart';
 import 'package:pistisai/services/providers/google_adapter.dart';
 import 'package:pistisai/services/providers/moonshot_adapter.dart';
 import 'package:pistisai/services/hermes/hermes_local_agent_api.dart';
 import 'package:pistisai/services/hermes/hermes_streaming_service.dart';
-import 'package:pistisai/services/hermes/hermes_device_context_service.dart';
 import 'package:pistisai/models/provider_configuration.dart';
 import 'package:pistisai/services/agent_status_service.dart';
 import 'package:pistisai/services/agent_lifecycle_service.dart';
@@ -54,8 +53,6 @@ import 'package:pistisai/services/subagent_registry_service.dart';
 import 'package:pistisai/services/desktop_control/clipboard_service.dart';
 import 'package:pistisai/services/setup_status_service.dart';
 import 'package:pistisai/services/onboarding/setup_wizard_service.dart';
-import 'package:pistisai/services/onboarding/mobile_connection_service.dart';
-import 'package:pistisai/utils/platform_helper.dart';
 import 'package:pistisai/services/openclaw_manager/gateway_control_service.dart';
 import 'package:pistisai/services/avatar/personality_engine.dart';
 import 'package:pistisai/services/avatar/evolution_tracker.dart';
@@ -79,6 +76,7 @@ import 'package:pistisai/services/popout/popout_manager.dart';
 import 'package:pistisai/services/auto_update_service.dart';
 import 'package:pistisai/services/logging_service.dart';
 import 'package:pistisai/services/skill_service.dart';
+import 'package:pistisai/services/openclaw_skill_install_service.dart';
 import 'package:pistisai/services/cron_service.dart';
 import 'package:pistisai/services/session_service.dart';
 import 'package:pistisai/services/channel_service.dart';
@@ -88,6 +86,45 @@ final GetIt serviceLocator = GetIt.instance;
 bool _coreServicesRegistered = false;
 bool _authenticatedServicesRegistered = false;
 bool _isRegisteringAuthenticatedServices = false;
+
+/// Determines the OpenClaw skills directory path for the current platform.
+/// Checks common locations and creates the directory if it doesn't exist.
+String _getOpenClawSkillsPath() {
+  if (kIsWeb) {
+    // Web has no dart:io environment variables or writable local filesystem.
+    return 'web-skills';
+  }
+
+  String? home;
+  try {
+    home = Platform.environment['HOME'] ?? Platform.environment['USERPROFILE'];
+  } catch (e) {
+    debugPrint('[ServiceLocator] Failed to read home directory: $e');
+  }
+
+  // Check common locations for OpenClaw skills directory
+  if (home == null) {
+    // Fallback to temp directory
+    return Directory.systemTemp.path;
+  }
+
+  final possiblePaths = [
+    '$home/.openclaw/skills/pistisai',
+    '$home/.config/openclaw/skills/pistisai',
+    '$home/AppData/Roaming/openclaw/skills/pistisai', // Windows
+  ];
+
+  for (final path in possiblePaths) {
+    if (Directory(path).existsSync()) {
+      return path;
+    }
+  }
+
+  // Create default path if it doesn't exist
+  final defaultPath = '$home/.openclaw/skills/pistisai';
+  Directory(defaultPath).createSync(recursive: true);
+  return defaultPath;
+}
 
 /// Registers core services that are needed before authentication.
 /// These services don't require authentication tokens and can be safely
@@ -160,7 +197,7 @@ Future<void> setupCoreServices() async {
 
       final markdownSyncService = MarkdownSyncService(
         database: localBrain,
-        markdownPath: '',
+        markdownPath: _getOpenClawSkillsPath(),
       );
       serviceLocator.registerLazySingleton<MarkdownSyncService>(
           () => markdownSyncService);
@@ -236,57 +273,36 @@ Future<void> setupCoreServices() async {
       serviceLocator
           .registerSingleton<HermesStreamingService>(hermesStreamingService);
 
-      // Report this desktop/mobile session so the agent's awareness hook can
-      // name the PC + session in the context (Hermes host adds its hostname).
-      final deviceContextService = HermesDeviceContextService(
-        baseUrl: hermesStreamingService.baseUrl,
-        apiKey: hermesApiKey,
-      );
-      serviceLocator
-          .registerSingleton<HermesDeviceContextService>(deviceContextService);
-      unawaited(deviceContextService.report());
-
       final voiceConversationService = VoiceConversationService();
       serviceLocator.registerLazySingleton<VoiceConversationService>(
         () => voiceConversationService,
       );
 
-      if (PlatformHelper.isDesktop) {
-        final hermesVoiceBridgeService = HermesVoiceBridgeService(
-          voiceConversationService: voiceConversationService,
-        );
-        serviceLocator.registerSingleton<HermesVoiceBridgeService>(
-          hermesVoiceBridgeService,
-        );
-        hermesVoiceBridgeService.start();
+      final hermesVoiceBridgeService = HermesVoiceBridgeService(
+        voiceConversationService: voiceConversationService,
+      );
+      serviceLocator.registerSingleton<HermesVoiceBridgeService>(
+        hermesVoiceBridgeService,
+      );
+      hermesVoiceBridgeService.start();
 
-        // Local microphone capture → STT → voice conversation service
-        final localVoiceInputService = LocalVoiceInputService(
-          voiceConversationService: voiceConversationService,
-          sttUrl: 'http://127.0.0.1:8646/v1/audio/transcriptions',
-        );
-        serviceLocator.registerSingleton<LocalVoiceInputService>(
-          localVoiceInputService,
-        );
+      // Local microphone capture → STT → voice conversation service
+      final localVoiceInputService = LocalVoiceInputService(
+        voiceConversationService: voiceConversationService,
+        sttUrl: 'http://127.0.0.1:8646/v1/audio/transcriptions',
+      );
+      serviceLocator.registerSingleton<LocalVoiceInputService>(
+        localVoiceInputService,
+      );
 
-        // Local Piper TTS service
-        final localTtsService = LocalTtsService();
-        serviceLocator.registerSingleton<LocalTtsService>(
-          localTtsService,
-        );
+      // Local Piper TTS service
+      final localTtsService = LocalTtsService();
+      serviceLocator.registerSingleton<LocalTtsService>(
+        localTtsService,
+      );
 
-        // Start the router server in the background.
-        unawaited(routerServer.start());
-
-        // Loopback UI for the app, separate from the router on 1337.
-        final pistisaiUiServer = PistisaiUiServer();
-        serviceLocator.registerSingleton<PistisaiUiServer>(pistisaiUiServer);
-        unawaited(pistisaiUiServer.start());
-      } else {
-        debugPrint(
-          '[ServiceLocator] Mobile client: skipping desktop hub servers and local STT/TTS',
-        );
-      }
+      // Start the router server in the background.
+      unawaited(routerServer.start());
     } else {
       debugPrint(
         '[ServiceLocator] Skipping desktop-only LocalBrain/router core services on web',
@@ -393,6 +409,13 @@ Future<void> setupCoreServices() async {
     final skillService = SkillService();
     serviceLocator.registerSingleton<SkillService>(skillService);
 
+    // OpenClaw skill install service — manages OpenClaw skill installation
+    debugPrint('[ServiceLocator] Initializing OpenClawSkillInstallService...');
+    final openclawSkillInstallService = OpenClawSkillInstallService();
+    serviceLocator.registerSingleton<OpenClawSkillInstallService>(
+      openclawSkillInstallService,
+    );
+
     // Cron service — shells out to `hermes cron list`
     debugPrint('[ServiceLocator] Initializing CronService...');
     final cronService = CronService();
@@ -447,17 +470,6 @@ Future<void> setupCoreServices() async {
     );
     serviceLocator.registerSingleton<SetupWizardService>(setupWizardService);
 
-    final mobileConnectionService = MobileConnectionService(
-      settings: settingsPreferenceService,
-      hermesStreamingService:
-          serviceLocator.isRegistered<HermesStreamingService>()
-              ? serviceLocator.get<HermesStreamingService>()
-              : null,
-    );
-    serviceLocator
-        .registerSingleton<MobileConnectionService>(mobileConnectionService);
-    unawaited(mobileConnectionService.load());
-
     // Web download prompt service - can be created but won't do heavy work until auth
     final webDownloadPromptService = WebDownloadPromptService(
       authService: authService,
@@ -493,9 +505,8 @@ Future<void> setupCoreServices() async {
       debugPrint('[Locator] ✓ AuthService initialized successfully');
 
       // On Desktop, auto-bootstrap authenticated services immediately
-      // This allows local use without mandatory login. Mobile waits for the
-      // connection screen (Tailscale hub or pistisai.app) before doing this.
-      if (PlatformHelper.isDesktop) {
+      // This allows local use without mandatory login
+      if (!kIsWeb) {
         debugPrint(
             '[Locator] Desktop detected, auto-bootstrapping services for local use...');
         // Wait for authenticated services to complete initialization
@@ -608,16 +619,6 @@ Future<void> _registerWebFallbackCoreServices() async {
     serviceLocator.registerSingleton<AppInitializationService>(
       AppInitializationService(
         authService: serviceLocator.get<AuthService>(),
-      ),
-    );
-  }
-
-  if (!serviceLocator.isRegistered<MobileConnectionService>()) {
-    serviceLocator.registerSingleton<MobileConnectionService>(
-      MobileConnectionService(
-        settings: serviceLocator.isRegistered<SettingsPreferenceService>()
-            ? serviceLocator.get<SettingsPreferenceService>()
-            : SettingsPreferenceService(),
       ),
     );
   }
@@ -794,6 +795,7 @@ Future<void> setupAuthenticatedServices() async {
     final gatewayControlService = serviceLocator.get<GatewayControlService>();
     final hermesStreamingService = serviceLocator.get<HermesStreamingService>();
     final connectionManager = ConnectionManagerService(
+      openclawGatewayService: gatewayControlService,
       hermesStreamingService: hermesStreamingService,
       settingsPreferenceService:
           serviceLocator.get<SettingsPreferenceService>(),
@@ -975,6 +977,10 @@ Future<void> _initializeProviderDiscoveryAndAutoConfig(
         ProviderConfiguration? config;
 
         switch (providerInfo.type) {
+          case ProviderType.openclaw:
+            // OpenClaw is no longer auto-configured for the secure channel.
+            continue;
+
           case ProviderType.hermes:
             config = HermesProviderConfiguration(
               providerId: providerId,

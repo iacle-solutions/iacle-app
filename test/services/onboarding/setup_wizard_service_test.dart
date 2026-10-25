@@ -1,7 +1,6 @@
 import 'package:pistisai/models/provider_configuration.dart';
 import 'dart:io';
 
-import 'package:pistisai/services/hermes/hermes_bot_install_service.dart';
 import 'package:pistisai/services/hermes/hermes_endpoint_resolver.dart';
 import 'package:pistisai/services/hermes/hermes_local_agent_api.dart';
 import 'package:pistisai/services/auth_service.dart';
@@ -26,12 +25,7 @@ void main() {
       discovery = _FakeProviderDiscoveryService();
       setupStatus = _FakeSetupStatusService();
       configManager = _FakeProviderConfigurationManager();
-      service = SetupWizardService(
-        discovery,
-        setupStatus,
-        configManager,
-        botInstaller: _RecordingInstaller(_installedReport()),
-      );
+      service = SetupWizardService(discovery, setupStatus, configManager);
     });
 
     test('provider scan failure maps message and resets loading', () async {
@@ -75,9 +69,7 @@ void main() {
 
     test('complete setup persistence failure is deterministic and not loading',
         () async {
-      service.selectConnectionMethod(ConnectionMethod.custom);
       service.selectProvider(_customRuntimeProvider());
-      service.setCustomUrl('https://example.com');
       configManager.throwOnSave = true;
 
       final bool success = await service.completeSetup();
@@ -91,7 +83,6 @@ void main() {
     });
 
     test('invalid custom URL is rejected before persistence', () async {
-      service.selectConnectionMethod(ConnectionMethod.custom);
       service.selectProvider(_customRuntimeProvider());
       service.setCustomUrl('not-a-valid-url');
 
@@ -109,7 +100,6 @@ void main() {
     test('blank custom URL is rejected before persistence in custom mode',
         () async {
       service.selectConnectionMethod(ConnectionMethod.custom);
-      service.selectConnectionMethod(ConnectionMethod.custom);
       service.selectProvider(_customRuntimeProvider());
       service.setCustomUrl('   ');
 
@@ -125,9 +115,11 @@ void main() {
     });
 
     test('stale custom URL does not block Hermes runtime completion', () async {
+      service.selectConnectionMethod(ConnectionMethod.custom);
       service.selectProvider(_customRuntimeProvider());
       service.setCustomUrl('not-a-valid-url');
 
+      service.selectConnectionMethod(ConnectionMethod.hermes);
       service.selectHermesLocation(HermesLocation.local);
       service.setHermesUrl('http://127.0.0.1:8642');
 
@@ -155,7 +147,7 @@ void main() {
       expect(configManager.saveProviderCallCount, 0);
     });
 
-    test('provider scan selects Hermes and excludes support',
+    test('provider scan selects Hermes and excludes support providers',
         () async {
       discovery.runtimeProviders = [
         _hermesRuntimeProvider(),
@@ -165,6 +157,11 @@ void main() {
 
       expect(service.state.discoveredProviders, hasLength(1));
       expect(service.state.selectedProvider?.type, ProviderType.hermes);
+      expect(
+        service.state.discoveredProviders
+            .any((provider) => provider.type == ProviderType.openclaw),
+        isFalse,
+      );
     });
 
     test('deferSetup hides wizard until user completes setup', () async {
@@ -185,6 +182,7 @@ void main() {
     });
 
     test('Hermes tailscale setup requires API key before completion', () async {
+      service.selectConnectionMethod(ConnectionMethod.hermes);
       service.selectHermesLocation(HermesLocation.tailscale);
       service.setHermesUrl('http://100.64.0.5:8642');
       service.selectProvider(_hermesRuntimeProvider().copyWith(
@@ -202,6 +200,7 @@ void main() {
     });
 
     test('Hermes tailscale setup completes with URL and API key', () async {
+      service.selectConnectionMethod(ConnectionMethod.hermes);
       service.selectHermesLocation(HermesLocation.tailscale);
       service.setHermesUrl('http://100.64.0.5:8642');
       service.setHermesApiKey('psk_test_key');
@@ -227,14 +226,15 @@ void main() {
           listServePorts: () async => <int>[],
         ),
       );
+      service.selectConnectionMethod(ConnectionMethod.hermes);
       service.selectHermesLocation(HermesLocation.local);
       service.setHermesUrl('http://127.0.0.1:8642');
-      service.goToStep(3);
+      service.goToStep(4);
 
       await service.testConnection('http://127.0.0.1:8642');
       service.nextStep();
 
-      expect(service.state.currentStep, 3);
+      expect(service.state.currentStep, 4);
       expect(service.state.errorMessage, hermesUnreachableMessage);
     });
 
@@ -253,6 +253,7 @@ void main() {
           listServePorts: () async => <int>[51910],
         ),
       );
+      service.selectConnectionMethod(ConnectionMethod.hermes);
       service.selectHermesLocation(HermesLocation.local);
 
       await service.resolveLocalHermes();
@@ -262,11 +263,11 @@ void main() {
       expect(service.state.detectedHermesKind,
           HermesEndpointKind.desktopDashboard);
 
-      service.goToStep(3);
+      service.goToStep(4);
       await service.testConnection(service.state.hermesUrl!);
       service.nextStep();
 
-      expect(service.state.currentStep, 3);
+      expect(service.state.currentStep, 4);
       expect(service.state.errorMessage, contains('51910'));
       expect(service.state.errorMessage, contains('agent API'));
     });
@@ -302,26 +303,46 @@ void main() {
           generateKey: () => 'psk_0123456789abcdef',
         ),
       );
+      service.selectConnectionMethod(ConnectionMethod.hermes);
       service.selectHermesLocation(HermesLocation.local);
       service.setHermesUrl('http://127.0.0.1:51910');
-      service.goToStep(3);
+      service.goToStep(4);
 
       await service.testConnection('http://127.0.0.1:51910');
       service.nextStep();
 
       expect(service.state.hermesUrl, 'http://127.0.0.1:8642');
       expect(service.state.hermesApiKey, 'psk_0123456789abcdef');
-      expect(service.state.currentStep, 4);
+      expect(service.state.currentStep, 5);
       expect(service.state.errorMessage, isNull);
     });
 
-    test('nextStep blocks Hermes location step until a location is chosen',
-        () {
+    test('nextStep blocks the connection step until Hermes is chosen', () {
       service.goToStep(1);
 
       service.nextStep();
 
       expect(service.state.currentStep, 1);
+      expect(
+        service.state.errorMessage,
+        'Choose Hermes Agent before continuing.',
+      );
+
+      service.selectConnectionMethod(ConnectionMethod.hermes);
+      service.nextStep();
+
+      expect(service.state.currentStep, 2);
+      expect(service.state.errorMessage, isNull);
+    });
+
+    test('nextStep blocks Hermes location step until a location is chosen',
+        () {
+      service.selectConnectionMethod(ConnectionMethod.hermes);
+      service.goToStep(2);
+
+      service.nextStep();
+
+      expect(service.state.currentStep, 2);
       expect(
         service.state.errorMessage,
         'Choose where Hermes is running before continuing.',
@@ -330,7 +351,7 @@ void main() {
       service.selectHermesLocation(HermesLocation.local);
       service.nextStep();
 
-      expect(service.state.currentStep, 2);
+      expect(service.state.currentStep, 3);
       expect(service.state.errorMessage, isNull);
     });
 
@@ -349,144 +370,7 @@ void main() {
       expect(await configManager.getAllAgentRuntimes(), isNotEmpty);
       expect(await service.shouldShowWizard(), isTrue);
     });
-
-    test('local Hermes shows the package step and Tailscale does not', () {
-      service.selectHermesLocation(HermesLocation.local);
-      service.goToStep(4);
-
-      expect(service.showsLocalHermesBotStep, isTrue);
-      expect(service.isHermesBotStep, isTrue);
-
-      service.nextStep();
-
-      expect(service.state.currentStep, 5);
-      expect(service.isHermesBotStep, isFalse);
-
-      service.selectHermesLocation(HermesLocation.tailscale);
-
-      expect(service.showsLocalHermesBotStep, isFalse);
-      expect(service.isHermesBotStep, isFalse);
-    });
-
-    test('local completeSetup calls the installer once', () async {
-      final installer = _RecordingInstaller(_installedReport());
-      service = SetupWizardService(
-        discovery,
-        setupStatus,
-        configManager,
-        botInstaller: installer,
-      );
-      _selectLocalHermes(service);
-
-      final bool success = await service.completeSetup();
-
-      expect(success, isTrue);
-      expect(installer.calls, 1);
-      expect(installer.port, 8642);
-      expect(service.state.lastBotInstall!.succeeded, isTrue);
-    });
-
-    test('a failed package install still completes setup', () async {
-      final installer = _RecordingInstaller(_failedReport());
-      service = SetupWizardService(
-        discovery,
-        setupStatus,
-        configManager,
-        botInstaller: installer,
-      );
-      _selectLocalHermes(service);
-
-      final bool success = await service.completeSetup();
-
-      expect(success, isTrue);
-      expect(service.isSetupCompleted, isTrue);
-      expect(installer.calls, 1);
-      expect(service.state.lastBotInstall!.hasFailures, isTrue);
-    });
-
-    test('first-time local setup installs even without a separate confirmation',
-        () async {
-      final installer = _RecordingInstaller(_installedReport());
-      service = SetupWizardService(
-        discovery,
-        setupStatus,
-        configManager,
-        botInstaller: installer,
-      );
-      _selectLocalHermes(service);
-
-      final bool success = await service.completeSetup();
-
-      expect(success, isTrue);
-      expect(installer.calls, 1);
-      expect(installer.port, 8642);
-    });
-
-    test('Tailscale setup does not install the package', () async {
-      final installer = _RecordingInstaller(_installedReport());
-      service = SetupWizardService(
-        discovery,
-        setupStatus,
-        configManager,
-        botInstaller: installer,
-      );
-      service.selectHermesLocation(HermesLocation.tailscale);
-      service.setHermesUrl('http://100.64.0.5:8642');
-      service.setHermesApiKey('psk_test_key');
-      service.selectProvider(_hermesRuntimeProvider().copyWith(
-        url: 'http://100.64.0.5:8642',
-        isLocal: false,
-      ));
-
-      final bool success = await service.completeSetup();
-
-      expect(success, isTrue);
-      expect(installer.calls, 0);
-      expect(service.state.lastBotInstall, isNull);
-    });
   });
-}
-
-void _selectLocalHermes(SetupWizardService service) {
-  service.selectConnectionMethod(ConnectionMethod.hermes);
-  service.selectHermesLocation(HermesLocation.local);
-  service.setHermesUrl('http://127.0.0.1:8642');
-  service.selectProvider(_hermesRuntimeProvider());
-}
-
-HermesBotInstallReport _installedReport() {
-  return const HermesBotInstallReport(<HermesBotInstallStep>[
-    HermesBotInstallStep(
-      name: HermesBotInstallService.agentStep,
-      status: HermesBotInstallStatus.installed,
-      detail: 'Wrote 2 file(s).',
-    ),
-  ]);
-}
-
-HermesBotInstallReport _failedReport() {
-  return const HermesBotInstallReport(<HermesBotInstallStep>[
-    HermesBotInstallStep(
-      name: HermesBotInstallService.enableStep,
-      status: HermesBotInstallStatus.failed,
-      detail: 'hermes missing',
-    ),
-  ]);
-}
-
-class _RecordingInstaller extends HermesBotInstallService {
-  _RecordingInstaller(this.report);
-
-  final HermesBotInstallReport report;
-  int calls = 0;
-  int? port;
-
-  @override
-  Future<HermesBotInstallReport> install({int? agentPort}) async {
-    calls += 1;
-    port = agentPort;
-    return report;
-  }
 }
 
 ProviderInfo _customRuntimeProvider() {

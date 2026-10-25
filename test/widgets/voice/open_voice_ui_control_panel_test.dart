@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
+import 'package:pistisai/services/settings_preference_service.dart';
 import 'package:pistisai/services/connection_manager_service.dart';
+import 'package:pistisai/services/openclaw_manager/gateway_control_service.dart';
 import 'package:pistisai/services/hermes/hermes_streaming_service.dart';
 import 'package:pistisai/services/voice/voice_conversation_service.dart';
 import 'package:pistisai/services/voice/local_voice_input_service.dart';
 import 'package:pistisai/widgets/voice/open_voice_ui_control_panel.dart';
 
 Widget buildWidget() {
+  final settings = SettingsPreferenceService();
+  final openclawGateway = GatewayControlService(settings);
   final hermesStreaming = HermesStreamingService();
   final connService = ConnectionManagerService(
+    openclawGatewayService: openclawGateway,
     hermesStreamingService: hermesStreaming,
     autoDetectOnInitialize: false,
   );
@@ -52,10 +57,11 @@ void main() {
     expect(find.text('Listening'), findsOneWidget);
   });
 
-  testWidgets('shows backend toggle buttons', (tester) async {
+  testWidgets('shows Hermes backend controls without OpenClaw', (tester) async {
     await tester.pumpWidget(buildWidget());
     await tester.pump();
 
+    expect(find.text('OpenClaw'), findsNothing);
     expect(find.text('Hermes Agent'), findsOneWidget);
     expect(find.text('Test'), findsOneWidget);
     expect(find.text('Reset voice'), findsOneWidget);

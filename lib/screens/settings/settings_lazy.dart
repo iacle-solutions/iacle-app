@@ -222,5 +222,4 @@ final settingsRoutes = [
       );
     },
   ),
-
 ];

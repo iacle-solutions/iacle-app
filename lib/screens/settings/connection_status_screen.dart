@@ -277,8 +277,8 @@ class _ConnectionStatusScreenState extends State<ConnectionStatusScreen> {
           gatewayLabel = 'Hermes Agent';
           gatewayUrl = AppConfig.defaultHermesUrl;
         } else {
-          gatewayLabel = 'Hermes Gateway';
-          gatewayUrl = AppConfig.gatewayUrl;
+          gatewayLabel = 'Agent Runtime';
+          gatewayUrl = AppConfig.defaultHermesUrl;
         }
 
         return ModernCard(
