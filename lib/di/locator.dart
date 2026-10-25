@@ -76,7 +76,6 @@ import 'package:pistisai/services/popout/popout_manager.dart';
 import 'package:pistisai/services/auto_update_service.dart';
 import 'package:pistisai/services/logging_service.dart';
 import 'package:pistisai/services/skill_service.dart';
-import 'package:pistisai/services/openclaw_skill_install_service.dart';
 import 'package:pistisai/services/cron_service.dart';
 import 'package:pistisai/services/session_service.dart';
 import 'package:pistisai/services/channel_service.dart';
@@ -408,13 +407,6 @@ Future<void> setupCoreServices() async {
     debugPrint('[ServiceLocator] Initializing SkillService...');
     final skillService = SkillService();
     serviceLocator.registerSingleton<SkillService>(skillService);
-
-    // OpenClaw skill install service — manages OpenClaw skill installation
-    debugPrint('[ServiceLocator] Initializing OpenClawSkillInstallService...');
-    final openclawSkillInstallService = OpenClawSkillInstallService();
-    serviceLocator.registerSingleton<OpenClawSkillInstallService>(
-      openclawSkillInstallService,
-    );
 
     // Cron service — shells out to `hermes cron list`
     debugPrint('[ServiceLocator] Initializing CronService...');
@@ -977,10 +969,6 @@ Future<void> _initializeProviderDiscoveryAndAutoConfig(
         ProviderConfiguration? config;
 
         switch (providerInfo.type) {
-          case ProviderType.openclaw:
-            // OpenClaw is no longer auto-configured for the secure channel.
-            continue;
-
           case ProviderType.hermes:
             config = HermesProviderConfiguration(
               providerId: providerId,
