@@ -110,3 +110,20 @@ Action: rebase/merge the 4 dependabot PRs (all green), then update & merge 448/4
 - Should archived tests be revived or deleted? (Needs Christopher's call — they may encode intended behavior.)
 - Is `windows_desktop` branch still needed, or fold into main?
 - Should openclaw internal references be renamed to hermes/pistisai for consistency?
+
+## 9. Verification gate results (Phase 4) — completed
+- `flutter analyze lib/`: 0 issues.
+- `flutter test` (active dirs, excluding archive): 852 passed.
+- `flutter build web --release`: success.
+- `flutter build linux --release`: success.
+- `npm test` api-backend: 2603 passed (98 suites); streaming-proxy: 92 passed (5 suites); sdk: 31 passed.
+- `npm run lint` all services: pass.
+- Dependabot alerts: 0 open (all 7 fixed).
+- Open PRs: 0. Remote branches remaining: fix/android-pr-build-397, fix/remove-openclaw-offerings-396 (hold — unique commits not yet on main).
+
+## 10. Remaining decisions for Christopher
+- Delete `test/archive/` entirely vs keep for local runs (CI no longer references it).
+- Revive or drop the two held branches' unique commits (android CI workflow hardening; OpenClaw removal UI pieces).
+- `windows_desktop` branch status (offline, 44d).
+- Issue #440: split into sub-issues per acceptance criterion; label + assign.
+- CI consolidation: kept both `ci.yml` (quick gate on non-main push) and `test.yml` (main + PR, required check). Documented as authoritative = `test.yml`; `ci.yml` is supplementary.
