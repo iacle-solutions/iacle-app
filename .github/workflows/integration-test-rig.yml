@@ -17,7 +17,6 @@ on:
       - "scripts/test_rig_lib.sh"
       - "test/smoke/**"
       - "test/integration/**"
-      - "test/archive/integration/**"
       - "test/services/hermes_gateway_only_transport_test.dart"
       - ".github/workflows/integration-test-rig.yml"
   pull_request:
@@ -36,7 +35,6 @@ on:
       - "scripts/test_rig_lib.sh"
       - "test/smoke/**"
       - "test/integration/**"
-      - "test/archive/integration/**"
       - "test/services/hermes_gateway_only_transport_test.dart"
       - ".github/workflows/integration-test-rig.yml"
   workflow_dispatch:
@@ -116,7 +114,7 @@ jobs:
       - name: "🐧 Run Linux integration tests"
         id: linux_tests
         run: |
-          dart test test/archive/integration/app_running_integration_test.dart --reporter expanded
+          flutter test test/integration/ --reporter expanded
 
       - name: "📸 Capture desktop failure screenshot"
         if: failure() && steps.linux_tests.outcome == 'failure'

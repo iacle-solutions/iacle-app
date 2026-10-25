@@ -3,10 +3,10 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
+  app_links_linux
   camera_desktop
   file_selector_linux
   flutter_secure_storage_linux
-  gtk
   local_notifier
   record_linux
   screen_retriever_linux
