@@ -787,7 +787,6 @@ Future<void> setupAuthenticatedServices() async {
     final gatewayControlService = serviceLocator.get<GatewayControlService>();
     final hermesStreamingService = serviceLocator.get<HermesStreamingService>();
     final connectionManager = ConnectionManagerService(
-      openclawGatewayService: gatewayControlService,
       hermesStreamingService: hermesStreamingService,
       settingsPreferenceService:
           serviceLocator.get<SettingsPreferenceService>(),

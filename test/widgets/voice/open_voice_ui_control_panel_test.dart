@@ -11,10 +11,8 @@ import 'package:pistisai/widgets/voice/open_voice_ui_control_panel.dart';
 
 Widget buildWidget() {
   final settings = SettingsPreferenceService();
-  final openclawGateway = GatewayControlService(settings);
   final hermesStreaming = HermesStreamingService();
   final connService = ConnectionManagerService(
-    openclawGatewayService: openclawGateway,
     hermesStreamingService: hermesStreaming,
     autoDetectOnInitialize: false,
   );

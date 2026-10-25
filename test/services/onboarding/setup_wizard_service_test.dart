@@ -157,11 +157,6 @@ void main() {
 
       expect(service.state.discoveredProviders, hasLength(1));
       expect(service.state.selectedProvider?.type, ProviderType.hermes);
-      expect(
-        service.state.discoveredProviders
-            .any((provider) => provider.type == ProviderType.openclaw),
-        isFalse,
-      );
     });
 
     test('deferSetup hides wizard until user completes setup', () async {
