@@ -12,7 +12,7 @@ void main() {
     SharedPreferences.setMockInitialValues({});
   });
 
-  testWidgets('mobile connection screen offers Tailscale and pistisai.app',
+  testWidgets('mobile connection screen offers Tailscale and the free tunnel',
       (tester) async {
     final service = MobileConnectionService();
     await tester.pumpWidget(
@@ -27,15 +27,15 @@ void main() {
 
     expect(find.text('Connect this phone'), findsOneWidget);
     expect(find.text('Self-Hosted via Tailscale'), findsOneWidget);
-    expect(find.text('Connected via pistisai.app'), findsOneWidget);
+    expect(find.text('Cloud tunnel'), findsOneWidget);
     expect(find.textContaining('OpenClaw'), findsNothing);
 
     await tester.tap(find.text('Self-Hosted via Tailscale'));
     await tester.pump();
     expect(find.text('Connect to desktop hub'), findsOneWidget);
 
-    await tester.tap(find.text('Connected via pistisai.app'));
+    await tester.tap(find.text('Cloud tunnel'));
     await tester.pump();
-    expect(find.text('Continue with pistisai.app'), findsOneWidget);
+    expect(find.text('Continue with the free tunnel'), findsOneWidget);
   });
 }
