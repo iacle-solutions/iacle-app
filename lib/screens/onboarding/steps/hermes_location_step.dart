@@ -76,7 +76,7 @@ class HermesLocationStep extends StatelessWidget {
                     const SizedBox(width: 12),
                     Expanded(
                       child: Text(
-                        'For a remote VPS, install Tailscale on the server and this device, then pick the server from your tailnet. Pistisai connects over the private Tailscale IP.',
+                        'For a remote VPS, install Tailscale on the server and this device, then pick the server from your tailnet. IAClé connects over the private Tailscale IP.',
                         style: TextStyle(
                           color: AppTheme.colorsOf(context).info,
                           height: 1.35,

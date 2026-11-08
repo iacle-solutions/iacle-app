@@ -151,7 +151,7 @@ class NativeTrayService with TrayListener {
         items: [
           MenuItem(
             key: 'show',
-            label: 'Show Pistisai',
+            label: 'Show IAClé',
           ),
           MenuItem(
             key: 'hide',
@@ -180,7 +180,7 @@ class NativeTrayService with TrayListener {
 
       try {
         await trayManager
-            .setToolTip('Pistisai - ${_getStatusLabel(status)}');
+            .setToolTip('IAClé - ${_getStatusLabel(status)}');
       } catch (_) {
         // setToolTip is not implemented on Linux — ignore silently.
       }

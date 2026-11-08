@@ -78,7 +78,7 @@ class AppearanceSettingsScreen extends StatelessWidget {
                   child: ListTile(
                     leading: const Icon(Icons.color_lens),
                     title: const Text('Accent Color'),
-                    subtitle: const Text('Pistisai gold'),
+                    subtitle: const Text('IAClé gold'),
                     trailing: Container(
                       width: 24,
                       height: 24,

@@ -1,8 +1,6 @@
 # IAClé
 
-IAClé est l'entreprise individuelle de Christopher Maltais, au Québec. C'est la marque qui livre la pile PistisAI aux PME d'ici.
-
-La pile, c'est le poste de travail bâti autour de Hermes : clavardage, voix, avatar, compétences. Une seule pile, une seule entreprise. [English](README.en.md).
+IAClé est un assistant IA local d'abord pour les entreprises du Québec. [English](README.en.md)
 
 ## Local d'abord
 
@@ -16,18 +14,15 @@ Dans le service, l'employé approuve les envois et les décisions importantes.
 
 Les PME du Québec. D'abord en Estrie, puis plus loin au Québec, surtout les PME réglementées : juridique, santé, finance.
 
-## Le poste
+## Ce que l'assistant fait
 
-Ce dépôt contient le poste PistisAI, livré sous la marque IAClé.
-
-- Clavardage avec Hermes, OpenClaw, ou une passerelle compatible.
-- Voix et avatar.
+- Clavardage, voix et avatar.
 - Lecture d'écran et OCR, avec la permission de la personne.
 - Actions sur le poste, avec une permission à la fois.
 - Compétences, sessions, tâches planifiées.
 - Maillage privé entre les appareils du client.
 
-Ollama et LM Studio servent à des tâches du poste, comme la mémoire et les embeddings. L'agent principal reste Hermes, ou une passerelle compatible.
+Hermes est le moteur principal. OpenClaw et les passerelles compatibles fonctionnent aussi. Ollama et LM Studio servent à la mémoire et aux embeddings.
 
 ## Offre
 
@@ -43,13 +38,11 @@ La connexion sert au tunnel et à la synchro.
 
 | Palier | Réseau |
 | --- | --- |
-| Gratuit | Tunnel `pistisai.app`, derrière Cloudflare Access |
+| Gratuit | Tunnel derrière Cloudflare Access |
 | Affaires | Tailscale ou le VPN du client |
 | Entreprise | Tailscale ou le VPN du client |
 
 Ce modèle ne passe pas par Supabase.
-
-Ce dépôt sera resynchronisé avec pistisai-app (voir [#26](https://github.com/iacle-solutions/iacle-app/issues/26)).
 
 ## Développement
 
@@ -96,4 +89,4 @@ Détails : [AGENTS.md](AGENTS.md), [prise en main](docs/development/DEVELOPER_ON
 
 ## Licence
 
-MIT. Voir [LICENSE](LICENSE).
+Voir [LICENSE](LICENSE).

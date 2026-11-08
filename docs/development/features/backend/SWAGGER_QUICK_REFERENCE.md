@@ -5,12 +5,12 @@
 ### Access Swagger UI
 
 - **Development**: http://localhost:8080/api/docs
-- **Production**: https://api.pistisai.app/api/docs
+- **Production**: https://api.example.com/api/docs
 
 ### Get OpenAPI Specification
 
 - **Development**: http://localhost:8080/api/docs/swagger.json
-- **Production**: https://api.pistisai.app/api/docs/swagger.json
+- **Production**: https://api.example.com/api/docs/swagger.json
 
 ## Installation
 
@@ -293,4 +293,4 @@ For questions or issues:
 - Check `API_DOCUMENTATION_GUIDE.md`
 - Review `API_ERROR_CODES.md`
 - See `SWAGGER_IMPLEMENTATION_SUMMARY.md`
-- Contact: support@pistisai.app
+- Contact: https://github.com/iacle-solutions/iacle-app/issues

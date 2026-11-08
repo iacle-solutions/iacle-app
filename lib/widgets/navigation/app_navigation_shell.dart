@@ -128,7 +128,7 @@ class _AppNavigationShellState extends State<AppNavigationShell> {
           const SizedBox(width: 12),
           Expanded(
             child: Text(
-              'Pistisai',
+              'IAClé',
               style: Theme.of(context).textTheme.labelSmall?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),

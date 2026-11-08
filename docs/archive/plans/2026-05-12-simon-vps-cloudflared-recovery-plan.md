@@ -2,7 +2,7 @@
 
 > This replaces the generic ingress plan. The intended setup is Cloudflare Tunnel. Treat any direct-80/443 plan as wrong for this deployment.
 
-**Goal:** Restore the public Pistisai website on Simon's VPS by wiring the existing local compose stack to a dedicated Cloudflare Tunnel and correcting stale DNS/tunnel ownership drift.
+**Goal:** Restore the public IAClé website on Simon's VPS by wiring the existing local compose stack to a dedicated Cloudflare Tunnel and correcting stale DNS/tunnel ownership drift.
 
 **Verified current state:**
 - Simon VPS: `31.97.140.7`
@@ -10,10 +10,10 @@
   - `http://127.0.0.1:3100/health` → `200`
   - `http://127.0.0.1:3100/` → `200`
 - Public domains are broken:
-  - `app.pistisai.app` → resolves to `208.110.72.50`, returns `500`
-  - `api.pistisai.app` → resolves to `208.110.72.50`, returns `500`
-  - `pistisai.app` → does not resolve
-- Simon VPS `cloudflared` is not serving Pistisai:
+  - `app.example.com` → resolves to `208.110.72.50`, returns `500`
+  - `api.example.com` → resolves to `208.110.72.50`, returns `500`
+  - `example.com` → does not resolve
+- Simon VPS `cloudflared` is not serving IAClé:
   - current service is for ImmoGestion
   - `/etc/cloudflared/config.yml` is effectively disabled and ends in `http_status:404`
 - Raw public port is not the intended path and is not reliably reachable from outside.
@@ -25,8 +25,8 @@
 ## Success criteria
 
 Do not call this fixed until all are true:
-1. `https://app.pistisai.app` returns `200`
-2. `https://api.pistisai.app/health` returns `200`
+1. `https://app.example.com` returns `200`
+2. `https://api.example.com/health` returns `200`
 3. both hostnames route through a Cloudflare Tunnel tied to Simon VPS, not to `208.110.72.50`
 4. the old broken public target no longer serves those names
 5. browser renders the app and API calls succeed
@@ -39,20 +39,20 @@ Do not call this fixed until all are true:
 **Objective:** preserve the current broken state before changing it.
 
 **Files / surfaces:**
-- `/opt/pistisai/deploy/simon-vps/.env`
-- `/opt/pistisai/deploy/simon-vps/docker-compose.yml`
-- `/opt/pistisai/deploy/simon-vps/nginx.conf`
+- `/opt/IAClé/deploy/simon-vps/.env`
+- `/opt/IAClé/deploy/simon-vps/docker-compose.yml`
+- `/opt/IAClé/deploy/simon-vps/nginx.conf`
 - `/etc/cloudflared/config.yml`
 - `systemctl cat cloudflared`
 
 **Command:**
 ```bash
 ssh -i ~/.ssh/immogestion_github_actions_ed25519 root@31.97.140.7 '
-  mkdir -p /root/pistisai-recovery-snapshots/$(date +%Y%m%d-%H%M%S) &&
-  SNAP=$(ls -td /root/pistisai-recovery-snapshots/* | head -1) &&
-  cp /opt/pistisai/deploy/simon-vps/.env "$SNAP/.env" &&
-  cp /opt/pistisai/deploy/simon-vps/docker-compose.yml "$SNAP/docker-compose.yml" &&
-  cp /opt/pistisai/deploy/simon-vps/nginx.conf "$SNAP/nginx.conf" &&
+  mkdir -p /root/IAClé-recovery-snapshots/$(date +%Y%m%d-%H%M%S) &&
+  SNAP=$(ls -td /root/IAClé-recovery-snapshots/* | head -1) &&
+  cp /opt/IAClé/deploy/simon-vps/.env "$SNAP/.env" &&
+  cp /opt/IAClé/deploy/simon-vps/docker-compose.yml "$SNAP/docker-compose.yml" &&
+  cp /opt/IAClé/deploy/simon-vps/nginx.conf "$SNAP/nginx.conf" &&
   cp /etc/cloudflared/config.yml "$SNAP/cloudflared-config.yml" 2>/dev/null || true &&
   systemctl cat cloudflared > "$SNAP/cloudflared.service.txt" 2>/dev/null || true &&
   echo "$SNAP"'
@@ -65,10 +65,10 @@ ssh -i ~/.ssh/immogestion_github_actions_ed25519 root@31.97.140.7 '
 
 **Commands:**
 ```bash
-curl -k -I -L https://app.pistisai.app
-curl -k -I -L https://api.pistisai.app/health
-getent ahosts app.pistisai.app
-getent ahosts api.pistisai.app
+curl -k -I -L https://app.example.com
+curl -k -I -L https://api.example.com/health
+getent ahosts app.example.com
+getent ahosts api.example.com
 ```
 
 **Expected now:**
@@ -79,7 +79,7 @@ getent ahosts api.pistisai.app
 
 ## Phase 2: Recover the correct Cloudflare ownership and tunnel material
 
-### Task 2.1: Find or recover the right Cloudflare auth for `pistisai.app`
+### Task 2.1: Find or recover the right Cloudflare auth for `example.com`
 **Objective:** stop guessing which account controls the zone.
 
 **Method:** inspect prior Hermes/Paperclip/session artifacts for Cloudflare auth traces, then validate against Cloudflare API.
@@ -88,57 +88,57 @@ getent ahosts api.pistisai.app
 - `X-Auth-Email`
 - `X-Auth-Key`
 - bearer token candidates
-- zone references for `pistisai.app`
+- zone references for `example.com`
 
 **Validation commands:**
 Legacy/global-key shape:
 ```bash
-curl -sS "https://api.cloudflare.com/client/v4/zones?name=pistisai.app" \
+curl -sS "https://api.cloudflare.com/client/v4/zones?name=example.com" \
   -H "X-Auth-Email: <email>" \
   -H "X-Auth-Key: <key>"
 ```
 Bearer shape:
 ```bash
-curl -sS "https://api.cloudflare.com/client/v4/zones?name=pistisai.app" \
+curl -sS "https://api.cloudflare.com/client/v4/zones?name=example.com" \
   -H "Authorization: Bearer <token>"
 ```
 
 **Success criteria:** one auth shape returns `success: true` and the actual zone/account.
 
 ### Task 2.2: List existing tunnel and DNS records for the zone
-**Objective:** determine whether a Pistisai tunnel already exists or whether DNS is just stale.
+**Objective:** determine whether a IAClé tunnel already exists or whether DNS is just stale.
 
 **Required queries:**
 - list DNS records for:
-  - `pistisai.app`
-  - `app.pistisai.app`
-  - `api.pistisai.app`
+  - `example.com`
+  - `app.example.com`
+  - `api.example.com`
 - list tunnel-related records or current target mapping
 
 **Success criteria:** exact current record set is captured before mutation.
 
 ---
 
-## Phase 3: Create a dedicated Pistisai tunnel on Simon VPS
+## Phase 3: Create a dedicated IAClé tunnel on Simon VPS
 
-### Task 3.1: Create a Pistisai-specific cloudflared config
+### Task 3.1: Create a IAClé-specific cloudflared config
 **Objective:** separate this from ImmoGestion completely.
 
-**Create:** `/etc/cloudflared/pistisai.yml`
+**Create:** `/etc/cloudflared/IAClé.yml`
 
 **Target mapping:**
-- `app.pistisai.app` → `http://127.0.0.1:3100`
-- `api.pistisai.app` → `http://127.0.0.1:3100`
+- `app.example.com` → `http://127.0.0.1:3100`
+- `api.example.com` → `http://127.0.0.1:3100`
 - optional apex redirect later, not in the first repair pass
 
 **Config shape:**
 ```yaml
-tunnel: <pistisai-tunnel-id>
-credentials-file: /etc/cloudflared/<pistisai-tunnel-id>.json
+tunnel: <IAClé-tunnel-id>
+credentials-file: /etc/cloudflared/<IAClé-tunnel-id>.json
 ingress:
-  - hostname: app.pistisai.app
+  - hostname: app.example.com
     service: http://127.0.0.1:3100
-  - hostname: api.pistisai.app
+  - hostname: api.example.com
     service: http://127.0.0.1:3100
   - service: http_status:404
 ```
@@ -148,18 +148,18 @@ ingress:
 ### Task 3.2: Create a separate systemd unit
 **Objective:** do not reuse the ImmoGestion tunnel service.
 
-**Create:** `/etc/systemd/system/cloudflared-pistisai.service`
+**Create:** `/etc/systemd/system/cloudflared-IAClé.service`
 
 **Minimal unit:**
 ```ini
 [Unit]
-Description=cloudflared Pistisai tunnel
+Description=cloudflared IAClé tunnel
 After=network-online.target
 Wants=network-online.target
 
 [Service]
 Type=simple
-ExecStart=/usr/local/bin/cloudflared --config /etc/cloudflared/pistisai.yml tunnel run
+ExecStart=/usr/local/bin/cloudflared --config /etc/cloudflared/IAClé.yml tunnel run
 Restart=always
 RestartSec=5
 
@@ -170,9 +170,9 @@ WantedBy=multi-user.target
 **Verification:**
 ```bash
 systemctl daemon-reload
-systemctl enable --now cloudflared-pistisai
-systemctl status cloudflared-pistisai --no-pager -l
-journalctl -u cloudflared-pistisai -n 100 --no-pager
+systemctl enable --now cloudflared-IAClé
+systemctl status cloudflared-IAClé --no-pager -l
+journalctl -u cloudflared-IAClé -n 100 --no-pager
 ```
 
 **Success criteria:** service is active and tunnel registers successfully.
@@ -185,13 +185,13 @@ journalctl -u cloudflared-pistisai -n 100 --no-pager
 **Objective:** remove the stale `208.110.72.50` route.
 
 **Required outcome:**
-- `app.pistisai.app` no longer resolves/edges to the wrong public target
-- `api.pistisai.app` no longer resolves/edges to the wrong public target
+- `app.example.com` no longer resolves/edges to the wrong public target
+- `api.example.com` no longer resolves/edges to the wrong public target
 - both are attached to the new Cloudflare Tunnel route for Simon VPS
 
 **Important rule:** mutate records only after the Simon-VPS tunnel is up and verified locally.
 
-### Task 4.2: Decide what to do with apex `pistisai.app`
+### Task 4.2: Decide what to do with apex `example.com`
 Current state: does not resolve.
 
 First-pass recommendation:
@@ -214,8 +214,8 @@ Expected: `200`.
 ### Task 5.2: Re-check DNS after Cloudflare mutation
 **Commands:**
 ```bash
-getent ahosts app.pistisai.app
-getent ahosts api.pistisai.app
+getent ahosts app.example.com
+getent ahosts api.example.com
 ```
 Also check with public DoH if needed.
 
@@ -224,8 +224,8 @@ Also check with public DoH if needed.
 ### Task 5.3: Re-check public HTTP(S)
 **Commands:**
 ```bash
-curl -k -I -L https://app.pistisai.app
-curl -k -I -L https://api.pistisai.app/health
+curl -k -I -L https://app.example.com
+curl -k -I -L https://api.example.com/health
 ```
 
 **Expected:**
@@ -263,7 +263,7 @@ Record in notes:
 ## Fastest execution order
 1. snapshot current state
 2. recover valid Cloudflare auth for the correct zone
-3. create Simon-VPS-specific Pistisai tunnel config and service
+3. create Simon-VPS-specific IAClé tunnel config and service
 4. verify tunnel process is healthy on the VPS
 5. repoint `app.` and `api.` through that tunnel
 6. verify externally with curl and browser
@@ -275,7 +275,7 @@ Record in notes:
 When the work is executed, report in this structure only:
 - **Tunnel auth recovered:** yes/no
 - **Zone/account confirmed:** yes/no + zone name
-- **Dedicated Pistisai cloudflared service:** active/inactive
+- **Dedicated IAClé cloudflared service:** active/inactive
 - **Old public target removed:** yes/no
 - **App URL external check:** pass/fail
 - **API health external check:** pass/fail

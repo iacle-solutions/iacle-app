@@ -696,7 +696,7 @@ jobs:
     
     services:
       api:
-        image: ghcr.io/pistisai/Pistisai/api:latest
+        image: ghcr.io/IAClé/IAClé/api:latest
         env:
           SANDBOX_MODE: true
           NODE_ENV: sandbox

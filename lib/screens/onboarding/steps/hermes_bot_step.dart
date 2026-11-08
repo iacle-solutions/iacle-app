@@ -113,14 +113,14 @@ class _HermesBotStepState extends State<HermesBotStep> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'PistisAI package',
+              'Assistant package',
               style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
             ),
             const SizedBox(height: 12),
             Text(
-              'Finishing this first-time setup installs the pistisai package '
+              'Finishing this first-time setup installs the assistant package '
               'into the Hermes you just connected. That home comes from that '
               'Hermes, including when it is not the usual Windows location. '
               'The package adds the aigent-watch bot, the drift-scan skill, '
@@ -158,7 +158,7 @@ class _HermesBotStepState extends State<HermesBotStep> {
         ),
         const SizedBox(height: 16),
         Text(
-          'Installing PistisAI package...',
+          'Installing the assistant package...',
           style: Theme.of(context).textTheme.titleMedium,
         ),
       ],

@@ -2,9 +2,9 @@
 
 > **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
 
-**Goal:** Implement a personality and evolution system for OpenClaw agents that grows organically through meaningful conversations, with shared state between OpenClaw Gateway and Pistisai.
+**Goal:** Implement a personality and evolution system for OpenClaw agents that grows organically through meaningful conversations, with shared state between OpenClaw Gateway and IAClé.
 
-**Architecture:** Hybrid shared state where OpenClaw owns personality/evolution, Pistisai provides expanded awareness. Drift database (VPS via Tailscale) as primary storage, markdown files in OpenClaw skills directory as backup/portable storage. Collaborative evolution: OpenClaw self-reflects and requests evolution, Pistisai validates before approving.
+**Architecture:** Hybrid shared state where OpenClaw owns personality/evolution, IAClé provides expanded awareness. Drift database (VPS via Tailscale) as primary storage, markdown files in OpenClaw skills directory as backup/portable storage. Collaborative evolution: OpenClaw self-reflects and requests evolution, IAClé validates before approving.
 
 **Tech Stack:** Flutter 3.5+, Drift (SQLite), TypeScript (OpenClaw skills), Rive animations, markdown backup sync.
 
@@ -223,7 +223,7 @@ git commit -m "feat: add avatar personality tables to Drift schema
 Create `lib/models/avatar/personality_models.dart`:
 
 ```dart
-import 'package:pistisai/database/database.dart';
+import 'package:IAClé/database/database.dart';
 
 class PersonalityTraits {
   final double formality;
@@ -297,9 +297,9 @@ Create `test/services/avatar/personality_engine_test.dart`:
 
 ```dart
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pistisai/database/database.dart';
-import 'package:pistisai/models/avatar/personality_models.dart';
-import 'package:pistisai/services/avatar/personality_engine.dart';
+import 'package:IAClé/database/database.dart';
+import 'package:IAClé/models/avatar/personality_models.dart';
+import 'package:IAClé/services/avatar/personality_engine.dart';
 import 'package:mockito/mockito.dart';
 import 'package:mockito/annotations.dart';
 
@@ -424,8 +424,8 @@ Create `lib/services/avatar/personality_engine.dart`:
 ```dart
 import 'dart:io';
 import 'dart:convert';
-import 'package:pistisai/database/database.dart';
-import 'package:pistisai/models/avatar/personality_models.dart';
+import 'package:IAClé/database/database.dart';
+import 'package:IAClé/models/avatar/personality_models.dart';
 
 class PersonalityEngine {
   final DriftLocalBrain _database;
@@ -578,7 +578,7 @@ git commit -m "feat: implement PersonalityEngine service
 **Step 1: Add personality parameter to Avatar**
 
 ```dart
-import 'package:pistisai/models/avatar/personality_models.dart';
+import 'package:IAClé/models/avatar/personality_models.dart';
 
 class AgentAvatar extends StatefulWidget {
   final AgentState state;
@@ -830,9 +830,9 @@ String _getOpenClawSkillsPath() {
   }
 
   final possiblePaths = [
-    '$home/.openclaw/skills/pistisai',
-    '$home/.config/openclaw/skills/pistisai',
-    '$home/AppData/Roaming/openclaw/skills/pistisai',  // Windows
+    '$home/.openclaw/skills/IAClé',
+    '$home/.config/openclaw/skills/IAClé',
+    '$home/AppData/Roaming/openclaw/skills/IAClé',  // Windows
   ];
 
   for (final path in possiblePaths) {
@@ -842,7 +842,7 @@ String _getOpenClawSkillsPath() {
   }
 
   // Create default path if it doesn't exist
-  final defaultPath = '$home/.openclaw/skills/pistisai';
+  final defaultPath = '$home/.openclaw/skills/IAClé';
   Directory(defaultPath).createSync(recursive: true);
   return defaultPath;
 }
@@ -902,11 +902,11 @@ Create `test/services/avatar/evolution_tracker_test.dart`:
 
 ```dart
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pistisai/database/database.dart';
-import 'package:pistisai/services/avatar/evolution_tracker.dart';
+import 'package:IAClé/database/database.dart';
+import 'package:IAClé/services/avatar/evolution_tracker.dart';
 import 'package:mockito/mockito.dart';
 import 'package:mockito/annotations.dart';
-import 'package:pistisai/models/conversation.dart';
+import 'package:IAClé/models/conversation.dart';
 
 @GenerateMocks([DriftLocalBrain])
 import 'evolution_tracker_test.mocks.dart';
@@ -1031,7 +1031,7 @@ Expected: FAIL with "EvolutionTracker not implemented"
 Create `lib/services/avatar/evolution_tracker.dart`:
 
 ```dart
-import 'package:pistisai/database/database.dart';
+import 'package:IAClé/database/database.dart';
 
 class DepthMetrics {
   final double complexity;
@@ -1276,22 +1276,22 @@ git commit -m "feat: register EvolutionTracker in service locator"
 ### Task 3.1: Create OpenClaw Skill Directory Structure
 
 **Files:**
-- Create: `~/.openclaw/skills/pistisai/` directory
-- Create: `~/.openclaw/skills/pistisai/SKILL.md`
-- Create: `~/.openclaw/skills/pistisai/package.json`
-- Create: `~/.openclaw/skills/pistisai/tsconfig.json`
+- Create: `~/.openclaw/skills/IAClé/` directory
+- Create: `~/.openclaw/skills/IAClé/SKILL.md`
+- Create: `~/.openclaw/skills/IAClé/package.json`
+- Create: `~/.openclaw/skills/IAClé/tsconfig.json`
 
 **Step 1: Create skill directory**
 
 ```bash
-mkdir -p ~/.openclaw/skills/pistisai
+mkdir -p ~/.openclaw/skills/IAClé
 ```
 
 **Step 2: Create SKILL.md**
 
 ```bash
-cat > ~/.openclaw/skills/pistisai/SKILL.md << 'EOF'
-# Pistisai Avatar Personality
+cat > ~/.openclaw/skills/IAClé/SKILL.md << 'EOF'
+# IAClé Avatar Personality
 
 Provides personality-driven responses and organic evolution capabilities for OpenClaw agents.
 
@@ -1308,7 +1308,7 @@ The agent has four personality traits (0-1 scale):
 The agent evolves organically through meaningful conversations:
 - No XP grinding - evolution based on conversation depth and patterns
 - Self-reflection: agent recognizes when it has grown
-- Collaborative: Pistisai validates evolution requests
+- Collaborative: IAClé validates evolution requests
 - Stages: base → stage1 → stage2 → final
 
 ## Data Storage
@@ -1330,9 +1330,9 @@ EOF
 **Step 3: Create package.json**
 
 ```bash
-cat > ~/.openclaw/skills/pistisai/package.json << 'EOF'
+cat > ~/.openclaw/skills/IAClé/package.json << 'EOF'
 {
-  "name": "pistisai-personality-skill",
+  "name": "IAClé-personality-skill",
   "version": "1.0.0",
   "description": "Avatar personality and evolution system for OpenClaw",
   "main": "index.ts",
@@ -1364,7 +1364,7 @@ EOF
 **Step 4: Create tsconfig.json**
 
 ```bash
-cat > ~/.openclaw/skills/pistisai/tsconfig.json << 'EOF'
+cat > ~/.openclaw/skills/IAClé/tsconfig.json << 'EOF'
 {
   "compilerOptions": {
     "target": "ES2020",
@@ -1391,19 +1391,19 @@ EOF
 
 Note: This is in OpenClaw skills directory, not the git repo. We'll create the skill files in the repo first, then provide instructions to install.
 
-**Alternative approach**: Create skill files in `services/openclaw-skills/pistisai/` directory in the repo, then copy to OpenClaw skills directory.
+**Alternative approach**: Create skill files in `services/openclaw-skills/IAClé/` directory in the repo, then copy to OpenClaw skills directory.
 
 ---
 
 ### Task 3.2: Create OpenClaw Personality Skill (TypeScript)
 
 **Files:**
-- Create: `services/openclaw-skills/pistisai/index.ts`
-- Create: `services/openclaw-skills/pistisai/drift-adapter.ts`
+- Create: `services/openclaw-skills/IAClé/index.ts`
+- Create: `services/openclaw-skills/IAClé/drift-adapter.ts`
 
 **Step 1: Create Drift adapter**
 
-Create `services/openclaw-skills/pistisai/drift-adapter.ts`:
+Create `services/openclaw-skills/IAClé/drift-adapter.ts`:
 
 ```typescript
 import Database from 'better-sqlite3';
@@ -1436,7 +1436,7 @@ export class DriftAdapter {
   private db: Database.Database | null = null;
   private dbPath: string;
 
-  constructor(dbPath: string = '~/.local/share/Pistisai/local_brain.db') {
+  constructor(dbPath: string = '~/.local/share/IAClé/local_brain.db') {
     this.dbPath = dbPath.replace('~', process.env.HOME || '');
   }
 
@@ -1522,7 +1522,7 @@ export class DriftAdapter {
 
 **Step 2: Create main skill index**
 
-Create `services/openclaw-skills/pistisai/index.ts`:
+Create `services/openclaw-skills/IAClé/index.ts`:
 
 ```typescript
 import { readFileSync, existsSync } from 'fs';
@@ -1730,8 +1730,8 @@ Respond in a way that reflects these personality traits naturally.`;
 **Step 3: Copy to OpenClaw skills directory**
 
 ```bash
-mkdir -p ~/.openclaw/skills/pistisai
-cp -r services/openclaw-skills/pistisai/* ~/.openclaw/skills/pistisai/
+mkdir -p ~/.openclaw/skills/IAClé
+cp -r services/openclaw-skills/IAClé/* ~/.openclaw/skills/IAClé/
 ```
 
 **Step 4: Commit**
@@ -1745,7 +1745,7 @@ git commit -m "feat: add OpenClaw personality skill
 - Add personality injection into prompts
 - Add self-reflection for evolution triggers
 - Add markdown fallback for offline mode
-- Add evolution request to Pistisai API
+- Add evolution request to IAClé API
 "
 ```
 
@@ -1867,10 +1867,10 @@ git commit -m "feat: add evolution API endpoints to router
 
 ```dart
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pistisai/database/database.dart';
-import 'package:pistisai/services/avatar/personality_engine.dart';
-import 'package:pistisai/services/avatar/evolution_tracker.dart';
-import 'package:pistisai/models/avatar/personality_models.dart';
+import 'package:IAClé/database/database.dart';
+import 'package:IAClé/services/avatar/personality_engine.dart';
+import 'package:IAClé/services/avatar/evolution_tracker.dart';
+import 'package:IAClé/models/avatar/personality_models.dart';
 
 void main() {
   group('Evolution Flow Integration', () {
@@ -1985,23 +1985,23 @@ git commit -m "test: add evolution flow integration test
 
 **Step 1: Add avatar system documentation to CLAUDE.md**
 
-Add under "Avatar System (Pistisai)" section:
+Add under "Avatar System (IAClé)" section:
 
 ```dart
 ### Avatar Personality System
 
 **Architecture**: Hybrid shared state with OpenClaw Gateway
 - OpenClaw owns personality & evolution (traits, evolution stages)
-- Pistisai provides expanded awareness (memory, context, visual data)
+- IAClé provides expanded awareness (memory, context, visual data)
 - Drift database (VPS via Tailscale) = primary storage
-- Markdown files (~/.openclaw/skills/pistisai/) = backup storage
+- Markdown files (~/.openclaw/skills/IAClé/) = backup storage
 
 **Personality Traits** (0-1 scale):
 - Formality, Humor, Enthusiasm, Empathy
 
 **Evolution System** (no XP):
 - Triggers: Conversation depth, user patterns, agent self-reflection
-- Collaborative: OpenClaw requests, Pistisai validates
+- Collaborative: OpenClaw requests, IAClé validates
 - Stages: base → stage1 → stage2 → final
 
 **Services**:
@@ -2015,7 +2015,7 @@ Add under "Avatar System (Pistisai)" section:
 - POST /avatar/evolution/request - Evolution validation
 
 **OpenClaw Skill**:
-- Location: ~/.openclaw/skills/pistisai/
+- Location: ~/.openclaw/skills/IAClé/
 - Files: SKILL.md, index.ts, drift-adapter.ts
 - Functionality: Personality injection, self-reflection, evolution requests
 
@@ -2051,9 +2051,9 @@ git commit -m "docs: add Avatar Personality Engine to CLAUDE.md
 cat > scripts/install-openclaw-skill.sh << 'EOF'
 #!/bin/bash
 
-# Install Pistisai personality skill to OpenClaw
+# Install IAClé personality skill to OpenClaw
 
-SKILL_NAME="pistisai"
+SKILL_NAME="IAClé"
 SOURCE_DIR="services/openclaw-skills/$SKILL_NAME"
 TARGET_DIR="$HOME/.openclaw/skills/$SKILL_NAME"
 
@@ -2120,7 +2120,7 @@ The Avatar Personality Engine enables OpenClaw agents to develop unique personal
    openclaw gateway restart
    ```
 
-3. **Adjust personality** (via Pistisai UI or API):
+3. **Adjust personality** (via IAClé UI or API):
    ```bash
    curl -X POST http://localhost:1337/avatar/traits \
      -H "Content-Type: application/json" \
@@ -2142,12 +2142,12 @@ No XP grinding - evolution happens through:
 - **Conversation Depth**: 5+ deep conversations (complexity > 0.7)
 - **Novelty**: Average novelty score > 0.5
 - **Self-Reflection**: Agent recognizes growth
-- **Collaborative**: OpenClaw requests, Pistisai validates
+- **Collaborative**: OpenClaw requests, IAClé validates
 
 ## Architecture
 
 ```
-OpenClaw Gateway              Drift Database              Pistisai
+OpenClaw Gateway              Drift Database              IAClé
      │                              │                              │
      ├─── owns personality ─────────┤                              │
      │                              │                              │
@@ -2159,7 +2159,7 @@ OpenClaw Gateway              Drift Database              Pistisai
 ## Data Storage
 
 - **Primary**: Drift database on VPS (via Tailscale)
-- **Backup**: Markdown files in `~/.openclaw/skills/pistisai/`
+- **Backup**: Markdown files in `~/.openclaw/skills/IAClé/`
 - **Fallback**: Markdown files when database unavailable
 
 ## API Endpoints
@@ -2184,7 +2184,7 @@ Content-Type: application/json
 }
 ```
 
-### Request Evolution (OpenClaw → Pistisai)
+### Request Evolution (OpenClaw → IAClé)
 ```bash
 POST http://localhost:1337/avatar/evolution/request
 Content-Type: application/json
@@ -2219,11 +2219,11 @@ flutter test
 
 **Skill not loading**:
 - Check OpenClaw logs: `openclaw logs`
-- Verify skill directory: `ls ~/.openclaw/skills/pistisai/`
+- Verify skill directory: `ls ~/.openclaw/skills/IAClé/`
 
 **Database connection failed**:
 - Verify Tailscale connection: `tailscale status`
-- Check database path: `~/.local/share/Pistisai/local_brain.db`
+- Check database path: `~/.local/share/IAClé/local_brain.db`
 
 **Evolution not triggering**:
 - Check depth metrics in database

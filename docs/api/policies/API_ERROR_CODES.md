@@ -1,6 +1,6 @@
-# Pistisai API Error Codes and HTTP Status Codes
+# IAClé API Error Codes and HTTP Status Codes
 
-This document provides a comprehensive reference for all error codes and HTTP status codes used in the Pistisai API Backend.
+This document provides a comprehensive reference for all error codes and HTTP status codes used in the IAClé API Backend.
 
 ## HTTP Status Codes
 
@@ -307,4 +307,4 @@ The following errors should NOT be retried:
 
 ## Support
 
-For questions about error codes or to report issues, contact support at support@pistisai.app.
+For questions about error codes or to report issues, contact support at https://github.com/iacle-solutions/iacle-app/issues.

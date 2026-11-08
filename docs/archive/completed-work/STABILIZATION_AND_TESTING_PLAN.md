@@ -1,4 +1,4 @@
-# Pistisai - Stabilization & Testing Plan
+# IAClé - Stabilization & Testing Plan
 
 > **Last Updated**: 2026-02-28 | **Status**: Phase 2 In Progress
 > **Purpose**: Comprehensive plan to stabilize Phase 0-2 features and ensure comprehensive test coverage
@@ -7,7 +7,7 @@
 
 ## Executive Summary
 
-The Pistisai app is approximately **60% complete** with Phase 0 (Setup Wizard) and Phase 1 (Foundation) fully implemented, and Phase 2 (Core Features) at ~55% completion. This plan focuses on:
+The IAClé app is approximately **60% complete** with Phase 0 (Setup Wizard) and Phase 1 (Foundation) fully implemented, and Phase 2 (Core Features) at ~55% completion. This plan focuses on:
 
 1. **Stabilizing existing features** (Phase 0-1, Phase 2 completed items)
 2. **Fixing failing tests** (Backend: 293 failures / 1940 total tests)
@@ -971,7 +971,7 @@ test('user performs batch file operations');
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:mockito/annotations.dart';
-import 'package:pistisai/services/[feature]_service.dart';
+import 'package:IAClé/services/[feature]_service.dart';
 
 @GenerateMocks([DependencyClass])
 import '[feature]_service_test.mocks.dart';
@@ -1043,8 +1043,8 @@ void main() {
 ```dart
 // test/integration/[feature]_flow_test.dart
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pistisai/main.dart';
-import 'package:pistisai/services/[feature]_service.dart';
+import 'package:IAClé/main.dart';
+import 'package:IAClé/services/[feature]_service.dart';
 import 'helpers/test_app_wrapper.dart';
 
 void main() {

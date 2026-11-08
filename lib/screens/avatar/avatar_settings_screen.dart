@@ -30,7 +30,7 @@ class _AvatarSettingsScreenState extends State<AvatarSettingsScreen> {
   // Form state
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController =
-      TextEditingController(text: 'Pistisai');
+      TextEditingController(text: 'IAClé');
   late double _formality;
   late double _humor;
   late double _enthusiasm;
@@ -124,7 +124,7 @@ class _AvatarSettingsScreenState extends State<AvatarSettingsScreen> {
       _selectedEvolutionStage = profile.evolutionStage;
     } else {
       // Default values
-      _nameController.text = 'Pistisai';
+      _nameController.text = 'IAClé';
       _formality = PersonalityTraits.defaultTraits.formality;
       _humor = PersonalityTraits.defaultTraits.humor;
       _enthusiasm = PersonalityTraits.defaultTraits.enthusiasm;

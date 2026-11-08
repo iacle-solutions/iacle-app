@@ -4,7 +4,7 @@ import 'package:pistisai/services/settings_preference_service.dart';
 /// Application configuration constants
 class AppConfig {
   // App Information
-  static const String appName = 'Pistisai';
+  static const String appName = 'IAClé';
   static const String appVersion = '1.0.6';
   static const String appDescription =
       'Local-first agent companion. Offline until you choose to connect.';
@@ -13,9 +13,9 @@ class AppConfig {
   static const String homepageUrl = 'https://pistisai.app';
   static const String appUrl = 'https://app.pistisai.app';
   static const String adminCenterUrl = 'https://admin.pistisai.app';
-  static const String githubUrl = 'https://github.com/pistisAI/pistisai-app';
+  static const String githubUrl = 'https://github.com/iacle-solutions/iacle-app';
   static const String githubReleasesUrl =
-      'https://github.com/pistisAI/pistisai-app/releases/latest';
+      'https://github.com/iacle-solutions/iacle-app/releases/latest';
 
   // Configured Authentication Provider
   static const AuthProviderType authProvider = AuthProviderType.supabase;

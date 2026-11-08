@@ -245,12 +245,12 @@ All endpoints require:
 {
   "success": true,
   "data": {
-    "domain": "pistisai.app",
+    "domain": "example.com",
     "recommendations": {
       "mx": [
         {
           "type": "MX",
-          "name": "pistisai.app",
+          "name": "example.com",
           "value": "5 gmail-smtp-in.l.google.com",
           "priority": 5,
           "ttl": 3600,
@@ -258,7 +258,7 @@ All endpoints require:
         },
         {
           "type": "MX",
-          "name": "pistisai.app",
+          "name": "example.com",
           "value": "10 alt1.gmail-smtp-in.l.google.com",
           "priority": 10,
           "ttl": 3600,
@@ -266,7 +266,7 @@ All endpoints require:
         },
         {
           "type": "MX",
-          "name": "pistisai.app",
+          "name": "example.com",
           "value": "20 alt2.gmail-smtp-in.l.google.com",
           "priority": 20,
           "ttl": 3600,
@@ -275,15 +275,15 @@ All endpoints require:
       ],
       "spf": {
         "type": "TXT",
-        "name": "pistisai.app",
+        "name": "example.com",
         "value": "v=spf1 include:_spf.google.com ~all",
         "ttl": 3600,
         "description": "SPF record for Google Workspace"
       },
       "dmarc": {
         "type": "TXT",
-        "name": "_dmarc.pistisai.app",
-        "value": "v=DMARC1; p=quarantine; rua=mailto:postmaster@pistisai.app",
+        "name": "_dmarc.example.com",
+        "value": "v=DMARC1; p=quarantine; rua=mailto:https://github.com/iacle-solutions/iacle-app/issues",
         "ttl": 3600,
         "description": "DMARC policy record"
       }
@@ -312,7 +312,7 @@ All endpoints require:
 
 ```json
 {
-  "domain": "pistisai.app",
+  "domain": "example.com",
   "recordTypes": ["mx", "spf", "dmarc"]
 }
 ```
@@ -328,12 +328,12 @@ All endpoints require:
 {
   "success": true,
   "data": {
-    "domain": "pistisai.app",
+    "domain": "example.com",
     "createdRecords": [
       {
         "id": "uuid",
         "recordType": "MX",
-        "name": "pistisai.app",
+        "name": "example.com",
         "value": "5 gmail-smtp-in.l.google.com",
         "ttl": 3600,
         "priority": 5
@@ -341,7 +341,7 @@ All endpoints require:
       {
         "id": "uuid",
         "recordType": "MX",
-        "name": "pistisai.app",
+        "name": "example.com",
         "value": "10 alt1.gmail-smtp-in.l.google.com",
         "ttl": 3600,
         "priority": 10
@@ -349,7 +349,7 @@ All endpoints require:
       {
         "id": "uuid",
         "recordType": "MX",
-        "name": "pistisai.app",
+        "name": "example.com",
         "value": "20 alt2.gmail-smtp-in.l.google.com",
         "ttl": 3600,
         "priority": 20
@@ -357,15 +357,15 @@ All endpoints require:
       {
         "id": "uuid",
         "recordType": "TXT",
-        "name": "pistisai.app",
+        "name": "example.com",
         "value": "v=spf1 include:_spf.google.com ~all",
         "ttl": 3600
       },
       {
         "id": "uuid",
         "recordType": "TXT",
-        "name": "_dmarc.pistisai.app",
-        "value": "v=DMARC1; p=quarantine; rua=mailto:postmaster@pistisai.app",
+        "name": "_dmarc.example.com",
+        "value": "v=DMARC1; p=quarantine; rua=mailto:https://github.com/iacle-solutions/iacle-app/issues",
         "ttl": 3600
       }
     ],
@@ -489,7 +489,7 @@ CREATE TABLE dns_records (
 ### Create MX Record
 
 ```bash
-curl -X POST https://api.pistisai.app/api/admin/dns/records \
+curl -X POST https://api.example.com/api/admin/dns/records \
   -H "Authorization: Bearer <JWT_TOKEN>" \
   -H "Content-Type: application/json" \
   -d '{
@@ -504,18 +504,18 @@ curl -X POST https://api.pistisai.app/api/admin/dns/records \
 ### List All DNS Records
 
 ```bash
-curl -X GET https://api.pistisai.app/api/admin/dns/records \
+curl -X GET https://api.example.com/api/admin/dns/records \
   -H "Authorization: Bearer <JWT_TOKEN>"
 ```
 
 ### Setup Google Workspace DNS
 
 ```bash
-curl -X POST https://api.pistisai.app/api/admin/dns/setup-google \
+curl -X POST https://api.example.com/api/admin/dns/setup-google \
   -H "Authorization: Bearer <JWT_TOKEN>" \
   -H "Content-Type: application/json" \
   -d '{
-    "domain": "pistisai.app",
+    "domain": "example.com",
     "recordTypes": ["mx", "spf", "dmarc"]
   }'
 ```

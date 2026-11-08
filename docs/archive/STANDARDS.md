@@ -1,10 +1,10 @@
-# Engineering Standards — pistisAI/pistisai-app
+# Engineering Standards — IAClé/iacle-app
 
 
 
 ## Objective
 
-Maintain a local-first, review-disciplined codebase for the Pistisai Flutter app and Node backend services. These standards are enforced by CI and accepted in code review.
+Maintain a local-first, review-disciplined codebase for the IAClé Flutter app and Node backend services. These standards are enforced by CI and accepted in code review.
 
 
 

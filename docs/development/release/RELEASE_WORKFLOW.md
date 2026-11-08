@@ -1,8 +1,8 @@
-# Pistisai Release Workflow
+# IAClé Release Workflow
 
 ## Overview
 
-This document provides the complete, tested workflow for creating Pistisai releases. Follow these steps exactly to ensure successful releases with all assets properly uploaded.
+This document provides the complete, tested workflow for creating IAClé releases. Follow these steps exactly to ensure successful releases with all assets properly uploaded.
 
 ## Prerequisites
 
@@ -87,7 +87,7 @@ git status
 2. **Verify Build Output**:
 
    ```powershell
-   Get-ChildItem dist\windows\Pistisai-*.zip*
+   Get-ChildItem dist\windows\IAClé-*.zip*
    # Should show both .zip and .sha256 files
    ```
 
@@ -97,16 +97,16 @@ git status
 
    ```bash
    # Create draft release
-   gh release create v3.8.0 --draft --title "Pistisai v3.8.0 - [Feature Name]" --notes-file release-notes.md
+   gh release create v3.8.0 --draft --title "IAClé v3.8.0 - [Feature Name]" --notes-file release-notes.md
    
    # Or create release directly
-   gh release create v3.8.0 --title "Pistisai v3.8.0 - [Feature Name]" --notes "Release notes here"
+   gh release create v3.8.0 --title "IAClé v3.8.0 - [Feature Name]" --notes "Release notes here"
    ```
 
 2. **Get Release ID** (if using API):
 
    ```bash
-   gh api repos/pistisAI/pistisai-app/releases/latest | jq '.id'
+   gh api repos/IAClé/iacle-app/releases/latest | jq '.id'
    ```
 
 ### Step 5: Upload Assets to GitHub Release
@@ -129,8 +129,8 @@ git status
 
 ```bash
 # Upload specific files
-gh release upload v3.8.0 dist/windows/pistisai-3.8.0-portable.zip
-gh release upload v3.8.0 dist/windows/pistisai-3.8.0-portable.zip.sha256
+gh release upload v3.8.0 dist/windows/IAClé-3.8.0-portable.zip
+gh release upload v3.8.0 dist/windows/IAClé-3.8.0-portable.zip.sha256
 ```
 
 ### Step 6: Commit and Push Changes
@@ -157,13 +157,13 @@ gh release upload v3.8.0 dist/windows/pistisai-3.8.0-portable.zip.sha256
 1. **Deploy via SSH from Windows PowerShell**:
 
    ```powershell
-   ssh cloudllm@pistisai.app "cd /opt/Pistisai && git pull origin master && flutter build web --release && docker-compose -f docker-compose.multi.yml down && docker-compose -f docker-compose.multi.yml up -d"
+   ssh https://github.com/iacle-solutions/iacle-app/issues "cd /opt/IAClé && git pull origin master && flutter build web --release && docker-compose -f docker-compose.multi.yml down && docker-compose -f docker-compose.multi.yml up -d"
    ```
 
 2. **Verify Deployment**:
 
    ```powershell
-   curl -s https://app.pistisai.app/version.json
+   curl -s https://app.example.com/version.json
    # Should show new version number
    ```
 
@@ -176,7 +176,7 @@ gh release upload v3.8.0 dist/windows/pistisai-3.8.0-portable.zip.sha256
    - [ ] Version tags correct
 
 2. **Verify VPS Deployment**:
-   - [ ] Application accessible at pistisai.app
+   - [ ] Application accessible at example.com
    - [ ] Version number updated
    - [ ] New features functional
 
@@ -218,7 +218,7 @@ flutter pub get
 
 ```bash
 # Check VPS status and retry
-wsl -d Ubuntu-24.04 -- ssh cloudllm@pistisai.app "docker ps"
+wsl -d Ubuntu-24.04 -- ssh https://github.com/iacle-solutions/iacle-app/issues "docker ps"
 # Retry deployment commands individually
 ```
 
@@ -238,7 +238,7 @@ gh release edit v3.8.0 --prerelease
 
 ```bash
 # Revert to previous version
-wsl -d Ubuntu-24.04 -- ssh cloudllm@pistisai.app "cd /opt/Pistisai && git reset --hard HEAD~1 && flutter build web --release && docker-compose -f docker-compose.multi.yml restart"
+wsl -d Ubuntu-24.04 -- ssh https://github.com/iacle-solutions/iacle-app/issues "cd /opt/IAClé && git reset --hard HEAD~1 && flutter build web --release && docker-compose -f docker-compose.multi.yml restart"
 ```
 
 ## Quality Checklist

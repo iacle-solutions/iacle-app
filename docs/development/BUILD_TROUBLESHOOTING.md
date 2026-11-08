@@ -1,6 +1,6 @@
 # Build Troubleshooting Guide
 
-This guide helps you diagnose and fix common issues with Pistisai builds using GitHub Actions.
+This guide helps you diagnose and fix common issues with IAClé builds using GitHub Actions.
 
 ## Table of Contents
 
@@ -129,7 +129,7 @@ This guide helps you diagnose and fix common issues with Pistisai builds using G
 **Solutions:**
 
 1. **Verify Inno Setup script exists**:
-   - Check `build-tools/installers/windows/Pistisai_Simple.iss` exists
+   - Check `build-tools/installers/windows/IAClé_Simple.iss` exists
    - Validate script syntax locally with Inno Setup
 
 2. **Check installation paths**:
@@ -642,7 +642,7 @@ If you exceed free tier, consider:
 
    ```bash
    # Check SHA256 checksum
-   sha256sum -c Pistisai-*-arm64-v8a.apk.sha256
+   sha256sum -c IAClé-*-arm64-v8a.apk.sha256
    ```
 
 5. **Check available storage**:
@@ -653,7 +653,7 @@ If you exceed free tier, consider:
 
    ```bash
    # If upgrading, uninstall old version first
-   adb uninstall com.Pistisai.Pistisai
+   adb uninstall APP_ID
    ```
 
 ### Issue: APK Installs but Crashes on Launch
@@ -670,7 +670,7 @@ If you exceed free tier, consider:
 
    ```bash
    # View crash logs
-   adb logcat | grep -E "AndroidRuntime|Pistisai"
+   adb logcat | grep -E "AndroidRuntime|IAClé"
    ```
 
 2. **Verify permissions**:
@@ -686,7 +686,7 @@ If you exceed free tier, consider:
 
    ```bash
    # Clear app data and cache
-   adb shell pm clear com.Pistisai.Pistisai
+   adb shell pm clear APP_ID
    ```
 
 ### Issue: Gradle Build Timeout
@@ -794,7 +794,7 @@ When reporting build issues, include:
 
 **Where to report:**
 
-- GitHub Issues: https://github.com/pistisAI/pistisai-app/issues
+- GitHub Issues: https://github.com/iacle-solutions/iacle-app/issues
 - Include label: `ci/cd` or `build`
 
 ### Additional Resources

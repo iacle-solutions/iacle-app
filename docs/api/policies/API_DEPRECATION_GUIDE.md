@@ -2,7 +2,7 @@
 
 ## Overview
 
-Pistisai API implements a structured deprecation process to ensure smooth transitions between API versions. This guide explains how deprecation works, how to identify deprecated endpoints, and how to migrate to newer versions.
+IAClé API implements a structured deprecation process to ensure smooth transitions between API versions. This guide explains how deprecation works, how to identify deprecated endpoints, and how to migrate to newer versions.
 
 **Requirements: 12.5**
 
@@ -62,7 +62,7 @@ Deprecated endpoints include deprecation information in the response:
 ### Get Deprecation Status
 
 ```bash
-curl https://api.pistisai.app/api/deprecation/status
+curl https://api.example.com/api/deprecation/status
 ```
 
 Response:
@@ -90,7 +90,7 @@ Response:
 ### Get List of Deprecated Endpoints
 
 ```bash
-curl https://api.pistisai.app/api/deprecation/deprecated
+curl https://api.example.com/api/deprecation/deprecated
 ```
 
 Response:
@@ -124,7 +124,7 @@ Response:
 ### Get Endpoint Deprecation Info
 
 ```bash
-curl "https://api.pistisai.app/api/deprecation/endpoint-info?path=/v1/users"
+curl "https://api.example.com/api/deprecation/endpoint-info?path=/v1/users"
 ```
 
 Response:
@@ -147,7 +147,7 @@ Response:
 ### Get Migration Guide
 
 ```bash
-curl https://api.pistisai.app/api/deprecation/migration-guide/MIGRATION_V1_TO_V2
+curl https://api.example.com/api/deprecation/migration-guide/MIGRATION_V1_TO_V2
 ```
 
 Response:
@@ -155,14 +155,14 @@ Response:
 ```json
 {
   "title": "Migrating from API v1 to v2",
-  "description": "Complete guide for migrating from Pistisai API v1 to v2",
+  "description": "Complete guide for migrating from IAClé API v1 to v2",
   "steps": [
     {
       "step": 1,
       "title": "Update Base URL",
       "description": "Change your API base URL from /v1 to /v2",
-      "before": "https://api.pistisai.app/v1/users",
-      "after": "https://api.pistisai.app/v2/users"
+      "before": "https://api.example.com/v1/users",
+      "after": "https://api.example.com/v2/users"
     },
     {
       "step": 2,
@@ -183,15 +183,15 @@ Response:
       "title": "Test Thoroughly",
       "description": "Test all API endpoints with v2 before deploying to production",
       "resources": [
-        "https://docs.pistisai.app/api/v2",
-        "https://api.pistisai.app/api/docs"
+        "https://docs.example.com/api/v2",
+        "https://api.example.com/api/docs"
       ]
     }
   ],
   "resources": {
-    "documentation": "https://docs.pistisai.app/api/migration",
-    "apiDocs": "https://api.pistisai.app/api/docs",
-    "support": "support@pistisai.app"
+    "documentation": "https://docs.example.com/api/migration",
+    "apiDocs": "https://api.example.com/api/docs",
+    "support": "https://github.com/iacle-solutions/iacle-app/issues"
   },
   "timeline": {
     "deprecatedAt": "2024-01-01",
@@ -210,13 +210,13 @@ Change your API base URL from v1 to v2:
 **Before (v1):**
 
 ```javascript
-const baseURL = 'https://api.pistisai.app/v1';
+const baseURL = 'https://api.example.com/v1';
 ```
 
 **After (v2):**
 
 ```javascript
-const baseURL = 'https://api.pistisai.app/v2';
+const baseURL = 'https://api.example.com/v2';
 ```
 
 ### Step 2: Update Response Parsing
@@ -291,15 +291,15 @@ Test all API endpoints with v2 before deploying to production:
 ```bash
 # Test user endpoint
 curl -H "Authorization: Bearer YOUR_TOKEN" \
-  https://api.pistisai.app/v2/users/me
+  https://api.example.com/v2/users/me
 
 # Test tunnels endpoint
 curl -H "Authorization: Bearer YOUR_TOKEN" \
-  https://api.pistisai.app/v2/tunnels
+  https://api.example.com/v2/tunnels
 
 # Test admin endpoint
 curl -H "Authorization: Bearer YOUR_TOKEN" \
-  https://api.pistisai.app/v2/admin/users
+  https://api.example.com/v2/admin/users
 ```
 
 ## Sunset Endpoints
@@ -347,10 +347,10 @@ When v3 is released:
 
 For questions about API deprecation or migration help:
 
-- **Email**: support@pistisai.app
-- **Documentation**: https://docs.pistisai.app
-- **API Docs**: https://api.pistisai.app/api/docs
-- **GitHub Issues**: https://github.com/ghcr.io/pistisai/Pistisai/api/issues
+- **Email**: https://github.com/iacle-solutions/iacle-app/issues
+- **Documentation**: https://docs.example.com
+- **API Docs**: https://api.example.com/api/docs
+- **GitHub Issues**: https://github.com/ghcr.io/IAClé/IAClé/api/issues
 
 ## Implementation Details
 

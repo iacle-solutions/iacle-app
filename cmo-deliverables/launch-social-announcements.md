@@ -9,18 +9,18 @@ Curated announcement set. Mirrors the copy in
 ## Primary CTA
 
 Clone the repo, run a workflow, and open an issue or discussion with your real use case.
-- Web: https://pistisai.app
+- Web: https://github.com/iacle-solutions/iacle-app
 - GitHub: https://github.com/iacle-solutions/iacle-app
 
 ## Announcement posts
 
 ### X / Twitter (thread)
 
-1. Your AI agent shouldn't need a cloud to be useful on your desktop. Pistisai is now public —
-   a local-first companion + desktop layer for your agent. 🌐 https://pistisai.app ·
+1. Your AI agent shouldn't need a cloud to be useful on your desktop. IAClé is now public —
+   a local-first companion + desktop layer for your agent. 🌐 https://github.com/iacle-solutions/iacle-app ·
    🐙 https://github.com/iacle-solutions/iacle-app
 2. It's not a model. It's the layer in front of an agent runtime — Hermes, OpenClaw, or any
-   compatible gateway. Pistisai gives it voice, vision, desktop control, and a secure channel.
+   compatible gateway. IAClé gives it voice, vision, desktop control, and a secure channel.
 3. Desktop control is explicit, device-scoped, permissioned, and audited. Nothing moves your
    mouse or reads your screen without per-action consent.
 4. Connectivity is Tailscale-first. One private mesh across all your machines. The optional
@@ -30,22 +30,22 @@ Clone the repo, run a workflow, and open an issue or discussion with your real u
 
 ### LinkedIn (operator post)
 
-We just opened up Pistisai to the public. If you run an AI agent (Hermes, OpenClaw, or a
-compatible gateway), Pistisai gives it a private desktop presence: a voice + avatar companion,
+We just opened up IAClé to the public. If you run an AI agent (Hermes, OpenClaw, or a
+compatible gateway), IAClé gives it a private desktop presence: a voice + avatar companion,
 screen/vision awareness, and audited desktop control — all over your own Tailscale mesh.
 
 We built it local-first on purpose. Your agent's context stays on your hardware. The optional
 cloud piece is a single isolated container per user, joined to your tailnet.
 
-It runs in a browser today (https://pistisai.app), with Linux and Android builds from CI, and
+It runs in a browser today (https://github.com/iacle-solutions/iacle-app), with Linux and Android builds from CI, and
 Windows/macOS on the way. Clone the repo and tell us what you're building:
 https://github.com/iacle-solutions/iacle-app
 
 ### Discord
 
-📣 Pistisai is live for public launch. Local-first companion + desktop layer for your AI agent.
+📣 IAClé is live for public launch. Local-first companion + desktop layer for your AI agent.
 Works with Hermes, OpenClaw, or any compatible gateway.
-🌐 https://pistisai.app · 🐙 https://github.com/iacle-solutions/iacle-app
+🌐 https://github.com/iacle-solutions/iacle-app · 🐙 https://github.com/iacle-solutions/iacle-app
 New here? Run the setup wizard, point it at your runtime, and say hi in #introductions.
 
 ## Routing

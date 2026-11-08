@@ -173,7 +173,7 @@ class HermesEndpointResolver {
 /// Shown when the desktop dashboard is up and the agent API is not.
 String hermesDesktopDashboardMessage(String url) {
   return 'Hermes desktop is running at $url, but its agent API is not available there. '
-      'Pistisai needs /health on port ${AppConfig.defaultHermesPort}.';
+      'IAClé needs /health on port ${AppConfig.defaultHermesPort}.';
 }
 
 /// Shown when no Hermes endpoint answered.

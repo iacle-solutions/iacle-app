@@ -1,4 +1,4 @@
-# Pistisai — Agent Guide
+# IAClé — Agent Guide
 
 Flutter desktop/web app + Node.js backend services: local-first companion layer for agent runtimes (Hermes primary test path, OpenClaw Gateway, compatible gateways). Ollama/LM Studio are support model providers for app-owned features (e.g. embeddings) — not primary runtimes unless wrapped by an agent runtime.
 
@@ -12,8 +12,8 @@ Flutter desktop/web app + Node.js backend services: local-first companion layer 
 - `services/tailscale-relay/` — Express 4 ESM, `PORT || 3002`; has only `start`/`dev` scripts (no lint/test)
 - `backend/auth/` — Express 5 **CommonJS** (`"type": "commonjs"`), `PORT || 3000`, entry `handlers.js`; no `dev` script; Jest 29
 - `services/sdk/` — TypeScript SDK (ESM, Node `>=18`), `main: dist/index.js` — run `npm run build` (`tsc`) before use
-- `services/openclaw-skills/pistisai/` — avatar personality skill, tests use **Vitest** (`vitest run`), not Jest
-- `lib/shared/` — separate package `pistisai_shared` (Dart `>=3.9.0 <4.0.0`, version `1.0.6+33`) needing its own `flutter pub get`
+- `services/openclaw-skills/IAClé/` — avatar personality skill, tests use **Vitest** (`vitest run`), not Jest
+- `lib/shared/` — separate package `IAClé_shared` (Dart `>=3.9.0 <4.0.0`, version `1.0.6+33`) needing its own `flutter pub get`
 - Discovery defaults: OpenClaw Gateway `localhost:18789`, Hermes `127.0.0.1:8642`, Ollama `localhost:11434`, LM Studio `localhost:1234`
 
 ## Setup & verify (exact commands, from repo root)
@@ -63,7 +63,7 @@ The `build_number` in `assets/version.json` should match the `+<build_number>` s
 - Platform splits via conditional imports (`dart.library.io` / `dart.library.html`); never import `dart:io` directly in shared code
 - Register services via `setupCoreServices()` / `setupAuthenticatedServices()` in `lib/di/locator.dart`; consume via `serviceLocator.get<T>()` — don't instantiate registered services directly
 - Desktop auto-bootstraps authenticated services (30s timeout); web requires explicit auth/session bootstrap first
-- GitHub issues (`github.com/pistisAI/pistisai-app/issues`, launch tracker #39) are the work-tracking source of truth — check before substantive work
+- GitHub issues (`github.com/iacle-solutions/iacle-app/issues`, launch tracker #39) are the work-tracking source of truth — check before substantive work
 
 ## MCP (OpenCode)
 
@@ -78,4 +78,4 @@ Restart OpenCode after editing `opencode.json` so it refetches server tools.
 - Jest `testPathIgnorePatterns` intentionally skips tunnel-*, `*-properties`, `*-integration`, `test/archive/`, and live-Auth0 tests; check `jest.config.js` before assuming a test runs or "passes" by being skipped
 - api-backend Jest needs `node --experimental-vm-modules ... --forceExit`; sdk uses plain `jest`
 - Don't edit `lib/**/*.g.dart` / `lib/**/*.freezed.dart` — regenerate via build_runner
-- Preserve branding exactly: `Pistisai`, `OpenClaw`, `Zoidbot`
+- Preserve branding exactly: `IAClé`, `OpenClaw`, `Zoidbot`

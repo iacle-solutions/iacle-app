@@ -1,13 +1,13 @@
 # Deployment Script Development Guide
 
-This document provides technical guidance for developers who need to maintain, extend, or customize the Pistisai automated deployment script. It covers the script architecture, key components, and best practices for modifications.
+This document provides technical guidance for developers who need to maintain, extend, or customize the IAClé automated deployment script. It covers the script architecture, key components, and best practices for modifications.
 
 ## Script Architecture
 
-The automated deployment script (`Deploy-Pistisai.ps1`) follows a modular architecture with clear separation of concerns:
+The automated deployment script (`Deploy-IAClé.ps1`) follows a modular architecture with clear separation of concerns:
 
 ```
-Deploy-Pistisai.ps1
+Deploy-IAClé.ps1
 ├── Parameter Handling and Configuration
 ├── Logging and Status Tracking
 ├── Core Deployment Phases
@@ -295,7 +295,7 @@ if ($BuildLinuxPackages) {
 }
 
 # For VPS deployment, use PowerShell SSH instead:
-# ssh cloudllm@pistisai.app "cd /opt/Pistisai && ./scripts/deploy/complete_deployment.sh --force"
+# ssh https://github.com/iacle-solutions/iacle-app/issues "cd /opt/IAClé && ./scripts/deploy/complete_deployment.sh --force"
 ```
 
 ## PowerShell Deployment Integration
@@ -311,7 +311,7 @@ For deployment operations, use native PowerShell capabilities:
 
 ```powershell
 # Use PowerShell for deployment, not WSL
-$sshCommand = "ssh cloudllm@pistisai.app 'cd /opt/Pistisai && bash scripts/deploy/complete_deployment.sh'"
+$sshCommand = "ssh https://github.com/iacle-solutions/iacle-app/issues 'cd /opt/IAClé && bash scripts/deploy/complete_deployment.sh'"
 Invoke-Expression $sshCommand
 ```
 
@@ -378,7 +378,7 @@ if ($Script:DeploymentConfig.KiroHookMode) {
     Write-Host "Progress: 75%" -ForegroundColor Green
     Write-Host "[INFO] Executing deployment on VPS" -ForegroundColor White
 } else {
-    Write-Progress -Activity "Pistisai Deployment" -Status "Deploying" -CurrentOperation "Executing on VPS" -PercentComplete 75
+    Write-Progress -Activity "IAClé Deployment" -Status "Deploying" -CurrentOperation "Executing on VPS" -PercentComplete 75
     Write-Host "Executing deployment on VPS..." -ForegroundColor Cyan
 }
 ```

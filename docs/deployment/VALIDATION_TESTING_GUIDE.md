@@ -65,7 +65,7 @@ To run the full validation suite, you'll need a valid JWT token:
 
    ```bash
    # Method 1: Extract from browser developer tools
-   # 1. Login to https://app.pistisai.app
+   # 1. Login to https://app.example.com
    # 2. Open Developer Tools (F12)
    # 3. Go to Application/Storage > Local Storage
    # 4. Find the JWT token
@@ -120,7 +120,7 @@ powershell -File ./scripts/deploy/validate_tunnel_deployment.ps1
 
 ```bash
 # Test against staging environment
-./scripts/deploy/run_tunnel_validation.sh -u https://staging-api.pistisai.app
+./scripts/deploy/run_tunnel_validation.sh -u https://staging-api.example.com
 
 # Test against local development
 ./scripts/deploy/run_tunnel_validation.sh -u http://localhost:3000
@@ -365,10 +365,10 @@ DEPLOYMENT VALIDATION PASSED
 
 ```bash
 # Check network connectivity
-ping api.pistisai.app
+ping api.example.com
 
 # Test basic HTTP connectivity
-curl -I https://api.pistisai.app/api/health
+curl -I https://api.example.com/api/health
 
 # Check firewall settings
 # Ensure ports 80, 443 are accessible
@@ -392,7 +392,7 @@ echo $TEST_JWT_TOKEN | cut -d. -f2 | base64 -d
 
 # Test token manually
 curl -H "Authorization: Bearer $TEST_JWT_TOKEN" \
-     https://api.pistisai.app/api/tunnel/status
+     https://api.example.com/api/tunnel/status
 ```
 
 #### 3. WebSocket Connection Issues
@@ -409,7 +409,7 @@ curl -H "Authorization: Bearer $TEST_JWT_TOKEN" \
 npm install -g wscat
 
 # Test WebSocket manually
-wscat -c "wss://api.pistisai.app/ws/tunnel?token=$TEST_JWT_TOKEN"
+wscat -c "wss://api.example.com/ws/tunnel?token=$TEST_JWT_TOKEN"
 
 # Check proxy/firewall WebSocket support
 ```
@@ -454,15 +454,15 @@ DEBUG=* node ./scripts/deploy/validate_tunnel_deployment.js
 
 ```bash
 # Test individual endpoints
-curl -v https://api.pistisai.app/api/health
-curl -v https://api.pistisai.app/api/tunnel/health
+curl -v https://api.example.com/api/health
+curl -v https://api.example.com/api/tunnel/health
 
 # Test with authentication
 curl -v -H "Authorization: Bearer $TEST_JWT_TOKEN" \
-     https://api.pistisai.app/api/tunnel/status
+     https://api.example.com/api/tunnel/status
 
 # Test WebSocket connection
-wscat -c "wss://api.pistisai.app/ws/tunnel?token=$TEST_JWT_TOKEN"
+wscat -c "wss://api.example.com/ws/tunnel?token=$TEST_JWT_TOKEN"
 ```
 
 #### Log Analysis
@@ -475,7 +475,7 @@ tail -f /tmp/tunnel-deployment-validation-*.log
 docker-compose logs -f api-backend
 
 # Check system logs
-journalctl -u pistisai-api -f
+journalctl -u IAClé-api -f
 ```
 
 ## Integration with CI/CD

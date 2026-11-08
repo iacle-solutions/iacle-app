@@ -1,6 +1,6 @@
-# Pistisai System Architecture
+# IAClé System Architecture
 
-Pistisai is a Flutter desktop/web application with optional Node.js backend services. It is a local-first companion and desktop capability layer for user-selected agent runtimes such as Hermes, OpenClaw, and compatible custom agent gateways.
+IAClé is a Flutter desktop/web application with optional Node.js backend services. It is a local-first companion and desktop capability layer for user-selected agent runtimes such as Hermes, OpenClaw, and compatible custom agent gateways.
 
 Ollama, LM Studio, and similar local model servers are support model providers. They can power memory, embeddings, summarization, semantic search, OCR cleanup, speech helpers, and other app-owned background intelligence, but they are not primary app runtimes.
 
@@ -12,7 +12,7 @@ The setup wizard is the authority for agent runtime selection. Do not assume one
 
 | Layer | Current implementation |
 | --- | --- |
-| Flutter app | `pubspec.yaml`, Dart `>=3.5.0 <4.0.0`, package `pistisai` |
+| Flutter app | `pubspec.yaml`, Dart `>=3.5.0 <4.0.0`, package `IAClé` |
 | Shared Flutter package | `lib/shared/pubspec.yaml`, Dart `>=3.9.0 <4.0.0` |
 | Local database | Drift/SQLite in `lib/database/drift_local_brain.dart` |
 | Embedded router | Shelf server in `lib/services/router_server.dart`, default port `1337` |
@@ -154,16 +154,16 @@ Minimum runtime capabilities include health, session lifecycle, chat streaming, 
 
 ## Secure Device Mesh
 
-Tailscale is the preferred private transport for multi-device Pistisai.
+Tailscale is the preferred private transport for multi-device IAClé.
 
 ```text
 Client UI / web / phone
         |
-Optional per-user Pistisai cloud connector
+Optional per-user IAClé cloud connector
         |
 User's Tailscale tailnet
         |
-Pistisai desktop apps and user-selected agent runtimes
+IAClé desktop apps and user-selected agent runtimes
 ```
 
 The intended cloud connector shape is one isolated container per user. The connector joins only that user's tailnet, coordinates secure channel sync and device presence, and must not bypass local desktop permissions.
@@ -185,7 +185,7 @@ dart run build_runner build --delete-conflicting-outputs
 | Tailscale relay | `services/tailscale-relay/` | Relay service using Express 4 |
 | Auth backend | `backend/auth/` | Lightweight CommonJS Auth0 JWT validation |
 | SDK | `services/sdk/` | TypeScript SDK published from `dist/` |
-| OpenClaw skills | `services/openclaw-skills/pistisai/` | Avatar personality/evolution skill package |
+| OpenClaw skills | `services/openclaw-skills/IAClé/` | Avatar personality/evolution skill package |
 
 ## Platform Boundaries
 

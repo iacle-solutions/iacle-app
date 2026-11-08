@@ -48,7 +48,7 @@ class WelcomeScreen extends StatelessWidget {
               const SizedBox(height: 28),
               // Title
               Text(
-                'Pistisai',
+                'IAClé',
                 style: theme.textTheme.displaySmall?.copyWith(
                   fontWeight: FontWeight.bold,
                   color: colors.textColor,

@@ -145,7 +145,7 @@ class AuthService extends ChangeNotifier {
   String get assistantName {
     final user = currentUser;
     if (user == null) return 'Your AI Assistant';
-    return 'Pistisai';
+    return 'IAClé';
   }
 
   // Platform detection

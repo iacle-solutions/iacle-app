@@ -2,7 +2,7 @@
 
 > For Hermes: treat this as an operator recovery plan. Do not call the site fixed until external checks pass from outside the VPS.
 
-**Goal:** Make Pistisai publicly reachable on Simon's VPS using a real domain path, not just a localhost-only compose deployment.
+**Goal:** Make IAClé publicly reachable on Simon's VPS using a real domain path, not just a localhost-only compose deployment.
 
 **Current verified state:**
 - App stack is running on Simon's VPS (`31.97.140.7`) via Docker Compose.
@@ -10,11 +10,11 @@
   - `http://127.0.0.1:3100/health` → `200`
   - `http://127.0.0.1:3100/` → `200`
 - Public path is broken because:
-  - `app.pistisai.app` and `api.pistisai.app` resolve to `208.110.72.50`, not `31.97.140.7`
-  - `pistisai.app` does not resolve
+  - `app.example.com` and `api.example.com` resolve to `208.110.72.50`, not `31.97.140.7`
+  - `example.com` does not resolve
   - Simon VPS does not expose 80/443
   - raw `31.97.140.7:3100` is not reachable from outside
-  - `cloudflared` on Simon VPS is for a different service and Pistisai has no active public ingress
+  - `cloudflared` on Simon VPS is for a different service and IAClé has no active public ingress
 
 **Architecture choice:**
 Pick one public ingress path and finish it fully. Do not keep two half-configured paths alive. The realistic options are:
@@ -30,7 +30,7 @@ Before touching config, decide which path is intended:
 ### Option A — Cloudflare Tunnel
 Use when:
 - we want stable HTTPS without opening raw public ports
-- we have access to the correct Cloudflare zone/account for `pistisai.app`
+- we have access to the correct Cloudflare zone/account for `example.com`
 
 ### Option B — Direct public reverse proxy
 Use when:
@@ -46,20 +46,20 @@ If this decision is not made, the deployment will stay in split-brain mode.
 
 ### Task 1.1: Snapshot live VPS config
 **Files / surfaces:**
-- `/opt/pistisai/deploy/simon-vps/.env`
-- `/opt/pistisai/deploy/simon-vps/docker-compose.yml`
-- `/opt/pistisai/deploy/simon-vps/nginx.conf`
+- `/opt/IAClé/deploy/simon-vps/.env`
+- `/opt/IAClé/deploy/simon-vps/docker-compose.yml`
+- `/opt/IAClé/deploy/simon-vps/nginx.conf`
 - `/etc/cloudflared/config.yml`
 - `systemctl cat cloudflared`
 
 **Commands:**
 ```bash
 ssh root@31.97.140.7 '
-  mkdir -p /root/pistisai-recovery-snapshots/$(date +%Y%m%d-%H%M%S) &&
-  SNAP=$(ls -td /root/pistisai-recovery-snapshots/* | head -1) &&
-  cp /opt/pistisai/deploy/simon-vps/.env "$SNAP/.env" &&
-  cp /opt/pistisai/deploy/simon-vps/docker-compose.yml "$SNAP/docker-compose.yml" &&
-  cp /opt/pistisai/deploy/simon-vps/nginx.conf "$SNAP/nginx.conf" &&
+  mkdir -p /root/IAClé-recovery-snapshots/$(date +%Y%m%d-%H%M%S) &&
+  SNAP=$(ls -td /root/IAClé-recovery-snapshots/* | head -1) &&
+  cp /opt/IAClé/deploy/simon-vps/.env "$SNAP/.env" &&
+  cp /opt/IAClé/deploy/simon-vps/docker-compose.yml "$SNAP/docker-compose.yml" &&
+  cp /opt/IAClé/deploy/simon-vps/nginx.conf "$SNAP/nginx.conf" &&
   cp /etc/cloudflared/config.yml "$SNAP/cloudflared-config.yml" 2>/dev/null || true &&
   systemctl cat cloudflared > "$SNAP/cloudflared.service.txt" 2>/dev/null || true &&
   echo "$SNAP"'
@@ -74,10 +74,10 @@ ssh root@31.97.140.7 '
 ## Path A — Cloudflare Tunnel recovery
 
 ### Task 2A.1: Recover or obtain the correct Cloudflare tunnel ownership
-**Objective:** prove we have the right Cloudflare account/token for `pistisai.app`.
+**Objective:** prove we have the right Cloudflare account/token for `example.com`.
 
 **Checks:**
-- verify who controls DNS for `pistisai.app`
+- verify who controls DNS for `example.com`
 - verify whether an existing tunnel already exists for this project
 - verify the current `cloudflared` service is not reused from ImmoGestion
 
@@ -86,12 +86,12 @@ ssh root@31.97.140.7 '
 ssh root@31.97.140.7 'sed -n "1,200p" /etc/cloudflared/config.yml; systemctl cat cloudflared'
 ```
 
-**Expected now:** current service is unrelated and disabled for Pistisai.
+**Expected now:** current service is unrelated and disabled for IAClé.
 
-### Task 2A.2: Define Pistisai tunnel ingress
+### Task 2A.2: Define IAClé tunnel ingress
 **Target mapping:**
-- `app.pistisai.app` → `http://127.0.0.1:3100`
-- `api.pistisai.app` → either:
+- `app.example.com` → `http://127.0.0.1:3100`
+- `api.example.com` → either:
   - same `http://127.0.0.1:3100` if nginx is the single public front door, or
   - `http://127.0.0.1:3000` only if we intentionally expose API separately
 
@@ -99,32 +99,32 @@ ssh root@31.97.140.7 'sed -n "1,200p" /etc/cloudflared/config.yml; systemctl cat
 
 **Config example:**
 ```yaml
-tunnel: <pistisai-tunnel-id>
-credentials-file: /etc/cloudflared/<pistisai-tunnel-id>.json
+tunnel: <IAClé-tunnel-id>
+credentials-file: /etc/cloudflared/<IAClé-tunnel-id>.json
 ingress:
-  - hostname: app.pistisai.app
+  - hostname: app.example.com
     service: http://127.0.0.1:3100
-  - hostname: api.pistisai.app
+  - hostname: api.example.com
     service: http://127.0.0.1:3100
   - service: http_status:404
 ```
 
-### Task 2A.3: Run Cloudflared as a Pistisai-specific service
+### Task 2A.3: Run Cloudflared as a IAClé-specific service
 Do not overload the ImmoGestion service unit.
 
 **Files:**
-- create `/etc/cloudflared/pistisai.yml`
-- create `/etc/systemd/system/cloudflared-pistisai.service`
+- create `/etc/cloudflared/IAClé.yml`
+- create `/etc/systemd/system/cloudflared-IAClé.service`
 
 **Success criteria:** separate service name, separate tunnel config, separate credentials.
 
 ### Task 2A.4: Verify tunnel path end-to-end
 **Commands:**
 ```bash
-ssh root@31.97.140.7 'systemctl restart cloudflared-pistisai && systemctl status cloudflared-pistisai --no-pager -l | sed -n "1,80p"'
+ssh root@31.97.140.7 'systemctl restart cloudflared-IAClé && systemctl status cloudflared-IAClé --no-pager -l | sed -n "1,80p"'
 
-curl -I -L https://app.pistisai.app
-curl -I -L https://api.pistisai.app/health
+curl -I -L https://app.example.com
+curl -I -L https://api.example.com/health
 ```
 
 **Success criteria:**
@@ -138,14 +138,14 @@ curl -I -L https://api.pistisai.app/health
 
 ### Task 2B.1: Move DNS to Simon VPS
 **Required DNS changes:**
-- `app.pistisai.app` → `31.97.140.7`
-- `api.pistisai.app` → `31.97.140.7`
+- `app.example.com` → `31.97.140.7`
+- `api.example.com` → `31.97.140.7`
 - optional root/apex as desired
 
 **Current problem:** those hosts currently resolve to `208.110.72.50`.
 
 ### Task 2B.2: Publish nginx on 80/443 instead of only 3100
-**File:** `/opt/pistisai/deploy/simon-vps/docker-compose.yml`
+**File:** `/opt/IAClé/deploy/simon-vps/docker-compose.yml`
 
 **Change:** publish proxy on 80/443, not just 3100, or add a host nginx/traefik layer forwarding 80/443 to 3100.
 
@@ -158,8 +158,8 @@ Pick one:
 ### Task 2B.4: Verify direct public path
 **Commands:**
 ```bash
-curl -I -L https://app.pistisai.app
-curl -I -L https://api.pistisai.app/health
+curl -I -L https://app.example.com
+curl -I -L https://api.example.com/health
 ```
 
 **Success criteria:** both return `200` against Simon VPS after DNS propagation.
@@ -177,7 +177,7 @@ Current public hosts point to `208.110.72.50` and return `500`.
 **Files to audit after ingress fix:**
 - `deploy/simon-vps/.env`
 - any Flutter web build defines used by `deploy/simon-vps/build-web.sh`
-- any web config that hardcodes `api.pistisai.app`
+- any web config that hardcodes `api.example.com`
 
 **Verification:**
 - app loads in browser
@@ -199,15 +199,15 @@ Expected: `200`, app HTML.
 
 ### DNS checks
 ```bash
-getent ahosts app.pistisai.app
-getent ahosts api.pistisai.app
+getent ahosts app.example.com
+getent ahosts api.example.com
 ```
 Expected: resolve to the intended public target for the chosen ingress path.
 
 ### External checks
 ```bash
-curl -I -L https://app.pistisai.app
-curl -I -L https://api.pistisai.app/health
+curl -I -L https://app.example.com
+curl -I -L https://api.example.com/health
 ```
 Expected: `200`.
 
@@ -223,8 +223,8 @@ Use a real browser or browser automation and verify:
 ## Most likely fastest fix
 Based on current evidence, the fastest realistic recovery is:
 1. **use Cloudflare Tunnel**, not raw port exposure
-2. create a **Pistisai-specific cloudflared service** on Simon VPS
-3. point `app.pistisai.app` and `api.pistisai.app` at that tunnel
+2. create a **IAClé-specific cloudflared service** on Simon VPS
+3. point `app.example.com` and `api.example.com` at that tunnel
 4. stop relying on `208.110.72.50`
 
 Reason:

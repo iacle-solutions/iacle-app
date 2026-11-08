@@ -1,12 +1,12 @@
-# Pistisai Windows Development Environment Setup
+# IAClé Windows Development Environment Setup
 
 ## 🚀 Quick Start
 
 For a fresh Windows installation, run this automated setup script:
 
 ```powershell
-# Navigate to the Pistisai project directory
-cd C:\path\to\Pistisai
+# Navigate to the IAClé project directory
+cd C:\path\to\IAClé
 
 # Run the automated setup script
 .\scripts\powershell\Setup-WindowsDevelopmentEnvironment.ps1

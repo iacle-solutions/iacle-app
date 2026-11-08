@@ -243,7 +243,7 @@ class StreamingChatService extends ChangeNotifier {
 
     final welcomeMessage = Message.system(
       content:
-          'Welcome to Pistisai! I\'m ready to help you with any questions or tasks. What would you like to talk about?',
+          'Welcome to IAClé. I\'m ready to help. What would you like to talk about?',
     );
 
     _mainChannel = _mainChannel!.addMessage(welcomeMessage);

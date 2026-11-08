@@ -231,7 +231,7 @@ class ClipboardService with ChangeNotifier {
         ClipboardHistoryCompanion.insert(
           content: content,
           contentType: contentType,
-          sourceApp: const drift.Value('Pistisai'),
+          sourceApp: const drift.Value('IAClé'),
         ),
       );
 

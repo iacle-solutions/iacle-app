@@ -1,6 +1,6 @@
-# Contributing to IAClé / Pistisai
+# Contributing to IAClé / IAClé
 
-Thanks for showing up. This repository is the PistisAI stack delivered by IAClé, Christopher
+Thanks for showing up. This repository is the IAClé stack delivered by IAClé, Christopher
 Maltais's Quebec company. The product description is the [README](README.md)
 ([English](README.en.md)). This guide gets you from "I cloned the repo" to a pull request.
 
@@ -20,13 +20,13 @@ Maltais's Quebec company. The product description is the [README](README.md)
 
 ## Development setup
 
-Pistisai is a Flutter desktop/web app plus Node.js backend services. You need both toolchains.
+IAClé is a Flutter desktop/web app plus Node.js backend services. You need both toolchains.
 
 ### Flutter app
 
-- **Dart SDK**: `>=3.5.0 <4.0.0` (the app package `pistisai`)
+- **Dart SDK**: `>=3.5.0 <4.0.0` (the app package `IAClé`)
 - **Flutter**: 3.x stable
-- A shared package `lib/shared` (`pistisai_shared`) targets Dart `>=3.9.0 <4.0.0`
+- A shared package `lib/shared` (`IAClé_shared`) targets Dart `>=3.9.0 <4.0.0`
 
 ```bash
 git clone https://github.com/iacle-solutions/iacle-app.git
@@ -108,7 +108,7 @@ We keep it low-ceremony.
   classes. Strong mode is on (`implicit-casts`/`implicit-dynamic` are false).
 - **JS/TS**: match the surrounding `kebab-case` files; `PascalCase` classes.
 - Avoid code comments unless the code is genuinely not self-explanatory.
-- Preserve branding exactly: `Pistisai`, `OpenClaw`, `Zoidbot`.
+- Preserve branding exactly: `IAClé`, `OpenClaw`, `Zoidbot`.
 
 ---
 

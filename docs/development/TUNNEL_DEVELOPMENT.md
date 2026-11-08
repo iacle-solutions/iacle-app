@@ -69,8 +69,8 @@ Before starting tunnel system development, ensure you have the following install
 ### 1. Clone Repository
 
 ```bash
-git clone https://github.com/pistisAI/pistisai-app.git
-cd Pistisai
+git clone https://github.com/iacle-solutions/iacle-app.git
+cd IAClé
 ```
 
 ### 2. Install Dependencies
@@ -134,7 +134,7 @@ CIRCUIT_BREAKER_TIMEOUT=60000
 
 # Auth0 Configuration
 JWT_ISSUER_DOMAIN=your-auth0-domain.auth0.com
-JWT_AUDIENCE=https://api.pistisai.app
+JWT_AUDIENCE=https://api.example.com
 
 # Monitoring
 METRICS_ENABLED=true
@@ -731,8 +731,8 @@ cat test-results.log
 - **API Documentation**: `docs/API/TUNNEL_CLIENT_API.md`, `docs/API/TUNNEL_SERVER_API.md`
 - **Architecture Documentation**: `docs/ARCHITECTURE/TUNNEL_SYSTEM.md`
 - **Troubleshooting Guide**: `docs/OPERATIONS/TUNNEL_TROUBLESHOOTING.md`
-- **GitHub Repository**: https://github.com/pistisAI/pistisai-app
-- **Issue Tracker**: https://github.com/pistisAI/pistisai-app/issues
+- **GitHub Repository**: https://github.com/iacle-solutions/iacle-app
+- **Issue Tracker**: https://github.com/iacle-solutions/iacle-app/issues
 
 ## Getting Help
 

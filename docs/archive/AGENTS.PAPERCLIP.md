@@ -1,16 +1,16 @@
-# Pistisai Agent Operations (Paperclip-managed agents)
+# IAClé Agent Operations (Paperclip-managed agents)
 
 This file supplements `AGENTS.md` (the repo's authoritative guide). Read BOTH files.
 This file governs how you operate as a Paperclip agent on this host.
 
 ## Your environment
-- You are a Paperclip **process adapter** agent running on the PistisAI dev host (Linux/CachyOS).
-- Your working copy is at `/home/rightguy/pistisai-app` (repo: `git@github.com:pistisAI/pistisai-app.git`).
+- You are a Paperclip **process adapter** agent running on the IAClé dev host (Linux/CachyOS).
+- Your working copy is at `/home/rightguy/iacle-app` (repo: `git@github.com:IAClé/iacle-app.git`).
 - Git push uses SSH (`~/.ssh/id_ed25519`, IdentitiesOnly). It is non-interactive. PUSH IS ALLOWED.
-- The `pistisAI` GitHub org **blocks the local `gh` CLI fine-grained token for REST API** (issue/PR/webhook calls).
+- The `IAClé` GitHub org **blocks the local `gh` CLI fine-grained token for REST API** (issue/PR/webhook calls).
   - DO NOT rely on `gh api`, `gh issue`, `gh pr`, or `gh auth` for write/read of the repo's issues/PRs. They return 403.
   - You MAY use `git` (clone/fetch/push/branch) over SSH — that path works.
-  - Public read-only issue/PR data is reachable via curl to `https://api.github.com/repos/pistisAI/pistisai-app/...` without a token.
+  - Public read-only issue/PR data is reachable via curl to `https://api.github.com/repos/IAClé/iacle-app/...` without a token.
 
 ## How to get work
 - Your work source of truth is the **Paperclip board** (tasks/issues assigned to you here) AND the

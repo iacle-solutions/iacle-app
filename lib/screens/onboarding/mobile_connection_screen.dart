@@ -79,9 +79,9 @@ class _MobileConnectionScreenState extends State<MobileConnectionScreen> {
                         const SizedBox(height: 12),
                         ConnectionMethodCard(
                           icon: Icons.cloud_outlined,
-                          title: 'Connected via pistisai.app',
+                          title: 'Cloud tunnel',
                           description:
-                              'Sign in and sync through the pistisai.app gateway.',
+                              'Sign in and sync through the free tunnel.',
                           selected:
                               _selected == MobileConnectionMode.pistisaiApp,
                           onTap: () => setState(() {
@@ -155,7 +155,7 @@ class _MobileConnectionScreenState extends State<MobileConnectionScreen> {
   ) {
     return FilledButton(
       onPressed: _connecting ? null : () => _connectCloud(connection),
-      child: const Text('Continue with pistisai.app'),
+      child: const Text('Continue with the free tunnel'),
     );
   }
 

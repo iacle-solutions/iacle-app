@@ -167,7 +167,7 @@ class _CompletionStepState extends State<CompletionStep> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'PistisAI package',
+              'Assistant package',
               style: Theme.of(context).textTheme.labelMedium,
             ),
             const SizedBox(height: 12),

@@ -1,6 +1,6 @@
 # Android Build Configuration
 
-This directory contains the Android-specific configuration for Pistisai.
+This directory contains the Android-specific configuration for IAClé.
 
 ## Signing Configuration
 
@@ -75,7 +75,7 @@ These files are already listed in `.gitignore` to prevent accidental commits.
 
 ## Android test rig (hub in Docker + phone/emulator)
 
-Same idea as the Linux **test-desktop** rig (`docker-compose.test.yml`): a containerized Pistisai desktop hub (router on **:1337**, `/api/pistisai/hub`) plus on-device Flutter integration tests.
+Same idea as the Linux **test-desktop** rig (`docker-compose.test.yml`): a containerized desktop hub (router on **:1337**) plus on-device Flutter integration tests.
 
 ```bash
 # Hub + on-device tests (or use run_android_test_rig.sh — same flags)

@@ -247,7 +247,7 @@ class _DnsConfigTabState extends State<DnsConfigTab> {
                               const SizedBox(width: 12),
                               Expanded(
                                 child: Text(
-                                  'DNS records are managed via Cloudflare API. Your domain (pistisai.app) is configured with Cloudflare.',
+                                  'DNS records are managed via the Cloudflare API.',
                                   style: TextStyle(color: AppTheme.colorsOf(context).info),
                                 ),
                               ),

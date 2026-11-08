@@ -4,7 +4,7 @@ Product description: [README](../../../README.md).
 
 > Working title: **Your AI doesn’t need the cloud. It just needs a better home.**
 > Estimated length: 900–1200 words
-> Primary CTA: try pistisai.app / open a GitHub issue with your real use case
+> Primary CTA: try example.com / open a GitHub issue with your real use case
 
 ---
 
@@ -13,7 +13,7 @@ Product description: [README](../../../README.md).
 - Frame the question: why does “AI assistant” still mean “hosted service” for so many users?
 - Thesis: the better default is local-first with optional private connectivity.
 
-## 2. What Pistisai actually is
+## 2. What IAClé actually is
 - Describe the product plainly: desktop companion layer for an agent runtime, not an LLM provider.
 - Clarify runtime flexibility: Hermes, OpenClaw, and compatible agent runtimes supported.
 - Mention the components that matter to users: secure agent channel, avatar/voice, desktop control, private device mesh.
@@ -29,7 +29,7 @@ Product description: [README](../../../README.md).
 - Give users one honest sentence they can repeat: “If it’s not safe to publish, it’s not safe to ship.”
 
 ## 5. One story from the real setup path
-- Use an actual install/try path: web install at pistisai.app, GitHub repo, local model server connection.
+- Use an actual install/try path: web install at example.com, GitHub repo, local model server connection.
 - Show a simple workflow: connect local model runtime, open secure channel, run a desktop task.
 - Keep it readable for people who are technical but not necessarily Flutter developers.
 
@@ -40,7 +40,7 @@ Product description: [README](../../../README.md).
 
 ## 7. Outro and CTA
 - Restate the one-line claim in plain language.
-- Primary action: try pistisai.app
+- Primary action: try example.com
 - Secondary action: open a real issue/discussion with your use case
 - Closing line should feel like an invitation, not a press release
 
@@ -49,5 +49,5 @@ Product description: [README](../../../README.md).
 ## Publisher Notes
 - Use concrete nouns; avoid “synergy,” “revolutionize,” “world-class.”
 - One metaphor per section max.
-- Links: pistisai.app, the GitHub repository, SECURITY.md, and an issue template.
+- Links: example.com, the GitHub repository, SECURITY.md, and an issue template.
 - A performance claim uses a measured result.

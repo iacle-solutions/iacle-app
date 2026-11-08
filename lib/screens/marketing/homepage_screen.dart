@@ -111,7 +111,7 @@ class HomepageScreen extends StatelessWidget {
 
               // Greek wordmark
               Text(
-                'ΠΙΣΤΙΣ',
+                'IA',
                 style: TextStyle(
                   fontFamily: 'serif',
                   fontSize: isMobile ? 14 : 16,
@@ -124,7 +124,7 @@ class HomepageScreen extends StatelessWidget {
 
               // Pistisai name
               Text(
-                'PISTISAI',
+                'IAClé',
                 style: TextStyle(
                   fontSize: titleSize,
                   fontWeight: FontWeight.w200,
@@ -171,14 +171,14 @@ class HomepageScreen extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   _buildGoldButton(context, 'Get Started Free', () async {
-                    final uri = Uri.parse('https://github.com/pistisAI/pistisai-app/releases');
+                    final uri = Uri.parse('https://github.com/iacle-solutions/iacle-app/releases');
                     if (await canLaunchUrl(uri)) await launchUrl(uri);
                   }, isMobile),
                   if (!isMobile) const SizedBox(width: 16),
                   if (!isMobile)
                     OutlinedButton(
                       onPressed: () async {
-                        final uri = Uri.parse('https://github.com/pistisAI/pistisai-app');
+                        final uri = Uri.parse('https://github.com/iacle-solutions/iacle-app');
                         if (await canLaunchUrl(uri)) await launchUrl(uri);
                       },
                       style: OutlinedButton.styleFrom(
@@ -246,7 +246,7 @@ class HomepageScreen extends StatelessWidget {
                 const SizedBox(height: 12),
                 Text(
                   'When Pandora\'s box was opened, all evils escaped — '
-                  'but Πίστις (Pistis), the spirit of trust, '
+                  'but trust, '
                   'fled back to the heavens. She has not returned since.',
                   style: TextStyle(
                     fontSize: isMobile ? 15 : 18,
@@ -265,7 +265,7 @@ class HomepageScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 24),
                 Text(
-                  'Pistisai builds a portico worthy of her return. '
+                  'IAClé builds a portico worthy of her return. '
                   'Four pillars that together restore what was lost: '
                   'private, local, trustworthy AI.',
                   style: TextStyle(
@@ -600,7 +600,7 @@ class HomepageScreen extends StatelessWidget {
           ),
           const SizedBox(height: 32),
           _buildGoldButton(context, 'Get Started Free', () async {
-            final uri = Uri.parse('https://github.com/pistisAI/pistisai-app/releases');
+            final uri = Uri.parse('https://github.com/iacle-solutions/iacle-app/releases');
             if (await canLaunchUrl(uri)) await launchUrl(uri);
           }, isMobile),
         ],
@@ -648,7 +648,7 @@ class HomepageScreen extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           Text(
-            'Install Pistisai and your Aiman with a single command.',
+            'Install IAClé and your Aiman with a single command.',
             style: TextStyle(
               fontSize: 14,
               color: colors.textColorLight,
@@ -656,10 +656,10 @@ class HomepageScreen extends StatelessWidget {
           ),
           const SizedBox(height: 32),
           _buildCodeBlock(context, 'Linux',
-            'curl -fsSL https://pistisai.app/install.sh | bash', isMobile),
+            'git clone https://github.com/iacle-solutions/iacle-app.git', isMobile),
           const SizedBox(height: 24),
           _buildCodeBlock(context, 'Windows (PowerShell)',
-            'iwr -useb https://pistisai.app/install.ps1 | iex', isMobile),
+            'git clone https://github.com/iacle-solutions/iacle-app.git', isMobile),
         ],
       ),
     );
@@ -739,7 +739,7 @@ class HomepageScreen extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           Text(
-            'PISTISAI — πίστις ἐστὶν ἡ τῶν ἀνθρώπων σωτηρία',
+            'IAClé',
             style: TextStyle(
               fontFamily: 'serif',
               fontSize: 12,
@@ -750,7 +750,7 @@ class HomepageScreen extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           Text(
-            '© 2026 Pistisai — Trust is what remains',
+            '© 2026 IAClé',
             style: TextStyle(
               fontSize: 11,
               color: colors.textColorLight,

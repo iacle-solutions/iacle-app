@@ -238,9 +238,9 @@ class SetupConfig {
       case Environment.development:
         return 'http://localhost:8080';
       case Environment.staging:
-        return 'https://staging.pistisai.app';
+        return 'https://staging.example.com';
       case Environment.production:
-        return 'https://pistisai.app';
+        return 'https://example.com';
     }
   }
 }
@@ -335,7 +335,7 @@ Ensure Docker environment supports user containers:
 # docker-compose.yml additions
 services:
   streaming-proxy-template:
-    image: ghcr.io/pistisai/Pistisai/streaming:latest
+    image: ghcr.io/IAClé/IAClé/streaming:latest
     deploy:
       replicas: 0  # Template only, scaled per user
     environment:

@@ -78,7 +78,7 @@ class DownloadScreen extends StatelessWidget {
 
           // Title
           Text(
-            'Download Pistisai',
+            'Download IAClé',
             style: Theme.of(context).textTheme.headlineLarge?.copyWith(
                   color: AppTheme.colorsOf(context).textColor,
                   fontWeight: FontWeight.bold,
@@ -149,7 +149,7 @@ class DownloadScreen extends StatelessWidget {
     return _buildCard(
       context,
       title: '� Quick Downloads',
-      description: 'Download the latest version of Pistisai for your platform',
+      description: 'Download the latest version of IAClé for your platform',
       child: Column(
         children: [
           const SizedBox(height: 24),
@@ -455,7 +455,7 @@ cd Pistisai-Linux-x64
           ),
           const SizedBox(height: 8),
           Text(
-            'Pistisai will minimize to the system tray by default. Look for the LLM icon in your system tray.',
+            'IAClé will minimize to the system tray by default. Look for the icon in your system tray.',
             style: TextStyle(color: AppTheme.colorsOf(context).textColorLight),
           ),
           const SizedBox(height: 16),
@@ -475,7 +475,7 @@ cd Pistisai-Linux-x64
           const SizedBox(height: 8),
           ...[
             'Desktop: Configure direct localhost:11434 connection to Ollama',
-            'Web: Uses Pistisai streaming proxy automatically',
+            'Web: Uses the streaming proxy automatically',
           ].map(
             (item) => Padding(
               padding: const EdgeInsets.only(bottom: 4),

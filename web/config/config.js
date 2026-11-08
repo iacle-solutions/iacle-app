@@ -1,4 +1,4 @@
-// Pistisai Runtime Configuration
+// Runtime configuration
 window.pistisaiConfig = {
   apiEndpoint: "https://api.pistisai.app",
   wsEndpoint: "wss://api.pistisai.app/ws",

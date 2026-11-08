@@ -15,7 +15,7 @@ Repository: [iacle-solutions/iacle-app](https://github.com/iacle-solutions/iacle
 
 ## One-liner (canonical)
 
-> **Pistisai turns your AI agent into a private desktop companion: voice, vision, and audited
+> **IAClé turns your AI agent into a private desktop companion: voice, vision, and audited
 > desktop control, connected over your own Tailscale mesh — local-first, no data leaves your
 > network unless you say so.**
 
@@ -56,5 +56,5 @@ Clone [iacle-solutions/iacle-app](https://github.com/iacle-solutions/iacle-app) 
 
 - Link the [README](../../README.md) and [iacle-solutions/iacle-app](https://github.com/iacle-solutions/iacle-app).
 - Never claim a platform status that contradicts `docs/LAUNCH.md` or the README.
-- Report security issues to `security@pistisai.app`, never in public threads.
+- Report security issues to `https://github.com/iacle-solutions/iacle-app/issues`, never in public threads.
 - Keep copy in the repo so it is reviewable and version-controlled.

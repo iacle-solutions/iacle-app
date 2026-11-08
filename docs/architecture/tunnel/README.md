@@ -2,7 +2,7 @@
 
 > **Status**: Legacy/fallback tunnel implementation notes. Current multi-device and cloud connector work should start from [Secure Device Mesh](../SECURE_DEVICE_MESH.md) and the selected agent runtime path. Use this directory only when maintaining or migrating the older SSH WebSocket tunnel stack.
 
-This directory contains the enhanced SSH WebSocket tunnel implementation for Pistisai.
+This directory contains the enhanced SSH WebSocket tunnel implementation for IAClé.
 
 ## Structure
 
@@ -306,7 +306,7 @@ final metricsCollector = serviceLocator.get<MetricsCollector>();
 
 // Connect to tunnel
 await tunnelService.connect(
-  serverUrl: 'wss://api.pistisai.app/tunnel',
+  serverUrl: 'wss://api.example.com/tunnel',
   authToken: accessToken,
   config: TunnelConfig.stableNetwork(),
 );

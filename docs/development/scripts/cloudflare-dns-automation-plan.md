@@ -2,7 +2,7 @@
 
 ## Executive Summary
 
-This document outlines the comprehensive implementation plan for integrating Cloudflare API capabilities into the Pistisai infrastructure, enabling automated tunnel diagnostics, DNS management, and dynamic subdomain updates for enhanced DevOps operations.
+This document outlines the comprehensive implementation plan for integrating Cloudflare API capabilities into the IAClé infrastructure, enabling automated tunnel diagnostics, DNS management, and dynamic subdomain updates for enhanced DevOps operations.
 
 ## Current State Analysis
 
@@ -29,8 +29,8 @@ This document outlines the comprehensive implementation plan for integrating Clo
 ```bash
 # Create Kubernetes secret for Cloudflare API credentials
 kubectl create secret generic cloudflare-api-credentials \
-  --namespace=Pistisai \
-  --from-literal=email=cmaltais@pistisai.app \
+  --namespace=IAClé \
+  --from-literal=email=https://github.com/iacle-solutions/iacle-app/issues \
   --from-literal=api-key=abc12d491e2bc24a60e9e276be8d5b1af62bf \
   --from-literal=origin-ca=v1.0-480cad9ef0df63ec95db4bef-cdaf75ed44dcc34cab97d21f9609c8616e1343c60fbec022bd0d5d4bd33b6c872b79db387f6833c667f1c1399ef50afbc6f01fccbdfcfd68e11298d8fa15965037a99d8be8791e7aba
 ```
@@ -78,7 +78,7 @@ cf_api_call() {
 
 1. Access Cloudflare Dashboard: https://dash.cloudflare.com/
 2. Navigate: Zero Trust → Networks → Tunnels
-3. Locate tunnel: `Pistisai-aks` (ID: 62da6c19-947b-4bf6-acad-100a73de4e0d)
+3. Locate tunnel: `IAClé-aks` (ID: 62da6c19-947b-4bf6-acad-100a73de4e0d)
 4. Edit configuration to change ArgoCD service from:
    - `https://argocd-server.argocd.svc.cluster.local:443`
    - To: `http://argocd-server.argocd.svc.cluster.local:80`
@@ -92,13 +92,13 @@ validate_tunnel_config() {
     log_info "Validating tunnel configuration..."
 
     # Check ArgoCD service configuration
-    if kubectl logs -n Pistisai deploy/cloudflared | grep -q "443"; then
+    if kubectl logs -n IAClé deploy/cloudflared | grep -q "443"; then
         log_error "ArgoCD still configured for HTTPS/443"
         return 1
     fi
 
     # Test connectivity
-    if curl -s --max-time 10 https://argocd.pistisai.app/ > /dev/null; then
+    if curl -s --max-time 10 https://argocd.example.com/ > /dev/null; then
         log_success "ArgoCD connectivity verified"
     else
         log_error "ArgoCD connectivity test failed"
@@ -133,11 +133,11 @@ create_dns_record() {
 
 #### 3.2 Subdomain Management for Services
 
-- **ArgoCD**: `argocd.pistisai.app`
-- **Grafana**: `grafana.pistisai.app`
-- **API Backend**: `api.pistisai.app`
-- **Web Frontend**: `app.pistisai.app`
-- **Root Domain**: `pistisai.app`
+- **ArgoCD**: `argocd.example.com`
+- **Grafana**: `grafana.example.com`
+- **API Backend**: `api.example.com`
+- **Web Frontend**: `app.example.com`
+- **Root Domain**: `example.com`
 
 #### 3.3 DNS Health Monitoring
 
@@ -145,11 +145,11 @@ create_dns_record() {
 # Monitor DNS propagation and health
 monitor_dns_health() {
     local domains=(
-        "argocd.pistisai.app"
-        "grafana.pistisai.app"
-        "api.pistisai.app"
-        "app.pistisai.app"
-        "pistisai.app"
+        "argocd.example.com"
+        "grafana.example.com"
+        "api.example.com"
+        "app.example.com"
+        "example.com"
     )
 
     for domain in "${domains[@]}"; do
@@ -171,11 +171,11 @@ test_external_access() {
 
     # Test each subdomain
     declare -A services=(
-        ["https://argocd.pistisai.app/"]="ArgoCD"
-        ["https://grafana.pistisai.app/"]="Grafana"
-        ["https://api.pistisai.app/health"]="API Backend"
-        ["https://app.pistisai.app/"]="Web Frontend"
-        ["https://pistisai.app/"]="Root Domain"
+        ["https://argocd.example.com/"]="ArgoCD"
+        ["https://grafana.example.com/"]="Grafana"
+        ["https://api.example.com/health"]="API Backend"
+        ["https://app.example.com/"]="Web Frontend"
+        ["https://example.com/"]="Root Domain"
     )
 
     local success_count=0
@@ -212,7 +212,7 @@ test_internal_connectivity() {
 
     # Test ArgoCD server directly
     kubectl run curl-test --image=curlimages/curl \
-        -n Pistisai --rm -it -- \
+        -n IAClé --rm -it -- \
         curl -v http://argocd-server.argocd.svc.cluster.local:80/healthz
 }
 ```
@@ -290,13 +290,13 @@ remediate_tunnel_issues() {
     log_info "Attempting automated remediation..."
 
     # Check tunnel pod status
-    local running_pods=$(kubectl get pods -n Pistisai \
+    local running_pods=$(kubectl get pods -n IAClé \
         -l app=cloudflared --field-selector=status.phase=Running \
         --no-headers | wc -l)
 
     if [ "$running_pods" -eq 0 ]; then
         log_warning "No tunnel pods running, restarting deployment..."
-        kubectl rollout restart deployment/cloudflared -n Pistisai
+        kubectl rollout restart deployment/cloudflared -n IAClé
         sleep 30
     fi
 
@@ -365,7 +365,7 @@ remediate_tunnel_issues() {
 
 ## Conclusion
 
-This implementation plan provides a comprehensive roadmap for integrating Cloudflare API capabilities into the Pistisai infrastructure. By addressing the current tunnel configuration issues and implementing automated DNS management, we can achieve:
+This implementation plan provides a comprehensive roadmap for integrating Cloudflare API capabilities into the IAClé infrastructure. By addressing the current tunnel configuration issues and implementing automated DNS management, we can achieve:
 
 1. **100% Domain Accessibility**: All subdomains fully functional
 2. **Automated Operations**: Reduced manual intervention and faster MTTR

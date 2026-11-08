@@ -1,6 +1,6 @@
 # Architecture Documentation
 
-This directory contains current architecture references for Pistisai.
+This directory contains current architecture references for IAClé.
 
 ## Canonical Architecture
 

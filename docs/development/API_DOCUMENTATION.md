@@ -1,12 +1,12 @@
-# Pistisai API Documentation
+# IAClé API Documentation
 
 ## 📋 Overview
 
-Pistisai v3.6.2+ provides APIs for bridge communication, legacy streaming proxy management, and service integration. Current main-channel work should use the selected agent runtime, Tailscale secure device mesh, and per-user cloud connector model rather than assuming a streaming proxy is the default path.
+IAClé v3.6.2+ provides APIs for bridge communication, legacy streaming proxy management, and service integration. Current main-channel work should use the selected agent runtime, Tailscale secure device mesh, and per-user cloud connector model rather than assuming a streaming proxy is the default path.
 
 **API Base URLs:**
 
-- **Production**: `https://app.pistisai.app/api`
+- **Production**: `https://app.example.com/api`
 - **Local Development**: `http://localhost:8080/api`
 
 ---
@@ -26,8 +26,8 @@ Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...
 #### **Token Validation**
 
 - **Algorithm**: RS256
-- **Issuer**: `https://Pistisai.auth0.com/`
-- **Audience**: `pistisai-api`
+- **Issuer**: `https://IAClé.auth0.com/`
+- **Audience**: `IAClé-api`
 - **Expiry**: 24 hours
 
 #### **Error Responses**
@@ -69,7 +69,7 @@ Register a desktop client with the bridge service.
   "bridgeId": "bridge-uuid",
   "sessionToken": "session-jwt-token",
   "endpoints": {
-    "websocket": "wss://app.pistisai.app/ws/bridge/bridge-uuid",
+    "websocket": "wss://app.example.com/ws/bridge/bridge-uuid",
     "status": "/api/bridge/bridge-uuid/status"
   }
 }
@@ -157,7 +157,7 @@ Create ephemeral streaming proxy for user session.
 {
   "success": true,
   "proxyId": "proxy-uuid",
-  "endpoint": "https://proxy-uuid.pistisai.app",
+  "endpoint": "https://proxy-uuid.example.com",
   "credentials": {
     "token": "proxy-access-token",
     "expires": "2025-06-20T17:52:20.850Z"
@@ -381,7 +381,7 @@ The Simplified Tunnel System replaced an older multi-layered bridge architecture
 #### **WebSocket Connection**
 
 ```
-wss://api.pistisai.app/ws/tunnel?token=<jwt_token>
+wss://api.example.com/ws/tunnel?token=<jwt_token>
 ```
 
 **Authentication**: JWT token required as query parameter
@@ -453,7 +453,7 @@ Proxy HTTP requests to user's desktop client (requires auth)
 
 ```bash
 # Proxy request to a legacy local provider path
-curl -X POST https://api.pistisai.app/api/tunnel/auth0|user123/api/chat \
+curl -X POST https://api.example.com/api/tunnel/auth0|user123/api/chat \
   -H "Authorization: Bearer <jwt_token>" \
   -H "Content-Type: application/json" \
   -d '{"model":"llama2","prompt":"Hello"}'
@@ -547,7 +547,7 @@ const MESSAGE_TYPES = {
 
 ```bash
 # Set environment variable
-export OLLAMA_BASE_URL="https://api.pistisai.app/api/tunnel/${USER_ID}"
+export OLLAMA_BASE_URL="https://api.example.com/api/tunnel/${USER_ID}"
 
 # Use standard HTTP client
 curl -H "Authorization: Bearer ${JWT_TOKEN}" \
@@ -596,7 +596,7 @@ await client.connect();
 #### **Connection Endpoint**
 
 ```
-wss://app.pistisai.app/ws/{type}/{id}
+wss://app.example.com/ws/{type}/{id}
 ```
 
 **Types:**
@@ -653,14 +653,14 @@ wss://app.pistisai.app/ws/{type}/{id}
 Download the complete API collection:
 
 ```bash
-curl -o pistisai-api.json \
-  https://raw.githubusercontent.com/pistisAI/pistisai-app/main/docs/api/postman-collection.json
+curl -o IAClé-api.json \
+  https://raw.githubusercontent.com/IAClé/iacle-app/main/docs/api/postman-collection.json
 ```
 
 #### **OpenAPI Specification**
 
 ```bash
-curl https://app.pistisai.app/api/docs/openapi.json
+curl https://app.example.com/api/docs/openapi.json
 ```
 
 ### **Rate Limiting**
@@ -708,4 +708,4 @@ X-RateLimit-Reset: 1640995200
 
 ---
 
-**For additional API details, examples, and SDKs, visit the [GitHub repository](https://github.com/pistisAI/pistisai-app) or check the interactive API documentation at `/api/docs`.**
+**For additional API details, examples, and SDKs, visit the [GitHub repository](https://github.com/iacle-solutions/iacle-app) or check the interactive API documentation at `/api/docs`.**

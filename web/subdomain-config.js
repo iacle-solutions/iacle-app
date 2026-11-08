@@ -1,4 +1,4 @@
-// Pistisai - Production Subdomain Configuration
+// Production subdomain configuration
 // This file configures the Flutter web app to use production subdomains
 
 window.pistisaiConfig = {
@@ -51,7 +51,7 @@ window.pistisaiConfig = {
   },
 };
 
-console.log("Pistisai: Production subdomain configuration loaded");
+console.log("IAClé: production subdomain configuration loaded");
 console.log("API URL:", window.pistisaiConfig.services.api.baseUrl);
 console.log(
   "Streaming URL:",

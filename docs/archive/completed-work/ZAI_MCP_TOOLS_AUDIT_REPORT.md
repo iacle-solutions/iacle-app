@@ -2,7 +2,7 @@
 
 **Audit Date:** 2026-02-13
 **Auditor:** Kilo Code (Automated Audit)
-**Repository:** Pistisai
+**Repository:** IAClé
 
 ## Executive Summary
 

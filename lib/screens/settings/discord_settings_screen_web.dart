@@ -41,7 +41,7 @@ class DiscordSettingsScreen extends StatelessWidget {
               ),
               SizedBox(height: 24),
               Text(
-                'Please use the desktop version of Pistisai to configure '
+                'Please use the desktop version of IAClé to configure '
                 'your Discord bot.',
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 14, color: AppTheme.colorsOf(context).textColorLight),

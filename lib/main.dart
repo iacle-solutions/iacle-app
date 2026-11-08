@@ -235,7 +235,7 @@ class _PistisaiAppState extends State<PistisaiApp> {
         darkTheme: AppTheme.darkTheme,
         themeMode: ThemeMode.system,
         home: const Scaffold(
-          body: Center(child: Text('Pistisai')),
+          body: Center(child: Text('IAClé')),
         ),
       );
     }

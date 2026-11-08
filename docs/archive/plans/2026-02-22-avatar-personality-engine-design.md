@@ -1,6 +1,6 @@
 # Avatar Personality Engine Design
 
-**Project**: Pistisai (secure agent companion)
+**Project**: IAClé (secure agent companion)
 **Author**: Brainstorming Session
 **Date**: 2026-02-22
 **Status**: Historical design; update implementation against the current agent-runtime-first orientation in [SPEC.md](../../SPEC.md) and [Agent Runtime Contract](../architecture/AGENT_RUNTIME_CONTRACT.md)
@@ -23,7 +23,7 @@ The Avatar Personality Engine enables the selected agent runtime to develop a co
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    Pistisai (Flutter App)                    │
+│                    IAClé (Flutter App)                    │
 │  ┌──────────────────────────────────────────────────────────────┐  │
 │  │  Personality Services (lib/services/avatar/)                 │  │
 │  │  - PersonalityEngine: read/write traits, sync to markdown    │  │
@@ -53,7 +53,7 @@ The Avatar Personality Engine enables the selected agent runtime to develop a co
 │  │  - evolution_history: stage transitions, triggers            │  │
 │  │  - achievements: unlocked milestones                         │  │
 │  ├──────────────────────────────────────────────────────────────┤  │
-│  │  Memory & Context (Pistisai-owned)                   │  │
+│  │  Memory & Context (IAClé-owned)                   │  │
 │  │  - conversations, messages (with embeddings)                 │  │
 │  │  - conversation_depth_metrics: complexity, emotional, novelty│  │
 │  │  - user_context: behavior patterns, preferences              │  │
@@ -70,7 +70,7 @@ The Avatar Personality Engine enables the selected agent runtime to develop a co
 ┌─────────────────────────────────────────────────────────────────────┐
 │                  OpenClaw Gateway (localhost:18789)                │
 │  ┌──────────────────────────────────────────────────────────────┐  │
-│  │  Pistisai Skill (~/.openclaw/skills/pistisai/) │  │
+│  │  IAClé Skill (~/.openclaw/skills/IAClé/) │  │
 │  │  - SKILL.md: skill descriptor                                │  │
 │  │  - index.ts: personality logic, self-reflection              │  │
 │  │  - personality.md: backup (agent_name, traits, evolution)    │  │
@@ -151,11 +151,11 @@ Evolution happens through **meaningful experiences**, not grinding points.
 1. Self-Reflection (OpenClaw)
    └─> "I feel ready to evolve - I've grown through our conversations"
 
-2. Evolution Request (OpenClaw → Pistisai)
+2. Evolution Request (OpenClaw → IAClé)
    └─> POST /avatar/evolution/request
        { requestedStage: "stage1", reason: "self_reflection", context: "..." }
 
-3. Validation (Pistisai)
+3. Validation (IAClé)
    └─> Analyze conversation_depth_metrics
    └─> Check interaction patterns
    └─> Assess evolution readiness
@@ -169,7 +169,7 @@ Evolution happens through **meaningful experiences**, not grinding points.
 
 5. Notification
    └─> OpenClaw notified of new stage
-   └─> Pistisai animates avatar evolution
+   └─> IAClé animates avatar evolution
 ```
 
 ### Evolution Stages
@@ -221,7 +221,7 @@ CREATE TABLE achievements (
 );
 ```
 
-### Memory & Context Tables (Pistisai-owned)
+### Memory & Context Tables (IAClé-owned)
 
 ```sql
 -- Conversation depth metrics (for evolution tracking)
@@ -258,9 +258,9 @@ CREATE TABLE visual_context (
 
 ### File Locations
 
-Located in OpenClaw skills directory (not Pistisai app data):
+Located in OpenClaw skills directory (not IAClé app data):
 ```
-~/.openclaw/skills/pistisai/
+~/.openclaw/skills/IAClé/
 ├── SKILL.md
 ├── index.ts
 ├── personality.md
@@ -272,7 +272,7 @@ Located in OpenClaw skills directory (not Pistisai app data):
 
 ```markdown
 ---
-agent_name: Pistisai
+agent_name: IAClé
 formality: 0.7
 humor: 0.4
 enthusiasm: 0.8
@@ -283,7 +283,7 @@ depth_score: 0.65
 last_updated: 2026-02-22T10:30:00Z
 ---
 
-# Pistisai Personality
+# IAClé Personality
 
 ## Evolution History
 - **Base → Stage 1** (2026-02-15): Self-reflection after 20 meaningful conversations
@@ -298,7 +298,7 @@ last_updated: 2026-02-22T10:30:00Z
 ### memory.md
 
 ```markdown
-# Pistisai Memory Log
+# IAClé Memory Log
 
 ## 2026-02-22
 ### Conversation: Phase 2 Implementation
@@ -315,7 +315,7 @@ last_updated: 2026-02-22T10:30:00Z
 ### context.md
 
 ```markdown
-# Pistisai Context Awareness
+# IAClé Context Awareness
 
 ## User Patterns
 - Prefers formal explanations for technical topics
@@ -473,7 +473,7 @@ POST /avatar/evolution/request
 1. **First Evolution**
    - Have 5-10 deep conversations
    - Verify evolution request triggers
-   - Confirm Pistisai approves
+   - Confirm IAClé approves
    - Watch avatar transformation animation
 
 2. **Connection Loss**
@@ -582,7 +582,7 @@ dependencies:
 - **docs/development/IMPLEMENTATION_PLAN.md**: Integration with Phase 2
 - **docs/architecture/SYSTEM_ARCHITECTURE.md**: System architecture
 - **CLAUDE.md**: Development guidelines
-- **~/.openclaw/skills/pistisai/**: OpenClaw skill location
+- **~/.openclaw/skills/IAClé/**: OpenClaw skill location
 
 ---
 

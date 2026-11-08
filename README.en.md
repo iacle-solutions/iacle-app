@@ -1,8 +1,6 @@
 # IAClé
 
-IAClé is Christopher Maltais's Quebec sole proprietorship. It is the brand that delivers the PistisAI stack to Quebec SMBs.
-
-The stack is the desktop hub built around Hermes: chat, voice, avatar, and skills. One stack, one company. [Français](README.md).
+IAClé is a local-first AI assistant for Quebec businesses. [Français](README.md)
 
 ## Local-first
 
@@ -16,18 +14,15 @@ In the service, an employee approves outgoing messages and important decisions.
 
 Quebec SMBs. First in Estrie, then further into Quebec, especially regulated firms: legal, health, and finance.
 
-## The hub
+## What the assistant does
 
-This repository is the PistisAI desktop hub, delivered under the IAClé brand.
-
-- Chat with Hermes, OpenClaw, or a compatible gateway.
-- Voice and avatar.
+- Chat, voice, and avatar.
 - Screen reading and OCR, with the person's permission.
 - Desktop actions, each one permissioned.
 - Skills, sessions, and scheduled tasks.
 - A private mesh across the client's computers.
 
-Ollama and LM Studio handle hub tasks such as memory and embeddings. The main agent stays Hermes, or a compatible gateway.
+Hermes is the main runtime. OpenClaw and compatible gateways work too. Ollama and LM Studio handle memory and embeddings.
 
 ## Offer
 
@@ -43,13 +38,11 @@ Sign-in is for the tunnel and for sync.
 
 | Tier | Network |
 | --- | --- |
-| Free | `pistisai.app` tunnel, behind Cloudflare Access |
+| Free | Tunnel behind Cloudflare Access |
 | Business | The customer's Tailscale or VPN |
 | Enterprise | The customer's Tailscale or VPN |
 
 This model does not use Supabase.
-
-This repository will be resynced with pistisai-app (see [#26](https://github.com/iacle-solutions/iacle-app/issues/26)).
 
 ## Development
 
@@ -96,4 +89,4 @@ Details: [AGENTS.md](AGENTS.md), [onboarding](docs/development/DEVELOPER_ONBOARD
 
 ## License
 
-MIT. See [LICENSE](LICENSE).
+See [LICENSE](LICENSE).

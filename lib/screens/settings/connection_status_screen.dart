@@ -339,7 +339,7 @@ class _ConnectionStatusScreenState extends State<ConnectionStatusScreen> {
               ),
               _buildStatusRow(
                 'Endpoint',
-                'api.pistisai.app',
+                'Cloud API',
                 AppTheme.colorsOf(context).textColorLight,
               ),
               _buildStatusRow(

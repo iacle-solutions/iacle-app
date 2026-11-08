@@ -155,7 +155,7 @@ class RouterServer {
     return Response.ok(
       jsonEncode(<String, Object>{
         'role': 'primary_hub',
-        'product': 'Pistisai',
+        'product': 'IAClé',
         'hermesPort': AppConfig.defaultHermesPort,
         'routerPort': _server?.port ?? port,
       }),

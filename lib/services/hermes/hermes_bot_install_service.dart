@@ -81,7 +81,7 @@ class HermesBotInstallService {
         _isWeb = isWeb ?? (() => kIsWeb),
         _processHome = processHome;
 
-  static const agentStep = 'PistisAI package';
+  static const agentStep = 'Assistant package';
   static const desktopStep = 'Desktop embed';
   static const profileStep = 'aigent-watch profile';
   static const enableStep = 'Enable pistisai';

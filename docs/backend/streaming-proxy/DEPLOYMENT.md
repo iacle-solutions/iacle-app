@@ -4,7 +4,7 @@
 
 ## Overview
 
-The streaming-proxy service is a Node.js application that provides WebSocket connection management, SSH tunneling, rate limiting, circuit breaking, and authentication for the Pistisai system.
+The streaming-proxy service is a Node.js application that provides WebSocket connection management, SSH tunneling, rate limiting, circuit breaking, and authentication for the IAClé system.
 
 ## Architecture
 
@@ -89,10 +89,10 @@ Add streaming-proxy build and deployment to `.github/workflows/deploy-aks.yml`:
 
 ```yaml
 env:
-  REGISTRY: Pistisai
-  API_IMAGE: Pistisai/pistisai-api
-  WEB_IMAGE: Pistisai/pistisai-web
-  STREAMING_PROXY_IMAGE: ghcr.io/pistisai/Pistisai/streaming  # Add this
+  REGISTRY: IAClé
+  API_IMAGE: IAClé/IAClé-api
+  WEB_IMAGE: IAClé/IAClé-web
+  STREAMING_PROXY_IMAGE: ghcr.io/IAClé/IAClé/streaming  # Add this
 
 jobs:
   deploy:
@@ -115,13 +115,13 @@ jobs:
         COMMIT_SHA=$(echo ${{ github.sha }} | cut -c1-8)
         kubectl set image deployment/streaming-proxy \
           streaming-proxy=${{ env.STREAMING_PROXY_IMAGE }}:$COMMIT_SHA \
-          -n Pistisai
+          -n IAClé
 
     - name: Wait for rollout to complete
       run: |
-        kubectl rollout status deployment/api-backend -n Pistisai --timeout=300s
-        kubectl rollout status deployment/web -n Pistisai --timeout=300s
-        kubectl rollout status deployment/streaming-proxy -n Pistisai --timeout=300s  # Add this
+        kubectl rollout status deployment/api-backend -n IAClé --timeout=300s
+        kubectl rollout status deployment/web -n IAClé --timeout=300s
+        kubectl rollout status deployment/streaming-proxy -n IAClé --timeout=300s  # Add this
 ```
 
 #### 2. Create Kubernetes Deployment
@@ -133,7 +133,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: streaming-proxy
-  namespace: Pistisai
+  namespace: IAClé
 spec:
   replicas: 2
   selector:
@@ -146,7 +146,7 @@ spec:
     spec:
       containers:
       - name: streaming-proxy
-        image: ghcr.io/pistisai/Pistisai/streaming:latest
+        image: ghcr.io/IAClé/IAClé/streaming:latest
         ports:
         - containerPort: 3001
           name: websocket
@@ -158,17 +158,17 @@ spec:
         - name: SUPABASE_AUTH_DOMAIN
           valueFrom:
             secretKeyRef:
-              name: Pistisai-secrets
+              name: IAClé-secrets
               key: auth0-domain
         - name: SUPABASE_AUTH_AUDIENCE
           valueFrom:
             secretKeyRef:
-              name: Pistisai-secrets
+              name: IAClé-secrets
               key: auth0-audience
         - name: SUPABASE_AUTH_ISSUER
           valueFrom:
             secretKeyRef:
-              name: Pistisai-secrets
+              name: IAClé-secrets
               key: auth0-issuer
         - name: PING_INTERVAL
           value: "30000"
@@ -206,7 +206,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: streaming-proxy
-  namespace: Pistisai
+  namespace: IAClé
 spec:
   selector:
     app: streaming-proxy
@@ -225,15 +225,15 @@ Update `k8s/ingress-nginx.yaml` to include streaming-proxy routes:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: Pistisai-ingress
-  namespace: Pistisai
+  name: IAClé-ingress
+  namespace: IAClé
   annotations:
     # ... existing annotations ...
     nginx.ingress.kubernetes.io/websocket-services: "streaming-proxy"
 spec:
   rules:
   # ... existing rules ...
-  - host: ws.pistisai.app
+  - host: ws.example.com
     http:
       paths:
       - path: /
@@ -293,7 +293,7 @@ Required environment variables for streaming-proxy:
 ```bash
 # Auth0 Configuration
 SUPABASE_AUTH_DOMAIN=your-domain.auth0.com
-SUPABASE_AUTH_AUDIENCE=https://api.Pistisai.com
+SUPABASE_AUTH_AUDIENCE=https://api.IAClé.com
 SUPABASE_AUTH_ISSUER=https://your-domain.auth0.com/
 
 # WebSocket Configuration
@@ -334,12 +334,12 @@ Add to `k8s/secrets.yaml`:
 apiVersion: v1
 kind: Secret
 metadata:
-  name: Pistisai-secrets
-  namespace: Pistisai
+  name: IAClé-secrets
+  namespace: IAClé
 type: Opaque
 stringData:
   auth0-domain: "your-domain.auth0.com"
-  auth0-audience: "https://api.Pistisai.com"
+  auth0-audience: "https://api.IAClé.com"
   auth0-issuer: "https://your-domain.auth0.com/"
 ```
 
@@ -355,13 +355,13 @@ npm install
 ### 2. Build Docker Image Locally (Optional)
 
 ```bash
-docker build -f services/streaming-proxy/Dockerfile.prod -t ghcr.io/pistisai/Pistisai/streaming:latest .
+docker build -f services/streaming-proxy/Dockerfile.prod -t ghcr.io/IAClé/IAClé/streaming:latest .
 ```
 
 ### 3. Push to Docker Hub (Optional)
 
 ```bash
-docker push ghcr.io/pistisai/Pistisai/streaming:latest
+docker push ghcr.io/IAClé/IAClé/streaming:latest
 ```
 
 ### 4. Deploy to Kubernetes
@@ -371,9 +371,9 @@ docker push ghcr.io/pistisai/Pistisai/streaming:latest
 kubectl apply -f k8s/streaming-proxy-deployment.yaml
 
 # Verify deployment
-kubectl get pods -n Pistisai
-kubectl get svc -n Pistisai
-kubectl logs -f deployment/streaming-proxy -n Pistisai
+kubectl get pods -n IAClé
+kubectl get svc -n IAClé
+kubectl logs -f deployment/streaming-proxy -n IAClé
 ```
 
 ### 5. Update Ingress
@@ -386,7 +386,7 @@ kubectl apply -f k8s/ingress-nginx.yaml
 
 ```bash
 # Test WebSocket connection
-wscat -c "wss://ws.pistisai.app?token=YOUR_JWT_TOKEN"
+wscat -c "wss://ws.example.com?token=YOUR_JWT_TOKEN"
 ```
 
 ## Monitoring
@@ -394,27 +394,27 @@ wscat -c "wss://ws.pistisai.app?token=YOUR_JWT_TOKEN"
 ### Health Check
 
 ```bash
-curl https://ws.pistisai.app/health
+curl https://ws.example.com/health
 ```
 
 ### Logs
 
 ```bash
 # View logs
-kubectl logs -f deployment/streaming-proxy -n Pistisai
+kubectl logs -f deployment/streaming-proxy -n IAClé
 
 # View logs for specific pod
-kubectl logs -f streaming-proxy-xxxxx-xxxxx -n Pistisai
+kubectl logs -f streaming-proxy-xxxxx-xxxxx -n IAClé
 ```
 
 ### Metrics
 
 ```bash
 # Get pod metrics
-kubectl top pods -n Pistisai
+kubectl top pods -n IAClé
 
 # Get deployment status
-kubectl get deployment streaming-proxy -n Pistisai
+kubectl get deployment streaming-proxy -n IAClé
 ```
 
 ## Scaling
@@ -422,7 +422,7 @@ kubectl get deployment streaming-proxy -n Pistisai
 ### Manual Scaling
 
 ```bash
-kubectl scale deployment streaming-proxy --replicas=3 -n Pistisai
+kubectl scale deployment streaming-proxy --replicas=3 -n IAClé
 ```
 
 ### Auto-scaling (HPA)
@@ -432,7 +432,7 @@ apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: streaming-proxy-hpa
-  namespace: Pistisai
+  namespace: IAClé
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
@@ -461,35 +461,35 @@ spec:
 
 ```bash
 # Check pod status
-kubectl describe pod streaming-proxy-xxxxx -n Pistisai
+kubectl describe pod streaming-proxy-xxxxx -n IAClé
 
 # Check logs
-kubectl logs streaming-proxy-xxxxx -n Pistisai
+kubectl logs streaming-proxy-xxxxx -n IAClé
 ```
 
 ### Issue: WebSocket connection fails
 
 ```bash
 # Check service
-kubectl get svc streaming-proxy -n Pistisai
+kubectl get svc streaming-proxy -n IAClé
 
 # Check ingress
-kubectl get ingress -n Pistisai
+kubectl get ingress -n IAClé
 
 # Test from inside cluster
 kubectl run -it --rm debug --image=alpine --restart=Never -- sh
 apk add curl
-curl http://streaming-proxy.Pistisai.svc.cluster.local:3001/health
+curl http://streaming-proxy.IAClé.svc.cluster.local:3001/health
 ```
 
 ### Issue: Authentication fails
 
 ```bash
 # Check secrets
-kubectl get secret Pistisai-secrets -n Pistisai -o yaml
+kubectl get secret IAClé-secrets -n IAClé -o yaml
 
 # Verify Auth0 configuration
-kubectl exec -it streaming-proxy-xxxxx -n Pistisai -- env | grep SUPABASE_AUTH
+kubectl exec -it streaming-proxy-xxxxx -n IAClé -- env | grep SUPABASE_AUTH
 ```
 
 ## Summary

@@ -474,7 +474,7 @@ class AdminCenterService extends ChangeNotifier {
         '/admin/email/test',
         data: {
           'recipientEmail': recipientEmail,
-          'subject': 'Test Email from Pistisai',
+          'subject': 'Test Email from IAClé',
         },
       );
       _setError(null);

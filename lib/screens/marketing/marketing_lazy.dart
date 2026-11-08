@@ -38,7 +38,7 @@ final marketingRoutes = [
                     style: Theme.of(context).textTheme.headlineSmall),
                 SizedBox(height: 8),
                 Text(
-                    'Please use the Pistisai desktop application for the best experience.',
+                    'Please use the IAClé desktop application for the best experience.',
                     textAlign: TextAlign.center),
               ],
             ),
@@ -71,7 +71,7 @@ final marketingRoutes = [
                     style: Theme.of(context).textTheme.headlineSmall),
                 SizedBox(height: 8),
                 Text(
-                    'Please use the Pistisai desktop application for the best experience.',
+                    'Please use the IAClé desktop application for the best experience.',
                     textAlign: TextAlign.center),
               ],
             ),
@@ -105,7 +105,7 @@ final marketingRoutes = [
                       style: Theme.of(context).textTheme.headlineSmall),
                   SizedBox(height: 8),
                   Text(
-                      'Please use the Pistisai desktop application for the best experience.',
+                      'Please use the IAClé desktop application for the best experience.',
                       textAlign: TextAlign.center),
                 ],
               ),
@@ -140,7 +140,7 @@ final marketingRoutes = [
                       style: Theme.of(context).textTheme.headlineSmall),
                   SizedBox(height: 8),
                   Text(
-                      'Please use the Pistisai desktop application for the best experience.',
+                      'Please use the IAClé desktop application for the best experience.',
                       textAlign: TextAlign.center),
                 ],
               ),

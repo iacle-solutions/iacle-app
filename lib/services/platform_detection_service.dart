@@ -274,7 +274,7 @@ class PlatformDetectionService extends ChangeNotifier {
         InstallationStep(
           title: 'Launch the application',
           description:
-              'Find Pistisai in your Start menu or desktop shortcut.',
+              'Find IAClé in your Start menu or desktop shortcut.',
           applicableTypes: ['exe'],
           order: 2,
         ),
@@ -467,14 +467,14 @@ class PlatformDetectionService extends ChangeNotifier {
         ),
         InstallationStep(
           title: 'Install the application',
-          description: 'Drag Pistisai to your Applications folder.',
+          description: 'Drag the app to your Applications folder.',
           applicableTypes: ['dmg'],
           order: 2,
         ),
         InstallationStep(
           title: 'Launch the application',
           description:
-              'Find Pistisai in your Applications folder and launch it.',
+              'Find the app in your Applications folder and launch it.',
           applicableTypes: ['dmg'],
           order: 3,
           troubleshootingTips: [

@@ -197,7 +197,7 @@ class MobileConnectionService extends ChangeNotifier {
       success: false,
       hermesUrl: hermesUrl,
       message:
-          'Could not reach a Pistisai desktop hub at $host. Open Tailscale on this phone, join the same tailnet as your PC, and use that PC\'s Tailscale name or 100.x address.',
+          'Could not reach an IAClé desktop hub at $host. Open Tailscale on this phone, join the same tailnet as your PC, and use that PC\'s Tailscale name or 100.x address.',
     );
   }
 

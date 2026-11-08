@@ -273,7 +273,7 @@ rate(tunnel_throughput_bytes_total[1m])
 
 ## Key Contacts
 
-- **Grafana URL**: https://grafana.pistisai.app
+- **Grafana URL**: https://grafana.example.com
 - **API Key**: [Configure in environment variables]
 - **Metrics Endpoint**: `/api/tunnel/metrics`
 - **Health Endpoint**: `/api/tunnel/health`

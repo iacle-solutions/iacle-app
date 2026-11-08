@@ -3,13 +3,12 @@
   <id>com.Pistisai.Pistisai</id>
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>MIT</project_license>
-  <name>Pistisai</name>
+  <name>IAClé</name>
   <summary>Bridge cloud-based AI services with local AI models</summary>
   
   <description>
     <p>
-      Pistisai is a cross-platform application that bridges cloud-based AI services 
-      with local AI models, providing a hybrid AI architecture with privacy-first design.
+      IAClé is a local-first AI assistant for Quebec businesses.
     </p>
     <p>
       Features:
@@ -31,11 +30,11 @@
     </screenshot>
   </screenshots>
   
-  <url type="homepage">https://github.com/pistisAI/pistisai-app</url>
-  <url type="bugtracker">https://github.com/pistisAI/pistisai-app/issues</url>
-  <url type="help">https://github.com/pistisAI/pistisai-app/blob/main/README.md</url>
+  <url type="homepage">https://github.com/iacle-solutions/iacle-app</url>
+  <url type="bugtracker">https://github.com/iacle-solutions/iacle-app/issues</url>
+  <url type="help">https://github.com/iacle-solutions/iacle-app/blob/main/README.md</url>
   
-  <developer_name>Pistisai Contributors</developer_name>
+  <developer_name>IAClé</developer_name>
   
   <provides>
     <binary>Pistisai</binary>

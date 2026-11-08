@@ -89,7 +89,7 @@ class _AgentStatusScreenState extends State<AgentStatusScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Pistisai Agent Monitor',
+                    'IAClé Agent Monitor',
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
                           fontWeight: FontWeight.bold,
                         ),

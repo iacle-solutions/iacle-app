@@ -125,7 +125,7 @@ git commit -m "feat: add Proxmox k3s clone workflow for control and worker nodes
 
 Run:
 ```bash
-grep -n "argocd.pistisai.app" k8s/deployments/overlays/managed/cloudflared-tunnel.yaml
+grep -n "argocd.example.com" k8s/deployments/overlays/managed/cloudflared-tunnel.yaml
 ```
 Expected: FAILING policy check because ArgoCD is currently publicly routed.
 
@@ -133,7 +133,7 @@ Expected: FAILING policy check because ArgoCD is currently publicly routed.
 
 Edit `config.yaml` ingress list to:
 - keep app/api/root/grafana entries
-- remove public `argocd.pistisai.app`
+- remove public `argocd.example.com`
 - preserve catch-all `http_status:404`
 
 **Step 3: Validate manifest render**
@@ -169,7 +169,7 @@ Expected: FAIL (file missing).
 **Step 2: Implement separate admin tunnel manifest**
 
 Define dedicated deployment/config for admin ingress only:
-- hostname: `argocd-admin.pistisai.app`
+- hostname: `argocd-admin.example.com`
 - service: `argocd-server.argocd.svc.cluster.local:80`
 - separate token secret key (for least privilege)
 

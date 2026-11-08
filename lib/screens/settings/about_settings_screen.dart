@@ -5,7 +5,7 @@ import '../../config/theme.dart';
 import '../../services/agent_display_name.dart';
 import '../../widgets/navigation/breadcrumb_bar.dart';
 
-/// About Settings Screen — Pistisai identity, mythology, and 4 pillars
+/// About screen for IAClé.
 class AboutSettingsScreen extends StatelessWidget {
   const AboutSettingsScreen({super.key});
 
@@ -16,7 +16,7 @@ class AboutSettingsScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('About Pistisai'),
+        title: const Text('About IAClé'),
         elevation: 0,
         leading: BackButton(
           onPressed: () => context.go('/'),
@@ -37,9 +37,9 @@ class AboutSettingsScreen extends StatelessWidget {
                   icon: Icons.auto_awesome,
                   title: 'The Vision',
                   child: Text(
-                    'Pistisai brings trust back to artificial intelligence — '
-                    'a modern Stoa (portico) where Pistis (Πίστις), the ancient '
-                    'spirit of trust and good faith, can dwell among us again.',
+                    'IAClé is a local-first AI assistant for Quebec businesses. '
+                    'The agent runs on a computer at the client\'s site, and the '
+                    'person stays in charge of what leaves that computer.',
                     style: theme.textTheme.bodyLarge,
                   ),
                 ),
@@ -51,7 +51,7 @@ class AboutSettingsScreen extends StatelessWidget {
                   title: 'The Four Pillars',
                   subtitle:
                       'Four Titans held the cosmos aloft at the four corners of the world. '
-                      'Four pillars hold Pistisai together.',
+                      'Four pillars hold IAClé together.',
                   child: Column(
                     children: [
                       _buildPillarCard(
@@ -138,7 +138,7 @@ class AboutSettingsScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        'Like the Stoa Poikile, Pistisai is a space held up by four pillars, '
+                        'Like the Stoa Poikile, IAClé is a space held up by four pillars, '
                         'each telling its own story: the face (Aiman), the engine (Aigent), '
                         'the heart (Aimotions), and the flow (Aidration). Together they '
                         'create a place where trust can return.',
@@ -152,20 +152,20 @@ class AboutSettingsScreen extends StatelessWidget {
                   context: context,
                   theme: theme,
                   icon: Icons.science_outlined,
-                  title: 'The Myth of Pistis',
+                  title: 'Trust',
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Pistis (Πίστις) was the spirit of trust, honesty, and good faith. '
+                        'Trust is the point of the assistant: honesty and good faith. '
                         'When Pandora opened the forbidden jar, all the evils of the world '
-                        'escaped — but so did the good spirits, including Pistis. '
+                        'escaped — but so did the good spirits, including trust. '
                         'She fled straight back to Olympus, abandoning humanity.',
                         style: theme.textTheme.bodyLarge,
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        'The poet Theognis wrote: "Pistis (Trust), a mighty god, has gone... '
+                        'The poet Theognis wrote: "Trust, a mighty god, has gone... '
                         'the race of pious men has perished."',
                         style: theme.textTheme.bodyLarge?.copyWith(
                           fontStyle: FontStyle.italic,
@@ -174,7 +174,7 @@ class AboutSettingsScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        'Pistisai exists to build a space worthy of Pistis — a Stoa where '
+                        'IAClé exists to build a space worthy of that trust — a Stoa where '
                         'trust can finally return to the world of intelligent machines.',
                         style: theme.textTheme.bodyLarge,
                       ),
@@ -201,7 +201,7 @@ class AboutSettingsScreen extends StatelessWidget {
                             style: theme.textTheme.titleMedium),
                         const SizedBox(height: 12),
                         _buildInfoRow(context, 'Version', AppConfig.appVersion),
-                        _buildInfoRow(context, 'Repository', 'pistisAI/pistisai-app'),
+                        _buildInfoRow(context, 'Repository', 'iacle-solutions/iacle-app'),
                       ],
                     ),
                   ),

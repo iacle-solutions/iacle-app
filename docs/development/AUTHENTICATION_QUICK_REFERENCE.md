@@ -9,13 +9,13 @@
 ### Frontend (web/auth0-bridge.js)
 
 ```javascript
-const AUTH0_AUDIENCE = 'https://api.pistisai.app';
+const AUTH0_AUDIENCE = 'https://api.example.com';
 ```
 
 ### Backend (services/api-backend/middleware/auth.js)
 
 ```javascript
-const DEFAULT_JWT_AUDIENCE = 'https://api.pistisai.app';
+const DEFAULT_JWT_AUDIENCE = 'https://api.example.com';
 const JWT_AUDIENCE = process.env.JWT_AUDIENCE || DEFAULT_JWT_AUDIENCE;
 ```
 
@@ -26,7 +26,7 @@ User Login
     ↓
 Auth0 OAuth Flow (web/auth0-bridge.js)
     ↓
-Auth0 Issues Token with Audience: https://api.pistisai.app
+Auth0 Issues Token with Audience: https://api.example.com
     ↓
 Frontend Stores Token (flutter_secure_storage)
     ↓
@@ -87,10 +87,10 @@ Backend Verifies Audience Matches
 
 | Variable | Default | Purpose |
 |----------|---------|---------|
-| `AUTH0_AUDIENCE` | `https://api.pistisai.app` | Expected token audience |
+| `AUTH0_AUDIENCE` | `https://api.example.com` | Expected token audience |
 | `AUTH0_JWKS_URI` | `https://dev-vivn1fcgzi0c2czy.us.auth0.com/.well-known/jwks.json` | JWKS endpoint for token validation |
 | `SUPABASE_JWT_SECRET` | (required) | Secret for HS256 token validation |
-| `JWT_AUDIENCE` | `https://api.pistisai.app` | Alias for AUTH0_AUDIENCE |
+| `JWT_AUDIENCE` | `https://api.example.com` | Alias for AUTH0_AUDIENCE |
 
 ## Debugging
 
@@ -123,7 +123,7 @@ console.log(decoded);
 
 // Check audience claim
 console.log('Audience:', decoded.aud);
-console.log('Expected:', 'https://api.pistisai.app');
+console.log('Expected:', 'https://api.example.com');
 ```
 
 ### Test Backend Token Validation
@@ -133,7 +133,7 @@ console.log('Expected:', 'https://api.pistisai.app');
 ```bash
 # Get token from browser first, then:
 curl -H "Authorization: Bearer <token>" \
-  https://api.pistisai.app/user/tier
+  https://api.example.com/user/tier
 ```
 
 ## Deployment
