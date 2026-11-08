@@ -87,11 +87,11 @@ curl -X POST "https://api.example.com/api/admin/email/oauth/callback" \
     "configuration": {
       "id": "config-uuid",
       "provider": "google_workspace",
-      "from_address": "https://github.com/iacle-solutions/iacle-app/issues",
+      "from_address": "sender@example.com",
       "is_active": true,
       "created_at": "2025-01-16T10:30:00.000Z"
     },
-    "userEmail": "https://github.com/iacle-solutions/iacle-app/issues"
+    "userEmail": "sender@example.com"
   },
   "timestamp": "2025-01-16T10:30:00.000Z"
 }
@@ -131,9 +131,9 @@ curl -X GET "https://api.example.com/api/admin/email/config" \
       {
         "id": "config-uuid",
         "provider": "google_workspace",
-        "from_address": "https://github.com/iacle-solutions/iacle-app/issues",
+        "from_address": "sender@example.com",
         "from_name": "IAClé",
-        "reply_to_address": "https://github.com/iacle-solutions/iacle-app/issues",
+        "reply_to_address": "sender@example.com",
         "is_active": true,
         "created_at": "2025-01-16T10:30:00.000Z",
         "updated_at": "2025-01-16T10:30:00.000Z"
@@ -265,7 +265,7 @@ curl -X GET "https://api.example.com/api/admin/email/status" \
     "status": {
       "configured": true,
       "provider": "google_workspace",
-      "from_address": "https://github.com/iacle-solutions/iacle-app/issues",
+      "from_address": "sender@example.com",
       "is_active": true,
       "created_at": "2025-01-16T10:30:00.000Z",
       "updated_at": "2025-01-16T10:30:00.000Z"
@@ -305,7 +305,7 @@ curl -X GET "https://api.example.com/api/admin/email/quota" \
     "quota": {
       "messagesTotal": 1234,
       "messagesUnread": 45,
-      "emailAddress": "https://github.com/iacle-solutions/iacle-app/issues",
+      "emailAddress": "sender@example.com",
       "historyId": "12345",
       "retrievedAt": "2025-01-16T10:30:00.000Z"
     }

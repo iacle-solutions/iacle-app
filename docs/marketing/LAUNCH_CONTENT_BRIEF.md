@@ -56,5 +56,5 @@ Clone [iacle-solutions/iacle-app](https://github.com/iacle-solutions/iacle-app) 
 
 - Link the [README](../../README.md) and [iacle-solutions/iacle-app](https://github.com/iacle-solutions/iacle-app).
 - Never claim a platform status that contradicts `docs/LAUNCH.md` or the README.
-- Report security issues to `https://github.com/iacle-solutions/iacle-app/issues`, never in public threads.
+- Report security issues through GitHub security advisories, never in a public issue.
 - Keep copy in the repo so it is reviewable and version-controlled.

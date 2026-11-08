@@ -283,7 +283,7 @@ All endpoints require:
       "dmarc": {
         "type": "TXT",
         "name": "_dmarc.example.com",
-        "value": "v=DMARC1; p=quarantine; rua=mailto:https://github.com/iacle-solutions/iacle-app/issues",
+        "value": "v=DMARC1; p=quarantine; rua=mailto:dmarc@example.com",
         "ttl": 3600,
         "description": "DMARC policy record"
       }
@@ -365,7 +365,7 @@ All endpoints require:
         "id": "uuid",
         "recordType": "TXT",
         "name": "_dmarc.example.com",
-        "value": "v=DMARC1; p=quarantine; rua=mailto:https://github.com/iacle-solutions/iacle-app/issues",
+        "value": "v=DMARC1; p=quarantine; rua=mailto:dmarc@example.com",
         "ttl": 3600
       }
     ],

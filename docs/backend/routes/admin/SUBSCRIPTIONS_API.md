@@ -506,4 +506,4 @@ For API support or questions:
 
 - Documentation: `/docs/API/`
 - Issues: GitHub Issues
-- Email: https://github.com/iacle-solutions/iacle-app/issues
+- Email: support@example.com

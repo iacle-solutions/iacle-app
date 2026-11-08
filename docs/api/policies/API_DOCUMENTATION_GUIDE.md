@@ -408,7 +408,7 @@ For API support:
 
 - **Documentation**: https://docs.example.com
 - **Issues**: https://github.com/iacle-solutions/iacle-app/issues
-- **Email**: https://github.com/iacle-solutions/iacle-app/issues
+- **Email**: support@example.com
 - **Discord**: https://discord.gg/IAClé
 
 ## Changelog

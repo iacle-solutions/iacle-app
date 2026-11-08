@@ -447,4 +447,4 @@ For issues or questions:
 
 - GitHub Issues: https://github.com/iacle-solutions/iacle-app/issues
 - Documentation: https://docs.example.com
-- Email: https://github.com/iacle-solutions/iacle-app/issues
+- Email: support@example.com

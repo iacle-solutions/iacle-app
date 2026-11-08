@@ -127,7 +127,7 @@ WSL is **NOT used** for:
 
 ```powershell
 # From Windows PowerShell, deploy to VPS via SSH
-ssh https://github.com/iacle-solutions/iacle-app/issues "cd /opt/IAClé && ./scripts/deploy/update_and_deploy.sh --force --verbose"
+ssh deploy@example.com "cd /opt/IAClé && ./scripts/deploy/update_and_deploy.sh --force --verbose"
 ```
 
 ### Environment Testing

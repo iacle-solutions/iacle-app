@@ -263,7 +263,7 @@ Response:
 
 For questions about API versioning or migration help, contact:
 
-- Email: https://github.com/iacle-solutions/iacle-app/issues
+- Email: support@example.com
 - Documentation: https://docs.example.com
 - GitHub Issues: https://github.com/ghcr.io/IAClé/IAClé/api/issues
 

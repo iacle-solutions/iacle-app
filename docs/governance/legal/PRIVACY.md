@@ -146,5 +146,7 @@ policy.
 ## 12. Contact us
 
 If you have questions or requests regarding this Privacy Policy or your data,
-contact us at https://github.com/iacle-solutions/iacle-app/issues. You can also reach the project at
+contact us through a private report at
+https://github.com/iacle-solutions/iacle-app/security/advisories.
+Do not put personal data in a public issue. You can also reach the project at
 [github.com/iacle-solutions/iacle-app](https://github.com/iacle-solutions/iacle-app).

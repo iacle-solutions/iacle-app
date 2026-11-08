@@ -347,7 +347,7 @@ When v3 is released:
 
 For questions about API deprecation or migration help:
 
-- **Email**: https://github.com/iacle-solutions/iacle-app/issues
+- **Email**: support@example.com
 - **Documentation**: https://docs.example.com
 - **API Docs**: https://api.example.com/api/docs
 - **GitHub Issues**: https://github.com/ghcr.io/IAClé/IAClé/api/issues

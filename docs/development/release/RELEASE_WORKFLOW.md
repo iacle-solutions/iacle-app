@@ -157,7 +157,7 @@ gh release upload v3.8.0 dist/windows/IAClé-3.8.0-portable.zip.sha256
 1. **Deploy via SSH from Windows PowerShell**:
 
    ```powershell
-   ssh https://github.com/iacle-solutions/iacle-app/issues "cd /opt/IAClé && git pull origin master && flutter build web --release && docker-compose -f docker-compose.multi.yml down && docker-compose -f docker-compose.multi.yml up -d"
+   ssh deploy@example.com "cd /opt/IAClé && git pull origin master && flutter build web --release && docker-compose -f docker-compose.multi.yml down && docker-compose -f docker-compose.multi.yml up -d"
    ```
 
 2. **Verify Deployment**:
@@ -218,7 +218,7 @@ flutter pub get
 
 ```bash
 # Check VPS status and retry
-wsl -d Ubuntu-24.04 -- ssh https://github.com/iacle-solutions/iacle-app/issues "docker ps"
+wsl -d Ubuntu-24.04 -- ssh deploy@example.com "docker ps"
 # Retry deployment commands individually
 ```
 
@@ -238,7 +238,7 @@ gh release edit v3.8.0 --prerelease
 
 ```bash
 # Revert to previous version
-wsl -d Ubuntu-24.04 -- ssh https://github.com/iacle-solutions/iacle-app/issues "cd /opt/IAClé && git reset --hard HEAD~1 && flutter build web --release && docker-compose -f docker-compose.multi.yml restart"
+wsl -d Ubuntu-24.04 -- ssh deploy@example.com "cd /opt/IAClé && git reset --hard HEAD~1 && flutter build web --release && docker-compose -f docker-compose.multi.yml restart"
 ```
 
 ## Quality Checklist

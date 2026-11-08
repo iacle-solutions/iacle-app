@@ -100,7 +100,7 @@ Desktop control, vision, and the channel are scoped to a device and permissioned
 
 - [deployment/DEPLOYMENT_OVERVIEW.md](deployment/DEPLOYMENT_OVERVIEW.md)
 - [deployment/SELF_HOSTING.md](deployment/SELF_HOSTING.md)
-- [SECURITY.md](../SECURITY.md) — report vulnerabilities privately to `https://github.com/iacle-solutions/iacle-app/issues` or [this repo's security advisories](https://github.com/iacle-solutions/iacle-app/security/advisories).
+- [SECURITY.md](../SECURITY.md) — report vulnerabilities privately through [this repo's security advisories](https://github.com/iacle-solutions/iacle-app/security/advisories). Do not open a public issue.
 
 ---
 

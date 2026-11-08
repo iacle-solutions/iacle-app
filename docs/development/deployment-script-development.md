@@ -295,7 +295,7 @@ if ($BuildLinuxPackages) {
 }
 
 # For VPS deployment, use PowerShell SSH instead:
-# ssh https://github.com/iacle-solutions/iacle-app/issues "cd /opt/IAClé && ./scripts/deploy/complete_deployment.sh --force"
+# ssh deploy@example.com "cd /opt/IAClé && ./scripts/deploy/complete_deployment.sh --force"
 ```
 
 ## PowerShell Deployment Integration
@@ -311,7 +311,7 @@ For deployment operations, use native PowerShell capabilities:
 
 ```powershell
 # Use PowerShell for deployment, not WSL
-$sshCommand = "ssh https://github.com/iacle-solutions/iacle-app/issues 'cd /opt/IAClé && bash scripts/deploy/complete_deployment.sh'"
+$sshCommand = "ssh deploy@example.com 'cd /opt/IAClé && bash scripts/deploy/complete_deployment.sh'"
 Invoke-Expression $sshCommand
 ```
 

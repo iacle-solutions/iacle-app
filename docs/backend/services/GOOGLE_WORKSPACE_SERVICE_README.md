@@ -91,9 +91,9 @@ const result = await googleWorkspaceService.sendEmail({
   to: 'recipient@example.com',
   subject: 'Welcome to IAClé',
   body: '<h1>Welcome!</h1><p>Thank you for signing up.</p>',
-  from: 'https://github.com/iacle-solutions/iacle-app/issues',
-  replyTo: 'https://github.com/iacle-solutions/iacle-app/issues',
-  cc: ['https://github.com/iacle-solutions/iacle-app/issues'],
+  from: 'sender@example.com',
+  replyTo: 'sender@example.com',
+  cc: ['sender@example.com'],
   bcc: [],
 });
 

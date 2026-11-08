@@ -50,7 +50,7 @@ services:
     ports:
       - "5050:80"
     environment:
-      PGADMIN_DEFAULT_EMAIL: https://github.com/iacle-solutions/iacle-app/issues
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-admin_pass}
     depends_on:
       - vector-db

@@ -409,4 +409,4 @@ LIMIT 10;
 For questions or issues:
 
 - GitHub Issues: https://github.com/iacle-solutions/iacle-app/issues
-- Email: https://github.com/iacle-solutions/iacle-app/issues
+- Email: support@example.com

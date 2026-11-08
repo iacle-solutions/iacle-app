@@ -111,7 +111,7 @@ psql -h localhost -U postgres -d IAClé -f services/api-backend/database/seeds/0
 
 | Email                           | Role          | Purpose                        |
 | ------------------------------- | ------------- | ------------------------------ |
-| https://github.com/iacle-solutions/iacle-app/issues | Super Admin   | Full admin access              |
+| admin@example.com | Super Admin   | Full admin access              |
 | test.support@example.com        | Support Admin | Test support admin permissions |
 | test.finance@example.com        | Finance Admin | Test finance admin permissions |
 
