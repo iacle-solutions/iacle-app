@@ -20,7 +20,7 @@ Quebec SMBs. First in Estrie, then further into Quebec, especially regulated fir
 
 This repository is the PistisAI desktop hub, delivered under the IAClé brand.
 
-- Chat with Hermes. OpenClaw and compatible gateways are still in the code.
+- Chat with Hermes, OpenClaw, or a compatible gateway.
 - Voice and avatar.
 - Screen reading and OCR, with the person's permission.
 - Desktop actions, each one permissioned.
@@ -49,19 +49,7 @@ Sign-in is for the tunnel and for sync.
 
 This model does not use Supabase.
 
-As of this page, `pistisai.app` does not answer (Cloudflare error 1033). It is not an open demo. `docs.pistisai.app` does not resolve.
-
-The code in this repository does not follow that model yet. The next section says what it actually does.
-
-## This repository today
-
-A later re-clone from pistisai-app will rename the tree. In this copy, the code is still named Pistisai.
-
-- Desktop, without cloud: no account. Auth is local.
-- Web, and desktop with `CLOUD_ENABLED`: Google sign-in through Supabase.
-- Tiers in the code are `free`, `premium`, and `enterprise`. There is no Business tier, and no Cloudflare Access in the repository.
-- `backend/auth/` still validates Auth0 JWTs.
-- No release is published on [iacle-solutions/iacle-app](https://github.com/iacle-solutions/iacle-app). This repo's CI builds Linux, Windows, macOS, and Android.
+This repository will be resynced with pistisai-app (see [#26](https://github.com/iacle-solutions/iacle-app/issues/26)).
 
 ## Development
 

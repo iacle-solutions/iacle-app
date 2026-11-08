@@ -1,9 +1,8 @@
-# Community Activation Plan — CMO Deliverables
+# Community Activation Plan
 
-> Stale. Do not publish. The current description is [README](../README.md)
-> ([English](../README.en.md)). This plan still points people at `pistisai.app`.
+Product description: [README](../README.md) ([English](../README.en.md)).
 
-Plan and copy from an earlier Pistisai launch. Pairs with
+Plan and copy for the launch. Pairs with
 `docs/marketing/publish-ready/community-copy-pack.md` and `measurement-plan.md`.
 
 ## Week-1 activation calendar

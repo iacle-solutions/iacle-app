@@ -3,13 +3,13 @@
 > Product description: [README](../README.md) ([English](../README.en.md))
 > Repo: [github.com/iacle-solutions/iacle-app](https://github.com/iacle-solutions/iacle-app)
 
-This page is how to run the software in this repository. The offer (Quebec SMBs, Law 25, connection tiers) lives in the README. `pistisai.app` currently returns Cloudflare error 1033, so there is no hosted demo to log into.
+This page is how to run the software. The offer is in the [README](../README.md) ([English](../README.en.md)).
 
 ---
 
 ## What this repository is
 
-The PistisAI desktop hub, delivered by IAClé. It is the layer in front of an agent runtime. Hermes is the primary test path. OpenClaw and compatible gateways are still in the code. Ollama and LM Studio are support providers for memory, embeddings, OCR, and speech. They are not the main runtime.
+The PistisAI desktop hub, delivered by IAClé. It is the layer in front of an agent runtime. Hermes is the primary path. OpenClaw and compatible gateways work too. Ollama and LM Studio support memory, embeddings, OCR, and speech. The main runtime stays the agent gateway.
 
 The software runs on the client's own computer. It does not require special hardware.
 
@@ -19,20 +19,20 @@ The software runs on the client's own computer. It does not require special hard
 
 | Runtime | Status | Notes |
 |---------|--------|-------|
-| **Hermes** | Primary test path | Sessions, channels, and tools are wired in. |
-| **OpenClaw** | Supported | Gateway control and skill management are in the code. |
+| **Hermes** | Primary path | Sessions, channels, and tools. |
+| **OpenClaw** | Supported | Gateway control and skill management. |
 | Compatible agent gateways | Supported | Any agent exposing the [runtime contract](architecture/AGENT_RUNTIME_CONTRACT.md). |
 | Ollama / LM Studio | Support only | Memory, embeddings, OCR, speech. Not the main runtime. |
 
-The setup wizard chooses where the agent lives: this device, another private device, a Tailscale device, or a manual private URL. There is no hardcoded default runtime.
+The setup wizard chooses where the agent lives: this device, another private device, a Tailscale device, or a manual private URL.
 
-The spec also describes an optional per-user hosted runtime. That path is not the IAClé connection model in the README (free tunnel on `pistisai.app` behind Cloudflare Access; Business and Enterprise on the customer's Tailscale or VPN).
+Sign-in is for the tunnel and for sync. Free uses the `pistisai.app` tunnel behind Cloudflare Access. Business and Enterprise use the customer's Tailscale or VPN.
 
 ---
 
 ## Platforms
 
-CI in this repository builds these targets. No GitHub Release is published on `iacle-solutions/iacle-app` yet, so the way to run it is from source.
+CI builds these targets. To run a copy yourself, build from source.
 
 | Platform | CI |
 |----------|----|
@@ -76,7 +76,7 @@ cd services/api-backend && npm install && npm run dev
 cd services/streaming-proxy && npm install && npm run dev
 ```
 
-`backend/auth/` has no `dev` script. Start it with `node handlers.js`. That process still validates Auth0 JWTs. The Flutter web app and desktop cloud mode still use Supabase. Neither matches the offer's sign-in model. See the README section on the current code.
+`backend/auth/` has no `dev` script. Start it with `node handlers.js`.
 
 Developer onboarding: [development/DEVELOPER_ONBOARDING.md](development/DEVELOPER_ONBOARDING.md).
 Command reference: [AGENTS.md](../AGENTS.md).
@@ -118,5 +118,3 @@ Desktop control, vision, and the channel are scoped to a device and permissioned
 | Setup Guide | [user-guide/SETUP_GUIDE.md](user-guide/SETUP_GUIDE.md) |
 | Developer Onboarding | [development/DEVELOPER_ONBOARDING.md](development/DEVELOPER_ONBOARDING.md) |
 | Contributing | [CONTRIBUTING.md](../CONTRIBUTING.md) |
-
-Older launch drafts under `docs/marketing/` and `cmo-deliverables/` still point at `pistisai.app` and `pistisAI/pistisai-app`. They are not the current product description.

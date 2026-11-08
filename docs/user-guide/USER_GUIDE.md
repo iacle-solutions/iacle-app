@@ -1,6 +1,6 @@
 # Pistisai User Guide
 
-IAClé delivers this hub to Quebec SMBs. The offer and the connection tiers are in the [README](../../README.md) ([English](../../README.en.md)). This guide describes the software in the repository.
+IAClé delivers this hub to Quebec SMBs. The offer and the sign-in tiers are in the [README](../../README.md) ([English](../../README.en.md)).
 
 Pistisai is a local-first companion shell for Hermes, OpenClaw, and compatible private agent runtimes. It gives the selected agent runtime a secure channel to you, plus controlled access to desktop, vision, voice, avatar, and multi-device sync features.
 

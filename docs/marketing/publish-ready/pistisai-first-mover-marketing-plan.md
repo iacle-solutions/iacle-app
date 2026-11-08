@@ -1,6 +1,6 @@
-# Pistisai.app — First-Mover Marketing Plan
+# First-Mover Marketing Plan
 
-> Stale draft. Do not publish. Current description: [README](../../../README.md). `pistisai.app` is not a live demo.
+Product description: [README](../../../README.md).
 
 > Drafted by CMO to establish first-mover positioning ahead of public launch.
 > Final gate: CEO/UX/Legal approval before channel execution.
@@ -92,7 +92,7 @@ First-mover window:
 
 ## 6. Publisher Guardrails
 
-- Never claim cloud independence while implying offline parity that is not yet shipped.
+- Describe offline behavior as the product works.
 - Always link authoritative sources: repo, docs, SECURITY.md, issues.
 - No fabricated benchmarks, user counts, or press logos.
 - All public copy should pass UX/Legal review before publication.

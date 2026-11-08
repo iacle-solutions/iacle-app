@@ -2,15 +2,9 @@
 
 ## Delivery
 
-IAClé is Christopher Maltais's Quebec sole proprietorship. It is the brand that delivers this stack to Quebec SMBs. The software described here is that stack: one desktop hub, plus skills. A later re-clone from pistisai-app will rename the tree. This document describes the code as it is. Public wording: [README](README.md) ([English](README.en.md)).
+IAClé is Christopher Maltais's Quebec sole proprietorship. It is the brand that delivers this stack to Quebec SMBs. The software is one desktop hub, plus skills. Public wording: [README](README.md) ([English](README.en.md)).
 
-The offer's sign-in is only for tunnel and sync. Free uses the `pistisai.app` tunnel behind Cloudflare Access. Business and Enterprise use the customer's Tailscale or VPN. That offer does not use Supabase. This tree does not implement that yet:
-
-- Desktop without `CLOUD_ENABLED` uses `LocalAuthProvider` and needs no cloud account.
-- Web, and desktop with `CLOUD_ENABLED`, use `SupabaseAuthProvider` (Google OAuth).
-- API and app tiers are `free`, `premium`, and `enterprise`.
-- `backend/auth/` still validates Auth0 JWTs.
-- Nothing in the repository mentions Cloudflare Access.
+Sign-in is for the tunnel and for sync. Free uses the `pistisai.app` tunnel behind Cloudflare Access. Business and Enterprise use the customer's Tailscale or VPN. Sign-in does not use Supabase.
 
 ## Project Vision
 

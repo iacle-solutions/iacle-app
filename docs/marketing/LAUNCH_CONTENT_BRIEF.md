@@ -1,14 +1,8 @@
-# Launch Content Brief — superseded
+# Launch Content Brief
 
-> Current product description: [README](../../README.md) ([English](../../README.en.md)).
-> How to run the code: [docs/LAUNCH.md](../LAUNCH.md).
-> Repository: [github.com/iacle-solutions/iacle-app](https://github.com/iacle-solutions/iacle-app).
-
-This brief no longer governs outward-facing copy. It described an earlier Pistisai
-launch. `pistisai.app` returns Cloudflare error 1033, and issue #39 on
-`pistisAI/pistisai-app` is a different project. Use the README.
-
-The notes below are kept so old drafts can be compared. Do not publish them as-is.
+Product description: [README](../../README.md) ([English](../../README.en.md)).
+Run the hub from [source](../LAUNCH.md).
+Repository: [iacle-solutions/iacle-app](https://github.com/iacle-solutions/iacle-app).
 
 ## Product at a glance
 
@@ -30,7 +24,7 @@ bio) live in `publish-ready/social-thread-pack.md`.
 
 ## Primary CTA
 
-Use the README. Clone [iacle-solutions/iacle-app](https://github.com/iacle-solutions/iacle-app) and run it from source. Do not send people to `pistisai.app` until that host answers.
+Clone [iacle-solutions/iacle-app](https://github.com/iacle-solutions/iacle-app) and run it from source. The product description is the [README](../../README.md).
 
 ## Voice and tone
 
@@ -43,7 +37,7 @@ Use the README. Clone [iacle-solutions/iacle-app](https://github.com/iacle-solut
 
 | Channel | Asset | Owner |
 |---------|-------|-------|
-| GitHub issue thread | issue #39 (this post) | Founder |
+| GitHub issues | [iacle-solutions/iacle-app](https://github.com/iacle-solutions/iacle-app/issues) | Founder |
 | Twitter/X thread | `publish-ready/social-thread-pack.md` | CMO |
 | LinkedIn operator post | `publish-ready/social-thread-pack.md` | CMO |
 | Discord announcement | `publish-ready/social-thread-pack.md` | DevRel |
@@ -60,7 +54,7 @@ Use the README. Clone [iacle-solutions/iacle-app](https://github.com/iacle-solut
 
 ## Guardrails
 
-- Link the README and [iacle-solutions/iacle-app](https://github.com/iacle-solutions/iacle-app). Do not send people to `pistisai.app` while it returns Cloudflare error 1033.
+- Link the [README](../../README.md) and [iacle-solutions/iacle-app](https://github.com/iacle-solutions/iacle-app).
 - Never claim a platform status that contradicts `docs/LAUNCH.md` or the README.
 - Report security issues to `security@pistisai.app`, never in public threads.
 - Keep copy in the repo so it is reviewable and version-controlled.

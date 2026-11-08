@@ -1,8 +1,8 @@
-# Measurement Plan — Pistisai Public Launch
+# Measurement Plan
 
-> Stale. Do not use. `pistisai.app` returns Cloudflare error 1033. Current description: [README](../../../README.md).
+Product description: [README](../../../README.md).
 
-Owners and metrics for an earlier launch. Lightweight on purpose: signal, not a dashboard
+Owners and metrics for the launch. Lightweight on purpose: signal, not a dashboard
 project. Review at 24h and at week-1.
 
 ## Goals
@@ -33,7 +33,7 @@ project. Review at 24h and at week-1.
 ## Review cadence
 
 - **24h:** quick stand-up — are the top two metrics moving? Adjust copy if CTA is unclear.
-- **Week-1:** full readout in issue #39 — what landed, what to double down on, next preview.
+- **Week-1:** full readout in the repository issues — what landed, what to repeat, next preview.
 
 ## Definition of success
 

@@ -1,8 +1,8 @@
-# Social Thread Pack — Pistisai Public Launch
+# Social Thread Pack
 
-> Stale. Do not publish. Current description: [README](../../../README.md). These drafts still link `pistisai.app` and `pistisAI/pistisai-app`.
+Product description: [README](../../../README.md).
 
-Publish-ready copy for an earlier launch. It followed
+Copy for the launch channels, aligned with
 [LAUNCH_CONTENT_BRIEF.md](../LAUNCH_CONTENT_BRIEF.md) and [docs/LAUNCH.md](../../LAUNCH.md).
 
 Canonical one-liner:
@@ -19,7 +19,7 @@ Canonical one-liner:
 Your AI agent shouldn't need a cloud to be useful on your desktop.
 Pistisai is now public: a local-first companion + desktop layer for your agent.
 🌐 Try it: https://pistisai.app
-🐙 https://github.com/pistisAI/pistisai-app
+🐙 https://github.com/iacle-solutions/iacle-app
 
 **2/**
 It is NOT a model. It's the layer in front of an agent runtime — Hermes, OpenClaw, or any
@@ -37,7 +37,7 @@ connector is a single isolated container per user, joined to your own tailnet.
 **5/**
 Local-first means it keeps working offline. No data leaves your network unless you decide.
 Clone it, run it, break it, and open an issue with your real use case.
-👉 https://github.com/pistisAI/pistisai-app
+👉 https://github.com/iacle-solutions/iacle-app
 
 ---
 
@@ -57,7 +57,7 @@ It runs in a browser today (https://pistisai.app), with Linux and Android builds
 Windows/macOS on the way.
 
 If you're shipping an agent runtime or just want a private desktop front-end for one, clone
-the repo and tell us what you're building: https://github.com/pistisAI/pistisai-app
+the repo and tell us what you're building: https://github.com/iacle-solutions/iacle-app
 
 ---
 
@@ -69,8 +69,8 @@ What it is: a local-first companion + desktop capability layer for your AI agent
 Hermes, OpenClaw, or any compatible agent gateway.
 
 - 🌐 Web: https://pistisai.app (log in, zero install)
-- 🐙 Repo + issues: https://github.com/pistisAI/pistisai-app
-- 📖 Launch guide: https://github.com/pistisAI/pistisai-app/blob/main/docs/LAUNCH.md
+- 🐙 Repo + issues: https://github.com/iacle-solutions/iacle-app
+- 📖 Launch guide: https://github.com/iacle-solutions/iacle-app/blob/main/docs/LAUNCH.md
 
 New here? Start with the setup wizard, point it at your agent runtime, and say hi in
 #introductions. Hit a wall? Open an issue or drop a failure report — those are gold to us.

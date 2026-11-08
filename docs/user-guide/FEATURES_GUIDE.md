@@ -1,6 +1,6 @@
 # Pistisai Features Guide
 
-IAClé delivers this hub to Quebec clients. What the company offers, and what the code actually does today, is in the [README](../../README.md). This guide lists features that exist in the app.
+IAClé delivers this hub to Quebec clients. The offer is in the [README](../../README.md).
 
 Pistisai is a local-first companion shell and desktop capability layer for user-selected agent runtimes. It gives your chosen agent runtime (Hermes, OpenClaw, or custom compatible gateways) a secure connection channel to your desktop, combined with structured permissions for GUI automation, voice conversation, vision capabilities, and multi-device Tailscale mesh coordination.
 

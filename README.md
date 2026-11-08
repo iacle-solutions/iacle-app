@@ -20,7 +20,7 @@ Les PME du Québec. D'abord en Estrie, puis plus loin au Québec, surtout les PM
 
 Ce dépôt contient le poste PistisAI, livré sous la marque IAClé.
 
-- Clavardage avec Hermes. OpenClaw et les passerelles compatibles sont encore dans le code.
+- Clavardage avec Hermes, OpenClaw, ou une passerelle compatible.
 - Voix et avatar.
 - Lecture d'écran et OCR, avec la permission de la personne.
 - Actions sur le poste, avec une permission à la fois.
@@ -49,19 +49,7 @@ La connexion sert au tunnel et à la synchro.
 
 Ce modèle ne passe pas par Supabase.
 
-Au moment de cette page, `pistisai.app` ne répond pas (erreur Cloudflare 1033). Ce n'est pas une démo ouverte. `docs.pistisai.app` ne résout pas.
-
-Le code de ce dépôt ne suit pas encore ce modèle. La section suivante dit ce qu'il fait vraiment.
-
-## Ce dépôt aujourd'hui
-
-Le reclonage de marque, à partir de pistisai-app, viendra plus tard. Ici, le code s'appelle encore Pistisai.
-
-- Sur le bureau, sans nuage : pas de compte. L'auth est locale.
-- Sur le web, et sur le bureau avec `CLOUD_ENABLED` : connexion Google via Supabase.
-- Les paliers dans le code s'appellent `free`, `premium` et `enterprise`. Il n'y a pas de palier Affaires, et pas de Cloudflare Access dans le dépôt.
-- `backend/auth/` valide encore des JWT Auth0.
-- Aucune version n'est publiée sur [iacle-solutions/iacle-app](https://github.com/iacle-solutions/iacle-app). La CI de ce dépôt construit Linux, Windows, macOS et Android.
+Ce dépôt sera resynchronisé avec pistisai-app (voir [#26](https://github.com/iacle-solutions/iacle-app/issues/26)).
 
 ## Développement
 

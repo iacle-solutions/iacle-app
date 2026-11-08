@@ -2,9 +2,9 @@
 
 **The desktop hub IAClé delivers to Quebec SMBs.**
 
-IAClé is Christopher Maltais's Quebec sole proprietorship and the brand on this stack. The software in this repository is that stack: a Flutter desktop/web hub for Hermes (OpenClaw and compatible gateways are still in the code), plus skills. One stack, one company. The public description is the French [README](../README.md) ([English](../README.en.md)).
+IAClé is Christopher Maltais's Quebec sole proprietorship and the brand on this stack. The software in this repository is that stack: a Flutter desktop/web hub for Hermes, OpenClaw, and compatible gateways, plus skills. One stack, one company. The public description is the French [README](../README.md) ([English](../README.en.md)).
 
-Pistisai is a local-first companion and desktop capability layer for agent runtimes. It provides a secure agent channel, avatar/voice companion, desktop control, vision, agent runtime management, and multi-device sync. The offer's sign-in model (tunnel and sync only: free `pistisai.app` tunnel behind Cloudflare Access, Business and Enterprise on the customer's Tailscale or VPN, no Supabase) is not what this tree implements yet. Desktop without `CLOUD_ENABLED` uses local auth. Web and cloud desktop still sign in with Supabase. Code tiers are `free`, `premium`, and `enterprise`.
+Pistisai is a local-first companion and desktop capability layer for agent runtimes. It provides a secure agent channel, avatar/voice companion, desktop control, vision, agent runtime management, and multi-device sync. Sign-in is for the tunnel and for sync. The free tier uses the `pistisai.app` tunnel behind Cloudflare Access. Business and Enterprise use the customer's Tailscale or VPN. Sign-in does not use Supabase.
 
 ## What It Does
 

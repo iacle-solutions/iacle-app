@@ -2,22 +2,13 @@
 
 _Last updated: 8 November 2026 · Effective: 8 November 2026_
 
-> This file describes the code in this repository. The public page
-> `https://pistisai.app/privacy` is not available (the host returns Cloudflare
-> error 1033). `web/privacy.html` is the older HTML copy and was not edited in
-> the documentation pass that updated this file.
+> The public copy of this policy is at
+> [https://pistisai.app/privacy](https://pistisai.app/privacy) (`web/privacy.html`).
 
-IAClé's offer keeps sign-in for tunnel and sync only, and does not use Supabase.
-The code here still does, for two paths: the web app, and the desktop app when
-`CLOUD_ENABLED` is set. Both call `SupabaseAuthProvider` and Google OAuth. Desktop
-without that flag uses local auth and does not create a cloud account. The
-sections below describe that current code, including where account data goes today.
-
-Pistisai ("Pistisai," "we," "us," or "our") is a local-first AI companion for
-desktop and web, delivered by IAClé. This Privacy Policy explains what information
-the current build collects, how it uses it, and the choices you have. The app
-keeps data on your own device by default. Cloud features take effect when you
-open the web app or explicitly enable cloud mode.
+Pistisai ("Pistisai," "we," "us," or "our") is the local-first hub delivered by
+IAClé for desktop and web. This Privacy Policy explains what information we
+collect, how we use it, and the choices you have. Data stays on your own device
+by default. Cloud features take effect when you sign in or turn them on.
 
 **Local-first summary.** Your conversations, memory ("local brain"), and settings
 are stored in an encrypted database on your own machine. We do not sell your data,
