@@ -1,6 +1,8 @@
-# Community Activation Plan — CMO Deliverables
+# Community Activation Plan
 
-Plan and copy for activating the community around the public launch (issue #39). Pairs with
+Product description: [README](../README.md) ([English](../README.en.md)).
+
+Plan and copy for the launch. Pairs with
 `docs/marketing/publish-ready/community-copy-pack.md` and `measurement-plan.md`.
 
 ## Week-1 activation calendar

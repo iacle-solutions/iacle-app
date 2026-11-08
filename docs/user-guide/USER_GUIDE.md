@@ -1,6 +1,8 @@
 # Pistisai User Guide
 
-Pistisai is a privacy-first companion shell for Hermes, OpenClaw, and compatible private agent runtimes. It gives the selected agent runtime a secure channel to you, plus controlled access to desktop, vision, voice, avatar, and multi-device sync features.
+IAClé delivers this hub to Quebec SMBs. The offer and the sign-in tiers are in the [README](../../README.md) ([English](../../README.en.md)).
+
+Pistisai is a local-first companion shell for Hermes, OpenClaw, and compatible private agent runtimes. It gives the selected agent runtime a secure channel to you, plus controlled access to desktop, vision, voice, avatar, and multi-device sync features.
 
 The setup wizard decides which agent runtime and device path to use. There is no universal default runtime. Hermes is the first agent runtime path used for current testing, while OpenClaw remains a supported agent runtime and the original integration target.
 

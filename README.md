@@ -1,105 +1,70 @@
-# Pistisai — ΠΙΣΤΙΣΑΙ
+# IAClé
 
-**A local-first companion and desktop capability layer for your AI agent. Private, secure, yours.**
+IAClé est l'entreprise individuelle de Christopher Maltais, au Québec. C'est la marque qui livre la pile PistisAI aux PME d'ici.
 
-> *Πίστις (Pistis) — the ancient spirit of trust, honesty, and good faith. After fleeing Pandora's box, she returned to Olympus. Pistisai builds a Stoa worthy of her return.*
+La pile, c'est le poste de travail bâti autour de Hermes : clavardage, voix, avatar, compétences. Une seule pile, une seule entreprise. [English](README.en.md).
 
-Your AI runs on your hardware. The app gives it voice, vision, desktop control, and a secure channel across all your devices — no data leaves your network unless you decide otherwise.
+## Local d'abord
 
----
+Le logiciel tourne sur l'ordinateur du client. Il n'exige pas de matériel spécial.
 
-## Try It Now
+Il peut joindre un service infonuagique que le client utilise déjà, seulement si c'est sécuritaire, si le client consent, et si le fournisseur a été évalué selon la Loi 25 (évaluation des facteurs relatifs à la vie privée). On documente les flux qui sortent. On peut les retirer.
 
-🌐 **[pistisai.app](https://pistisai.app)** — Web app, works in any browser. One-liner:
-`open https://pistisai.app && log in`. No build step. That's the fastest way to try Pistisai.
+Dans le service, l'employé approuve les envois et les décisions importantes.
 
-🐧 **Linux** — `curl -fsSL https://pistisai.app/install.sh | bash` (AppImage + auto-update daemon; rolling out).
+## Pour qui
 
-📱 **Android** — APK builds from CI. Grab the latest from [Releases](https://github.com/pistisAI/pistisai-app/releases/latest).
+Les PME du Québec. D'abord en Estrie, puis plus loin au Québec, surtout les PME réglementées : juridique, santé, finance.
 
-**You need an agent runtime.** Hermes is the primary test path. OpenClaw and compatible agent gateways also work.
+## Le poste
 
-> 🚀 **Public launch is live.** Full quick-start, supported runtimes, and self-hosting steps → [docs/LAUNCH.md](docs/LAUNCH.md). Primary CTA: clone the repo, run a workflow, and open an issue or discussion with your real use case. Track the launch → [GitHub issue #39](https://github.com/pistisAI/pistisai-app/issues/39).
->
-> 🏛️ **Why we exist** → [docs/governance/manifesto.md](docs/governance/manifesto.md) — the meaning of Πίστις and the Four Pillars behind the product.
+Ce dépôt contient le poste PistisAI, livré sous la marque IAClé.
 
----
+- Clavardage avec Hermes, OpenClaw, ou une passerelle compatible.
+- Voix et avatar.
+- Lecture d'écran et OCR, avec la permission de la personne.
+- Actions sur le poste, avec une permission à la fois.
+- Compétences, sessions, tâches planifiées.
+- Maillage privé entre les appareils du client.
 
-## What Sets It Apart
+Ollama et LM Studio servent à des tâches du poste, comme la mémoire et les embeddings. L'agent principal reste Hermes, ou une passerelle compatible.
 
-| Layer | What it gives you |
-|-------|-------------------|
-| **Secure Channel** | Direct line to your agent, synced across devices |
-| **Voice + Avatar** | Sidecar companion with personality, memory, natural conversation |
-| **Desktop Control** | Permissioned access to apps, windows, keyboard, files |
-| **Vision** | Screen awareness, OCR, camera — explicit per-action consent |
-| **Device Mesh** | Tailscale-first private network across all your machines |
-| **Runtime Manager** | Manage agents, skills, sessions, tools, diagnostics |
+## Offre
 
----
+| Offre | Contenu |
+| --- | --- |
+| Audit de préparation | Gratuit. Trois colonnes : ce que les outils font déjà, ce qui se fait encore à la main, ce qui reste à automatiser. |
+| Implantation | Un parcours opérationnel. Exemples : tri des courriels, factures, réceptionniste bilingue, rapports, comptabilité. |
+| Services gérés | Suivi du système, aide pour la Loi 25, reprise des données. |
 
-## Architecture
+## Connexion
 
-```
-┌────────────────────────────────────────────────────────┐
-│                  Pistisai App                     │
-│  ┌──────────┐  ┌──────────┐  ┌────────────────────┐    │
-│  │  Agent   │  │  Avatar  │  │  Desktop Control   │    │
-│  │  Channel │  │  Voice   │  │  Vision            │    │
-│  └────┬─────┘  └────┬─────┘  └───────┬────────────┘    │
-│       └──────────────┼────────────────┘                  │
-│                      ▼                                   │
-│           ┌──────────────────────┐                       │
-│           │   Agent Adapter     │                        │
-│           │  Hermes / OpenClaw  │                        │
-│           └──────────┬──────────┘                        │
-└──────────────────────┼───────────────────────────────────┘
-                       │
-              ┌────────┴────────┐
-              │                 │
-         ┌────▼────┐     ┌─────▼──────┐
-         │  Local  │     │  Model     │
-         │  Agent  │     │  Providers │
-         │  Runtime│     │  (Ollama,  │
-         │         │     │  LM Studio)│
-         └─────────┘     └────────────┘
-```
+La connexion sert au tunnel et à la synchro.
 
-Technical deep-dive → [System Architecture](docs/architecture/SYSTEM_ARCHITECTURE.md)
+| Palier | Réseau |
+| --- | --- |
+| Gratuit | Tunnel `pistisai.app`, derrière Cloudflare Access |
+| Affaires | Tailscale ou le VPN du client |
+| Entreprise | Tailscale ou le VPN du client |
 
----
+Ce modèle ne passe pas par Supabase.
 
-## Platforms
+Ce dépôt sera resynchronisé avec pistisai-app (voir [#26](https://github.com/iacle-solutions/iacle-app/issues/26)).
 
-| Platform | Status |
-|----------|--------|
-| 🐧 Linux | ✅ AppImage + auto-update daemon |
-| 🌐 Web | [pistisai.app](https://pistisai.app) |
-| 📱 Android | ✅ APK builds from CI |
-| 🪟 Windows | ✅ Installer (InnoSetup) + CI |
-| 🍎 macOS | ✅ Installer + CI |
+## Développement
 
----
-
-## Development
+Flutter `3.47.7`, indiqué dans `pubspec.yaml`. Node `26`, indiqué dans `.nvmrc`. Les services acceptent Node `>=22 <27` (le SDK, `>=18`).
 
 ```bash
-git clone https://github.com/pistisAI/pistisai-app.git
-cd pistisai-app
+git clone https://github.com/iacle-solutions/iacle-app.git
+cd iacle-app
 flutter pub get
-
-# The app depends on a separate shared package — get its deps too:
 cd lib/shared && flutter pub get && cd ../..
-
-# Run
-
-flutter run -d linux   # Desktop
-flutter run -d chrome  # Web
+flutter run -d linux
+flutter run -d chrome
 ```
 
 ```bash
-# Build
-
 flutter build linux --release
 flutter build web --release --no-web-resources-cdn
 flutter build apk --release --split-per-abi
@@ -107,35 +72,28 @@ flutter build windows --release
 flutter build macos --release
 ```
 
-### Backend Services
-
 ```bash
 cd services/api-backend && npm install && npm run dev
 cd services/streaming-proxy && npm install && npm run dev
 ```
 
-Developer onboarding → [docs/development/DEVELOPER_ONBOARDING.md](docs/development/DEVELOPER_ONBOARDING.md).
-Command reference → [AGENTS.md](AGENTS.md).
+`backend/auth/` n'a pas de script `dev`. On le lance avec `node handlers.js`.
 
----
+Détails : [AGENTS.md](AGENTS.md), [prise en main](docs/development/DEVELOPER_ONBOARDING.md), [contribuer](CONTRIBUTING.md).
 
 ## Documentation
 
-📖 [docs.pistisai.app](https://docs.pistisai.app)
+| Document | Contenu |
+| --- | --- |
+| [English](README.en.md) | La même page en anglais |
+| [Vue d'ensemble](docs/index.md) | Définition du logiciel |
+| [Démarrage](docs/LAUNCH.md) | Lancer depuis le code source |
+| [Installation](docs/user-guide/SETUP_GUIDE.md) | Installer le poste |
+| [Utilisation](docs/user-guide/USER_GUIDE.md) | S'en servir |
+| [Architecture](docs/architecture/SYSTEM_ARCHITECTURE.md) | Comment c'est fait |
+| [Spécification](SPEC.md) | Spec du logiciel |
+| [Sécurité](SECURITY.md) | Signaler une faille |
 
-| Guide | What's in it |
-|-------|-------------|
-| [User Guide](docs/user-guide/USER_GUIDE.md) | Features and usage |
-| [Setup Guide](docs/user-guide/SETUP_GUIDE.md) | Step-by-step installation |
-| [Troubleshooting](docs/user-guide/TROUBLESHOOTING.md) | Common issues |
-| [System Architecture](docs/architecture/SYSTEM_ARCHITECTURE.md) | Technical deep-dive |
-| [Deployment Guide](docs/operations/backend/) | Production setup |
-| [Security Guide](SECURITY.md) | Reporting policy + security posture |
-| [Public Launch Guide](docs/LAUNCH.md) | Quick-start, runtimes, self-hosting |
-| [Contributing](CONTRIBUTING.md) | How to file issues, set up, and open PRs |
+## Licence
 
----
-
-## License
-
-MIT — see [LICENSE](LICENSE).
+MIT. Voir [LICENSE](LICENSE).

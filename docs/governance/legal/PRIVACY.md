@@ -1,16 +1,14 @@
 # Privacy Policy
 
-_Last updated: 4 September 2026 · Effective: 4 September 2026_
+_Last updated: 8 November 2026 · Effective: 8 November 2026_
 
-> The canonical, user-facing version of this policy is published at
-> [https://pistisai.app/privacy](https://pistisai.app/privacy) (served from
-> `web/privacy.html`). Keep the two in sync when editing.
+> The public copy of this policy is at
+> [https://pistisai.app/privacy](https://pistisai.app/privacy) (`web/privacy.html`).
 
-Pistisai ("Pistisai," "we," "us," or "our") is a local-first AI companion for
-desktop and web. This Privacy Policy explains what information we collect, how we
-use it, and the choices you have. Pistisai is designed to keep your data on your
-own device by default; cloud features are optional and only take effect when you
-explicitly enable them.
+Pistisai ("Pistisai," "we," "us," or "our") is the local-first hub delivered by
+IAClé for desktop and web. This Privacy Policy explains what information we
+collect, how we use it, and the choices you have. Data stays on your own device
+by default. Cloud features take effect when you sign in or turn them on.
 
 **Local-first summary.** Your conversations, memory ("local brain"), and settings
 are stored in an encrypted database on your own machine. We do not sell your data,
@@ -149,4 +147,4 @@ policy.
 
 If you have questions or requests regarding this Privacy Policy or your data,
 contact us at privacy@pistisai.app. You can also reach the project at
-[github.com/pistisAI/pistisai-app](https://github.com/pistisAI/pistisai-app).
+[github.com/iacle-solutions/iacle-app](https://github.com/iacle-solutions/iacle-app).

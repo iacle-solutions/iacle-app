@@ -1,6 +1,8 @@
-# Measurement Plan — Pistisai Public Launch
+# Measurement Plan
 
-Owners and metrics for the launch. Lightweight on purpose: we want signal, not a dashboard
+Product description: [README](../../../README.md).
+
+Owners and metrics for the launch. Lightweight on purpose: signal, not a dashboard
 project. Review at 24h and at week-1.
 
 ## Goals
@@ -31,7 +33,7 @@ project. Review at 24h and at week-1.
 ## Review cadence
 
 - **24h:** quick stand-up — are the top two metrics moving? Adjust copy if CTA is unclear.
-- **Week-1:** full readout in issue #39 — what landed, what to double down on, next preview.
+- **Week-1:** full readout in the repository issues — what landed, what to repeat, next preview.
 
 ## Definition of success
 

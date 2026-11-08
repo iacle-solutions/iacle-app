@@ -1,10 +1,8 @@
-# Launch Content Brief — Pistisai Public Launch
+# Launch Content Brief
 
-> Canonical launch issue: [#39 — Pistisai — public launch](https://github.com/pistisAI/pistisai-app/issues/39)
-> Companion guide: [docs/LAUNCH.md](docs/LAUNCH.md)
-
-This brief governs all outward-facing launch copy. Keep every channel consistent with the
-positioning, supported runtimes, and tone defined here.
+Product description: [README](../../README.md) ([English](../../README.en.md)).
+Run the hub from [source](../LAUNCH.md).
+Repository: [iacle-solutions/iacle-app](https://github.com/iacle-solutions/iacle-app).
 
 ## Product at a glance
 
@@ -26,10 +24,7 @@ bio) live in `publish-ready/social-thread-pack.md`.
 
 ## Primary CTA
 
-Clone the repo, run a workflow, and open an issue or discussion with your real use case.
-
-- Web: https://pistisai.app
-- GitHub: https://github.com/pistisAI/pistisai-app
+Clone [iacle-solutions/iacle-app](https://github.com/iacle-solutions/iacle-app) and run it from source. The product description is the [README](../../README.md).
 
 ## Voice and tone
 
@@ -42,7 +37,7 @@ Clone the repo, run a workflow, and open an issue or discussion with your real u
 
 | Channel | Asset | Owner |
 |---------|-------|-------|
-| GitHub issue thread | issue #39 (this post) | Founder |
+| GitHub issues | [iacle-solutions/iacle-app](https://github.com/iacle-solutions/iacle-app/issues) | Founder |
 | Twitter/X thread | `publish-ready/social-thread-pack.md` | CMO |
 | LinkedIn operator post | `publish-ready/social-thread-pack.md` | CMO |
 | Discord announcement | `publish-ready/social-thread-pack.md` | DevRel |
@@ -59,7 +54,7 @@ Clone the repo, run a workflow, and open an issue or discussion with your real u
 
 ## Guardrails
 
-- Every post links to either pistisai.app or the GitHub repo.
+- Link the [README](../../README.md) and [iacle-solutions/iacle-app](https://github.com/iacle-solutions/iacle-app).
 - Never claim a platform status that contradicts `docs/LAUNCH.md` or the README.
 - Report security issues to `security@pistisai.app`, never in public threads.
 - Keep copy in the repo so it is reviewable and version-controlled.

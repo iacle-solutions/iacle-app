@@ -1,7 +1,9 @@
-# Community Copy Pack — Pistisai Public Launch
+# Community Copy Pack
 
-Reusable snippets for replies, issue templates, discussions, and community FAQs. Keep this
-consistent with [LAUNCH_CONTENT_BRIEF.md](../LAUNCH_CONTENT_BRIEF.md).
+Product description: [README](../../../README.md).
+
+Reusable snippets for replies and community answers. They follow
+[LAUNCH_CONTENT_BRIEF.md](../LAUNCH_CONTENT_BRIEF.md).
 
 ## Elevator pitch (short)
 
@@ -52,4 +54,4 @@ Full steps in [docs/LAUNCH.md](../../LAUNCH.md).
 ## Call to action (standard)
 
 Clone the repo, run a workflow, and open an issue or discussion with your real use case.
-Web: https://pistisai.app · GitHub: https://github.com/pistisAI/pistisai-app
+Web: https://pistisai.app · GitHub: https://github.com/iacle-solutions/iacle-app

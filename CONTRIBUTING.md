@@ -1,19 +1,15 @@
-# Contributing to Pistisai
+# Contributing to IAClé / Pistisai
 
-Thanks for showing up. Pistisai is **local-first, open, and built in the open** — your
-issues, failure reports, and pull requests are the lifeblood of this launch. This guide
-gets you from "I cloned the repo" to "my change is in `main`" without surprises.
-
-> Launch anchor issue: [#39 — Pistisai — public launch](https://github.com/pistisAI/pistisai-app/issues/39).
-> Read it first if you're here from a launch channel. Open an issue or discussion with your
-> real use case — that counts as a contribution.
+Thanks for showing up. This repository is the PistisAI stack delivered by IAClé, Christopher
+Maltais's Quebec company. The product description is the [README](README.md)
+([English](README.en.md)). This guide gets you from "I cloned the repo" to a pull request.
 
 ---
 
 ## Ways to contribute (no code required)
 
 - **File an issue** with a real use case, a bug, or a failure report.
-  Use [GitHub Issues](https://github.com/pistisAI/pistisai-app/issues).
+  Use [GitHub Issues](https://github.com/iacle-solutions/iacle-app/issues).
 - **Report a security vulnerability privately** — see [SECURITY.md](SECURITY.md). **Do not**
   open a public issue for security problems.
 - **Improve the docs** — fix a typo, clarify a step, add a guide. Docs PRs are the fastest
@@ -33,8 +29,8 @@ Pistisai is a Flutter desktop/web app plus Node.js backend services. You need bo
 - A shared package `lib/shared` (`pistisai_shared`) targets Dart `>=3.9.0 <4.0.0`
 
 ```bash
-git clone https://github.com/pistisAI/pistisai-app.git
-cd pistisai-app
+git clone https://github.com/iacle-solutions/iacle-app.git
+cd iacle-app
 
 flutter pub get
 cd lib/shared && flutter pub get && cd ../..   # shared package deps are separate
@@ -102,7 +98,7 @@ We keep it low-ceremony.
 - Use **conventional commits**: `feat:`, `fix:`, `docs:`, `chore:`, `test:`, `refactor:`.
 - Prefix agent-authored commits with the agent name, e.g. `ai(<agent>): ...`.
 - Keep PRs focused. One logical change per PR is easier to review and merge.
-- Reference the relevant issue: `fix: correct wizard clone dir (issue #39)`.
+- Reference the relevant issue when there is one: `fix: correct wizard clone dir (issue #8)`.
 
 ---
 
@@ -125,7 +121,7 @@ We keep it low-ceremony.
 | Architecture docs | `docs/architecture/` |
 | Dev / testing guides | `docs/development/` |
 | Deployment | `docs/deployment/DEPLOYMENT_OVERVIEW.md` (current), `docs/deployment/SELF_HOSTING.md` |
-| Launch content (issue #39 assets) | `docs/LAUNCH.md`, `docs/marketing/publish-ready/`, `cmo-deliverables/` |
+| Product description and source quick start | `README.md`, `README.en.md`, `docs/LAUNCH.md` |
 
 Full map: [AGENTS.md](AGENTS.md) and [docs/LAUNCH.md](docs/LAUNCH.md).
 
@@ -133,5 +129,5 @@ Full map: [AGENTS.md](AGENTS.md) and [docs/LAUNCH.md](docs/LAUNCH.md).
 
 ## Questions?
 
-Open a [Discussion](https://github.com/pistisAI/pistisai-app/discussions) or comment on
-[issue #39](https://github.com/pistisAI/pistisai-app/issues/39). Welcome aboard.
+Open an [issue](https://github.com/iacle-solutions/iacle-app/issues) on this repository.
+Welcome aboard.

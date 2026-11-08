@@ -1,8 +1,10 @@
 # Pistisai
 
-**A local-first companion and desktop capability layer for agent runtimes.**
+**The desktop hub IAClé delivers to Quebec SMBs.**
 
-Pistisai is a Flutter desktop/web application with optional Node.js backend services. It provides a secure agent channel, avatar/voice companion, desktop control, vision system, agent runtime management, and multi-device sync through a Tailscale-first secure device mesh.
+IAClé is Christopher Maltais's Quebec sole proprietorship and the brand on this stack. The software in this repository is that stack: a Flutter desktop/web hub for Hermes, OpenClaw, and compatible gateways, plus skills. One stack, one company. The public description is the French [README](../README.md) ([English](../README.en.md)).
+
+Pistisai is a local-first companion and desktop capability layer for agent runtimes. It provides a secure agent channel, avatar/voice companion, desktop control, vision, agent runtime management, and multi-device sync. Sign-in is for the tunnel and for sync. The free tier uses the `pistisai.app` tunnel behind Cloudflare Access. Business and Enterprise use the customer's Tailscale or VPN. Sign-in does not use Supabase.
 
 ## What It Does
 
@@ -39,4 +41,4 @@ Pistisai is a Flutter desktop/web application with optional Node.js backend serv
 
 ---
 
-**Open source** — [GitHub repo](https://github.com/pistisAI/pistisai-app)
+**Open source** — [github.com/iacle-solutions/iacle-app](https://github.com/iacle-solutions/iacle-app)

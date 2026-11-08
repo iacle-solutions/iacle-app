@@ -1,6 +1,6 @@
 # Developer Onboarding
 
-This guide is the current entry point for working on Pistisai.
+This guide is the entry point for working on the PistisAI stack. IAClé is the Quebec brand that delivers it. Product description: [README](../../README.md).
 
 ## Repository Shape
 

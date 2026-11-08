@@ -1,10 +1,16 @@
 # Pistisai Specification
 
+## Delivery
+
+IAClé is Christopher Maltais's Quebec sole proprietorship. It is the brand that delivers this stack to Quebec SMBs. The software is one desktop hub, plus skills. Public wording: [README](README.md) ([English](README.en.md)).
+
+Sign-in is for the tunnel and for sync. Free uses the `pistisai.app` tunnel behind Cloudflare Access. Business and Enterprise use the customer's Tailscale or VPN. Sign-in does not use Supabase.
+
 ## Project Vision
 
 **Pistisai** is a local-first companion and desktop capability layer for user-selected agent runtimes. It gives Hermes, OpenClaw, and compatible agent gateways a secure channel to the user and permissioned hands and eyes on the user's desktops.
 
-The primary audience is personal users — individuals who want a private, capable AI companion on their own hardware. Business and team usage is a secondary path that follows the personal foundation.
+IAClé delivers that hub to Quebec SMBs. The software runs on the client's own computer and does not require special hardware. Cloud services the client already uses are optional, and only with consent.
 
 The main app does not connect directly to raw local model providers as its primary experience. Ollama, LM Studio, and similar endpoints are support model providers for app-owned features such as memory, embeddings, summarization, classification, OCR cleanup, and speech helpers.
 
