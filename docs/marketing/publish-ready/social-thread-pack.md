@@ -1,6 +1,8 @@
 # Social Thread Pack — Pistisai Public Launch
 
-Publish-ready copy for the launch channels. All copy is consistent with
+> Stale. Do not publish. Current description: [README](../../../README.md). These drafts still link `pistisai.app` and `pistisAI/pistisai-app`.
+
+Publish-ready copy for an earlier launch. It followed
 [LAUNCH_CONTENT_BRIEF.md](../LAUNCH_CONTENT_BRIEF.md) and [docs/LAUNCH.md](../../LAUNCH.md).
 
 Canonical one-liner:

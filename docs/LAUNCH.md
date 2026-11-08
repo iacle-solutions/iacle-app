@@ -1,37 +1,17 @@
-# Pistisai — Public Launch Guide
+# IAClé — run the hub from source
 
-> Canonical launch issue: [#39 — Pistisai — public launch](https://github.com/pistisAI/pistisai-app/issues/39)
-> Repo: [github.com/pistisAI/pistisai-app](https://github.com/pistisAI/pistisai-app)
-> Web app: [pistisai.app](https://pistisai.app)
+> Product description: [README](../README.md) ([English](../README.en.md))
+> Repo: [github.com/iacle-solutions/iacle-app](https://github.com/iacle-solutions/iacle-app)
 
-This document is the single entry point for anyone arriving at Pistisai from a
-launch channel. It covers what the product is, what it runs on, and the exact
-steps to try it — web, desktop, or self-hosted — and how to connect your own
-agent runtime.
+This page is how to run the software in this repository. The offer (Quebec SMBs, Law 25, connection tiers) lives in the README. `pistisai.app` currently returns Cloudflare error 1033, so there is no hosted demo to log into.
 
 ---
 
-## What Pistisai is
+## What this repository is
 
-Pistisai (ΠΙΣΤΙΣΑΙ — "trust") is a **local-first companion and desktop
-capability layer for your AI agent**. Your agent runs on hardware you control.
-Pistisai gives that agent a secure channel, voice + avatar, desktop control,
-vision, and a private device mesh — so no data leaves your network unless you
-decide otherwise.
+The PistisAI desktop hub, delivered by IAClé. It is the layer in front of an agent runtime. Hermes is the primary test path. OpenClaw and compatible gateways are still in the code. Ollama and LM Studio are support providers for memory, embeddings, OCR, and speech. They are not the main runtime.
 
-It is **not** a model. It is the layer in front of an agent runtime
-(Hermes, OpenClaw, or any compatible agent gateway). Those runtimes are where
-the reasoning happens. Ollama, LM Studio, and similar model servers are
-*support providers* for app-owned features (memory, embeddings, OCR, speech) —
-they are not the primary app runtime.
-
----
-
-## Positioning (one-liner)
-
-> **Pistisai turns your AI agent into a private desktop companion: voice,
-> vision, and audited desktop control, connected over your own Tailscale mesh —
-> local-first, no data leaves your network unless you say so.**
+The software runs on the client's own computer. It does not require special hardware.
 
 ---
 
@@ -39,132 +19,96 @@ they are not the primary app runtime.
 
 | Runtime | Status | Notes |
 |---------|--------|-------|
-| **Hermes** | ✅ Primary test path | First-class integration; sessions, channels, tools wired in. |
-| **OpenClaw** | ✅ Supported | Gateway control + skill management built in. |
-| Compatible agent gateways | ✅ Supported | Any agent exposing the runtime contract (see [Agent Runtime Contract](architecture/AGENT_RUNTIME_CONTRACT.md)). |
-| Ollama / LM Studio / model servers | 🔌 Support only | Used for app-owned memory/embeddings/OCR/speech, not as the main runtime. |
-| Pistisai-hosted compute | 🔜 Optional | Paid, opt-in hosted agent runtime (per-user container). |
+| **Hermes** | Primary test path | Sessions, channels, and tools are wired in. |
+| **OpenClaw** | Supported | Gateway control and skill management are in the code. |
+| Compatible agent gateways | Supported | Any agent exposing the [runtime contract](architecture/AGENT_RUNTIME_CONTRACT.md). |
+| Ollama / LM Studio | Support only | Memory, embeddings, OCR, speech. Not the main runtime. |
 
-The **setup wizard** decides where the active agent runtime lives: this device,
-another private device, a Tailscale device, a manual/private URL, or optional
-paid Pistisai-hosted compute. There is no universal hardcoded default.
+The setup wizard chooses where the agent lives: this device, another private device, a Tailscale device, or a manual private URL. There is no hardcoded default runtime.
+
+The spec also describes an optional per-user hosted runtime. That path is not the IAClé connection model in the README (free tunnel on `pistisai.app` behind Cloudflare Access; Business and Enterprise on the customer's Tailscale or VPN).
 
 ---
 
 ## Platforms
 
-| Platform | Status | How to get it |
-|----------|--------|---------------|
-| 🌐 Web | ✅ Live | [pistisai.app](https://pistisai.app) — any browser, log in. |
-| 🐧 Linux | ✅ AppImage + auto-update daemon | Releases / CI. |
-| 📱 Android | ✅ APK from CI | [Latest release](https://github.com/pistisAI/pistisai-app/releases/latest). |
-| 🪟 Windows | 🚧 Installer in development | — |
-| 🍎 macOS | 📋 Planned | — |
+CI in this repository builds these targets. No GitHub Release is published on `iacle-solutions/iacle-app` yet, so the way to run it is from source.
+
+| Platform | CI |
+|----------|----|
+| Linux | `flutter build linux`, AppImage script in `scripts/packaging/build_appimage.sh` |
+| Windows | `flutter build windows`, Inno Setup script at `windows/installer/Pistisai.iss` |
+| macOS | `flutter build macos` |
+| Android | `flutter build apk` via `.github/workflows/build-mobile.yml` |
+| Web | `flutter build web --release --no-web-resources-cdn` |
 
 ---
 
 ## Quick start
 
-### Option A — Web (fastest, zero install)
-
-1. Open [pistisai.app](https://pistisai.app).
-2. Log in.
-3. Run the in-app **setup wizard** and point it at your agent runtime
-   (Hermes on this device, a Tailscale peer, a private URL, etc.).
-
-That's it. No build step.
-
-### Option B — Desktop from source (developers / self-hosters)
-
 ```bash
-# 1. Clone
-git clone https://github.com/pistisAI/pistisai-app.git
-cd pistisai-app
+git clone https://github.com/iacle-solutions/iacle-app.git
+cd iacle-app
 
-# 2. Get Flutter dependencies (app + shared package)
 flutter pub get
 cd lib/shared && flutter pub get && cd ../..
 
-# 3. Run (pick your target)
-flutter run -d linux    # Linux desktop
-flutter run -d chrome   # Web
+flutter run -d linux
+flutter run -d chrome
+```
 
-# 4. Build release artifacts
+The app package is `pistisai` (Dart `>=3.5.0 <4.0.0`). `lib/shared` (`pistisai_shared`) targets Dart `>=3.9.0 <4.0.0` and needs its own `flutter pub get`. Flutter is pinned to `3.47.7` in `pubspec.yaml`.
+
+Release builds:
+
+```bash
 flutter build linux --release
 flutter build web --release --no-web-resources-cdn
 flutter build apk --release --split-per-abi
+flutter build windows --release
+flutter build macos --release
 ```
 
-> The Flutter app package is `pistisai` (Dart SDK `>=3.5.0 <4.0.0`). The shared
-> package `lib/shared` (`pistisai_shared`) targets Dart `>=3.9.0 <4.0.0` and needs
-> its own `flutter pub get`.
-
-### Option C — Backend services (for self-hosted / full stack)
-
-The repo bundles Node.js services. From the repo root:
+Backend services, from the repo root after `npm install`:
 
 ```bash
-# Root tooling
-npm install
-npm test          # api-backend security CI suite only (see AGENTS.md)
-# npm run test:full   # broader Jest run; many suites are ignore-listed
-
-# API backend (default port 8080)
 cd services/api-backend && npm install && npm run dev
-
-# Streaming proxy (default port 3001)
 cd services/streaming-proxy && npm install && npm run dev
 ```
 
-Developer onboarding → [development/DEVELOPER_ONBOARDING.md](development/DEVELOPER_ONBOARDING.md).
-Command reference → [AGENTS.md](../AGENTS.md).
+`backend/auth/` has no `dev` script. Start it with `node handlers.js`. That process still validates Auth0 JWTs. The Flutter web app and desktop cloud mode still use Supabase. Neither matches the offer's sign-in model. See the README section on the current code.
+
+Developer onboarding: [development/DEVELOPER_ONBOARDING.md](development/DEVELOPER_ONBOARDING.md).
+Command reference: [AGENTS.md](../AGENTS.md).
 
 ---
 
-## Connecting your agent runtime
+## Connecting an agent runtime
 
-Pistisai does **not** assume a default agent. The connection is made by the
-setup wizard, which supports:
+The setup wizard supports:
 
-- **This device** — Hermes / OpenClaw running locally.
-- **Another private device** — a machine on your LAN.
-- **Tailscale device** — preferred secure path; one private network across all
-  your machines (see [Secure Device Mesh](architecture/SECURE_DEVICE_MESH.md)).
-- **Manual / private URL** — bring your own agent gateway endpoint.
-- **Pistisai-hosted compute** — optional paid runtime (per-user container joined
-  to your tailnet).
+- **This device** — Hermes or OpenClaw running locally.
+- **Another private device** — a machine on the LAN.
+- **Tailscale device** — private path across the client's computers ([Secure Device Mesh](architecture/SECURE_DEVICE_MESH.md)).
+- **Manual / private URL** — a private agent gateway endpoint.
 
-Desktop control, vision, and the secure channel are all scoped to the device
-and permissioned per action — explicit consent, fully auditable.
+Desktop control, vision, and the channel are scoped to a device and permissioned per action.
 
 ---
 
-## Self-hosting & deployment
+## Self-hosting
 
-- **Overview / strategy**: [deployment/DEPLOYMENT_OVERVIEW.md](deployment/DEPLOYMENT_OVERVIEW.md)
-  (agent-runtime-first, Tailscale-first, optional per-user cloud connector).
-- **Self-hosting steps**: [deployment/SELF_HOSTING.md](deployment/SELF_HOSTING.md).
-- **Security**: [SECURITY.md](../SECURITY.md) — report vulnerabilities privately
-  to `security@pistisai.app` or the GitHub security advisories tab.
+- [deployment/DEPLOYMENT_OVERVIEW.md](deployment/DEPLOYMENT_OVERVIEW.md)
+- [deployment/SELF_HOSTING.md](deployment/SELF_HOSTING.md)
+- [SECURITY.md](../SECURITY.md) — report vulnerabilities privately to `security@pistisai.app` or [this repo's security advisories](https://github.com/iacle-solutions/iacle-app/security/advisories).
 
 ---
 
-## Security posture (launch-relevant)
-
-- CI runs on every push to `main`; reviewed, owner-/agent-authored commits only
-  (direct-push model, per `AGENTS.md`).
-- Secret scanning + push protection.
-- CodeQL on every push; Dependabot automated updates.
-- Tailscale-first private connectivity; the cloud connector is one isolated
-  container per user, joined to that user's tailnet.
-- Desktop control is explicit, device-scoped, permissioned, and auditable.
-
----
-
-## Documentation index
+## Documentation
 
 | Guide | Link |
 |-------|------|
+| Product description | [README](../README.md) |
 | System Architecture | [architecture/SYSTEM_ARCHITECTURE.md](architecture/SYSTEM_ARCHITECTURE.md) |
 | Agent Runtime Contract | [architecture/AGENT_RUNTIME_CONTRACT.md](architecture/AGENT_RUNTIME_CONTRACT.md) |
 | Secure Device Mesh | [architecture/SECURE_DEVICE_MESH.md](architecture/SECURE_DEVICE_MESH.md) |
@@ -173,33 +117,6 @@ and permissioned per action — explicit consent, fully auditable.
 | User Guide | [user-guide/USER_GUIDE.md](user-guide/USER_GUIDE.md) |
 | Setup Guide | [user-guide/SETUP_GUIDE.md](user-guide/SETUP_GUIDE.md) |
 | Developer Onboarding | [development/DEVELOPER_ONBOARDING.md](development/DEVELOPER_ONBOARDING.md) |
-| Deployment Overview | [deployment/DEPLOYMENT_OVERVIEW.md](deployment/DEPLOYMENT_OVERVIEW.md) |
 | Contributing | [CONTRIBUTING.md](../CONTRIBUTING.md) |
 
----
-
-## Launch content & assets
-
-The publish-ready copy backing this launch lives in the repo so it travels with
-the code and stays in sync:
-
-| Asset | Link |
-|-------|------|
-| Content brief (one-liner, positioning, channel plan) | [marketing/LAUNCH_CONTENT_BRIEF.md](marketing/LAUNCH_CONTENT_BRIEF.md) |
-| Social thread pack (X + LinkedIn) | [marketing/publish-ready/social-thread-pack.md](marketing/publish-ready/social-thread-pack.md) |
-| Community copy pack (Discord/forum FAQ) | [marketing/publish-ready/community-copy-pack.md](marketing/publish-ready/community-copy-pack.md) |
-| Measurement plan (Day 1 / Week 1 metrics) | [marketing/publish-ready/measurement-plan.md](marketing/publish-ready/measurement-plan.md) |
-| Social announcements (CMO drafts + calendar) | [../cmo-deliverables/launch-social-announcements.md](../cmo-deliverables/launch-social-announcements.md) |
-| Community activation plan | [../cmo-deliverables/community-activation-plan.md](../cmo-deliverables/community-activation-plan.md) |
-
----
-
-## Call to action
-
-Clone the repo, run a workflow, and open an issue or discussion with your real
-use case. Feedback, failure reports, and contribution PRs are the lifeblood of
-this launch.
-
-- Web: https://pistisai.app
-- GitHub: https://github.com/pistisAI/pistisai-app
-- Launch thread (issues): [#39](https://github.com/pistisAI/pistisai-app/issues/39)
+Older launch drafts under `docs/marketing/` and `cmo-deliverables/` still point at `pistisai.app` and `pistisAI/pistisai-app`. They are not the current product description.

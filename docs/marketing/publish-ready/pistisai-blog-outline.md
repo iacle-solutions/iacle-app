@@ -1,5 +1,7 @@
 # Blog Outline — pistisai.app
 
+> Stale draft. Do not publish. `pistisai.app` returns Cloudflare error 1033. Current description: [README](../../../README.md).
+
 > Working title: **Your AI doesn’t need the cloud. It just needs a better home.**
 > Estimated length: 900–1200 words
 > Primary CTA: try pistisai.app / open a GitHub issue with your real use case

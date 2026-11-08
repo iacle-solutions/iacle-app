@@ -8,7 +8,7 @@ We take the security of Pistisai seriously. If you discover a security vulnerabi
 
 - **Email**: security@pistisai.app
 - **GitHub**: Use the private vulnerability reporting tool at:
-  https://github.com/pistisAI/pistisai-app/security/advisories
+  https://github.com/iacle-solutions/iacle-app/security/advisories
 
 We aim to acknowledge receipt within 48 hours and provide a fix timeline within 5 business days.
 

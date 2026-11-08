@@ -1,10 +1,14 @@
-# Launch Content Brief — Pistisai Public Launch
+# Launch Content Brief — superseded
 
-> Canonical launch issue: [#39 — Pistisai — public launch](https://github.com/pistisAI/pistisai-app/issues/39)
-> Companion guide: [docs/LAUNCH.md](docs/LAUNCH.md)
+> Current product description: [README](../../README.md) ([English](../../README.en.md)).
+> How to run the code: [docs/LAUNCH.md](../LAUNCH.md).
+> Repository: [github.com/iacle-solutions/iacle-app](https://github.com/iacle-solutions/iacle-app).
 
-This brief governs all outward-facing launch copy. Keep every channel consistent with the
-positioning, supported runtimes, and tone defined here.
+This brief no longer governs outward-facing copy. It described an earlier Pistisai
+launch. `pistisai.app` returns Cloudflare error 1033, and issue #39 on
+`pistisAI/pistisai-app` is a different project. Use the README.
+
+The notes below are kept so old drafts can be compared. Do not publish them as-is.
 
 ## Product at a glance
 
@@ -26,10 +30,7 @@ bio) live in `publish-ready/social-thread-pack.md`.
 
 ## Primary CTA
 
-Clone the repo, run a workflow, and open an issue or discussion with your real use case.
-
-- Web: https://pistisai.app
-- GitHub: https://github.com/pistisAI/pistisai-app
+Use the README. Clone [iacle-solutions/iacle-app](https://github.com/iacle-solutions/iacle-app) and run it from source. Do not send people to `pistisai.app` until that host answers.
 
 ## Voice and tone
 
@@ -59,7 +60,7 @@ Clone the repo, run a workflow, and open an issue or discussion with your real u
 
 ## Guardrails
 
-- Every post links to either pistisai.app or the GitHub repo.
+- Link the README and [iacle-solutions/iacle-app](https://github.com/iacle-solutions/iacle-app). Do not send people to `pistisai.app` while it returns Cloudflare error 1033.
 - Never claim a platform status that contradicts `docs/LAUNCH.md` or the README.
 - Report security issues to `security@pistisai.app`, never in public threads.
 - Keep copy in the repo so it is reviewable and version-controlled.

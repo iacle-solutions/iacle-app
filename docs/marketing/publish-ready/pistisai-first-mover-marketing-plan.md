@@ -1,5 +1,7 @@
 # Pistisai.app — First-Mover Marketing Plan
 
+> Stale draft. Do not publish. Current description: [README](../../../README.md). `pistisai.app` is not a live demo.
+
 > Drafted by CMO to establish first-mover positioning ahead of public launch.
 > Final gate: CEO/UX/Legal approval before channel execution.
 

@@ -1,6 +1,8 @@
 # Developer Onboarding
 
-This guide is the current entry point for working on Pistisai.
+This guide is the entry point for working on the PistisAI stack in this repository. IAClé is the Quebec brand that delivers it. Product wording: [README](../../README.md).
+
+Sign-in in the current code does not match the offer. Desktop without `CLOUD_ENABLED` uses local auth. Web and cloud desktop use Supabase (`lib/auth/providers/supabase_auth_provider.dart`). `backend/auth/` still validates Auth0 JWTs. The API tiers are `free`, `premium`, and `enterprise`. There is no Cloudflare Access integration in the tree.
 
 ## Repository Shape
 

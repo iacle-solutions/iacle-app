@@ -1,7 +1,9 @@
 # Community Copy Pack — Pistisai Public Launch
 
-Reusable snippets for replies, issue templates, discussions, and community FAQs. Keep this
-consistent with [LAUNCH_CONTENT_BRIEF.md](../LAUNCH_CONTENT_BRIEF.md).
+> Stale. Do not publish. Current description: [README](../../../README.md).
+
+Reusable snippets from an earlier launch. They followed
+[LAUNCH_CONTENT_BRIEF.md](../LAUNCH_CONTENT_BRIEF.md).
 
 ## Elevator pitch (short)
 

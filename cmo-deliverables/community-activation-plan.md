@@ -1,6 +1,9 @@
 # Community Activation Plan — CMO Deliverables
 
-Plan and copy for activating the community around the public launch (issue #39). Pairs with
+> Stale. Do not publish. The current description is [README](../README.md)
+> ([English](../README.en.md)). This plan still points people at `pistisai.app`.
+
+Plan and copy from an earlier Pistisai launch. Pairs with
 `docs/marketing/publish-ready/community-copy-pack.md` and `measurement-plan.md`.
 
 ## Week-1 activation calendar

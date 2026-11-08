@@ -1,6 +1,10 @@
 # Launch Social Announcements — CMO Deliverables
 
-Curated announcement set for the public launch (issue #39). Mirrors the publish-ready copy in
+> Stale. Do not publish. The current description is [README](../README.md)
+> ([English](../README.en.md)). `pistisai.app` returns Cloudflare error 1033.
+> These drafts still name `pistisAI/pistisai-app`.
+
+Curated announcement set from an earlier Pistisai launch. Mirrors the publish-ready copy in
 `docs/marketing/publish-ready/social-thread-pack.md` and the brief in
 `docs/marketing/LAUNCH_CONTENT_BRIEF.md`.
 

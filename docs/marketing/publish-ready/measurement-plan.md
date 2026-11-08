@@ -1,6 +1,8 @@
 # Measurement Plan — Pistisai Public Launch
 
-Owners and metrics for the launch. Lightweight on purpose: we want signal, not a dashboard
+> Stale. Do not use. `pistisai.app` returns Cloudflare error 1033. Current description: [README](../../../README.md).
+
+Owners and metrics for an earlier launch. Lightweight on purpose: signal, not a dashboard
 project. Review at 24h and at week-1.
 
 ## Goals
