@@ -69,8 +69,24 @@ void main() {
 
     test('complete setup persistence failure is deterministic and not loading',
         () async {
-      service.selectProvider(_customRuntimeProvider());
+      service.selectHermesLocation(HermesLocation.local);
+      service.setHermesUrl('http://127.0.0.1:8642');
+      service.selectProvider(_hermesRuntimeProvider());
       configManager.throwOnSave = true;
+
+      final bool success = await service.completeSetup();
+
+      expect(success, isFalse);
+      expect(service.state.isLoading, isFalse);
+      expect(configManager.saveProviderCallCount, 1);
+      expect(
+        service.state.errorMessage,
+        'Setup could not be completed right now. Please verify your settings and try again.',
+      );
+    });
+
+    test('non-Hermes provider is rejected with the Hermes error', () async {
+      service.selectProvider(_customRuntimeProvider());
 
       final bool success = await service.completeSetup();
 
@@ -78,11 +94,13 @@ void main() {
       expect(service.state.isLoading, isFalse);
       expect(
         service.state.errorMessage,
-        'Setup could not be completed right now. Please verify your settings and try again.',
+        'Select a Hermes Agent runtime to complete Hermes setup.',
       );
+      expect(configManager.saveProviderCallCount, 0);
     });
 
     test('invalid custom URL is rejected before persistence', () async {
+      service.selectConnectionMethod(ConnectionMethod.custom);
       service.selectProvider(_customRuntimeProvider());
       service.setCustomUrl('not-a-valid-url');
 
@@ -224,12 +242,12 @@ void main() {
       service.selectConnectionMethod(ConnectionMethod.hermes);
       service.selectHermesLocation(HermesLocation.local);
       service.setHermesUrl('http://127.0.0.1:8642');
-      service.goToStep(4);
+      service.goToStep(3);
 
       await service.testConnection('http://127.0.0.1:8642');
       service.nextStep();
 
-      expect(service.state.currentStep, 4);
+      expect(service.state.currentStep, 3);
       expect(service.state.errorMessage, hermesUnreachableMessage);
     });
 
@@ -258,11 +276,11 @@ void main() {
       expect(service.state.detectedHermesKind,
           HermesEndpointKind.desktopDashboard);
 
-      service.goToStep(4);
+      service.goToStep(3);
       await service.testConnection(service.state.hermesUrl!);
       service.nextStep();
 
-      expect(service.state.currentStep, 4);
+      expect(service.state.currentStep, 3);
       expect(service.state.errorMessage, contains('51910'));
       expect(service.state.errorMessage, contains('agent API'));
     });
@@ -313,11 +331,12 @@ void main() {
     });
 
     test('nextStep blocks the connection step until Hermes is chosen', () {
-      service.goToStep(1);
+      service.selectConnectionMethod(ConnectionMethod.custom);
+      service.goToStep(3);
 
       service.nextStep();
 
-      expect(service.state.currentStep, 1);
+      expect(service.state.currentStep, 3);
       expect(
         service.state.errorMessage,
         'Choose Hermes Agent before continuing.',
@@ -326,18 +345,18 @@ void main() {
       service.selectConnectionMethod(ConnectionMethod.hermes);
       service.nextStep();
 
-      expect(service.state.currentStep, 2);
-      expect(service.state.errorMessage, isNull);
+      expect(service.state.currentStep, 3);
+      expect(service.state.errorMessage, isNotNull);
     });
 
     test('nextStep blocks Hermes location step until a location is chosen',
         () {
       service.selectConnectionMethod(ConnectionMethod.hermes);
-      service.goToStep(2);
+      service.goToStep(1);
 
       service.nextStep();
 
-      expect(service.state.currentStep, 2);
+      expect(service.state.currentStep, 1);
       expect(
         service.state.errorMessage,
         'Choose where Hermes is running before continuing.',
@@ -346,7 +365,7 @@ void main() {
       service.selectHermesLocation(HermesLocation.local);
       service.nextStep();
 
-      expect(service.state.currentStep, 3);
+      expect(service.state.currentStep, 2);
       expect(service.state.errorMessage, isNull);
     });
 

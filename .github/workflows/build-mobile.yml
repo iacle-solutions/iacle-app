@@ -154,6 +154,7 @@ jobs:
           fi
 
       - name: Configure release signing
+        id: signing
         env:
           KEYSTORE_B64: ${{ secrets.ANDROID_KEYSTORE_B64 }}
           KEYSTORE_B64_ALT: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
@@ -165,20 +166,27 @@ jobs:
           set -euo pipefail
           b64="${KEYSTORE_B64:-${KEYSTORE_B64_ALT:-}}"
           store="${STORE_PASSWORD:-${STORE_PASSWORD_ALT:-}}"
-          if [ -z "$b64" ] || [ -z "$store" ] || [ -z "${KEY_PASSWORD:-}" ] || [ -z "${KEY_ALIAS:-}" ]; then
-            echo "Android signing secrets are missing."
-            echo "Set ANDROID_KEYSTORE_B64 or ANDROID_KEYSTORE_BASE64,"
-            echo "ANDROID_STORE_PASSWORD or ANDROID_KEYSTORE_PASSWORD,"
-            echo "plus ANDROID_KEY_PASSWORD and ANDROID_KEY_ALIAS."
-            exit 1
-          fi
-          echo "$b64" | base64 -d > android/release-keystore.jks
-          cat > android/key.properties << EOF
+          if [ -n "$b64" ] && [ -n "$store" ] && [ -n "${KEY_PASSWORD:-}" ] && [ -n "${KEY_ALIAS:-}" ]; then
+            echo "$b64" | base64 -d > android/release-keystore.jks
+            cat > android/key.properties << EOF
           storePassword=$store
           keyPassword=${KEY_PASSWORD}
           keyAlias=${KEY_ALIAS}
           storeFile=../release-keystore.jks
           EOF
+            echo "signed=true" >> "$GITHUB_OUTPUT"
+          elif [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "Pull request has no Android signing secrets."
+            echo "Building a release APK with the debug key."
+            echo "signed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "Android signing secrets are missing."
+            echo "Signed builds are required on main and tags."
+            echo "Set ANDROID_KEYSTORE_B64 or ANDROID_KEYSTORE_BASE64,"
+            echo "ANDROID_STORE_PASSWORD or ANDROID_KEYSTORE_PASSWORD,"
+            echo "plus ANDROID_KEY_PASSWORD and ANDROID_KEY_ALIAS."
+            exit 1
+          fi
 
       - name: Flutter Build APK
         run: |
