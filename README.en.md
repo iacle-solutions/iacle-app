@@ -6,7 +6,7 @@ The stack is the desktop hub built around Hermes: chat, voice, avatar, and skill
 
 ## Local-first
 
-The software runs on the client's own computer. It does not need special hardware.
+The agent runs on a computer at the client's site. The free audit checks whether their current PC can host it. If it can, it runs there. If not, IAClé supplies a dedicated mini PC (standard: Beelink GTi15), for purchase or rental. Custom hardware only when the audit shows the need.
 
 It can reach a cloud service the client already uses only when that is secure, the client consents, and the provider has been assessed under Quebec Law 25 (a privacy impact assessment). Outbound flows are documented. They can be pulled back.
 
@@ -33,7 +33,7 @@ Ollama and LM Studio handle hub tasks such as memory and embeddings. The main ag
 
 | Offer | What it is |
 | --- | --- |
-| Readiness audit | Free. Three columns: what current tools already do, what is still done by hand, and what is left to automate. |
+| Readiness audit | Free. Three columns: what current tools already do, what is still done by hand, and what is left to automate. It also checks whether the current PC can host the agent. |
 | Implementation | One operational path. Examples: email triage, invoices, a bilingual AI receptionist, reports, bookkeeping. |
 | Managed services | System monitoring, Law 25 support, and a way to take the data back. |
 

@@ -6,7 +6,7 @@ La pile, c'est le poste de travail bâti autour de Hermes : clavardage, voix, av
 
 ## Local d'abord
 
-Le logiciel tourne sur l'ordinateur du client. Il n'exige pas de matériel spécial.
+L'agent tourne sur un ordinateur chez le client. L'audit gratuit vérifie si son PC actuel peut l'héberger. Sinon, on fournit un mini-PC dédié (standard : Beelink GTi15), en achat ou en location. Du matériel sur mesure, seulement quand l'audit le montre.
 
 Il peut joindre un service infonuagique que le client utilise déjà, seulement si c'est sécuritaire, si le client consent, et si le fournisseur a été évalué selon la Loi 25 (évaluation des facteurs relatifs à la vie privée). On documente les flux qui sortent. On peut les retirer.
 
@@ -33,7 +33,7 @@ Ollama et LM Studio servent à des tâches du poste, comme la mémoire et les em
 
 | Offre | Contenu |
 | --- | --- |
-| Audit de préparation | Gratuit. Trois colonnes : ce que les outils font déjà, ce qui se fait encore à la main, ce qui reste à automatiser. |
+| Audit de préparation | Gratuit. Trois colonnes : ce que les outils font déjà, ce qui se fait encore à la main, ce qui reste à automatiser. On vérifie aussi si le PC actuel peut héberger l'agent. |
 | Implantation | Un parcours opérationnel. Exemples : tri des courriels, factures, réceptionniste bilingue, rapports, comptabilité. |
 | Services gérés | Suivi du système, aide pour la Loi 25, reprise des données. |
 

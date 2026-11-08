@@ -33,7 +33,7 @@ Les AI comme ChatGPT, Claude et Gemini sont pratiques, mais :
 | **Récurrence mensuelle** | **$0** |
 | **Support / mises à jour** (optionnel) | $50-100/mo |
 
-Vous possédez tout. Le hardware, le modèle, vos données. Rien n'est à louer.
+Vos données restent chez vous. Le mini-PC peut être acheté ou loué.
 
 ## Combien de temps pour être prêt ?
 
@@ -41,11 +41,7 @@ Entre l'arrivée du technicien et votre première question à votre AI : **30 à
 
 ## Qu'est-ce qu'il me faut ?
 
-Votre ordinateur. C'est tout.
-
-- **PC Windows/Linux** avec carte NVIDIA (même une vieille GTX)
-- **Mac** avec Apple Silicon (M1/M2/M3/M4)
-- **Pas de GPU ?** Pas grave — un mini PC à $99 fait la job
+L'agent tourne sur un ordinateur chez vous. L'audit gratuit vérifie si votre PC actuel peut l'héberger. Sinon, on fournit un mini-PC dédié (standard : Beelink GTi15), en achat ou en location. Du matériel sur mesure, seulement quand l'audit le montre.
 
 On vient, on installe, on repart. Vous avez votre AI qui tourne.
 
