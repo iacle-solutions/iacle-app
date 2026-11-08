@@ -10,7 +10,7 @@ Sign-in is for the tunnel and for sync. Free uses the `pistisai.app` tunnel behi
 
 **Pistisai** is a local-first companion and desktop capability layer for user-selected agent runtimes. It gives Hermes, OpenClaw, and compatible agent gateways a secure channel to the user and permissioned hands and eyes on the user's desktops.
 
-IAClé delivers that hub to Quebec SMBs. The software runs on the client's own computer and does not require special hardware. Cloud services the client already uses are optional, and only with consent.
+IAClé delivers that hub to Quebec SMBs. The agent runs on a computer at the client's site. The free readiness audit checks whether their current PC can host it. If it can, it runs there. If not, IAClé supplies a dedicated mini PC (standard: Beelink GTi15), for purchase or rental. Custom hardware only when the audit shows the need. Cloud services the client already uses are optional, and only with consent.
 
 The main app does not connect directly to raw local model providers as its primary experience. Ollama, LM Studio, and similar endpoints are support model providers for app-owned features such as memory, embeddings, summarization, classification, OCR cleanup, and speech helpers.
 
