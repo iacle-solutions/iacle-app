@@ -75,26 +75,6 @@ jobs:
           echo "tag=$VERSION" >> $GITHUB_OUTPUT
           echo "Building version: $VERSION"
 
-      - name: Require web auth defines
-        env:
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
-          PISTISAI_ADMIN_EMAIL: ${{ secrets.PISTISAI_ADMIN_EMAIL }}
-        run: |
-          set -euo pipefail
-          if [ -z "${SUPABASE_URL:-}" ]; then
-            echo "SUPABASE_URL is not set"
-            exit 1
-          fi
-          if [ -z "${SUPABASE_ANON_KEY:-}" ]; then
-            echo "SUPABASE_ANON_KEY is not set"
-            exit 1
-          fi
-          if [ -z "${PISTISAI_ADMIN_EMAIL:-}" ]; then
-            echo "PISTISAI_ADMIN_EMAIL is not set"
-            exit 1
-          fi
-
       - name: Build and push Docker image
         id: build
         uses: docker/build-push-action@v6
@@ -111,9 +91,6 @@ jobs:
           sbom: true
           build-args: |
             BRAND=iacle
-            PISTISAI_ADMIN_EMAIL=${{ secrets.PISTISAI_ADMIN_EMAIL }}
-            SUPABASE_URL=${{ secrets.SUPABASE_URL }}
-            SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }}
 
       - name: Verify image pushed
         run: |
@@ -141,6 +118,27 @@ jobs:
           DOKPLOY_WEBHOOK_URL: ${{ secrets.DOKPLOY_WEBHOOK_URL }}
           DOKPLOY_API_KEY: ${{ secrets.DOKPLOY_API_KEY }}
         run: bash scripts/ci/trigger_dokploy_deploy.sh
+
+      - name: Confirm iacle.app serves the app
+        run: |
+          set -euo pipefail
+          for host in iacle.app www.iacle.app app.iacle.app; do
+            ok=0
+            for _ in $(seq 1 24); do
+              code=$(curl -sS -o "/tmp/${host}.html" -w "%{http_code}" --max-time 30 "https://${host}/" || true)
+              echo "${host} -> ${code}"
+              if [ "$code" = "200" ] && ! grep -q "404 page not found" "/tmp/${host}.html" && grep -q "IACl" "/tmp/${host}.html"; then
+                ok=1
+                break
+              fi
+              sleep 5
+            done
+            if [ "$ok" != "1" ]; then
+              echo "https://${host}/ did not return the IAClé app"
+              head -c 300 "/tmp/${host}.html" || true
+              exit 1
+            fi
+          done
 
       - name: Purge Cloudflare cache
         if: always()

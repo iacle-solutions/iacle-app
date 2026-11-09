@@ -8,7 +8,7 @@ A second Dockerfile, [`config/docker/Dockerfile.web`](../../../config/docker/Doc
 
 The builder is `gmeligio/flutter-android:3.47.7` (match `environment.flutter` in `pubspec.yaml`). That image does not enable Flutter web on its own, so the Dockerfile runs `flutter config --enable-web` before `flutter build web`.
 
-The release build passes `--no-web-resources-cdn` and `--dart-define=BRAND=iacle`. The site content policy blocks the Google-hosted CanvasKit script. With the CDN build, the Flutter view never paints and the splash clears to a white page. CanvasKit must be served from this origin. The same build also requires `SUPABASE_URL`, `SUPABASE_ANON_KEY`, and `PISTISAI_ADMIN_EMAIL`. The Dockerfile refuses to compile when any of those three is empty.
+The release build passes `--no-web-resources-cdn` and `--dart-define=BRAND=iacle`. The site content policy blocks the Google-hosted CanvasKit script. With the CDN build, the Flutter view never paints and the splash clears to a white page. CanvasKit must be served from this origin. Supabase and Auth0 are dropped for IAClé web auth (identity is moving to Cloudflare Access). The image build no longer requires `SUPABASE_URL`, `SUPABASE_ANON_KEY`, or `PISTISAI_ADMIN_EMAIL`; those dart-defines stay optional and default to empty.
 
 After the Flutter build, the Dockerfile reads `assets/version.json` and replaces the literal `$FLUTTER_BUILD_NUMBER` in `build/web/index.html` with `{version}.{build_number}`. The source file [`web/index.html`](../../../web/index.html) keeps the placeholder. A local `flutter build web` does not perform that replacement.
 
@@ -71,12 +71,9 @@ Cloudflare purge runs with `if: always()`, including when the webhook was skippe
 ## Local checks
 
 ```bash
-# Production image (compiles Flutter web). The three auth args are required.
+# Production image (compiles Flutter web). Auth dart-defines are optional.
 docker build -f Dockerfile.web -t IAClé-web \
   --build-arg BRAND=iacle \
-  --build-arg SUPABASE_URL="$SUPABASE_URL" \
-  --build-arg SUPABASE_ANON_KEY="$SUPABASE_ANON_KEY" \
-  --build-arg PISTISAI_ADMIN_EMAIL="$PISTISAI_ADMIN_EMAIL" \
   .
 
 # Compose image (requires build/web first)
