@@ -28,6 +28,8 @@ grep -Fq 'BRAND=iacle' "$WORKFLOW" || fail "brand build arg missing"
 grep -Fq 'CLOUDFLARE_CACHE_PURGE_TOKEN' "$WORKFLOW" || fail "cache purge missing"
 grep -Fq 'bash scripts/ci/trigger_dokploy_deploy.sh' "$WORKFLOW" \
   || fail "workflow does not call the Dokploy trigger"
+grep -Fq "if: steps.dokploy.outputs.skipped != 'true' && success()" "$WORKFLOW" \
+  || fail "site check is not limited to a successful Dokploy trigger"
 if grep -Fq '/visibility' "$WORKFLOW"; then
   fail "workflow still calls the unsupported package visibility API"
 fi

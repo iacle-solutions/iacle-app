@@ -41,7 +41,7 @@ The exact `flutter_bootstrap.js` location exists because the long-cache regex wo
 
 1. **analyze** — Flutter pin from `pubspec.yaml` on `ubuntu-24.04`, `flutter pub get`, `flutter analyze lib/`. Skipped when the triggering bump workflow failed.
 2. **build_and_push** — Build `Dockerfile.web` with `BRAND=iacle` and push `ghcr.io/<repository owner>/iacle-app-web:{version}` and `:latest`. For this repository that image is `ghcr.io/iacle-solutions/iacle-app-web`. `{version}` is the `version` field in `assets/version.json`. The job fails if the build action returns no digest. The package stays private until an owner changes it.
-3. **deploy_dokploy** — POST `DOKPLOY_WEBHOOK_URL`, then purge the Cloudflare cache. The Cloudflare Tunnel is not redeployed by this job.
+3. **deploy_dokploy** — POST `DOKPLOY_WEBHOOK_URL`. When the webhook is set and the call succeeds, check `iacle.app`, `www.iacle.app`, and `app.iacle.app`, then purge the Cloudflare cache. The Cloudflare Tunnel is not redeployed by this job. A missing webhook skips both the deploy and the site check.
 
 Desktop, mobile, and backend workflows start from a completed Web Deploy run. They do not start from the version bump directly. See [CI/CD Quick Reference](CI_CD_QUICK_REFERENCE.md).
 
@@ -51,7 +51,9 @@ The Dokploy application should use the Docker image `ghcr.io/<repository owner>/
 
 `scripts/ci/trigger_dokploy_deploy.sh` POSTs a push-shaped JSON body (`ref` and `head_commit.id`) with `X-GitHub-Event: push`. HTTP `200`, `201`, or `202` counts as triggered. Any other status fails the deploy step. The script does not print the webhook URL.
 
-When `DOKPLOY_WEBHOOK_URL` is unset, the step prints `DOKPLOY_WEBHOOK_URL is not set — skipping Dokploy deploy` and exits 0. The image is still published. The rest of the workflow does not fail.
+When `DOKPLOY_WEBHOOK_URL` is unset, the step records `skipped=true`, prints `DOKPLOY_WEBHOOK_URL is not set — skipping Dokploy deploy`, and exits 0. The image is still published. The site check does not run, and the rest of the workflow does not fail.
+
+When the webhook is set and Dokploy accepts it, the job requests `https://iacle.app/`, `https://www.iacle.app/`, and `https://app.iacle.app/`, up to 24 times per host, 5 seconds apart. Each response must be HTTP 200, contain `IACl`, and must not contain `404 page not found`. A failed webhook does not start that check.
 
 `DOKPLOY_API_KEY` is optional. When it is set, the same request sends it as the `x-api-key` header. Use that when the URL is a Dokploy API deploy endpoint that requires a token. The webhook URL from the application page does not need the key. The key alone cannot target an application, so a missing webhook still skips the deploy.
 

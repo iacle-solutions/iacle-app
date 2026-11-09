@@ -128,7 +128,7 @@ jobs:
           bash scripts/ci/trigger_dokploy_deploy.sh
 
       - name: Confirm iacle.app serves the app
-        if: steps.dokploy.outputs.skipped != 'true'
+        if: steps.dokploy.outputs.skipped != 'true' && success()
         run: |
           set -euo pipefail
           for host in iacle.app www.iacle.app app.iacle.app; do
