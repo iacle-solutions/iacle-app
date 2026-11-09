@@ -25,13 +25,14 @@ npm install                                     # root Node tooling (backend onl
 cd services/api-backend && npm install          # repeat per service you touch
 ```
 
-CI pins Flutter via exact `environment.flutter` in root `pubspec.yaml` (currently `3.47.7`, stable; workflows use `flutter-version-file: pubspec.yaml`) and Node `26` (`.nvmrc` — **single source of truth** for Node); service engines allow Node `>=22 <27` (sdk `>=18`). Android builds use AGP `8.11.1`, Gradle `8.14.3`, Kotlin `2.4.0` (Flutter `3.47.7` floor; Gradle 9 / AGP 9 blocked until `tesseract_ocr` drops `jcenter()`). Integration test rig (shared `docker-compose.test.yml` hub): `bash scripts/run_integration_test_rig.sh` (prefers **emulator**, not USB); local PC: `bash scripts/run_pc_integration_test_rig.sh` (`docs/development/testing/PHYSICAL_INTEGRATION_TEST_RIG.md`). USB phone smoke: `scripts/test-android-phone.sh`. CI: `integration-test-rig.yml`; optional self-hosted `integration-test-rig-physical.yml` (label `integration-rig`).
+CI pins Flutter via exact `environment.flutter` in root `pubspec.yaml` (currently `3.47.9`, stable; workflows use `flutter-version-file: pubspec.yaml`) and Node `26` (`.nvmrc` — **single source of truth** for Node); service engines allow Node `>=22 <27` (sdk `>=18`). Android builds use AGP `8.11.1`, Gradle `8.14.3`, Kotlin `2.4.0` (Flutter `3.47.7` floor; Gradle 9 / AGP 9 blocked until `tesseract_ocr` drops `jcenter()`). Integration test rig (shared `docker-compose.test.yml` hub): `bash scripts/run_integration_test_rig.sh` (prefers **emulator**, not USB); local PC: `bash scripts/run_pc_integration_test_rig.sh` (`docs/development/testing/PHYSICAL_INTEGRATION_TEST_RIG.md`). USB phone smoke: `scripts/test-android-phone.sh`. CI: `integration-test-rig.yml`; optional self-hosted `integration-test-rig-physical.yml` (label `integration-rig`).
 
 ```bash
 # Flutter — CI scopes analysis to lib/ only; gate suite is the script, not bare flutter test
+bash tool/brand.sh iacle
 flutter analyze lib/
 bash scripts/ci/flutter_security_basic_tests.sh   # CI gate: smoke/config/models/utils/helpers + selected services/widgets/integration
-flutter build web --release --no-web-resources-cdn  # --no-web-resources-cdn matches CI
+flutter build web --release --no-web-resources-cdn --dart-define=BRAND=iacle  # --no-web-resources-cdn matches CI
 dart run build_runner build --delete-conflicting-outputs  # after Drift schema/query changes only
 
 # Backend — root npm test is api-backend security suite only, not a full suite

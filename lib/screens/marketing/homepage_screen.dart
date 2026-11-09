@@ -176,7 +176,7 @@ class HomepageScreen extends StatelessWidget {
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  _buildGoldButton(context, 'Get Started Free', () async {
+                  _buildGoldButton(context, 'Get Started', () async {
                     final uri = Uri.parse(Brand.current.releasesUrl);
                     if (await canLaunchUrl(uri)) await launchUrl(uri);
                   }, isMobile),
@@ -615,9 +615,8 @@ class HomepageScreen extends StatelessWidget {
           Container(
             constraints: const BoxConstraints(maxWidth: 600),
             child: Text(
-              'AI that respects your privacy. Runs entirely on your machine, '
-              'backed by your terms. No cloud lock-in, no data mining, '
-              'no subscription required. Trust is not a feature — it\'s the foundation.',
+              'AI that respects your privacy. Runs on your machine, '
+              'backed by your terms. Trust is not a feature — it\'s the foundation.',
               style: TextStyle(
                 fontSize: isMobile ? 14 : 16,
                 color: colors.textColorLight,
@@ -627,7 +626,7 @@ class HomepageScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 32),
-          _buildGoldButton(context, 'Get Started Free', () async {
+          _buildGoldButton(context, 'Get Started', () async {
             final uri = Uri.parse(Brand.current.releasesUrl);
             if (await canLaunchUrl(uri)) await launchUrl(uri);
           }, isMobile),

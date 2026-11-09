@@ -19,6 +19,7 @@ import '../../tool/brand_emit.dart';
 void main() {
   final pistisai = _load('pistisai');
   final example = _load('example');
+  final iacle = _load('iacle');
 
   tearDown(() {
     Brand.debugOverride(null);
@@ -33,16 +34,31 @@ void main() {
     expect(pistisai.websiteUrl, 'https://pistisai.app');
   });
 
-  test('baked brand matches brand/pistisai/brand.yaml', () {
-    expect(Brand.current.id, pistisai.id);
-    expect(Brand.current.productName, pistisai.productName);
-    expect(Brand.current.windowTitle, pistisai.windowTitle);
-    expect(Brand.current.primaryArgb, pistisai.primaryArgb);
-    expect(Brand.current.legalLine, pistisai.legalLine);
-    expect(Brand.current.aboutText, pistisai.aboutText);
+  test('baked brand matches brand/iacle/brand.yaml', () {
+    expect(Brand.current.id, iacle.id);
+    expect(Brand.current.productName, iacle.productName);
+    expect(Brand.current.windowTitle, iacle.windowTitle);
+    expect(Brand.current.primaryArgb, iacle.primaryArgb);
+    expect(Brand.current.legalLine, iacle.legalLine);
+    expect(Brand.current.aboutText, iacle.aboutText);
+    expect(Brand.current.defaultLocale, 'fr');
+    expect(Brand.current.lockLocale, isTrue);
   });
 
-  testWidgets('default brand renders the Pistisai name', (tester) async {
+  test('iacle brand copy does not name the upstream product', () {
+    Brand.debugOverride(iacle);
+    for (final sample in BrandCopy.routedSamples()) {
+      expect(
+        sample.toLowerCase().contains('pistisai'),
+        isFalse,
+        reason: sample,
+      );
+    }
+    expect(iacle.websiteDomain, 'iacle.app');
+    expect(iacle.repositoryUrl, 'https://github.com/iacle-solutions/iacle-app');
+  });
+
+  testWidgets('baked brand renders IAClé', (tester) async {
     await tester.pumpWidget(
       MaterialApp(
         theme: AppTheme.darkTheme,
@@ -50,15 +66,19 @@ void main() {
       ),
     );
 
-    expect(find.text('Welcome to Pistisai'), findsOneWidget);
-    expect(find.textContaining('Pistisai'), findsWidgets);
+    expect(find.text('Welcome to IAClé'), findsOneWidget);
+    expect(
+      _visibleText(tester).toLowerCase().contains('pistisai'),
+      isFalse,
+    );
   });
 
-  testWidgets('default about copy names Pistisai', (tester) async {
+  testWidgets('baked about copy names IAClé', (tester) async {
     await _pumpAbout(tester);
     final visible = _visibleText(tester);
-    expect(visible, contains('Pistisai'));
-    expect(visible, contains('About Pistisai'));
+    expect(visible.toLowerCase().contains('pistisai'), isFalse);
+    expect(visible, contains('About IAClé'));
+    expect(visible, contains(iacle.aboutText));
   });
 
   test('example brand copy does not contain the upstream product name', () {
@@ -110,10 +130,10 @@ void main() {
     expect(theme.colorScheme.primary, isNot(const Color(0xFFFFD700)));
   });
 
-  test('default theme primary stays Pistis gold', () {
+  test('baked theme primary comes from the IAClé brand file', () {
     final theme = ThemeConfig.loadThemeConfiguration(ThemeMode.dark, null);
-    expect(theme.colorScheme.primary, const Color(0xFFFFD700));
-    expect(ThemeConfig.primaryColor, const Color(0xFFFFD700));
+    expect(theme.colorScheme.primary, iacle.primary);
+    expect(ThemeConfig.primaryColor, iacle.primary);
   });
 
   testWidgets('locked French example brand renders a Material screen', (

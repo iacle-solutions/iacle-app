@@ -130,7 +130,8 @@ jobs:
       - name: "🐧 Run Linux integration tests"
         id: linux_tests
         run: |
-          flutter test test/integration/ --reporter expanded
+          bash tool/brand.sh iacle
+          flutter test test/integration/ --reporter expanded --dart-define=BRAND=iacle
 
       - name: "📸 Capture desktop failure screenshot"
         if: failure() && steps.linux_tests.outcome == 'failure'

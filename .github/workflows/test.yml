@@ -123,6 +123,9 @@ jobs:
       - name: "📦 flutter pub get"
         run: flutter pub get
 
+      - name: Bake IAClé brand
+        run: bash tool/brand.sh iacle
+
       - name: "🧪 flutter test (security + basic)"
         run: bash scripts/ci/flutter_security_basic_tests.sh
 
@@ -145,8 +148,11 @@ jobs:
       - name: "📦 flutter pub get"
         run: flutter pub get
 
+      - name: Bake IAClé brand
+        run: bash tool/brand.sh iacle
+
       - name: "🌐 flutter build web"
-        run: flutter build web --release --no-web-resources-cdn
+        run: flutter build web --release --no-web-resources-cdn --dart-define=BRAND=iacle
 
       - name: "📦 Upload web build"
         uses: actions/upload-artifact@v7
@@ -186,8 +192,11 @@ jobs:
       - name: "📦 flutter pub get"
         run: flutter pub get
 
+      - name: Bake IAClé brand
+        run: bash tool/brand.sh iacle
+
       - name: "🐧 flutter build linux --release"
-        run: flutter build linux --release
+        run: flutter build linux --release --dart-define=BRAND=iacle
 
       - name: "📦 Package bundle"
         run: |

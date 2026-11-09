@@ -4,12 +4,11 @@
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>MIT</project_license>
   <name>IAClé</name>
-  <summary>Bridge cloud-based AI services with local AI models</summary>
+  <summary>Assistant local pour les entreprises du Québec</summary>
   
   <description>
     <p>
-      IAClé is a cross-platform application that bridges cloud-based AI services
-      with local AI models, providing a hybrid AI architecture with privacy-first design.
+      IAClé est un assistant local d'abord. L'agent tourne sur un ordinateur chez le client. L'audit vérifie si cet ordinateur peut l'héberger.
     </p>
     <p>
       Features:

@@ -86,18 +86,19 @@ dart run build_runner build --delete-conflicting-outputs
 ## Common Commands
 
 ```bash
+bash tool/brand.sh iacle
 flutter analyze lib/
 bash scripts/ci/flutter_security_basic_tests.sh
-flutter test test/services/some_test.dart
+flutter test --dart-define=BRAND=iacle test/services/some_test.dart
 dart format .
-flutter run -d linux
-flutter run -d windows
-flutter run -d chrome
-flutter build linux --release
-flutter build web --release --no-web-resources-cdn
-flutter build apk --release --split-per-abi
-flutter build windows --release
-flutter build macos --release
+flutter run -d linux --dart-define=BRAND=iacle
+flutter run -d windows --dart-define=BRAND=iacle
+flutter run -d chrome --dart-define=BRAND=iacle
+flutter build linux --release --dart-define=BRAND=iacle
+flutter build web --release --no-web-resources-cdn --dart-define=BRAND=iacle
+flutter build apk --release --split-per-abi --dart-define=BRAND=iacle
+flutter build windows --release --dart-define=BRAND=iacle
+flutter build macos --release --dart-define=BRAND=iacle
 ```
 
 ```bash
