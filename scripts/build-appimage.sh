@@ -3,7 +3,7 @@
 
 set -e
 
-PROJECT_DIR="/mnt/data/projects/Pistisai"
+PROJECT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 BUILD_DIR="$PROJECT_DIR/build/linux/x64/release/bundle"
 APPIMAGE_DIR="/tmp/appimage-build"
 APPIMAGE_OUTPUT="/tmp/Pistisai-x86_64.AppImage"

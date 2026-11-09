@@ -54,7 +54,7 @@ run_case() {
 
   local log_file="/tmp/test_${label}_tmpdir_root_fallback.log"
   set +e
-  TMPDIR='/' GITHUB_RUNNER_TOKEN='token-123' PATH="$FAKE_BIN:$PATH" bash "$script_path" > "$log_file" 2>&1
+  TMPDIR='/' GCP_PROJECT_ID='example-project' GITHUB_RUNNER_TOKEN='token-123' PATH="$FAKE_BIN:$PATH" bash "$script_path" > "$log_file" 2>&1
   local status=$?
   set -e
 
@@ -97,7 +97,7 @@ run_failure_cleanup_case() {
 
   local log_file="/tmp/test_${label}_tmpdir_root_fallback_cleanup.log"
   set +e
-  GCLOUD_FAIL=1 TMPDIR='/' GITHUB_RUNNER_TOKEN='token-123' PATH="$FAKE_BIN:$PATH" bash "$script_path" > "$log_file" 2>&1
+  GCLOUD_FAIL=1 TMPDIR='/' GCP_PROJECT_ID='example-project' GITHUB_RUNNER_TOKEN='token-123' PATH="$FAKE_BIN:$PATH" bash "$script_path" > "$log_file" 2>&1
   local status=$?
   set -e
 

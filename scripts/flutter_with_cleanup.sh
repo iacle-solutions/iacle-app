@@ -305,7 +305,6 @@ resolve_flutter_bin() {
   local candidates=(
     "${FLUTTER_BIN:-}"
     "$(command -v flutter 2>/dev/null || true)"
-    "/mnt/data/flutter-sdk/bin/flutter"
     "/opt/flutter/bin/flutter"
     "$HOME/flutter/bin/flutter"
   )
@@ -397,7 +396,7 @@ refresh_dart_package_config_if_needed() {
   fi
 
   if [[ "$package_config_needs_refresh" -eq 0 ]]; then
-    if grep -q '/paperclip/.pub-cache' "$package_config" ||        grep -q '/mnt/data/projects/Pistisai/.pub-cache' "$package_config" ||        grep -q '/paperclip/Pistisai/.pub-cache' "$package_config" ||        grep -q '/workspace/.pub-cache' "$package_config"; then
+    if grep -q '/paperclip/.pub-cache' "$package_config" ||        grep -q '/paperclip/Pistisai/.pub-cache' "$package_config" ||        grep -q '/workspace/.pub-cache' "$package_config"; then
       package_config_needs_refresh=1
     fi
   fi

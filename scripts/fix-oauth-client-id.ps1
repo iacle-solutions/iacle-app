@@ -23,7 +23,8 @@ if (-not (Test-Path (Join-Path $projectRoot $configFile))) {
 # Open browser to Google Cloud Console
 if ($OpenBrowser -or $Interactive) {
     Write-Host "Opening Google Cloud Console..." -ForegroundColor Yellow
-    Start-Process "https://console.cloud.google.com/apis/credentials?project=zoidbot-468303"
+    if (-not $env:GCP_PROJECT_ID) { Write-Error "GCP_PROJECT_ID is required"; exit 1 }
+    Start-Process "https://console.cloud.google.com/apis/credentials?project=$($env:GCP_PROJECT_ID)"
     Write-Host ""
 }
 

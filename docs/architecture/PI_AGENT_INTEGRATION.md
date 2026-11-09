@@ -498,7 +498,7 @@ export default function observerExtension(pi: ExtensionAPI) {
 
   // Register notification tool
   pi.registerTool({
-    name: "notify_christopher",
+    name: "notify_operator",
     label: "Notify the operator",
     description: "Send a notification to the operator",
     parameters: z.object({

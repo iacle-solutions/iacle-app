@@ -6,7 +6,7 @@ Status: proposed companion surface for Hermes durable background work
 
 Telegram is the operator's main text channel, but Telegram turns are request/response events. After a final reply, the foreground Hermes loop is not still running. Durable continuation needs explicit work sources: local systemd jobs, cron, webhooks, process completion callbacks, startup recovery, or kanban.
 
-RIGHT-PC now has a local detached background lane:
+The hub host now has a local detached background lane:
 
 - `~/.local/bin/hermes-local-think`
 - `~/.local/bin/hermes-local-think-status`
