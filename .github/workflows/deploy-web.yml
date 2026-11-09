@@ -91,6 +91,9 @@ jobs:
           sbom: true
           build-args: |
             BRAND=iacle
+            PISTISAI_ADMIN_EMAIL=${{ secrets.PISTISAI_ADMIN_EMAIL }}
+            SUPABASE_URL=${{ secrets.SUPABASE_URL }}
+            SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }}
 
       - name: Verify image pushed
         run: |

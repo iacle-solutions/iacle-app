@@ -7,8 +7,8 @@ RUN flutter pub get
 RUN flutter config --enable-web
 COPY . .
 ARG BRAND=iacle
-# Supabase/Auth0 dropped; identity is moving to Cloudflare Access.
-# Keep optional dart-defines so a future Access build can pass values without failing closed.
+# Web sign-in still uses these when the workflow passes them.
+# Empty values do not fail the image build.
 ARG PISTISAI_ADMIN_EMAIL=
 ARG SUPABASE_URL=
 ARG SUPABASE_ANON_KEY=

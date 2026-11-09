@@ -25,6 +25,15 @@ grep -Fq 'DOKPLOY_WEBHOOK_URL: ${{ secrets.DOKPLOY_WEBHOOK_URL }}' "$WORKFLOW" \
 grep -Fq 'DOKPLOY_API_KEY: ${{ secrets.DOKPLOY_API_KEY }}' "$WORKFLOW" \
   || fail "workflow does not read DOKPLOY_API_KEY"
 grep -Fq 'BRAND=iacle' "$WORKFLOW" || fail "brand build arg missing"
+grep -Fq 'SUPABASE_URL=${{ secrets.SUPABASE_URL }}' "$WORKFLOW" \
+  || fail "workflow does not pass SUPABASE_URL into the web image"
+grep -Fq 'SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }}' "$WORKFLOW" \
+  || fail "workflow does not pass SUPABASE_ANON_KEY into the web image"
+grep -Fq 'PISTISAI_ADMIN_EMAIL=${{ secrets.PISTISAI_ADMIN_EMAIL }}' "$WORKFLOW" \
+  || fail "workflow does not pass PISTISAI_ADMIN_EMAIL into the web image"
+if grep -Fq 'Require web auth defines' "$WORKFLOW"; then
+  fail "workflow fails the image build when auth secrets are empty"
+fi
 grep -Fq 'CLOUDFLARE_CACHE_PURGE_TOKEN' "$WORKFLOW" || fail "cache purge missing"
 grep -Fq 'bash scripts/ci/trigger_dokploy_deploy.sh' "$WORKFLOW" \
   || fail "workflow does not call the Dokploy trigger"
