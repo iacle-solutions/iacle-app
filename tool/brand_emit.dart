@@ -203,6 +203,7 @@ String applyWebIndex(String source, BrandConfig brand) {
     RegExp(r'background-color:\s*#[0-9A-Fa-f]{6}'),
     'background-color: ${brand.backgroundHex}',
   );
+  out = _ensureCspConnectHost(out, brand.websiteDomain);
   return out;
 }
 
@@ -309,6 +310,29 @@ String applyWindowsRc(String source, BrandConfig brand) {
     throw StateError('window title is empty');
   }
   return out;
+}
+
+
+/// Ensure CSP connect-src allows https/wss for the brand domain.
+/// Keeps existing hosts (localhost, upstream tunnel domains, etc.).
+String _ensureCspConnectHost(String source, String domain) {
+  final host = domain.trim();
+  if (host.isEmpty) return source;
+  final https = 'https://*.$host';
+  final wss = 'wss://*.$host';
+  if (source.contains(https) && source.contains(wss)) {
+    return source;
+  }
+  final pattern = RegExp(r"(connect-src 'self'\s*\n\s*)");
+  final match = pattern.firstMatch(source);
+  if (match == null) {
+    return source;
+  }
+  final parts = <String>[];
+  if (!source.contains(https)) parts.add(https);
+  if (!source.contains(wss)) parts.add(wss);
+  if (parts.isEmpty) return source;
+  return source.replaceFirst(pattern, '${match.group(1)}${parts.join(' ')} ');
 }
 
 String _hex(int argb) =>
