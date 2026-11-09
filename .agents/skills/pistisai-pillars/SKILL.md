@@ -1,12 +1,12 @@
 ---
-name: IAClé-pillars
+name: pistisai-pillars
 description: The 4-pillar foundations of IAClé (Aiman, Aigent, Aimotions, Aidration) and the negative discipline that makes Πίστις (trust) return. Use when working on pillar features, agent behavior, or evaluating whether an action carries or abandons trust.
 ---
 
 # IAClé — The Four Pillars
 
 This skill defines the **four pillars** of IAClé and the discipline that makes the
-product name true. It is the counterpart to `IAClé-dev` (engineering) — this is the
+product name true. It is the counterpart to `pistisai-dev` (engineering) — this is the
 **foundation/identity** layer.
 
 > NOTE: There are **FOUR** pillars, not five. The "5-pillar" doc in older backups
@@ -17,7 +17,7 @@ product name true. It is the counterpart to `IAClé-dev` (engineering) — this 
 
 ## 0. The Myth (why this exists)
 
-From `assets/brand/IAClé-brand-framework.md` (verified source of truth):
+From `assets/brand/brand-framework.md` (verified source of truth):
 
 - **IAClé (Πίστις)** — the *daimona* of **trust, honesty, good faith**. One of the only
   good entities to escape Pandora's box — but she **fled to Olympus, abandoning humanity**.
@@ -94,11 +94,11 @@ understand, or am I filling?"* — is Aidration's charter.
 
 ## 4. Source files (verify against these, do not trust this summary)
 
-- `assets/brand/IAClé-brand-framework.md` — the myth, Titan mapping, Stoa concept.
+- `assets/brand/brand-framework.md` — the myth, Titan mapping, Stoa concept.
 - `docs/LAUNCH.md` — etymology: *"IAClé (ΠΙΣΤΙΣΑΙ — 'trust')"*.
 - `docs/index.md` — product definition (local-first companion layer).
 - `bible-service-seed.js` (historical, in vault backups) — the KJV corpus, curated June 6 2026.
-- `IAClé-dev` skill — engineering counterpart.
+- `pistisai-dev` skill — engineering counterpart.
 
 > This skill was authored from the real foundation files above, not from paraphrase. If a
-> pillar mapping here disagrees with `IAClé-brand-framework.md`, the brand file wins.
+> pillar mapping here disagrees with `brand-framework.md`, the brand file wins.

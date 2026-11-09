@@ -1,5 +1,5 @@
 ---
-name: IAClé-dev
+name: pistisai-dev
 description: Technical skill guide for developer workflow, toolchains, testing, database generation, and coding rules in the IAClé Flutter/Node.js project.
 ---
 
