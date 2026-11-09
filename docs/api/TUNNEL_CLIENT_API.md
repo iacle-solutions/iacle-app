@@ -78,7 +78,7 @@ final tunnelService = TunnelService();
 
 try {
   await tunnelService.connect(
-    serverUrl: 'wss://proxy.pistisai.app',
+    serverUrl: 'wss://proxy.example.com',
     authToken: authToken,
     config: TunnelConfig.stableNetwork(),
   );
@@ -656,7 +656,7 @@ final tunnelService = TunnelService();
 
 try {
   await tunnelService.connect(
-    serverUrl: 'wss://proxy.pistisai.app',
+    serverUrl: 'wss://proxy.example.com',
     authToken: jwtToken,
     config: TunnelConfig.stableNetwork(),
   );

@@ -1,8 +1,8 @@
-# Pistisai Tier-Based API Documentation
+# IAClé Tier-Based API Documentation
 
 ## Overview
 
-The Pistisai API supports tier-aware behavior for cloud features, per-user connectors, optional hosted agent runtimes, and legacy proxy paths.
+The IAClé API supports tier-aware behavior for cloud features, per-user connectors, optional hosted agent runtimes, and legacy proxy paths.
 
 > **Status**: This document still contains older Ollama/direct-proxy endpoint examples. Current product direction is agent-runtime-first and Tailscale-first. New tier policy should apply to selected agent runtimes, optional cloud connectors, optional support model providers, and optional paid hosted agent runtime containers. Do not design new primary app flows around direct Ollama proxy endpoints.
 
@@ -36,9 +36,9 @@ All API endpoints require authentication via Auth0 JWT tokens. User tier informa
 
 ```javascript
 // Tier information locations (in priority order)
-user['https://Pistisai.com/user_metadata'].tier
-user['https://Pistisai.com/app_metadata'].tier
-user['https://Pistisai.com/user_metadata'].subscription
+user['https://IAClé.com/user_metadata'].tier
+user['https://IAClé.com/app_metadata'].tier
+user['https://IAClé.com/user_metadata'].subscription
 ```
 
 ## API Endpoints
@@ -62,7 +62,7 @@ Get current user's tier information and available features.
     "maxConnections": 1,
     "maxModels": 5
   },
-  "upgradeUrl": "https://app.pistisai.app/upgrade"
+  "upgradeUrl": "https://app.example.com/upgrade"
 }
 ```
 
@@ -125,7 +125,7 @@ Content-Type: application/json
 {
   "error": "Desktop client not connected",
   "code": "DESKTOP_CLIENT_DISCONNECTED",
-  "message": "Please ensure your Pistisai desktop client is running and connected.",
+  "message": "Please ensure your IAClé desktop client is running and connected.",
   "requestId": "dp-1642234567890-abc123"
 }
 
@@ -173,7 +173,7 @@ Start the historical container-based proxy for premium/enterprise users.
     "status": "running",
     "createdAt": "2024-01-15T10:30:00.000Z",
     "directTunnel": false,
-    "endpoint": "https://api.pistisai.app/proxy/auth0|user123",
+    "endpoint": "https://api.example.com/proxy/auth0|user123",
     "userTier": "premium"
   }
 }
@@ -200,7 +200,7 @@ Container-based proxy with advanced features (premium/enterprise only).
   "code": "ERROR_CODE",
   "message": "User-friendly message",
   "userTier": "free",
-  "upgradeUrl": "https://app.pistisai.app/upgrade",
+  "upgradeUrl": "https://app.example.com/upgrade",
   "requestId": "unique-request-id"
 }
 ```

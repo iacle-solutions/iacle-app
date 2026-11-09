@@ -444,7 +444,7 @@ class TunnelService extends ChangeNotifier {
 /// ```dart
 /// try {
 ///   await tunnelService.connect(
-///     serverUrl: 'wss://proxy.pistisai.app',
+///     serverUrl: 'wss://proxy.example.com',
 ///     authToken: authToken,
 ///     config: TunnelConfig.stableNetwork(),
 ///   );

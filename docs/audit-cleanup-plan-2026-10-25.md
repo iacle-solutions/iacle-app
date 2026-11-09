@@ -1,7 +1,7 @@
-# PistisAI App — Audit & Cleanup/Stabilization Plan
+# IAClé App — Audit & Cleanup/Stabilization Plan
 
 Date: 2026-10-25
-Repo: pistisAI/pistisai-app (main)
+Repo: IAClé/iacle-app (main)
 Auditor: Zoid Maltek
 
 ## 1. Executive summary
@@ -54,7 +54,7 @@ Action: rebase/merge the 4 dependabot PRs (all green), then update & merge 448/4
 - `test/archive/` holds 45 stale integration/widget tests still wired into `integration-test-rig.yml`. Either revive or remove from CI paths.
 
 ### 4.4 Branches
-- Merged into main (safe to delete, remote + local): cursor/android-mobile-connection-ee40, feat/integration-test-rig, feat/pistisai-awareness-hook, feat/pistisai-package-install, feat/pistisai-unified-channel-context, fix/ci-required-check-398, fix/install-desktop-plugin, fix/linux-desktop-icons, fix/nodemailer-10-399, fix/openclean-string-cleanup, fix/pistisai-ui-server-document-root, iacle/main (remote only).
+- Merged into main (safe to delete, remote + local): cursor/android-mobile-connection-ee40, feat/integration-test-rig, feat/IAClé-awareness-hook, feat/IAClé-package-install, feat/IAClé-unified-channel-context, fix/ci-required-check-398, fix/install-desktop-plugin, fix/linux-desktop-icons, fix/nodemailer-10-399, fix/openclean-string-cleanup, fix/IAClé-ui-server-document-root, iacle/main (remote only).
 - Orphaned dependabot pub branches (no open PR): cupertino_icons-2.0.0, flutter_secure_storage-11.2.0, image-4.12.0, logger-2.8.0, record-7.1.2 → delete.
 - Long-lived: windows_desktop (keep), fix/ci-android-ndk-install-retry (PR 448, update), fix/remove-openclaw-offerings-396 (closed PR; delete or revive), fix/android-pr-build-397 (no PR; inspect before delete).
 
@@ -109,7 +109,7 @@ Action: rebase/merge the 4 dependabot PRs (all green), then update & merge 448/4
 ## 8. Open questions
 - Should archived tests be revived or deleted? (Needs Christopher's call — they may encode intended behavior.)
 - Is `windows_desktop` branch still needed, or fold into main?
-- Should openclaw internal references be renamed to hermes/pistisai for consistency?
+- Should openclaw internal references be renamed to hermes/IAClé for consistency?
 
 ## 9. Verification gate results (Phase 4) — completed
 - `flutter analyze lib/`: 0 issues.

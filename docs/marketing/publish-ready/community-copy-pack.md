@@ -7,14 +7,14 @@ Reusable snippets for replies and community answers. They follow
 
 ## Elevator pitch (short)
 
-Pistisai is a local-first companion and desktop layer for your AI agent — voice, vision, and
+IAClé is a local-first companion and desktop layer for your AI agent — voice, vision, and
 audited desktop control over your own private mesh. Your agent, your hardware, your rules.
 
 ## FAQ-ready answers
 
-**Is Pistisai a model?**
+**Is IAClé a model?**
 No. It's the layer in front of an agent runtime (Hermes, OpenClaw, or any compatible gateway).
-The runtime does the reasoning; Pistisai adds voice, vision, desktop control, and a secure
+The runtime does the reasoning; IAClé adds voice, vision, desktop control, and a secure
 channel.
 
 **Which runtimes are supported?**
@@ -38,7 +38,7 @@ Full steps in [docs/LAUNCH.md](../../LAUNCH.md).
 ## Issue / discussion reply templates
 
 **Welcome reply (newcomer):**
-> Welcome! The fastest path is https://pistisai.app — log in and run the setup wizard. Point
+> Welcome! The fastest path is https://example.com — log in and run the setup wizard. Point
 > it at your agent runtime and you're set. If you hit anything, open an issue with your runtime
 > + OS and we'll dig in.
 
@@ -54,4 +54,4 @@ Full steps in [docs/LAUNCH.md](../../LAUNCH.md).
 ## Call to action (standard)
 
 Clone the repo, run a workflow, and open an issue or discussion with your real use case.
-Web: https://pistisai.app · GitHub: https://github.com/iacle-solutions/iacle-app
+Web: https://example.com · GitHub: https://github.com/iacle-solutions/iacle-app

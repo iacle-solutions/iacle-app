@@ -2,13 +2,11 @@
 
 ## Reporting a Vulnerability
 
-We take the security of Pistisai seriously. If you discover a security vulnerability, please report it responsibly.
+We take the security of IAClé seriously. If you discover a security vulnerability, please report it responsibly.
 
-**Do not** open a public GitHub issue. Instead, send details to:
+**Do not** open a public GitHub issue. Use the private vulnerability reporting tool:
 
-- **Email**: security@pistisai.app
-- **GitHub**: Use the private vulnerability reporting tool at:
-  https://github.com/iacle-solutions/iacle-app/security/advisories
+https://github.com/iacle-solutions/iacle-app/security/advisories
 
 We aim to acknowledge receipt within 48 hours and provide a fix timeline within 5 business days.
 

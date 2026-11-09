@@ -2,7 +2,7 @@
 
 ## App Status: Running ✓
 
-The Pistisai app is running with MaterialPage navigation fixes applied.
+The IAClé app is running with MaterialPage navigation fixes applied.
 
 ## What to Check
 
@@ -83,7 +83,7 @@ GoRoute(
 
 ```bash
 # Check if app is still running
-ps aux | grep pistisai | grep -v grep
+ps aux | grep IAClé | grep -v grep
 
 # Restart app if needed
 flutter run -d linux --debug

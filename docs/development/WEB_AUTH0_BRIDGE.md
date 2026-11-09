@@ -286,7 +286,7 @@ The bridge can be tested using Playwright or similar tools:
 
 ```javascript
 // Example Playwright test
-await page.goto('https://app.pistisai.app');
+await page.goto('https://app.example.com');
 await page.click('#login-button');
 await page.waitForURL('**/auth0.com/**');
 // Complete Auth0 login flow

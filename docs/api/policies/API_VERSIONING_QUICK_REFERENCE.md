@@ -5,14 +5,14 @@
 ### Using v2 (Current)
 
 ```bash
-curl https://api.pistisai.app/v2/users/me
-curl https://api.pistisai.app/users/me  # defaults to v2
+curl https://api.example.com/v2/users/me
+curl https://api.example.com/users/me  # defaults to v2
 ```
 
 ### Using v1 (Deprecated)
 
 ```bash
-curl https://api.pistisai.app/v1/users/me
+curl https://api.example.com/v1/users/me
 ```
 
 ## Version Information
@@ -163,6 +163,6 @@ mountVersionedRoutes(app, '/users', {
 
 ## Support
 
-- Documentation: https://docs.pistisai.app
+- Documentation: https://docs.example.com
 - Migration Guide: See API_VERSIONING_GUIDE.md
-- Issues: https://github.com/ghcr.io/pistisai/Pistisai/api/issues
+- Issues: https://github.com/ghcr.io/IAClé/IAClé/api/issues

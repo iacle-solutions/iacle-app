@@ -1,6 +1,6 @@
 # Android Build Configuration
 
-This directory contains the Android-specific configuration for Pistisai.
+This directory contains the Android-specific configuration for IAClé.
 
 ## Signing Configuration
 
@@ -17,7 +17,7 @@ This directory contains the Android-specific configuration for Pistisai.
    ```bash
    keytool -genkey -v -keystore release-keystore.jks \
      -keyalg RSA -keysize 2048 -validity 10000 \
-     -alias Pistisai-release
+     -alias IAClé-release
    ```
 
 3. **Create key.properties** from template:
@@ -29,7 +29,7 @@ This directory contains the Android-specific configuration for Pistisai.
    ```properties
    storePassword=your-keystore-password
    keyPassword=your-key-password
-   keyAlias=Pistisai-release
+   keyAlias=IAClé-release
    storeFile=../release-keystore.jks
    ```
 
@@ -75,7 +75,7 @@ These files are already listed in `.gitignore` to prevent accidental commits.
 
 ## Android test rig (hub in Docker + phone/emulator)
 
-Same idea as the Linux **test-desktop** rig (`docker-compose.test.yml`): a containerized Pistisai desktop hub (router on **:1337**, `/api/pistisai/hub`) plus on-device Flutter integration tests.
+Same idea as the Linux **test-desktop** rig (`docker-compose.test.yml`): a containerized IAClé desktop hub (router on **:1337**, `/api/IAClé/hub`) plus on-device Flutter integration tests.
 
 ```bash
 # Hub + on-device tests (or use run_android_test_rig.sh — same flags)
@@ -107,7 +107,7 @@ USB phone smoke: `scripts/test-android-phone.sh`. Docs: `docs/development/testin
 
 ```bash
 bash scripts/test-android-phone.sh
-PISTISAI_SELF_TEST_HUB_HOST=your-pc.tailnet.ts.net bash scripts/test-android-phone.sh
+IAClé_SELF_TEST_HUB_HOST=your-pc.tailnet.ts.net bash scripts/test-android-phone.sh
 ```
 
 Optional: `ANDROID_DEVICE_ID` if multiple devices are attached.

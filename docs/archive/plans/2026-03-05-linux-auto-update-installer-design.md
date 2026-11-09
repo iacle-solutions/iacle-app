@@ -6,7 +6,7 @@
 
 ## Goal
 
-Create a seamless installation experience for Pistisai on Linux with automatic background updates, similar to [OpenClaw.ai](https://openclaw.ai), using an intelligent hybrid update approach.
+Create a seamless installation experience for IAClé on Linux with automatic background updates, similar to [OpenClaw.ai](https://openclaw.ai), using an intelligent hybrid update approach.
 
 ## Overview
 
@@ -14,7 +14,7 @@ The installer provides a one-line installation command that downloads the AppIma
 
 **Quick Install Command:**
 ```bash
-curl -fsSL https://pistisai.app/install.sh | bash
+curl -fsSL https://example.com/install.sh | bash
 ```
 
 ## Architecture
@@ -22,7 +22,7 @@ curl -fsSL https://pistisai.app/install.sh | bash
 ### Components
 
 1. **Installer Script** (`install.sh`) - Downloads and sets up the application
-2. **Update Daemon** (`pistisai-updated`) - Background service for update checks
+2. **Update Daemon** (`IAClé-updated`) - Background service for update checks
 3. **Auto-Update Service** (`auto_update_service.dart`) - Flutter service for in-app updates
 4. **CI/CD Integration** - Generates installer during deployment pipeline
 
@@ -30,8 +30,8 @@ curl -fsSL https://pistisai.app/install.sh | bash
 
 | Scope | Location | Systemd | Requirements |
 |-------|----------|---------|--------------|
-| User-local (default) | `~/.local/share/pistisai/` | `~/.config/systemd/user/` | No sudo |
-| System-wide (`--system`) | `/opt/pistisai/` | `/etc/systemd/system/` | sudo required |
+| User-local (default) | `~/.local/share/IAClé/` | `~/.config/systemd/user/` | No sudo |
+| System-wide (`--system`) | `/opt/IAClé/` | `/etc/systemd/system/` | sudo required |
 
 ## Installer Script (`install.sh`)
 
@@ -49,16 +49,16 @@ curl -fsSL https://pistisai.app/install.sh | bash
 
 ```bash
 # Basic install (user-local)
-curl -fsSL https://pistisai.app/install.sh | bash
+curl -fsSL https://example.com/install.sh | bash
 
 # System-wide install
-curl -fsSL https://pistisai.app/install.sh | bash -s -- --system
+curl -fsSL https://example.com/install.sh | bash -s -- --system
 
 # Specific channel
-curl -fsSL https://pistisai.app/install.sh | bash -s -- --channel beta
+curl -fsSL https://example.com/install.sh | bash -s -- --channel beta
 
 # Silent install (no prompts)
-curl -fsSL https://pistisai.app/install.sh | bash -s -- --silent
+curl -fsSL https://example.com/install.sh | bash -s -- --silent
 ```
 
 ### Options
@@ -74,10 +74,10 @@ curl -fsSL https://pistisai.app/install.sh | bash -s -- --silent
 
 | Variable | Description |
 |----------|-------------|
-| `PISTISAI_DIR` | Override installation directory |
-| `PISTISAI_CHANNEL` | Default update channel |
+| `IAClé_DIR` | Override installation directory |
+| `IAClé_CHANNEL` | Default update channel |
 
-## Update Daemon (`pistisai-updated`)
+## Update Daemon (`IAClé-updated`)
 
 ### Purpose
 
@@ -111,7 +111,7 @@ fi
 
 ### State File
 
-**Location:** `~/.config/pistisai/update-state.json`
+**Location:** `~/.config/IAClé/update-state.json`
 
 ```json
 {
@@ -128,7 +128,7 @@ fi
 
 ### Communication
 
-- **Unix Socket:** `/tmp/pistisai-updated.sock`
+- **Unix Socket:** `/tmp/IAClé-updated.sock`
 - **Signals:** `UpdateAvailable`, `UpdateDownloaded`, `UpdateInstalled`
 - **Commands:** `check`, `download`, `install`, `status`
 
@@ -178,7 +178,7 @@ fi
     cat > dist/linux/install.sh << 'INSTALLER_EOF'
     #!/bin/bash
     INSTALL_VERSION="${VERSION}"
-    INSTALL_BASE_URL="https://github.com/pistisAI/pistisai-app/releases/download"
+    INSTALL_BASE_URL="https://github.com/iacle-solutions/iacle-app/releases/download"
 
     # ... rest of installer script ...
     INSTALLER_EOF
@@ -192,38 +192,38 @@ fi
     body: |
       ## Quick Install
       ```bash
-      curl -fsSL https://pistisai.app/install.sh | bash
+      curl -fsSL https://example.com/install.sh | bash
       ```
 ```
 
 ### Build Artifacts
 
 Each release will include:
-- `Pistisai-x86_64.AppImage` - Main application
+- `IAClé-x86_64.AppImage` - Main application
 - `install.sh` - Installer script
-- `Pistisai-x86_64.tar.gz` - Portable bundle
-- `pistisai_${VERSION}_amd64.deb` - Debian package
-- `pistisai.sha256` - Checksums
+- `IAClé-x86_64.tar.gz` - Portable bundle
+- `IAClé_${VERSION}_amd64.deb` - Debian package
+- `IAClé.sha256` - Checksums
 
 ## File Structure
 
 ```
-pistisai/
+IAClé/
 ├── scripts/
 │   └── packaging/
 │       ├── installer-template.sh       # Template for install.sh
 │       ├── build_installer.sh          # Generates install.sh
 │       └── update-daemon/              # Update daemon files
-│           ├── pistisai-updated # Daemon script
-│           └── pistisai-updated.service # Systemd unit
+│           ├── IAClé-updated # Daemon script
+│           └── IAClé-updated.service # Systemd unit
 ├── lib/services/
 │   └── auto_update_service.dart        # NEW: In-app update service
 ├── linux/
-│   └── pistisai-updated         # Daemon binary (bundled)
+│   └── IAClé-updated         # Daemon binary (bundled)
 ├── test/services/
 │   └── auto_update_service_test.dart   # NEW: Tests
 └── build/linux/x64/release/bundle/
-    └── pistisai-updated         # Daemon bundled with app
+    └── IAClé-updated         # Daemon bundled with app
 ```
 
 ## User Experience Flows
@@ -231,17 +231,17 @@ pistisai/
 ### First-Time Install
 
 ```bash
-$ curl -fsSL https://pistisai.app/install.sh | bash
+$ curl -fsSL https://example.com/install.sh | bash
 
-🦞 Installing Pistisai v10.1.200...
-✓ Downloaded AppImage to ~/.local/share/pistisai/
+🦞 Installing IAClé v10.1.200...
+✓ Downloaded AppImage to ~/.local/share/IAClé/
 ✓ Created desktop entry
 ✓ Installed icon to ~/.local/share/icons/
 ✓ Set up update daemon
 ✓ Started background update service
 
-🎉 Pistisai installed successfully!
-Run 'pistisai' or find it in your application menu.
+🎉 IAClé installed successfully!
+Run 'IAClé' or find it in your application menu.
 
 💡 The update daemon will check for updates every 6 hours.
 ```
@@ -255,7 +255,7 @@ Run 'pistisai' or find it in your application menu.
 2. Queries GitHub Releases API
 3. Compares v10.1.200 → v10.1.201
 4. Determines: PATCH version → AUTO-INSTALL
-5. Downloads AppImage to ~/.cache/pistisai/
+5. Downloads AppImage to ~/.cache/IAClé/
 6. Prepares replacement for next app quit
 7. [User quits app]
 8. Daemon replaces AppImage
@@ -272,7 +272,7 @@ Run 'pistisai' or find it in your application menu.
 2. Queries GitHub Releases API
 3. Compares v10.1.200 → v11.0.0
 4. Determines: MAJOR version → PROMPT USER
-5. Shows persistent notification: "Pistisai 11.0.0 available!"
+5. Shows persistent notification: "IAClé 11.0.0 available!"
 6. Downloads changelog in background
 7. [User clicks notification OR opens app]
 8. App shows dialog:

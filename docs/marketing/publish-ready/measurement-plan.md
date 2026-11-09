@@ -7,7 +7,7 @@ project. Review at 24h and at week-1.
 
 ## Goals
 
-1. Attract real install/try usage via pistisai.app and source clones.
+1. Attract real install/try usage via example.com and source clones.
 2. Convert attention into GitHub issues/discussions with concrete use cases.
 3. Grow an active newcomer presence in Discord.
 
@@ -16,7 +16,7 @@ project. Review at 24h and at week-1.
 | Metric | Channel | Owner | 24h target | Week-1 target |
 |--------|---------|-------|-----------|---------------|
 | New issues opened referencing launch | GitHub | DevRel | ≥ 3 | ≥ 15 |
-| Unique visitors to pistisai.app | Web | Founder | ≥ 200 | ≥ 1,500 |
+| Unique visitors to example.com | Web | Founder | ≥ 200 | ≥ 1,500 |
 | Repo clones (unique) | GitHub | Founder | ≥ 50 | ≥ 400 |
 | Social replies + quote posts w/ repo mention | X / LinkedIn | CMO | ≥ 10 | ≥ 60 |
 | Discord newcomer messages | Discord | DevRel | ≥ 5 | ≥ 40 |
@@ -26,8 +26,8 @@ project. Review at 24h and at week-1.
 
 - **GitHub:** issue count + labels (`launch:devrel`, `good first issue`), clone telemetry from
   the repo's traffic view.
-- **Web:** analytics on pistisai.app (privacy-respecting, no cross-site tracking).
-- **Social:** manual tally of replies/quotes that mention the repo or pistisai.app.
+- **Web:** analytics on example.com (privacy-respecting, no cross-site tracking).
+- **Social:** manual tally of replies/quotes that mention the repo or example.com.
 - **Discord:** newcomer messages in #introductions and failure reports in the support channel.
 
 ## Review cadence

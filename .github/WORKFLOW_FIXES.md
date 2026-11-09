@@ -41,8 +41,8 @@
 
 3. **Test the deployed app**:
    ```bash
-   curl https://app.pistisai.app/health
-   curl https://app.pistisai.app/debug/assets
+   curl https://app.example.com/health
+   curl https://app.example.com/debug/assets
    ```
 
 ## Common Issues and Solutions

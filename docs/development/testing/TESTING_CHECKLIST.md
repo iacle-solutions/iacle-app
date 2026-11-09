@@ -1,4 +1,4 @@
-# Pistisai Privacy-First Architecture Testing Checklist
+# IAClé Privacy-First Architecture Testing Checklist
 
 ## 🚨 **CRITICAL ISSUE VALIDATION**
 

@@ -1,11 +1,11 @@
-# Pistisai Avatar Personality Skill
+# IAClé Avatar Personality Skill
 
 Provides personality-driven responses and organic evolution capabilities for OpenClaw agents.
 
 ## Architecture
 
 ```
-services/openclaw-skills/pistisai/
+services/openclaw-skills/IAClé/
 ├── SKILL.md          # This file — skill descriptor
 ├── package.json      # NPM package manifest
 ├── tsconfig.json     # TypeScript configuration
@@ -36,7 +36,7 @@ The agent evolves organically through meaningful conversations:
 
 - **No XP grinding** — evolution based on conversation depth and patterns
 - **Self-reflection** — agent recognizes when it has grown
-- **Collaborative** — Pistisai validates evolution requests (or auto-approves)
+- **Collaborative** — IAClé validates evolution requests (or auto-approves)
 - **Stages**: curious_explorer → knowledge_seeker → wise_companion → enlightened_guide
 
 ### Evolution Thresholds
@@ -91,7 +91,7 @@ import PersonalitySkill from './index.js';
 const skill = new PersonalitySkill();
 await skill.onLoad({
   agentId: 'my-agent',
-  agentName: 'Pistisai',
+  agentName: 'IAClé',
   autoEvolve: true,
 });
 

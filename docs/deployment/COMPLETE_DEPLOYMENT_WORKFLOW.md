@@ -1,6 +1,6 @@
-# Pistisai Complete Deployment Workflow
+# IAClé Complete Deployment Workflow
 
-This is the **ONE AND ONLY** deployment document for Pistisai. Follow this exactly to ensure a smooth and successful deployment.
+This is the **ONE AND ONLY** deployment document for IAClé. Follow this exactly to ensure a smooth and successful deployment.
 
 **Estimated Total Time:** 45-90 minutes
 
@@ -24,7 +24,7 @@ This is the **ONE AND ONLY** deployment document for Pistisai. Follow this exact
 ```bash
 # 1. Verify you're in the correct directory
 pwd
-# Expected: /path/to/Pistisai
+# Expected: /path/to/IAClé
 
 # 2. Check Git status
 git status
@@ -76,7 +76,7 @@ For full sequence, see [k3s on Proxmox Deployment Workflow](./K3S_PROXMOX_DEPLOY
 
 ### **Build and Push Images to Container Registry**
 
-Pistisai uses Dockerfiles for container builds. Build and push images to your registry:
+IAClé uses Dockerfiles for container builds. Build and push images to your registry:
 
 ```bash
 # Authenticate with your container registry
@@ -86,13 +86,13 @@ Pistisai uses Dockerfiles for container builds. Build and push images to your re
 
 # Build and push web application image (update registry as needed)
 docker build -f config/docker/Dockerfile.web \
-  -t your-registry/pistisai-web:latest .
-docker push your-registry/pistisai-web:latest
+  -t your-registry/IAClé-web:latest .
+docker push your-registry/IAClé-web:latest
 
 # Build and push API backend image
 docker build -f services/api-backend/Dockerfile.prod \
-  -t your-registry/pistisai-api:latest .
-docker push your-registry/pistisai-api:latest
+  -t your-registry/IAClé-api:latest .
+docker push your-registry/IAClé-api:latest
 ```
 
 **Note:** Update image tags in `k8s/api-backend-deployment.yaml` and `k8s/web-deployment.yaml` if using different tags.
@@ -125,7 +125,7 @@ kubectl apply -f k8s/configmap.yaml
 kubectl apply -f k8s/postgres-statefulset.yaml
 
 # Wait for database to be ready
-kubectl wait --for=condition=ready pod -l app=postgres -n Pistisai --timeout=300s
+kubectl wait --for=condition=ready pod -l app=postgres -n IAClé --timeout=300s
 ```
 
 ### **Step 3.3: Deploy Applications**
@@ -145,17 +145,17 @@ kubectl apply -f k8s/ingress-nginx.yaml
 
 ```bash
 # Check pod status
-kubectl get pods -n Pistisai
+kubectl get pods -n IAClé
 
 # Check services
-kubectl get svc -n Pistisai
+kubectl get svc -n IAClé
 
 # Test main application
-curl -I https://app.pistisai.app
+curl -I https://app.example.com
 # Expected: HTTP/1.1 200 OK
 
 # Check version endpoint
-curl -s https://app.pistisai.app/version.json
+curl -s https://app.example.com/version.json
 ```
 
 ---
@@ -166,19 +166,19 @@ curl -s https://app.pistisai.app/version.json
 
 ```bash
 # Check all pods are running
-kubectl get pods -n Pistisai
+kubectl get pods -n IAClé
 
 # View pod logs
-kubectl logs -f deployment/api-backend -n Pistisai
-kubectl logs -f deployment/web -n Pistisai
+kubectl logs -f deployment/api-backend -n IAClé
+kubectl logs -f deployment/web -n IAClé
 
 # Check ingress status
-kubectl get ingress -n Pistisai
+kubectl get ingress -n IAClé
 ```
 
 ### **Manual Verification**
 
-- **Web Application:** Loads correctly at https://app.pistisai.app, authentication works, no console errors
+- **Web Application:** Loads correctly at https://app.example.com, authentication works, no console errors
 - **API Backend:** Health check endpoint returns 200 OK
 - **Database:** PostgreSQL pods are running and accepting connections
 
@@ -194,7 +194,7 @@ kubectl get ingress -n Pistisai
 
 ## 🔧 **Troubleshooting**
 
-- **Pod Not Starting:** Check pod logs with `kubectl logs <pod-name> -n Pistisai`
+- **Pod Not Starting:** Check pod logs with `kubectl logs <pod-name> -n IAClé`
 - **Image Pull Errors:** Verify image registry credentials and image tags
 - **Database Connection Issues:** Check PostgreSQL pod logs and verify secrets
 - **Ingress Issues:** Check ingress controller and DNS configuration

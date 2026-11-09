@@ -1,18 +1,18 @@
-# Pistisai SDK - Quick Start Guide
+# IAClé SDK - Quick Start Guide
 
 ## Installation
 
 ```bash
-npm install @Pistisai/sdk
+npm install @IAClé/sdk
 ```
 
 ## Basic Setup
 
 ```typescript
-import { PistisaiClient } from '@Pistisai/sdk';
+import { IACléClient } from '@IAClé/sdk';
 
-const client = new PistisaiClient({
-  baseURL: 'https://api.pistisai.app',
+const client = new IACléClient({
+  baseURL: 'https://api.example.com',
   apiVersion: 'v2',
 });
 
@@ -129,8 +129,8 @@ try {
 ## Configuration Options
 
 ```typescript
-const client = new PistisaiClient({
-  baseURL: 'https://api.pistisai.app',  // Required
+const client = new IACléClient({
+  baseURL: 'https://api.example.com',  // Required
   apiVersion: 'v2',                               // Optional: 'v1' or 'v2'
   timeout: 30000,                                 // Optional: milliseconds
   retryAttempts: 3,                               // Optional: number of retries
@@ -145,14 +145,14 @@ const client = new PistisaiClient({
 
 ```typescript
 import {
-  PistisaiClient,
+  IACléClient,
   Tunnel,
   User,
   Webhook,
-} from '@Pistisai/sdk';
+} from '@IAClé/sdk';
 
-const client = new PistisaiClient({
-  baseURL: 'https://api.pistisai.app',
+const client = new IACléClient({
+  baseURL: 'https://api.example.com',
 });
 
 const user: User = await client.getCurrentUser();
@@ -192,6 +192,6 @@ await client.logout();
 
 ## Support
 
-- GitHub: https://github.com/pistisAI/pistisai-app
-- Documentation: https://pistisai.app/docs
-- API Docs: https://api.pistisai.app/api/docs
+- GitHub: https://github.com/iacle-solutions/iacle-app
+- Documentation: https://example.com/docs
+- API Docs: https://api.example.com/api/docs

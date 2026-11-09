@@ -28,11 +28,11 @@ This document outlines the remediation measures implemented to stabilize the Git
 
 | Domain/Subdomain | Status | issue | Resolution |
 |------------------|--------|-------|------------|
-| `https://pistisai.app/` | ✅ Pending | 530 Error | Config updated, requires Dashboard sync |
-| `https://app.pistisai.app/` | ✅ Pending | 530 Error | Config updated, requires Dashboard sync |
-| `https://api.pistisai.app/` | ✅ Pending | 530 Error | Config updated, requires Dashboard sync |
-| `https://argocd.pistisai.app/` | ❌ Removed | - | Service decommissioned |
-| `https://grafana.pistisai.app/` | ✅ Working | - | - |
+| `https://example.com/` | ✅ Pending | 530 Error | Config updated, requires Dashboard sync |
+| `https://app.example.com/` | ✅ Pending | 530 Error | Config updated, requires Dashboard sync |
+| `https://api.example.com/` | ✅ Pending | 530 Error | Config updated, requires Dashboard sync |
+| `https://argocd.example.com/` | ❌ Removed | - | Service decommissioned |
+| `https://grafana.example.com/` | ✅ Working | - | - |
 
 ## 📋 Remediation Plan (Completed Actions)
 

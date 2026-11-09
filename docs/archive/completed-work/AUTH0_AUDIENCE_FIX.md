@@ -26,7 +26,7 @@ This is the Auth0 Management API audience, used for managing Auth0 resources.
 ### Backend Configuration (services/api-backend/middleware/auth.js)
 
 ```javascript
-const DEFAULT_JWT_AUDIENCE = 'https://api.pistisai.app';
+const DEFAULT_JWT_AUDIENCE = 'https://api.example.com';
 const JWT_AUDIENCE = process.env.JWT_AUDIENCE || DEFAULT_JWT_AUDIENCE;
 ```
 
@@ -38,7 +38,7 @@ The backend expects the application's own API audience.
 2. Auth0 issues token with this audience claim
 3. Frontend sends token in Authorization header: `Bearer <token>`
 4. Backend receives token and validates it
-5. Backend checks audience claim: expects `https://api.pistisai.app`
+5. Backend checks audience claim: expects `https://api.example.com`
 6. Token has audience: `https://dev-vivn1fcgzi0c2czy.us.auth0.com/api/v2/`
 7. **Audience mismatch → Token rejected with 401**
 
@@ -53,7 +53,7 @@ Change the Auth0 audience to match the backend configuration:
 const AUTH0_AUDIENCE = 'https://dev-vivn1fcgzi0c2czy.us.auth0.com/api/v2/';
 
 // AFTER (CORRECT)
-const AUTH0_AUDIENCE = 'https://api.pistisai.app';
+const AUTH0_AUDIENCE = 'https://api.example.com';
 ```
 
 ### 2. Ensure Backend Environment Configuration
@@ -62,20 +62,20 @@ The backend needs to have the correct AUTH0_AUDIENCE environment variable set:
 
 ```bash
 # In your deployment environment (.env or Kubernetes secrets)
-AUTH0_AUDIENCE=https://api.pistisai.app
+AUTH0_AUDIENCE=https://api.example.com
 ```
 
 Or use the default which is already set in the code:
 
 ```javascript
-const DEFAULT_JWT_AUDIENCE = 'https://api.pistisai.app';
+const DEFAULT_JWT_AUDIENCE = 'https://api.example.com';
 ```
 
 ### 3. Verify Auth0 Application Configuration
 
 In Auth0 dashboard, ensure the application is configured with:
 
-- **Identifier (Audience)**: `https://api.pistisai.app`
+- **Identifier (Audience)**: `https://api.example.com`
 - This tells Auth0 to include this audience in the token
 
 ## Implementation Details
@@ -93,12 +93,12 @@ In Auth0 dashboard, ensure the application is configured with:
 
 ### Token Flow After Fix
 
-1. Frontend requests token with audience: `https://api.pistisai.app`
+1. Frontend requests token with audience: `https://api.example.com`
 2. Auth0 issues token with this audience claim
 3. Frontend sends token in Authorization header
 4. Backend validates token
-5. Backend checks audience: expects `https://api.pistisai.app`
-6. Token has audience: `https://api.pistisai.app`
+5. Backend checks audience: expects `https://api.example.com`
+6. Token has audience: `https://api.example.com`
 7. **Audience matches → Token accepted ✓**
 
 ## Testing the Fix
@@ -144,7 +144,7 @@ The audience claim in a JWT token is a security feature that ensures:
 ### Auth0 Audience vs Management API
 
 - **Application Audience** (what we use): Identifies the application's API
-  - Example: `https://api.pistisai.app`
+  - Example: `https://api.example.com`
   - Used for: Authenticating users to the application
 
 - **Management API Audience** (what was wrong): Identifies Auth0's management API

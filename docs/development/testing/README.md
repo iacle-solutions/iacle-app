@@ -1,6 +1,6 @@
 # Testing Documentation
 
-This directory contains comprehensive testing documentation for Pistisai.
+This directory contains comprehensive testing documentation for IAClé.
 
 ## 📚 Contents
 

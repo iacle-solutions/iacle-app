@@ -85,9 +85,9 @@
 const corsOptions = {
   origin: function (origin, callback) {
     const allowedOrigins = [
-      'https://app.pistisai.app',
-      'https://pistisai.app',
-      'https://docs.pistisai.app'
+      'https://app.example.com',
+      'https://example.com',
+      'https://docs.example.com'
     ];
     // Allow requests with no origin (like mobile apps or curl requests)
     if (!origin || allowedOrigins.indexOf(origin) !== -1) {

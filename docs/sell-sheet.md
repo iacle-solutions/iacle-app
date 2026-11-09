@@ -1,4 +1,4 @@
-# Pistisai — Votre IA privée, chez vous.
+# IAClé — Votre IA privée, chez vous.
 
 **Une AI qui tourne sur VOTRE ordinateur. Vos données restent chez vous.**
 
@@ -16,7 +16,7 @@ Les AI comme ChatGPT, Claude et Gemini sont pratiques, mais :
 
 **On installe une AI sur votre ordinateur.** Pas de cloud, pas de SaaS, pas de données qui sortent de chez vous.
 
-| Ce que vous avez | Avec Pistisai |
+| Ce que vous avez | Avec IAClé |
 |-----------------|---------------------|
 | 🤖 ChatGPT/Claude | 🖥️ Votre AI, sur votre machine |
 | 📤 Vos données partent au US | 🔒 Zéro donnée quitte votre réseau |

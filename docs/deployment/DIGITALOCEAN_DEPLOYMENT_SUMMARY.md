@@ -4,11 +4,11 @@
 
 ## ✅ What's Been Configured
 
-Your Pistisai project is now fully configured for DigitalOcean Kubernetes deployment with:
+Your IAClé project is now fully configured for DigitalOcean Kubernetes deployment with:
 
 ### Infrastructure
 
-- ✅ Kubernetes manifests updated for `pistisai.app`
+- ✅ Kubernetes manifests updated for `example.com`
 - ✅ Ingress configured for all subdomains
 - ✅ SSL/TLS auto-provisioning with cert-manager
 - ✅ Load Balancer routing
@@ -39,19 +39,19 @@ After deployment, you'll need these **4 A records** pointing to your Load Balanc
 ┌─────────────────────────────────┬──────┬─────────────────────┐
 │ Hostname                        │ Type │ Value               │
 ├─────────────────────────────────┼──────┼─────────────────────┤
-│ pistisai.app          │  A   │ <LOAD_BALANCER_IP>  │
-│ app.pistisai.app      │  A   │ <LOAD_BALANCER_IP>  │
-│ api.pistisai.app      │  A   │ <LOAD_BALANCER_IP>  │
-│ auth.pistisai.app     │  A   │ <LOAD_BALANCER_IP>  │
+│ example.com          │  A   │ <LOAD_BALANCER_IP>  │
+│ app.example.com      │  A   │ <LOAD_BALANCER_IP>  │
+│ api.example.com      │  A   │ <LOAD_BALANCER_IP>  │
+│ auth.example.com     │  A   │ <LOAD_BALANCER_IP>  │
 └─────────────────────────────────┴──────┴─────────────────────┘
 ```
 
 ### What Each Subdomain Does
 
-- **pistisai.app** → Main website/web app
-- **app.pistisai.app** → Web application interface
-- **api.pistisai.app** → API backend
-- **auth.pistisai.app** → Authentication server (SuperTokens - future)
+- **example.com** → Main website/web app
+- **app.example.com** → Web application interface
+- **api.example.com** → API backend
+- **auth.example.com** → Authentication server (SuperTokens - future)
 
 ---
 
@@ -80,7 +80,7 @@ chmod +x setup-dns.sh
 The script will:
 
 1. Get your Load Balancer IP automatically
-2. Create DNS zone for `pistisai.app`
+2. Create DNS zone for `example.com`
 3. Create all 4 A records
 4. Display next steps
 
@@ -92,16 +92,16 @@ LB_IP=$(kubectl get svc -n ingress-nginx ingress-nginx-controller -o jsonpath='{
 echo "Load Balancer IP: $LB_IP"
 
 # 2. Create DNS zone
-doctl compute domain create pistisai.app --ip-address $LB_IP
+doctl compute domain create example.com --ip-address $LB_IP
 
 # 3. Create subdomain records
-doctl compute domain records create pistisai.app \
+doctl compute domain records create example.com \
   --record-type A --record-name app --record-data $LB_IP --record-ttl 300
 
-doctl compute domain records create pistisai.app \
+doctl compute domain records create example.com \
   --record-type A --record-name api --record-data $LB_IP --record-ttl 300
 
-doctl compute domain records create pistisai.app \
+doctl compute domain records create example.com \
   --record-type A --record-name auth --record-data $LB_IP --record-ttl 300
 ```
 
@@ -201,7 +201,7 @@ Wait 5-15 minutes for:
 Check status:
 
 ```bash
-kubectl get certificate -n Pistisai
+kubectl get certificate -n IAClé
 ```
 
 Should show: `READY=True`
@@ -210,13 +210,13 @@ Should show: `READY=True`
 
 ```bash
 # Check pods
-kubectl get pods -n Pistisai
+kubectl get pods -n IAClé
 
 # Test web app
-curl -I https://pistisai.app
+curl -I https://example.com
 
 # Test API
-curl https://api.pistisai.app/health
+curl https://api.example.com/health
 ```
 
 ---
@@ -303,21 +303,21 @@ All documentation is organized and ready:
 **Pods not starting?**
 
 ```bash
-kubectl describe pod <pod-name> -n Pistisai
-kubectl logs <pod-name> -n Pistisai
+kubectl describe pod <pod-name> -n IAClé
+kubectl logs <pod-name> -n IAClé
 ```
 
 **SSL certificate issues?**
 
 ```bash
-kubectl describe certificate -n Pistisai Pistisai-tls
+kubectl describe certificate -n IAClé IAClé-tls
 kubectl logs -n cert-manager -l app=cert-manager -f
 ```
 
 **DNS not resolving?**
 
 ```bash
-dig pistisai.app +short
+dig example.com +short
 # Check: https://dnschecker.org
 ```
 
@@ -363,8 +363,8 @@ dig pistisai.app +short
 6. **Test your deployment**
 
    ```bash
-   curl https://pistisai.app
-   curl https://api.pistisai.app/health
+   curl https://example.com
+   curl https://api.example.com/health
    ```
 
 ### Short Term (This Week)
@@ -385,7 +385,7 @@ dig pistisai.app +short
 
 ## 🎉 You're Ready to Deploy
 
-Everything is configured and ready. Your Pistisai deployment to DigitalOcean Kubernetes is just a few commands away!
+Everything is configured and ready. Your IAClé deployment to DigitalOcean Kubernetes is just a few commands away!
 
 **Start here:**
 

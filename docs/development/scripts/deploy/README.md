@@ -1,8 +1,8 @@
-# Pistisai Deployment Scripts
+# IAClé Deployment Scripts
 
 **⚠️ DEPRECATED DIRECTORY**: All VPS deployment scripts have been moved to `scripts/archive/`.
 
-Pistisai now uses **Kubernetes** for production deployment. VPS deployment scripts are deprecated.
+IAClé now uses **Kubernetes** for production deployment. VPS deployment scripts are deprecated.
 
 ## Current Deployment Methods
 
@@ -22,7 +22,7 @@ Pistisai now uses **Kubernetes** for production deployment. VPS deployment scrip
 
 All VPS deployment scripts have been moved to `scripts/archive/` with detailed migration guides:
 
-- `Deploy-Pistisai.ps1` → Replaced by Kubernetes deployment
+- `Deploy-IAClé.ps1` → Replaced by Kubernetes deployment
 - `BuildEnvironmentUtilities.ps1` → Replaced by GitHub Actions CI/CD
 - `sync_versions.sh` → Replaced by automated CI/CD versioning
 - `verify_deployment.sh` → Replaced by Kubernetes health checks

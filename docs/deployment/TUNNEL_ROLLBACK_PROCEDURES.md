@@ -97,7 +97,7 @@ docker-compose stop streaming-proxy
 
 ```bash
 # Navigate to deployment directory
-cd /opt/Pistisai
+cd /opt/IAClé
 
 # Stop current services
 docker-compose down api-backend
@@ -119,10 +119,10 @@ docker-compose logs api-backend
 
 ```bash
 # Stop current service
-sudo systemctl stop pistisai-api
+sudo systemctl stop IAClé-api
 
 # Revert code to previous version
-cd /opt/Pistisai
+cd /opt/IAClé
 git stash
 git checkout <previous_stable_commit>
 
@@ -131,16 +131,16 @@ cd api-backend
 npm ci  # Install exact versions from package-lock.json
 
 # Restart service
-sudo systemctl start pistisai-api
-sudo systemctl status pistisai-api
+sudo systemctl start IAClé-api
+sudo systemctl status IAClé-api
 ```
 
 #### 1.3 Revert Nginx Configuration
 
 ```bash
 # Restore previous nginx configuration
-sudo cp /etc/nginx/sites-available/Pistisai.backup \
-       /etc/nginx/sites-available/Pistisai
+sudo cp /etc/nginx/sites-available/IAClé.backup \
+       /etc/nginx/sites-available/IAClé
 
 # Test configuration
 sudo nginx -t
@@ -156,13 +156,13 @@ sudo systemctl status nginx
 
 ```bash
 # Test basic connectivity
-curl -I https://api.pistisai.app/api/health
+curl -I https://api.example.com/api/health
 
 # Test legacy bridge endpoints (if applicable)
-curl -I https://api.pistisai.app/api/bridge/health
+curl -I https://api.example.com/api/bridge/health
 
 # Check WebSocket endpoints
-wscat -c "wss://api.pistisai.app/ws/bridge"
+wscat -c "wss://api.example.com/ws/bridge"
 
 # Monitor error rates
 tail -f /var/log/nginx/error.log
@@ -179,20 +179,20 @@ docker-compose logs -f api-backend
 
 ```bash
 # Create snapshot of current database state
-pg_dump Pistisai > /backup/rollback-$(date +%Y%m%d-%H%M%S).sql
+pg_dump IAClé > /backup/rollback-$(date +%Y%m%d-%H%M%S).sql
 
 # Or for other databases
-mysqldump Pistisai > /backup/rollback-$(date +%Y%m%d-%H%M%S).sql
+mysqldump IAClé > /backup/rollback-$(date +%Y%m%d-%H%M%S).sql
 ```
 
 **Restore Previous State:**
 
 ```bash
 # Restore from pre-deployment backup
-psql Pistisai < /backup/pre-deployment-$(date +%Y%m%d).sql
+psql IAClé < /backup/pre-deployment-$(date +%Y%m%d).sql
 
 # Verify database integrity
-psql -c "SELECT version();" Pistisai
+psql -c "SELECT version();" IAClé
 ```
 
 #### 2.2 Configuration Rollback
@@ -201,7 +201,7 @@ psql -c "SELECT version();" Pistisai
 
 ```bash
 # Restore previous environment configuration
-sudo cp /opt/Pistisai/.env.backup /opt/Pistisai/.env
+sudo cp /opt/IAClé/.env.backup /opt/IAClé/.env
 
 # Restart services to pick up changes
 docker-compose restart api-backend
@@ -211,11 +211,11 @@ docker-compose restart api-backend
 
 ```bash
 # Restore previous certificates if updated
-sudo cp /etc/letsencrypt/live/api.pistisai.app/fullchain.pem.backup \
-       /etc/letsencrypt/live/api.pistisai.app/fullchain.pem
+sudo cp /etc/letsencrypt/live/api.example.com/fullchain.pem.backup \
+       /etc/letsencrypt/live/api.example.com/fullchain.pem
 
-sudo cp /etc/letsencrypt/live/api.pistisai.app/privkey.pem.backup \
-       /etc/letsencrypt/live/api.pistisai.app/privkey.pem
+sudo cp /etc/letsencrypt/live/api.example.com/privkey.pem.backup \
+       /etc/letsencrypt/live/api.example.com/privkey.pem
 
 # Reload nginx
 sudo systemctl reload nginx
@@ -227,10 +227,10 @@ sudo systemctl reload nginx
 
 ```bash
 # List available images
-docker images | grep Pistisai
+docker images | grep IAClé
 
 # Tag previous stable image
-docker tag pistisai-api:previous pistisai-api:latest
+docker tag IAClé-api:previous IAClé-api:latest
 ```
 
 **Update Docker Compose:**
@@ -239,7 +239,7 @@ docker tag pistisai-api:previous pistisai-api:latest
 # Update docker-compose.yml to use previous image
 services:
   api-backend:
-    image: pistisai-api:previous
+    image: IAClé-api:previous
     # ... rest of configuration
 ```
 
@@ -263,11 +263,11 @@ docker-compose up -d --force-recreate api-backend
 
 ```bash
 # Download from GitHub releases
-wget https://github.com/pistisAI/pistisai-app/releases/download/v3.10.2/pistisai-linux.AppImage
-wget https://github.com/pistisAI/pistisai-app/releases/download/v3.10.2/pistisai-windows.exe
+wget https://github.com/iacle-solutions/iacle-app/releases/download/v3.10.2/IAClé-linux.AppImage
+wget https://github.com/iacle-solutions/iacle-app/releases/download/v3.10.2/IAClé-windows.exe
 
 # Verify checksums
-sha256sum Pistisai-linux.AppImage
+sha256sum IAClé-linux.AppImage
 ```
 
 #### 3.2 Update Distribution Channels
@@ -280,7 +280,7 @@ sha256sum Pistisai-linux.AppImage
 cat > /var/www/updates/version.json << EOF
 {
   "version": "3.10.2",
-  "url": "https://releases.pistisai.app/v3.10.2/",
+  "url": "https://releases.example.com/v3.10.2/",
   "mandatory": true,
   "changelog": "Rollback to stable version due to deployment issues"
 }
@@ -291,11 +291,11 @@ EOF
 
 ```bash
 # Update DEB repository
-reprepro -b /var/www/apt remove stable Pistisai
-reprepro -b /var/www/apt includedeb stable pistisai_3.10.2_amd64.deb
+reprepro -b /var/www/apt remove stable IAClé
+reprepro -b /var/www/apt includedeb stable IAClé_3.10.2_amd64.deb
 
 # Update AppImage repository
-cp Pistisai-3.10.2.AppImage /var/www/releases/latest/Pistisai.AppImage
+cp IAClé-3.10.2.AppImage /var/www/releases/latest/example.comImage
 ```
 
 #### 3.3 User Communication
@@ -304,7 +304,7 @@ cp Pistisai-3.10.2.AppImage /var/www/releases/latest/Pistisai.AppImage
 
 ```bash
 # Send push notification to connected clients
-curl -X POST https://api.pistisai.app/api/admin/broadcast \
+curl -X POST https://api.example.com/api/admin/broadcast \
   -H "Authorization: Bearer <admin_token>" \
   -d '{
     "message": "System maintenance in progress. Please update your desktop client.",
@@ -335,15 +335,15 @@ echo "=== Rollback Health Check ==="
 
 # Test API endpoints
 echo "Testing API health..."
-curl -f https://api.pistisai.app/api/health || echo "API health check failed"
+curl -f https://api.example.com/api/health || echo "API health check failed"
 
 # Test WebSocket connections
 echo "Testing WebSocket..."
-timeout 10 wscat -c "wss://api.pistisai.app/ws/bridge" || echo "WebSocket test failed"
+timeout 10 wscat -c "wss://api.example.com/ws/bridge" || echo "WebSocket test failed"
 
 # Test database connectivity
 echo "Testing database..."
-psql -c "SELECT 1;" Pistisai || echo "Database test failed"
+psql -c "SELECT 1;" IAClé || echo "Database test failed"
 
 # Check service status
 echo "Checking services..."
@@ -352,7 +352,7 @@ docker-compose ps | grep -v "Up" && echo "Some services are down"
 # Test user authentication
 echo "Testing authentication..."
 curl -f -H "Authorization: Bearer <test_token>" \
-     https://api.pistisai.app/api/user/profile || echo "Auth test failed"
+     https://api.example.com/api/user/profile || echo "Auth test failed"
 
 echo "=== Health Check Complete ==="
 ```
@@ -363,26 +363,26 @@ echo "=== Health Check Complete ==="
 
 ```bash
 # Run basic load test
-ab -n 100 -c 10 https://api.pistisai.app/api/health
+ab -n 100 -c 10 https://api.example.com/api/health
 
 # Test WebSocket connections
 node test-websocket-load.js
 
 # Monitor response times
-curl -w "@curl-format.txt" -s -o /dev/null https://api.pistisai.app/api/health
+curl -w "@curl-format.txt" -s -o /dev/null https://api.example.com/api/health
 ```
 
 **Metrics Validation:**
 
 ```bash
 # Check error rates
-curl https://api.pistisai.app/api/metrics | jq '.errorRate'
+curl https://api.example.com/api/metrics | jq '.errorRate'
 
 # Check response times
-curl https://api.pistisai.app/api/metrics | jq '.averageResponseTime'
+curl https://api.example.com/api/metrics | jq '.averageResponseTime'
 
 # Check connection counts
-curl https://api.pistisai.app/api/metrics | jq '.activeConnections'
+curl https://api.example.com/api/metrics | jq '.activeConnections'
 ```
 
 #### 4.3 User Experience Validation
@@ -483,7 +483,7 @@ curl https://api.pistisai.app/api/metrics | jq '.activeConnections'
 
 ```bash
 # Analyze logs from failed deployment
-grep -i error /var/log/Pistisai/*.log
+grep -i error /var/log/IAClé/*.log
 
 # Check system metrics during incident
 # Review performance data
@@ -618,7 +618,7 @@ echo "=== Rollback Drill Complete ==="
 
 while true; do
   # Check error rate
-  ERROR_RATE=$(curl -s https://api.pistisai.app/api/metrics | jq '.errorRate')
+  ERROR_RATE=$(curl -s https://api.example.com/api/metrics | jq '.errorRate')
   
   if (( $(echo "$ERROR_RATE > 10" | bc -l) )); then
     echo "High error rate detected: $ERROR_RATE%"

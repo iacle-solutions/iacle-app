@@ -1,6 +1,6 @@
 # Deployment Documentation
 
-This directory documents supported deployment paths for Pistisai.
+This directory documents supported deployment paths for IAClé.
 
 ## Start Here
 

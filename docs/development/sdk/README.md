@@ -1,25 +1,25 @@
-# Pistisai SDK
+# IAClé SDK
 
-Official JavaScript/TypeScript SDK for the Pistisai API.
+Official JavaScript/TypeScript SDK for the IAClé API.
 
 ## Installation
 
 ### npm
 
 ```bash
-npm install @Pistisai/sdk
+npm install @IAClé/sdk
 ```
 
 ### yarn
 
 ```bash
-yarn add @Pistisai/sdk
+yarn add @IAClé/sdk
 ```
 
 ### pnpm
 
 ```bash
-pnpm add @Pistisai/sdk
+pnpm add @IAClé/sdk
 ```
 
 ## Quick Start
@@ -27,11 +27,11 @@ pnpm add @Pistisai/sdk
 ### Basic Usage
 
 ```typescript
-import { PistisaiClient } from '@Pistisai/sdk';
+import { IACléClient } from '@IAClé/sdk';
 
 // Initialize the client
-const client = new PistisaiClient({
-  baseURL: 'https://api.pistisai.app',
+const client = new IACléClient({
+  baseURL: 'https://api.example.com',
   apiVersion: 'v2',
 });
 
@@ -396,8 +396,8 @@ interface SDKConfig {
 ### Example Configuration
 
 ```typescript
-const client = new PistisaiClient({
-  baseURL: 'https://api.pistisai.app',
+const client = new IACléClient({
+  baseURL: 'https://api.example.com',
   apiVersion: 'v2',
   timeout: 60000,
   retryAttempts: 5,
@@ -463,10 +463,10 @@ console.log(response.pagination.pages);  // Total pages
 The SDK is fully typed with TypeScript:
 
 ```typescript
-import { PistisaiClient, Tunnel, User } from '@Pistisai/sdk';
+import { IACléClient, Tunnel, User } from '@IAClé/sdk';
 
-const client = new PistisaiClient({
-  baseURL: 'https://api.pistisai.app',
+const client = new IACléClient({
+  baseURL: 'https://api.example.com',
 });
 
 // Types are automatically inferred
@@ -479,10 +479,10 @@ const tunnel: Tunnel = await client.getTunnel('tunnel-id');
 ### Complete Authentication Flow
 
 ```typescript
-import { PistisaiClient } from '@Pistisai/sdk';
+import { IACléClient } from '@IAClé/sdk';
 
-const client = new PistisaiClient({
-  baseURL: 'https://api.pistisai.app',
+const client = new IACléClient({
+  baseURL: 'https://api.example.com',
 });
 
 // After OAuth login
@@ -565,9 +565,9 @@ console.log(`Total deliveries: ${deliveries.pagination.total}`);
 
 For issues, questions, or contributions, visit:
 
-- GitHub: https://github.com/pistisAI/pistisai-app
-- Documentation: https://pistisai.app/docs
-- API Docs: https://api.pistisai.app/api/docs
+- GitHub: https://github.com/iacle-solutions/iacle-app
+- Documentation: https://example.com/docs
+- API Docs: https://api.example.com/api/docs
 
 ## License
 

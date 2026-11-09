@@ -1,6 +1,6 @@
 # Operations Documentation
 
-Operational documentation covers running, monitoring, recovering, and securing Pistisai infrastructure.
+Operational documentation covers running, monitoring, recovering, and securing IAClé infrastructure.
 
 ## Primary Operations
 
@@ -32,4 +32,4 @@ Operational documentation covers running, monitoring, recovering, and securing P
 
 ## Current Baseline
 
-Pistisai supports local desktop operation first. Cloud deployment paths currently include Docker Compose for self-hosting and Kubernetes manifests under `k8s/` and `config/kubernetes/`; provider-specific deployment notes should be treated as runbooks, not universal architecture.
+IAClé supports local desktop operation first. Cloud deployment paths currently include Docker Compose for self-hosting and Kubernetes manifests under `k8s/` and `config/kubernetes/`; provider-specific deployment notes should be treated as runbooks, not universal architecture.

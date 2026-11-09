@@ -1,8 +1,8 @@
-# Pistisai API Documentation Guide
+# IAClé API Documentation Guide
 
 ## Overview
 
-The Pistisai API Backend provides comprehensive REST API endpoints for managing tunnels, users, authentication, and system operations. This guide explains how to access and use the API documentation.
+The IAClé API Backend provides comprehensive REST API endpoints for managing tunnels, users, authentication, and system operations. This guide explains how to access and use the API documentation.
 
 ## Accessing API Documentation
 
@@ -10,7 +10,7 @@ The Pistisai API Backend provides comprehensive REST API endpoints for managing 
 
 The interactive Swagger UI is available at:
 
-- **Production**: https://api.pistisai.app/api/docs
+- **Production**: https://api.example.com/api/docs
 - **Development**: http://localhost:8080/api/docs
 
 The Swagger UI provides:
@@ -25,7 +25,7 @@ The Swagger UI provides:
 
 The raw OpenAPI 3.0 specification is available at:
 
-- **Production**: https://api.pistisai.app/api/docs/swagger.json
+- **Production**: https://api.example.com/api/docs/swagger.json
 - **Development**: http://localhost:8080/api/docs/swagger.json
 
 ## API Endpoints
@@ -150,7 +150,7 @@ Authorization: Bearer <JWT_TOKEN>
 Tokens expire after a set period. Refresh tokens using:
 
 ```bash
-curl -X POST https://api.pistisai.app/auth/token/refresh \
+curl -X POST https://api.example.com/auth/token/refresh \
   -H "Content-Type: application/json" \
   -d '{"refreshToken": "your_refresh_token"}'
 ```
@@ -170,7 +170,7 @@ X-API-Key: <API_KEY>
 **Request:**
 
 ```bash
-curl -X POST https://api.pistisai.app/tunnels \
+curl -X POST https://api.example.com/tunnels \
   -H "Authorization: Bearer <JWT_TOKEN>" \
   -H "Content-Type: application/json" \
   -d '{
@@ -228,7 +228,7 @@ curl -X POST https://api.pistisai.app/tunnels \
 **Request:**
 
 ```bash
-curl -X GET https://api.pistisai.app/users/tier \
+curl -X GET https://api.example.com/users/tier \
   -H "Authorization: Bearer <JWT_TOKEN>"
 ```
 
@@ -380,9 +380,9 @@ X-Webhook-Signature: sha256=abcdef123456...
 
 Official SDKs are available for:
 
-- **JavaScript/TypeScript**: `@pistisAI/pistisai-app`
-- **Python**: `pistisai-api`
-- **Go**: `github.com/pistisAI/pistisai-app`
+- **JavaScript/TypeScript**: `@IAClé/iacle-app`
+- **Python**: `IAClé-api`
+- **Go**: `github.com/iacle-solutions/iacle-app`
 
 ## API Versioning
 
@@ -406,10 +406,10 @@ The API uses URL-based versioning:
 
 For API support:
 
-- **Documentation**: https://docs.pistisai.app
-- **Issues**: https://github.com/pistisAI/pistisai-app/issues
-- **Email**: support@pistisai.app
-- **Discord**: https://discord.gg/Pistisai
+- **Documentation**: https://docs.example.com
+- **Issues**: https://github.com/iacle-solutions/iacle-app/issues
+- **Email**: ops@example.com
+- **Discord**: https://discord.gg/IAClé
 
 ## Changelog
 
@@ -417,4 +417,4 @@ See [CHANGELOG.md](../../../docs/CHANGELOG.md) for API changes and updates.
 
 ## License
 
-The Pistisai API is licensed under the MIT License.
+The IAClé API is licensed under the MIT License.

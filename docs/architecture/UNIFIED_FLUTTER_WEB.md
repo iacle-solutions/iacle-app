@@ -2,36 +2,36 @@
 
 ## Overview
 
-Pistisai v3.10.3+ implements a unified Flutter-based web architecture that consolidates both marketing content and application functionality into a single codebase. This eliminates the need for separate static site containers while maintaining clear separation between marketing and application routes.
+IAClé v3.10.3+ implements a unified Flutter-based web architecture that consolidates both marketing content and application functionality into a single codebase. This eliminates the need for separate static site containers while maintaining clear separation between marketing and application routes.
 
 ## Architecture Changes
 
 ### Before (Multi-Container)
 
 ```
-pistisai.app → static-site container (HTML/CSS)
-app.pistisai.app → flutter-app container (Flutter web)
-docs.pistisai.app → static-site container (VitePress docs)
+example.com → static-site container (HTML/CSS)
+app.example.com → flutter-app container (Flutter web)
+docs.example.com → static-site container (VitePress docs)
 ```
 
 ### After (Unified Flutter)
 
 ```
-pistisai.app → flutter-app container (Flutter marketing pages)
-app.pistisai.app → flutter-app container (Flutter chat interface)
-docs.pistisai.app → static-site container (VitePress docs - unchanged)
+example.com → flutter-app container (Flutter marketing pages)
+app.example.com → flutter-app container (Flutter chat interface)
+docs.example.com → static-site container (VitePress docs - unchanged)
 ```
 
 ## Domain Routing Strategy
 
-### Main Domain (pistisai.app)
+### Main Domain (example.com)
 
 - **Purpose**: Marketing homepage and download information
 - **Routes**: `/` (homepage), `/download` (installation guide)
 - **Platform**: Web-only (`kIsWeb` detection)
 - **Authentication**: Not required for marketing content
 
-### App Subdomain (app.pistisai.app)
+### App Subdomain (app.example.com)
 
 - **Purpose**: Main application interface
 - **Routes**: `/chat`, `/settings`, `/login`, `/callback`
@@ -39,7 +39,7 @@ docs.pistisai.app → static-site container (VitePress docs - unchanged)
 - **Authentication**: Required for application features
 - **Redirect**: Root `/` redirects to `/chat`
 
-### Docs Subdomain (docs.pistisai.app)
+### Docs Subdomain (docs.example.com)
 
 - **Purpose**: Technical documentation
 - **Technology**: VitePress (unchanged)
@@ -156,7 +156,7 @@ The sample below is an earlier routing sketch. It is not what the image ships.
 ```nginx
 # Not the checked-in container config.
 server {
-    server_name pistisai.app;
+    server_name example.com;
     location / {
         proxy_pass http://flutter-app;
     }
@@ -222,11 +222,11 @@ server {
 
 ### Domain Access
 
-- [ ] `pistisai.app` → Flutter homepage
-- [ ] `pistisai.app/download` → Flutter download page
-- [ ] `app.pistisai.app` → Redirects to `/chat`
-- [ ] `app.pistisai.app/chat` → Flutter chat interface
-- [ ] `docs.pistisai.app` → VitePress documentation
+- [ ] `example.com` → Flutter homepage
+- [ ] `example.com/download` → Flutter download page
+- [ ] `app.example.com` → Redirects to `/chat`
+- [ ] `app.example.com/chat` → Flutter chat interface
+- [ ] `docs.example.com` → VitePress documentation
 
 ### Platform Behavior
 
@@ -249,7 +249,7 @@ server {
 The static-site container will be retained for documentation hosting but can be further optimized:
 
 - Remove homepage-related configurations
-- Focus solely on docs.pistisai.app
+- Focus solely on docs.example.com
 - Consider migrating docs to Flutter in future versions
 
 ### Performance Optimization

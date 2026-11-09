@@ -1,6 +1,6 @@
 # Future Enhancements
 
-This document tracks potential future enhancements and technology considerations for Pistisai.
+This document tracks potential future enhancements and technology considerations for IAClé.
 
 ## Self-Hosted Backend Infrastructure
 
@@ -19,7 +19,7 @@ This document tracks potential future enhancements and technology considerations
 - **File Storage**: Built-in file uploads with automatic CDN delivery
 - **Self-Hosting**: Full control over data infrastructure
 
-**Potential Use Cases for Pistisai**:
+**Potential Use Cases for IAClé**:
 
 1. **Replace Auth0** - Privacy-first self-hosted authentication
    - Complete data ownership for user accounts
