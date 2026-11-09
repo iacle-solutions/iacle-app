@@ -341,11 +341,16 @@ cp -r build/web/* /var/www/html/
 
 #### **Container Deployment**
 
-The Coolify image is the repo-root `Dockerfile.web`. It compiles the web app. The compose image at `config/docker/Dockerfile.web` only serves a prebuilt `build/web/` tree and listens on port `8080`. Details and cache pitfalls are in [Web Deploy](../operations/cicd/WEB_DEPLOY.md).
+The Dokploy image is the repo-root `Dockerfile.web`. It compiles the web app with `BRAND=iacle`. The compose image at `config/docker/Dockerfile.web` only serves a prebuilt `build/web/` tree and listens on port `8080`. Details and cache pitfalls are in [Web Deploy](../operations/cicd/WEB_DEPLOY.md).
 
 ```bash
-# Production image (what deploy-web.yml builds)
-docker build -f Dockerfile.web -t IAClé-web .
+# Production image (what deploy-web.yml builds). The three auth args are required.
+docker build -f Dockerfile.web -t IAClé-web \
+  --build-arg BRAND=iacle \
+  --build-arg SUPABASE_URL="$SUPABASE_URL" \
+  --build-arg SUPABASE_ANON_KEY="$SUPABASE_ANON_KEY" \
+  --build-arg PISTISAI_ADMIN_EMAIL="$PISTISAI_ADMIN_EMAIL" \
+  .
 docker run --rm -p 80:80 IAClé-web
 
 # Compose image, after a local Flutter web build
