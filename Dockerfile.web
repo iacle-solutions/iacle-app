@@ -2,23 +2,17 @@
 FROM gmeligio/flutter-android:3.47.7 AS builder
 
 WORKDIR /app
-COPY pubspec.* ./
+# Image runs as flutter (uid 1001). Every COPY must chown or pub get / bake cannot write.
+COPY --chown=flutter:flutter pubspec.* ./
 RUN flutter pub get
 RUN flutter config --enable-web
-COPY . .
-ARG BRAND=iacle
-ARG PISTISAI_ADMIN_EMAIL=
-ARG SUPABASE_URL=
-ARG SUPABASE_ANON_KEY=
-RUN if [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_ANON_KEY" ] || [ -z "$PISTISAI_ADMIN_EMAIL" ]; then \
-      echo "SUPABASE_URL, SUPABASE_ANON_KEY, and PISTISAI_ADMIN_EMAIL are required" >&2; \
-      exit 1; \
-    fi \
- && flutter build web --release --no-web-resources-cdn \
-    --dart-define=BRAND=${BRAND} \
-    --dart-define=PISTISAI_ADMIN_EMAIL=${PISTISAI_ADMIN_EMAIL} \
-    --dart-define=SUPABASE_URL=${SUPABASE_URL} \
-    --dart-define=SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY} \
+COPY --chown=flutter:flutter . .
+
+# --dart-define=BRAND does nothing; bake active_brand.g.dart + web shell from brand/iacle.
+# Requires iacle.licence in the build context (CI writes it from IACLE_BRAND_LICENCE).
+RUN dart run tool/brand_codegen.dart iacle --license /app/iacle.licence
+
+RUN flutter build web --release --no-web-resources-cdn \
  && python3 -c 'import json,pathlib; m=json.loads(pathlib.Path("assets/version.json").read_text()); p=pathlib.Path("build/web/index.html"); p.write_text(p.read_text().replace("$FLUTTER_BUILD_NUMBER", m["version"]+"."+str(m["build_number"])))'
 
 # ---- Serve stage: Nginx ----

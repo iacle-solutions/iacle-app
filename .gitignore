@@ -176,3 +176,6 @@ credentials.json
 .agents/skills.json
 .opencode/
 .crush/
+
+# Brand licences (never commit)
+*.licence
