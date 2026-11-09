@@ -16,8 +16,12 @@ if [ -z "$CLOUDFLARE_API_KEY" ]; then
   exit 1
 fi
 
-ACCOUNT_ID="35fa09929e656c4e96e4aa79909d11b7"
-TUNNEL_ID="62da6c19-947b-4bf6-acad-100a73de4e0d"
+ACCOUNT_ID="${CLOUDFLARE_ACCOUNT_ID:-}"
+TUNNEL_ID="${CLOUDFLARE_TUNNEL_ID:-}"
+if [ -z "$ACCOUNT_ID" ] || [ -z "$TUNNEL_ID" ]; then
+  echo "CLOUDFLARE_ACCOUNT_ID and CLOUDFLARE_TUNNEL_ID are required" >&2
+  exit 1
+fi
 
 echo "Using Account ID: $ACCOUNT_ID"
 

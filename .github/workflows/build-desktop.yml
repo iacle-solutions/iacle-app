@@ -108,7 +108,7 @@ jobs:
           flutter pub get
           echo "$IACLE_BRAND_LICENCE" > /tmp/iacle.licence
           bash tool/brand.sh iacle --license /tmp/iacle.licence
-          flutter build linux --release
+          flutter build linux --release --dart-define=BRAND=iacle
 
       - name: Package Linux Distributions
         env:
@@ -175,7 +175,7 @@ jobs:
           flutter pub get
           echo "$IACLE_BRAND_LICENCE" > /tmp/iacle.licence
           bash tool/brand.sh iacle --license /tmp/iacle.licence
-          flutter build windows --release
+          flutter build windows --release --dart-define=BRAND=iacle
 
       - name: Package Portable ZIP
         run: |
@@ -256,7 +256,7 @@ jobs:
           flutter pub get
           echo "$IACLE_BRAND_LICENCE" > /tmp/iacle.licence
           bash tool/brand.sh iacle --license /tmp/iacle.licence
-          flutter build macos --release
+          flutter build macos --release --dart-define=BRAND=iacle
         env:
           MACOSX_DEPLOYMENT_TARGET: 12.0
 

@@ -196,7 +196,7 @@ jobs:
           flutter pub get
           echo "$IACLE_BRAND_LICENCE" > /tmp/iacle.licence
           bash tool/brand.sh iacle --license /tmp/iacle.licence
-          flutter build apk --release --split-per-abi
+          flutter build apk --release --split-per-abi --dart-define=BRAND=iacle
 
       - name: Upload APKs
         uses: actions/upload-artifact@v7
@@ -239,7 +239,7 @@ jobs:
           flutter pub get
           echo "$IACLE_BRAND_LICENCE" > /tmp/iacle.licence
           bash tool/brand.sh iacle --license /tmp/iacle.licence
-          flutter build ios --release --no-codesign
+          flutter build ios --release --no-codesign --dart-define=BRAND=iacle
 
       - name: Upload iOS build
         uses: actions/upload-artifact@v7

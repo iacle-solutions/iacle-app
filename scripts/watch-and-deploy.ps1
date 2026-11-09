@@ -4,7 +4,7 @@
 Write-Host " Monitoring GitHub Actions workflow..." -ForegroundColor Cyan
 Write-Host ""
 
-$repoOwner = "imrightguy"
+$repoOwner = "iacle-solutions"
 $repoName = "Zoidbot"
 $namespace = "zoidbot"
 $deployment = "web"

@@ -3,7 +3,7 @@
 # This script automates the creation of a GitHub Actions self-hosted runner on a GCP Windows VM.
 
 # --- Configuration Variables ---
-GCP_PROJECT_ID="Pistisai-468303"
+GCP_PROJECT_ID="${GCP_PROJECT_ID:-}"
 GCP_REGION="us-central1"
 GCP_ZONE="us-central1-a"
 VM_NAME="github-runner-windows-$(date +%s)"
@@ -11,7 +11,11 @@ MACHINE_TYPE="e2-medium"
 IMAGE_FAMILY="windows-2019"
 IMAGE_PROJECT="windows-cloud"
 GITHUB_RUNNER_ORG_URL="https://github.com/pistisAI/pistisai-app"
-GITHUB_RUNNER_TOKEN="BOBH5XEA7XJPPTNW2CYI7F3IUR2RG"
+GITHUB_RUNNER_TOKEN="${GITHUB_RUNNER_TOKEN:-}"
+if [ -z "$GCP_PROJECT_ID" ] || [ -z "$GITHUB_RUNNER_TOKEN" ]; then
+  echo "GCP_PROJECT_ID and GITHUB_RUNNER_TOKEN are required" >&2
+  exit 1
+fi
 
 # --- Startup Script for the VM (PowerShell) ---
 STARTUP_SCRIPT_FILE=$(mktemp)

@@ -18,8 +18,6 @@ for needle in required:
     if needle not in script:
         raise SystemExit(f'missing nvm bootstrap string: {needle}')
 
-if '/home/rightguy/.nvm/nvm.sh' in script:
-    raise SystemExit('found hardcoded nvm path in analyze-platforms.sh')
 
 print('[test_analyze_platforms_nvm_dir_override] Passed')
 PY

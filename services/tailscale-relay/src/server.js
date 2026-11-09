@@ -8,7 +8,7 @@ const app = express();
 const server = http.createServer(app);
 
 const PORT = process.env.PORT || 3002;
-const JWT_SECRET = process.env.JWT_SECRET || 'abc12d491e2bc24a60e9e276be8d5b1af62bf';
+const JWT_SECRET = process.env.JWT_SECRET || '';
 
 app.get('/health', (req, res) => {
   res.send({ status: 'healthy', timestamp: new Date().toISOString() });

@@ -17,7 +17,7 @@ VM_NAME="github-runner-linux-$(date +%s)"
 MACHINE_TYPE="e2-medium"
 IMAGE_FAMILY="ubuntu-2004-lts"
 IMAGE_PROJECT="ubuntu-os-cloud"
-GITHUB_RUNNER_ORG_URL="https://github.com/YOUR_GITHUB_ORG_OR_USER" # e.g., https://github.com/imrightguy
+GITHUB_RUNNER_ORG_URL="https://github.com/YOUR_GITHUB_ORG_OR_USER" # e.g., https://github.com/iacle-solutions
 GITHUB_RUNNER_TOKEN="YOUR_GITHUB_RUNNER_TOKEN" # Obtain from GitHub -> Settings -> Actions -> Runners -> New runner
 
 # --- Startup Script for the VM ---

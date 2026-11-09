@@ -23,8 +23,16 @@ class SupabaseAuthProvider extends AuthProvider {
   @override
   UserModel? get currentUser => _currentUser;
 
+  bool get _configured =>
+      AppConfig.supabaseUrl.isNotEmpty && AppConfig.supabaseAnonKey.isNotEmpty;
+
   @override
   Future<void> initialize() async {
+    if (!_configured) {
+      _currentUser = null;
+      _authStateController.add(false);
+      return;
+    }
     await _authSubscription?.cancel();
     _authSubscription =
         Supabase.instance.client.auth.onAuthStateChange.listen((data) {
@@ -51,6 +59,11 @@ class SupabaseAuthProvider extends AuthProvider {
 
   @override
   Future<void> login() async {
+    if (!_configured) {
+      throw StateError(
+        'SUPABASE_URL and SUPABASE_ANON_KEY are required',
+      );
+    }
     await Supabase.instance.client.auth.signInWithOAuth(
       OAuthProvider.google,
       redirectTo: _redirectUri,
@@ -59,7 +72,9 @@ class SupabaseAuthProvider extends AuthProvider {
 
   @override
   Future<void> logout() async {
-    await Supabase.instance.client.auth.signOut();
+    if (_configured) {
+      await Supabase.instance.client.auth.signOut();
+    }
     _currentUser = null;
     _authStateController.add(false);
     await _clearPersistedSession();
@@ -67,6 +82,9 @@ class SupabaseAuthProvider extends AuthProvider {
 
   @override
   Future<bool> handleCallback({String? url}) async {
+    if (!_configured) {
+      return false;
+    }
     if (url == null || url.isEmpty) {
       return Supabase.instance.client.auth.currentSession != null;
     }
@@ -94,9 +112,9 @@ class SupabaseAuthProvider extends AuthProvider {
 
     _currentUser = UserModel(
       id: '00000000-0000-0000-0000-000000000000',
-      email: 'dev@pistisai.app',
-      name: 'Christopher (Dev)',
-      nickname: 'rightguy',
+      email: 'dev@example.com',
+      name: 'Dev User',
+      nickname: 'dev-user',
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
     );
@@ -105,6 +123,9 @@ class SupabaseAuthProvider extends AuthProvider {
 
   @override
   Future<String?> getAccessToken() async {
+    if (!_configured) {
+      return null;
+    }
     return Supabase.instance.client.auth.currentSession?.accessToken;
   }
 

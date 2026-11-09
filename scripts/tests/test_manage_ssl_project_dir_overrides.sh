@@ -5,7 +5,7 @@ PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 FILE="$PROJECT_ROOT/scripts/ssl/manage_ssl.sh"
 
 for needle in \
-  'EMAIL="${EMAIL:-christopher.maltais@gmail.com}"' \
+  'EMAIL="${EMAIL:-dev@example.com}"' \
   'DOMAIN_NAME="${DOMAIN_NAME:-pistisai.app}"' \
   'PROJECT_DIR="${PROJECT_DIR:-/opt/Pistisai}"' \
   'sed -i '\''s|ssl_certificate /etc/nginx/ssl/default.pem;|ssl_certificate /etc/letsencrypt/live/pistisai.app/fullchain.pem;|g'\'' "$PROJECT_DIR/config/nginx/nginx-webapp-internal.conf"' \

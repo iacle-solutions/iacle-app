@@ -25,8 +25,11 @@ for needle in required_strings:
     if needle not in deploy_script:
         raise SystemExit(f'missing Simon host guard string: {needle}')
 
+import re
+if re.search(r'SIMON_HOST="\$\{SIMON_HOST:-[0-9.]+\}"', deploy_script):
+    raise SystemExit('Simon deploy script must not default SIMON_HOST to an address')
+
 for forbidden in [
-    'SIMON_HOST="${SIMON_HOST:-31.97.140.7}"',
     'SWARM_HOST',
     'K8S_HOST',
     'KUBECONFIG_BASE64',

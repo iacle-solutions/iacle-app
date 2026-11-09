@@ -7,7 +7,8 @@
 #   2. Run the script: powershell -File scripts/gcp-windows-runner-setup.ps1
 
 # --- Configuration Variables ---
-$GCP_PROJECT_ID = "zoidbot-468303"
+if (-not $env:GCP_PROJECT_ID) { Write-Error "GCP_PROJECT_ID is required"; exit 1 }
+$GCP_PROJECT_ID = $env:GCP_PROJECT_ID
 $GCP_REGION = "us-central1"
 $GCP_ZONE = "us-central1-a"
 $VM_NAME = "github-runner-windows-$(Get-Date -Format yyyyMMddHHmmss)"
@@ -15,7 +16,8 @@ $MACHINE_TYPE = "e2-medium"
 $IMAGE_FAMILY = "windows-2019"
 $IMAGE_PROJECT = "windows-cloud"
 $GITHUB_RUNNER_ORG_URL = "https://github.com/Zoidbot-online/Zoidbot" # e.g., https://github.com/Zoidbot-online
-$GITHUB_RUNNER_TOKEN = "BOBH5XEA7XJPPTNW2CYI7F3IUR2RG" # Obtain from GitHub -> Settings -> Actions -> Runners -> New runner
+if (-not $env:GITHUB_RUNNER_TOKEN) { Write-Error "GITHUB_RUNNER_TOKEN is required"; exit 1 }
+$GITHUB_RUNNER_TOKEN = $env:GITHUB_RUNNER_TOKEN
 
 # --- Startup Script for the VM (PowerShell) ---
 $StartupScript = @"

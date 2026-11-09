@@ -6,7 +6,19 @@ COPY pubspec.* ./
 RUN flutter pub get
 RUN flutter config --enable-web
 COPY . .
-RUN flutter build web --release --no-web-resources-cdn \
+ARG BRAND=iacle
+ARG PISTISAI_ADMIN_EMAIL=
+ARG SUPABASE_URL=
+ARG SUPABASE_ANON_KEY=
+RUN if [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_ANON_KEY" ] || [ -z "$PISTISAI_ADMIN_EMAIL" ]; then \
+      echo "SUPABASE_URL, SUPABASE_ANON_KEY, and PISTISAI_ADMIN_EMAIL are required" >&2; \
+      exit 1; \
+    fi \
+ && flutter build web --release --no-web-resources-cdn \
+    --dart-define=BRAND=${BRAND} \
+    --dart-define=PISTISAI_ADMIN_EMAIL=${PISTISAI_ADMIN_EMAIL} \
+    --dart-define=SUPABASE_URL=${SUPABASE_URL} \
+    --dart-define=SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY} \
  && python3 -c 'import json,pathlib; m=json.loads(pathlib.Path("assets/version.json").read_text()); p=pathlib.Path("build/web/index.html"); p.write_text(p.read_text().replace("$FLUTTER_BUILD_NUMBER", m["version"]+"."+str(m["build_number"])))'
 
 # ---- Serve stage: Nginx ----

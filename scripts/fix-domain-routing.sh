@@ -166,6 +166,7 @@ EOF
 # Function to fix Cloudflare tunnel configuration
 fix_tunnel_configuration() {
     log "=== Fixing Cloudflare Tunnel Configuration ==="
+    : "${CLOUDFLARE_TUNNEL_ID:?CLOUDFLARE_TUNNEL_ID is required}"
 
     # Check if tunnel configuration exists
     if ! kubectl get configmap cloudflared-config -n $CLOUDTOLOCLLM_NAMESPACE &> /dev/null; then
@@ -180,7 +181,7 @@ metadata:
   namespace: $CLOUDTOLOCLLM_NAMESPACE
 data:
   config.yaml: |
-    tunnel: 62da6c19-947b-4bf6-acad-100a73de4e0d
+    tunnel: $CLOUDFLARE_TUNNEL_ID
     metrics: 0.0.0.0:2000
     no-autoupdate: true
     ingress:
@@ -250,7 +251,7 @@ EOF
             # Update the configuration
             kubectl patch configmap cloudflared-config -n $CLOUDTOLOCLLM_NAMESPACE --type merge -p '{
               "data": {
-                "config.yaml": "tunnel: 62da6c19-947b-4bf6-acad-100a73de4e0d\nmetrics: 0.0.0.0:2000\nno-autoupdate: true\ningress:\n  # App Subdomain - Streaming Proxy (WS)\n  - hostname: app.pistisai.app\n    path: /ws\n    service: http://streaming-proxy.'$CLOUDTOLOCLLM_NAMESPACE'.svc.cluster.local:3001\n  \n  # App Subdomain - Streaming Proxy (API)\n  - hostname: app.pistisai.app\n    path: /api/tunnel\n    service: http://streaming-proxy.'$CLOUDTOLOCLLM_NAMESPACE'.svc.cluster.local:3001\n  \n  # App Subdomain - API Backend Health\n  - hostname: app.pistisai.app\n    path: /health\n    service: http://api-backend.'$CLOUDTOLOCLLM_NAMESPACE'.svc.cluster.local:8080\n \n  # App Subdomain - API Backend\n  - hostname: app.pistisai.app\n    path: /api\n    service: http://api-backend.'$CLOUDTOLOCLLM_NAMESPACE'.svc.cluster.local:8080\n \n  # App Subdomain - Web Frontend (Root)\n  - hostname: app.pistisai.app\n    service: http://web.'$CLOUDTOLOCLLM_NAMESPACE'.svc.cluster.local:8080\n \n  # API Subdomain - API Backend Health\n  - hostname: api.pistisai.app\n    path: /health\n    service: http://api-backend.'$CLOUDTOLOCLLM_NAMESPACE'.svc.cluster.local:8080\n \n  # API Subdomain - API Backend (Root)\n  - hostname: api.pistisai.app\n    service: http://api-backend.'$CLOUDTOLOCLLM_NAMESPACE'.svc.cluster.local:8080\n   \n  # Argo CD UI\n  - hostname: argocd.pistisai.app\n    service: http://argocd-server.'$ARGOCD_NAMESPACE'.svc.cluster.local:80\n \n  # Grafana UI\n  - hostname: grafana.pistisai.app\n    service: http://grafana.'$CLOUDTOLOCLLM_NAMESPACE'.svc.cluster.local:3000\n \n  # Root Domain - Web Frontend\n  - hostname: pistisai.app\n    service: http://web.'$CLOUDTOLOCLLM_NAMESPACE'.svc.cluster.local:8080\n   \n  # Catch-all 404\n  - service: http_status:404\n"
+                "config.yaml": "tunnel: '"$CLOUDFLARE_TUNNEL_ID"'\nmetrics: 0.0.0.0:2000\nno-autoupdate: true\ningress:\n  # App Subdomain - Streaming Proxy (WS)\n  - hostname: app.pistisai.app\n    path: /ws\n    service: http://streaming-proxy.'$CLOUDTOLOCLLM_NAMESPACE'.svc.cluster.local:3001\n  \n  # App Subdomain - Streaming Proxy (API)\n  - hostname: app.pistisai.app\n    path: /api/tunnel\n    service: http://streaming-proxy.'$CLOUDTOLOCLLM_NAMESPACE'.svc.cluster.local:3001\n  \n  # App Subdomain - API Backend Health\n  - hostname: app.pistisai.app\n    path: /health\n    service: http://api-backend.'$CLOUDTOLOCLLM_NAMESPACE'.svc.cluster.local:8080\n \n  # App Subdomain - API Backend\n  - hostname: app.pistisai.app\n    path: /api\n    service: http://api-backend.'$CLOUDTOLOCLLM_NAMESPACE'.svc.cluster.local:8080\n \n  # App Subdomain - Web Frontend (Root)\n  - hostname: app.pistisai.app\n    service: http://web.'$CLOUDTOLOCLLM_NAMESPACE'.svc.cluster.local:8080\n \n  # API Subdomain - API Backend Health\n  - hostname: api.pistisai.app\n    path: /health\n    service: http://api-backend.'$CLOUDTOLOCLLM_NAMESPACE'.svc.cluster.local:8080\n \n  # API Subdomain - API Backend (Root)\n  - hostname: api.pistisai.app\n    service: http://api-backend.'$CLOUDTOLOCLLM_NAMESPACE'.svc.cluster.local:8080\n   \n  # Argo CD UI\n  - hostname: argocd.pistisai.app\n    service: http://argocd-server.'$ARGOCD_NAMESPACE'.svc.cluster.local:80\n \n  # Grafana UI\n  - hostname: grafana.pistisai.app\n    service: http://grafana.'$CLOUDTOLOCLLM_NAMESPACE'.svc.cluster.local:3000\n \n  # Root Domain - Web Frontend\n  - hostname: pistisai.app\n    service: http://web.'$CLOUDTOLOCLLM_NAMESPACE'.svc.cluster.local:8080\n   \n  # Catch-all 404\n  - service: http_status:404\n"
               }
             }'
 
