@@ -1,6 +1,6 @@
 # Pistisai — Votre IA privée, chez vous.
 
-**Une AI qui tourne sur VOTRE ordinateur. Vos données restent chez vous. $0/mois.**
+**Une AI qui tourne sur VOTRE ordinateur. Vos données restent chez vous.**
 
 ---
 
@@ -21,7 +21,7 @@ Les AI comme ChatGPT, Claude et Gemini sont pratiques, mais :
 |-----------------|---------------------|
 | 🤖 ChatGPT/Claude | 🖥️ Votre AI, sur votre machine |
 | 📤 Vos données partent au US | 🔒 Zéro donnée quitte votre réseau |
-| 💳 $20-200/mo récurrent | 💰 **$0/mo** — vous possédez |
+| 💳 $20-200/mo récurrent | 💰 Vous possédez |
 | ❓ Changement de termes imprévisible | ✅ Vous contrôlez tout |
 | 🔄 Chaque session repart à zéro | 🧠 L'AI apprend et se souvient |
 
@@ -30,7 +30,6 @@ Les AI comme ChatGPT, Claude et Gemini sont pratiques, mais :
 | Service | Prix |
 |---------|------|
 | **Installation** (30-60 min) | **$200-500** — une fois |
-| **Récurrence mensuelle** | **$0** |
 | **Support / mises à jour** (optionnel) | $50-100/mo |
 
 Vos données restent chez vous. Le mini-PC peut être acheté ou loué.
@@ -41,7 +40,7 @@ Entre l'arrivée du technicien et votre première question à votre AI : **30 à
 
 ## Qu'est-ce qu'il me faut ?
 
-L'agent tourne sur un ordinateur chez vous. L'audit gratuit vérifie si votre PC actuel peut l'héberger. Sinon, on fournit un mini-PC dédié (standard : Beelink GTi15), en achat ou en location. Du matériel sur mesure, seulement quand l'audit le montre.
+L'agent tourne sur un ordinateur chez vous. L'audit vérifie si votre PC actuel peut l'héberger. Sinon, on fournit un mini-PC dédié (standard : Beelink GTi15), en achat ou en location. Du matériel sur mesure, seulement quand l'audit le montre.
 
 On vient, on installe, on repart. Vous avez votre AI qui tourne.
 

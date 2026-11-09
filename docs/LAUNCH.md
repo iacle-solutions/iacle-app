@@ -11,7 +11,7 @@ This page is how to run the software. The offer is in the [README](../README.md)
 
 The PistisAI desktop hub, delivered by IAClé. It is the layer in front of an agent runtime. Hermes is the primary path. OpenClaw and compatible gateways work too. Ollama and LM Studio support memory, embeddings, OCR, and speech. The main runtime stays the agent gateway.
 
-The agent runs on a computer at the client's site. The free readiness audit checks whether their current PC can host it. If it can, it runs there. If not, IAClé supplies a dedicated mini PC (standard: Beelink GTi15), for purchase or rental. Custom hardware only when the audit shows the need.
+The agent runs on a computer at the client's site. The readiness audit checks whether their current PC can host it. If it can, it runs there. If not, IAClé supplies a dedicated mini PC (standard: Beelink GTi15), for purchase or rental. Custom hardware only when the audit shows the need.
 
 ---
 
@@ -26,7 +26,7 @@ The agent runs on a computer at the client's site. The free readiness audit chec
 
 The setup wizard chooses where the agent lives: this device, another private device, a Tailscale device, or a manual private URL.
 
-Sign-in is for the tunnel and for sync. Free uses the `pistisai.app` tunnel behind Cloudflare Access. Business and Enterprise use the customer's Tailscale or VPN.
+Sign-in is for the tunnel and for sync. The network is a tunnel behind Cloudflare Access, Tailscale, or the customer's VPN.
 
 ---
 

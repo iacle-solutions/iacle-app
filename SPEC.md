@@ -4,13 +4,13 @@
 
 IAClé is Christopher Maltais's Quebec sole proprietorship. It is the brand that delivers this stack to Quebec SMBs. The software is one desktop hub, plus skills. Public wording: [README](README.md) ([English](README.en.md)).
 
-Sign-in is for the tunnel and for sync. Free uses the `pistisai.app` tunnel behind Cloudflare Access. Business and Enterprise use the customer's Tailscale or VPN. Sign-in does not use Supabase.
+Sign-in is for the tunnel and for sync. The network is a tunnel behind Cloudflare Access, Tailscale, or the customer's VPN. Sign-in does not use Supabase.
 
 ## Project Vision
 
 **Pistisai** is a local-first companion and desktop capability layer for user-selected agent runtimes. It gives Hermes, OpenClaw, and compatible agent gateways a secure channel to the user and permissioned hands and eyes on the user's desktops.
 
-IAClé delivers that hub to Quebec SMBs. The agent runs on a computer at the client's site. The free readiness audit checks whether their current PC can host it. If it can, it runs there. If not, IAClé supplies a dedicated mini PC (standard: Beelink GTi15), for purchase or rental. Custom hardware only when the audit shows the need. Cloud services the client already uses are optional, and only with consent.
+IAClé delivers that hub to Quebec SMBs. The agent runs on a computer at the client's site. The readiness audit checks whether their current PC can host it. If it can, it runs there. If not, IAClé supplies a dedicated mini PC (standard: Beelink GTi15), for purchase or rental. Custom hardware only when the audit shows the need. Cloud services the client already uses are optional, and only with consent.
 
 The main app does not connect directly to raw local model providers as its primary experience. Ollama, LM Studio, and similar endpoints are support model providers for app-owned features such as memory, embeddings, summarization, classification, OCR cleanup, and speech helpers.
 
