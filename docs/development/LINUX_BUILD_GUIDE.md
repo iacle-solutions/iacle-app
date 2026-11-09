@@ -20,7 +20,7 @@ Linux builds produce two package formats:
    - Sandboxed environment with controlled permissions
    - Works on Ubuntu, Fedora, Arch, Debian, openSUSE, etc.
 
-2. **.deb Package** (`IAClé_{version}_amd64.deb`)
+2. **.deb Package** (`pistisai_{version}_amd64.deb`)
    - Native package for Debian/Ubuntu-based systems
    - Integrates with system package manager
    - Appears in application menu automatically
@@ -93,7 +93,7 @@ flutter build linux --release
 ### 4. Test the Build
 
 ```bash
-./build/linux/x64/release/bundle/IAClé
+./build/linux/x64/release/bundle/Pistisai
 ```
 
 ### 5. Build Flatpak (Optional)
@@ -106,21 +106,21 @@ flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flat
 flatpak install -y flathub org.freedesktop.Platform//23.08 org.freedesktop.Sdk//23.08
 
 # Build Flatpak
-flatpak-builder --force-clean --repo=repo build-dir com.IAClé.IAClé.yml
+flatpak-builder --force-clean --repo=repo build-dir com.Pistisai.Pistisai.yml
 
 # Create bundle
-flatpak build-bundle repo IAClé.flatpak com.IAClé.IAClé
+flatpak build-bundle repo IAClé.flatpak com.Pistisai.Pistisai
 
 # Test installation
 flatpak install --user IAClé.flatpak
 
 # Run the app
-flatpak run com.IAClé.IAClé
+flatpak run com.Pistisai.Pistisai
 ```
 
 ## Flatpak Manifest Configuration
 
-The Flatpak manifest (`com.IAClé.IAClé.yml`) defines:
+The Flatpak manifest (`com.Pistisai.Pistisai.yml`) defines:
 
 ### Runtime and SDK
 
@@ -161,7 +161,7 @@ The manifest copies the Flutter build output and installs:
 ### Option 2: Flathub (Recommended for Future)
 
 - Submit to Flathub for centralized distribution
-- Users can install via: `flatpak install flathub com.IAClé.IAClé`
+- Users can install via: `flatpak install flathub com.Pistisai.Pistisai`
 - Automatic updates through Flatpak
 - Better discoverability in software centers
 
@@ -201,14 +201,14 @@ flatpak install flathub org.freedesktop.Platform//23.08 org.freedesktop.Sdk//23.
 
 # Clear build cache and retry
 rm -rf build-dir repo
-flatpak-builder --force-clean --repo=repo build-dir com.IAClé.IAClé.yml
+flatpak-builder --force-clean --repo=repo build-dir com.Pistisai.Pistisai.yml
 ```
 
 ### Application Won't Start
 
 ```bash
 # Check Flatpak logs
-flatpak run --command=sh com.IAClé.IAClé
+flatpak run --command=sh com.Pistisai.Pistisai
 journalctl --user -xe | grep IAClé
 ```
 

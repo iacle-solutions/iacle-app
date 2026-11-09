@@ -24,7 +24,7 @@ Prepare one agent runtime before or during first launch:
 | Hermes | Configured in wizard | First agent runtime path for current testing |
 | OpenClaw Gateway | `http://localhost:18789` | Supported original integration |
 | Custom agent gateway | User supplied | Private server, VPS, or compatible agent runtime API |
-| Hosted agent runtime | IAClé managed | Optional paid compute |
+| Hosted agent runtime | IAClé managed | Optional hosted compute |
 
 For a runtime on another machine, install Tailscale on both devices and confirm they can reach each other.
 
@@ -64,8 +64,8 @@ sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev
 ## DEB Package
 
 ```bash
-wget https://github.com/iacle-solutions/iacle-app/releases/latest/download/IAClé_amd64.deb
-sudo dpkg -i IAClé_amd64.deb
+wget https://github.com/iacle-solutions/iacle-app/releases/latest/download/pistisai_amd64.deb
+sudo dpkg -i pistisai_amd64.deb
 sudo apt-get install -f
 ```
 
@@ -93,16 +93,16 @@ sudo apt-get remove IAClé
 ## AppImage
 
 ```bash
-wget https://github.com/iacle-solutions/iacle-app/releases/latest/download/IAClé-x86_64.AppImage
-chmod +x IAClé-x86_64.AppImage
-./IAClé-x86_64.AppImage
+wget https://github.com/iacle-solutions/iacle-app/releases/latest/download/Pistisai-x86_64.AppImage
+chmod +x Pistisai-x86_64.AppImage
+./Pistisai-x86_64.AppImage
 ```
 
 Optional desktop integration:
 
 ```bash
 mkdir -p ~/.local/bin ~/.local/share/applications
-mv IAClé-x86_64.AppImage ~/.local/bin/example.comImage
+mv Pistisai-x86_64.AppImage ~/.local/bin/Pistisai.AppImage
 ```
 
 Create `~/.local/share/applications/IAClé.desktop`:
@@ -111,7 +111,7 @@ Create `~/.local/share/applications/IAClé.desktop`:
 [Desktop Entry]
 Name=IAClé
 Comment=Secure agent companion
-Exec=/home/YOUR_USER/.local/bin/example.comImage
+Exec=/home/YOUR_USER/.local/bin/Pistisai.AppImage
 Terminal=false
 Type=Application
 Categories=Development;Network;
@@ -124,7 +124,7 @@ Categories=Development;Network;
 ```bash
 sudo snap install flutter --classic
 git clone https://github.com/iacle-solutions/iacle-app.git
-cd IAClé
+cd iacle-app
 flutter pub get
 flutter config --enable-linux-desktop
 flutter build linux --release
@@ -133,7 +133,7 @@ flutter build linux --release
 Run the built app:
 
 ```bash
-build/linux/x64/release/bundle/IAClé
+build/linux/x64/release/bundle/Pistisai
 ```
 
 ---
@@ -207,8 +207,8 @@ Log out and back in if your desktop environment needs to reload tray support.
 ### Logs
 
 ```bash
-tail -f ~/.local/share/IAClé/logs/app.log
-journalctl --user -u IAClé -f
+tail -f ~/.local/share/pistisai/logs/app.log
+journalctl --user -u pistisai -f
 ```
 
 ---

@@ -26,7 +26,7 @@ Verified locally with:
 # No issues found
 
 /mnt/data/flutter-sdk/bin/flutter build linux --debug
-# Built build/linux/x64/debug/bundle/IAClé
+# Built build/linux/x64/debug/bundle/Pistisai
 ```
 
 Important discovered gap:

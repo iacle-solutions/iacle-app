@@ -1436,7 +1436,7 @@ export class DriftAdapter {
   private db: Database.Database | null = null;
   private dbPath: string;
 
-  constructor(dbPath: string = '~/.local/share/IAClé/local_brain.db') {
+  constructor(dbPath: string = '~/.local/share/pistisai/local_brain.db') {
     this.dbPath = dbPath.replace('~', process.env.HOME || '');
   }
 
@@ -2223,7 +2223,7 @@ flutter test
 
 **Database connection failed**:
 - Verify Tailscale connection: `tailscale status`
-- Check database path: `~/.local/share/IAClé/local_brain.db`
+- Check database path: `~/.local/share/pistisai/local_brain.db`
 
 **Evolution not triggering**:
 - Check depth metrics in database

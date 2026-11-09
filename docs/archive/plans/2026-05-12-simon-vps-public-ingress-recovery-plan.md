@@ -114,14 +114,14 @@ Do not overload the ImmoGestion service unit.
 
 **Files:**
 - create `/etc/cloudflared/IAClé.yml`
-- create `/etc/systemd/system/cloudflared-IAClé.service`
+- create `/etc/systemd/system/cloudflared-pistisai.service`
 
 **Success criteria:** separate service name, separate tunnel config, separate credentials.
 
 ### Task 2A.4: Verify tunnel path end-to-end
 **Commands:**
 ```bash
-ssh root@31.97.140.7 'systemctl restart cloudflared-IAClé && systemctl status cloudflared-IAClé --no-pager -l | sed -n "1,80p"'
+ssh root@31.97.140.7 'systemctl restart cloudflared-pistisai && systemctl status cloudflared-pistisai --no-pager -l | sed -n "1,80p"'
 
 curl -I -L https://app.example.com
 curl -I -L https://api.example.com/health

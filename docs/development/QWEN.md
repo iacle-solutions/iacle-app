@@ -52,7 +52,7 @@ The project uses an agent-runtime-first architecture. Ollama, LM Studio, and sim
 ```bash
 # Clone the repository
 git clone https://github.com/iacle-solutions/iacle-app.git
-cd IAClé
+cd iacle-app
 
 # Install dependencies
 flutter pub get

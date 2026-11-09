@@ -77,7 +77,7 @@ services/api-backend/package.json  # Moved ws to dependencies
 
 ```bash
 git clone https://github.com/yourusername/IAClé.git
-cd IAClé
+cd iacle-app
 chmod +x deploy.sh
 ./deploy.sh
 ```

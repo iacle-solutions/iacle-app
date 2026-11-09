@@ -148,7 +148,7 @@ ingress:
 ### Task 3.2: Create a separate systemd unit
 **Objective:** do not reuse the ImmoGestion tunnel service.
 
-**Create:** `/etc/systemd/system/cloudflared-IAClé.service`
+**Create:** `/etc/systemd/system/cloudflared-pistisai.service`
 
 **Minimal unit:**
 ```ini
@@ -170,9 +170,9 @@ WantedBy=multi-user.target
 **Verification:**
 ```bash
 systemctl daemon-reload
-systemctl enable --now cloudflared-IAClé
-systemctl status cloudflared-IAClé --no-pager -l
-journalctl -u cloudflared-IAClé -n 100 --no-pager
+systemctl enable --now cloudflared-pistisai
+systemctl status cloudflared-pistisai --no-pager -l
+journalctl -u cloudflared-pistisai -n 100 --no-pager
 ```
 
 **Success criteria:** service is active and tunnel registers successfully.

@@ -239,12 +239,12 @@ nvidia-smi
 
 ### Conversation Storage
 
-- Linux: `~/.local/share/IAClé/local_brain.db`
+- Linux: `~/.local/share/pistisai/local_brain.db`
 - Windows: `%LOCALAPPDATA%\IAClé\local_brain.db`
 
 ### Logs
 
-- Linux: `~/.local/share/IAClé/logs/app.log`
+- Linux: `~/.local/share/pistisai/logs/app.log`
 - Windows: `%LOCALAPPDATA%\IAClé\logs\app.log`
 
 ### Reset Configuration
@@ -254,7 +254,7 @@ This removes local app configuration and local app data.
 Linux:
 
 ```bash
-rm -rf ~/.config/IAClé/ ~/.local/share/IAClé/
+rm -rf ~/.config/pistisai/ ~/.local/share/pistisai/
 ```
 
 Windows:

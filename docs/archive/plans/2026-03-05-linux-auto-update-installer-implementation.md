@@ -44,8 +44,8 @@ Options:
     -h, --help            Show this help message
 
 Environment Variables:
-    IAClé_DIR       Override installation directory
-    IAClé_CHANNEL   Default update channel
+    PISTISAI_DIR       Override installation directory
+    PISTISAI_CHANNEL   Default update channel
 
 Examples:
     # User-local installation (default)
@@ -281,7 +281,7 @@ setup_install_dir() {
     elif [ "$system_wide" = true ]; then
         install_dir="/opt/IAClé"
     else
-        install_dir="$HOME/.local/share/IAClé"
+        install_dir="$HOME/.local/share/pistisai"
     fi
 
     mkdir -p "$install_dir"
@@ -328,7 +328,7 @@ Categories=Development;Utility;Network;
 Keywords=AI;LLM;Machine Learning;Ollama;Local;
 StartupNotify=true
 StartupWMClass=IAClé
-MimeType=x-scheme-handler/IAClé;
+MimeType=x-scheme-handler/pistisai;
 EOF
 
     # Copy icon
@@ -367,7 +367,7 @@ git commit -m "feat: add AppImage download and installation logic"
 ## Task 4: Create Update Daemon Script
 
 **Files:**
-- Create: `scripts/packaging/update-daemon/IAClé-updated`
+- Create: `scripts/packaging/update-daemon/pistisai-updated`
 
 **Step 1: Write daemon script header**
 
@@ -379,10 +379,10 @@ git commit -m "feat: add AppImage download and installation logic"
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-STATE_DIR="$HOME/.config/IAClé"
+STATE_DIR="$HOME/.config/pistisai"
 STATE_FILE="$STATE_DIR/update-state.json"
-SOCKET_PATH="/tmp/IAClé-updated.sock"
-PID_FILE="/tmp/IAClé-updated.pid"
+SOCKET_PATH="/tmp/pistisai-updated.sock"
+PID_FILE="/tmp/pistisai-updated.pid"
 
 INSTALL_DIR=""
 CURRENT_VERSION=""
@@ -553,12 +553,12 @@ check_for_updates() {
 
 **Step 5: Make executable and test**
 
-Run: `chmod +x scripts/packaging/update-daemon/IAClé-updated`
+Run: `chmod +x scripts/packaging/update-daemon/pistisai-updated`
 
 **Step 6: Commit**
 
 ```bash
-git add scripts/packaging/update-daemon/IAClé-updated
+git add scripts/packaging/update-daemon/pistisai-updated
 git commit -m "feat: add update daemon script with version comparison"
 ```
 
@@ -567,12 +567,12 @@ git commit -m "feat: add update daemon script with version comparison"
 ## Task 5: Create Systemd Service Unit Files
 
 **Files:**
-- Create: `scripts/packaging/update-daemon/IAClé-updated.service`
-- Create: `scripts/packaging/update-daemon/IAClé-updated.timer`
+- Create: `scripts/packaging/update-daemon/pistisai-updated.service`
+- Create: `scripts/packaging/update-daemon/pistisai-updated.timer`
 
 **Step 1: Write user service unit**
 
-Create `scripts/packaging/update-daemon/IAClé-updated.service`:
+Create `scripts/packaging/update-daemon/pistisai-updated.service`:
 
 ```ini
 [Unit]
@@ -582,8 +582,8 @@ After=network-online.target
 
 [Service]
 Type=oneshot
-ExecStart=%h/.local/share/IAClé/IAClé-updated check
-WorkingDirectory=%h/.local/share/IAClé
+ExecStart=%h/.local/share/pistisai/pistisai-updated check
+WorkingDirectory=%h/.local/share/pistisai
 
 # Nice scheduling
 Nice=10
@@ -595,7 +595,7 @@ NoNewPrivileges=true
 PrivateTmp=true
 ProtectSystem=strict
 ProtectHome=true
-ReadWritePaths=%h/.config/IAClé %h/.local/share/IAClé/cache
+ReadWritePaths=%h/.config/pistisai %h/.local/share/pistisai/cache
 
 [Install]
 WantedBy=multi-user.target
@@ -603,13 +603,13 @@ WantedBy=multi-user.target
 
 **Step 2: Write timer unit**
 
-Create `scripts/packaging/update-daemon/IAClé-updated.timer`:
+Create `scripts/packaging/update-daemon/pistisai-updated.timer`:
 
 ```ini
 [Unit]
 Description=IAClé Update Checker
 Documentation=https://example.com
-Requires=IAClé-updated.service
+Requires=pistisai-updated.service
 
 [Timer]
 OnBootSec=15min
@@ -645,29 +645,29 @@ install_daemon() {
     log_info "Installing update daemon..."
 
     # Copy daemon script
-    cp "${SCRIPT_DIR}/update-daemon/IAClé-updated" "${install_dir}/"
-    chmod +x "${install_dir}/IAClé-updated"
+    cp "${SCRIPT_DIR}/update-daemon/pistisai-updated" "${install_dir}/"
+    chmod +x "${install_dir}/pistisai-updated"
 
     if [ "$system_wide" = true ]; then
         # System-wide installation
-        cp "${SCRIPT_DIR}/update-daemon/IAClé-updated.service" /etc/systemd/system/
-        cp "${SCRIPT_DIR}/update-daemon/IAClé-updated.timer" /etc/systemd/system/
+        cp "${SCRIPT_DIR}/update-daemon/pistisai-updated.service" /etc/systemd/system/
+        cp "${SCRIPT_DIR}/update-daemon/pistisai-updated.timer" /etc/systemd/system/
 
         systemctl daemon-reload
-        systemctl enable IAClé-updated.timer
-        systemctl start IAClé-updated.timer
+        systemctl enable pistisai-updated.timer
+        systemctl start pistisai-updated.timer
     else
         # User installation
         local user_service_dir="$HOME/.config/systemd/user"
         mkdir -p "$user_service_dir"
 
         # Adapt service file for user installation
-        sed "s|%h|%h|g" "${SCRIPT_DIR}/update-daemon/IAClé-updated.service" > "$user_service_dir/IAClé-updated.service"
-        sed "s|%h|%h|g" "${SCRIPT_DIR}/update-daemon/IAClé-updated.timer" > "$user_service_dir/IAClé-updated.timer"
+        sed "s|%h|%h|g" "${SCRIPT_DIR}/update-daemon/pistisai-updated.service" > "$user_service_dir/pistisai-updated.service"
+        sed "s|%h|%h|g" "${SCRIPT_DIR}/update-daemon/pistisai-updated.timer" > "$user_service_dir/pistisai-updated.timer"
 
         systemctl --user daemon-reload
-        systemctl --user enable IAClé-updated.timer
-        systemctl --user start IAClé-updated.timer
+        systemctl --user enable pistisai-updated.timer
+        systemctl --user start pistisai-updated.timer
     fi
 
     log_success "Update daemon installed and enabled"
@@ -798,7 +798,7 @@ class AutoUpdateService extends ChangeNotifier {
   String? get errorMessage => _errorMessage;
 
   // Socket path for daemon communication
-  static const String _socketPath = '/tmp/IAClé-updated.sock';
+  static const String _socketPath = '/tmp/pistisai-updated.sock';
 
   /// Parse semantic version string
   VersionComponents parseVersion(String version) {
@@ -1265,7 +1265,7 @@ Modify the `ncipollo/release-action` step:
       ## Downloads
 
       ### Linux
-      - **AppImage** (Recommended): `IAClé-x86_64.AppImage`
+      - **AppImage** (Recommended): `Pistisai-x86_64.AppImage`
       - **Debian/Ubuntu**: `.deb` package
       - **Portable**: `.tar.gz` bundle
 
@@ -1315,7 +1315,7 @@ void main() {
 
     testWidgets('AutoUpdateService can check for updates', (WidgetTester tester) async {
       // Build app
-      await tester.pumpWidget(app.IACléApp());
+      await tester.pumpWidget(app.PistisaiApp());
 
       // Get service
       final updateService = di.serviceLocator<AutoUpdateService>();
@@ -1332,7 +1332,7 @@ void main() {
     });
 
     testWidgets('AutoUpdateService parses versions correctly', (WidgetTester tester) async {
-      await tester.pumpWidget(app.IACléApp());
+      await tester.pumpWidget(app.PistisaiApp());
 
       final updateService = di.serviceLocator<AutoUpdateService>();
 
@@ -1390,9 +1390,9 @@ curl -fsSL https://example.com/install.sh | bash -s -- --dir /opt/myapp
 Download the AppImage from [releases](https://github.com/iacle-solutions/iacle-app/releases):
 
 ```bash
-wget https://github.com/iacle-solutions/iacle-app/releases/latest/download/IAClé-x86_64.AppImage
-chmod +x IAClé-x86_64.AppImage
-./IAClé-x86_64.AppImage
+wget https://github.com/iacle-solutions/iacle-app/releases/latest/download/Pistisai-x86_64.AppImage
+chmod +x Pistisai-x86_64.AppImage
+./Pistisai-x86_64.AppImage
 ```
 
 ### Auto-Updates
@@ -1460,7 +1460,7 @@ git commit --allow-empty -m "test: validate auto-update installer implementation
 This implementation plan creates a complete Linux auto-updating installer system with:
 
 1. **Installer Script** (`install.sh`) - One-line installation from web
-2. **Update Daemon** (`IAClé-updated`) - Background update service
+2. **Update Daemon** (`pistisai-updated`) - Background update service
 3. **Auto-Update Service** (`auto_update_service.dart`) - In-app update management
 4. **UI Integration** - Update status and controls in Config screen
 5. **CI/CD Integration** - Automatic installer generation in releases

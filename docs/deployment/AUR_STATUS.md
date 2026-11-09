@@ -103,14 +103,14 @@ chmod +x IAClé-4.0.78-x86_64.AppImage
 ```bash
 # Clone repository
 git clone https://github.com/iacle-solutions/iacle-app.git
-cd IAClé
+cd iacle-app
 
 # Build using unified package script
 ./scripts/build_unified_package.sh
 
 # Install manually
-sudo cp -r dist/IAClé-3.10.3 /usr/share/IAClé
-sudo ln -sf /usr/share/IAClé/bin/* /usr/bin/
+sudo cp -r dist/IAClé-3.10.3 /usr/share/pistisai
+sudo ln -sf /usr/share/pistisai/bin/* /usr/bin/
 ```
 
 ### Option 3: PowerShell Build (Advanced)

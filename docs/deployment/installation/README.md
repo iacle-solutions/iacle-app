@@ -27,9 +27,9 @@ Install or prepare at least one agent runtime before completing setup:
 | Hermes | Configured in wizard | First agent runtime path for current testing |
 | OpenClaw Gateway | `http://localhost:18789` | Supported original integration |
 | Custom agent gateway | User supplied | Private server, VPS, or compatible agent runtime API |
-| Hosted agent runtime | IAClé managed | Optional paid compute |
+| Hosted agent runtime | IAClé managed | Optional hosted compute |
 
-Most users should run the agent runtime locally or on another machine they control. Running an agent runtime in IAClé-hosted infrastructure is optional paid compute and should use an isolated per-user container.
+Most users should run the agent runtime locally or on another machine they control. A hosted agent runtime is optional and should use an isolated per-user container.
 
 ### Optional Support Model Provider
 

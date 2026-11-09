@@ -295,7 +295,7 @@ reprepro -b /var/www/apt remove stable IAClé
 reprepro -b /var/www/apt includedeb stable IAClé_3.10.2_amd64.deb
 
 # Update AppImage repository
-cp IAClé-3.10.2.AppImage /var/www/releases/latest/example.comImage
+cp IAClé-3.10.2.AppImage /var/www/releases/latest/Pistisai.AppImage
 ```
 
 #### 3.3 User Communication

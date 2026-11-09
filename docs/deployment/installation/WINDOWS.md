@@ -25,7 +25,7 @@ Prepare one agent runtime before or during first launch:
 | Hermes | Configured in wizard | First agent runtime path for current testing |
 | OpenClaw Gateway | `http://localhost:18789` | Supported original integration |
 | Custom agent gateway | User supplied | Private server, VPS, or compatible agent runtime API |
-| Hosted agent runtime | IAClé managed | Optional paid compute |
+| Hosted agent runtime | IAClé managed | Optional hosted compute |
 
 For a runtime on another machine, install Tailscale on both devices and confirm they can reach each other.
 
@@ -95,7 +95,7 @@ Build:
 
 ```powershell
 git clone https://github.com/iacle-solutions/iacle-app.git
-cd IAClé
+cd iacle-app
 flutter pub get
 flutter config --enable-windows-desktop
 flutter build windows --release

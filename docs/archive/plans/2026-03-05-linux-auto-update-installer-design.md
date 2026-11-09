@@ -22,7 +22,7 @@ curl -fsSL https://example.com/install.sh | bash
 ### Components
 
 1. **Installer Script** (`install.sh`) - Downloads and sets up the application
-2. **Update Daemon** (`IAClé-updated`) - Background service for update checks
+2. **Update Daemon** (`pistisai-updated`) - Background service for update checks
 3. **Auto-Update Service** (`auto_update_service.dart`) - Flutter service for in-app updates
 4. **CI/CD Integration** - Generates installer during deployment pipeline
 
@@ -30,7 +30,7 @@ curl -fsSL https://example.com/install.sh | bash
 
 | Scope | Location | Systemd | Requirements |
 |-------|----------|---------|--------------|
-| User-local (default) | `~/.local/share/IAClé/` | `~/.config/systemd/user/` | No sudo |
+| User-local (default) | `~/.local/share/pistisai/` | `~/.config/systemd/user/` | No sudo |
 | System-wide (`--system`) | `/opt/IAClé/` | `/etc/systemd/system/` | sudo required |
 
 ## Installer Script (`install.sh`)
@@ -74,10 +74,10 @@ curl -fsSL https://example.com/install.sh | bash -s -- --silent
 
 | Variable | Description |
 |----------|-------------|
-| `IAClé_DIR` | Override installation directory |
-| `IAClé_CHANNEL` | Default update channel |
+| `PISTISAI_DIR` | Override installation directory |
+| `PISTISAI_CHANNEL` | Default update channel |
 
-## Update Daemon (`IAClé-updated`)
+## Update Daemon (`pistisai-updated`)
 
 ### Purpose
 
@@ -111,7 +111,7 @@ fi
 
 ### State File
 
-**Location:** `~/.config/IAClé/update-state.json`
+**Location:** `~/.config/pistisai/update-state.json`
 
 ```json
 {
@@ -128,7 +128,7 @@ fi
 
 ### Communication
 
-- **Unix Socket:** `/tmp/IAClé-updated.sock`
+- **Unix Socket:** `/tmp/pistisai-updated.sock`
 - **Signals:** `UpdateAvailable`, `UpdateDownloaded`, `UpdateInstalled`
 - **Commands:** `check`, `download`, `install`, `status`
 
@@ -199,10 +199,10 @@ fi
 ### Build Artifacts
 
 Each release will include:
-- `IAClé-x86_64.AppImage` - Main application
+- `Pistisai-x86_64.AppImage` - Main application
 - `install.sh` - Installer script
 - `IAClé-x86_64.tar.gz` - Portable bundle
-- `IAClé_${VERSION}_amd64.deb` - Debian package
+- `pistisai_${VERSION}_amd64.deb` - Debian package
 - `IAClé.sha256` - Checksums
 
 ## File Structure
@@ -214,16 +214,16 @@ IAClé/
 │       ├── installer-template.sh       # Template for install.sh
 │       ├── build_installer.sh          # Generates install.sh
 │       └── update-daemon/              # Update daemon files
-│           ├── IAClé-updated # Daemon script
-│           └── IAClé-updated.service # Systemd unit
+│           ├── pistisai-updated # Daemon script
+│           └── pistisai-updated.service # Systemd unit
 ├── lib/services/
 │   └── auto_update_service.dart        # NEW: In-app update service
 ├── linux/
-│   └── IAClé-updated         # Daemon binary (bundled)
+│   └── pistisai-updated         # Daemon binary (bundled)
 ├── test/services/
 │   └── auto_update_service_test.dart   # NEW: Tests
 └── build/linux/x64/release/bundle/
-    └── IAClé-updated         # Daemon bundled with app
+    └── pistisai-updated         # Daemon bundled with app
 ```
 
 ## User Experience Flows
@@ -234,7 +234,7 @@ IAClé/
 $ curl -fsSL https://example.com/install.sh | bash
 
 🦞 Installing IAClé v10.1.200...
-✓ Downloaded AppImage to ~/.local/share/IAClé/
+✓ Downloaded AppImage to ~/.local/share/pistisai/
 ✓ Created desktop entry
 ✓ Installed icon to ~/.local/share/icons/
 ✓ Set up update daemon

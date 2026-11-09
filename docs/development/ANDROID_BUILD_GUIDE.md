@@ -96,7 +96,7 @@ The Android build system requires:
 # Generate a new keystore (run this locally, not in CI)
 keytool -genkey -v -keystore release-keystore.jks \
   -keyalg RSA -keysize 2048 -validity 10000 \
-  -alias IAClé-release
+  -alias release-key
 
 # You will be prompted for:
 # - Keystore password (save this securely!)
@@ -184,7 +184,7 @@ If you prefer to configure secrets manually:
    ```bash
    keytool -genkey -v -keystore android/release-keystore.jks \
      -keyalg RSA -keysize 2048 -validity 10000 \
-     -alias IAClé-release
+     -alias release-key
    ```
 
 2. **Convert to base64**:

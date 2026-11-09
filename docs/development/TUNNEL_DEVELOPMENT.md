@@ -70,7 +70,7 @@ Before starting tunnel system development, ensure you have the following install
 
 ```bash
 git clone https://github.com/iacle-solutions/iacle-app.git
-cd IAClé
+cd iacle-app
 ```
 
 ### 2. Install Dependencies

@@ -18,7 +18,7 @@ Please be respectful and constructive in all interactions.
 ```bash
 # Clone the repository
 git clone https://github.com/iacle-solutions/iacle-app.git
-cd IAClé/services/sdk
+cd iacle-app/services/sdk
 
 # Install dependencies
 npm install

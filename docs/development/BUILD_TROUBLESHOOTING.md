@@ -653,7 +653,7 @@ If you exceed free tier, consider:
 
    ```bash
    # If upgrading, uninstall old version first
-   adb uninstall com.IAClé.IAClé
+   adb uninstall app.pistisai.app
    ```
 
 ### Issue: APK Installs but Crashes on Launch
@@ -686,7 +686,7 @@ If you exceed free tier, consider:
 
    ```bash
    # Clear app data and cache
-   adb shell pm clear com.IAClé.IAClé
+   adb shell pm clear app.pistisai.app
    ```
 
 ### Issue: Gradle Build Timeout
