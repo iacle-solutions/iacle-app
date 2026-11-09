@@ -29,7 +29,7 @@ void main() {
       );
 
       expect(updated.key, 'test_hermes_api_key');
-      expect(updated.content, contains('API_SERVER_KEY=psk_0123456789abcdef'));
+      expect(updated.content, contains('API_SERVER_KEY=test_hermes_api_key'));
       expect(updated.content, contains('API_SERVER_ENABLED=true'));
     });
   });
@@ -94,7 +94,7 @@ void main() {
       expect(ready.resolution.url, AppConfig.defaultHermesUrl);
       expect(ready.apiKey, 'test_hermes_api_key');
       final env = File('${home.path}${Platform.pathSeparator}.env').readAsStringSync();
-      expect(env, contains('API_SERVER_KEY=psk_0123456789abcdef'));
+      expect(env, contains('API_SERVER_KEY=test_hermes_api_key'));
       expect(env, contains('API_SERVER_ENABLED=true'));
     });
   });
