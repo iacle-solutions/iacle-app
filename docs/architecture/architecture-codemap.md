@@ -420,12 +420,12 @@ Tunnel & Proxy Management
 Client Tier Management
 ├── EnhancedUserTierService creation                    <-- 8a
 │   ├── Injected AuthService
-│   └── internal tier state (free/premium/enterprise)   <-- 8e
+│   └── internal account-tier state                    <-- 8e
 │
 ├── initialize()                                        <-- 8b
 │   ├── Guard: if already initialized → skip
 │   ├── If user authenticated → checkUserTier()         <-- 8c
-│   └── Else → _setFreeTierDefaults()
+│   └── Else → apply the default account tier
 │
 ├── checkUserTier()
 │   ├── HTTP GET /api/user/tier with auth token
@@ -458,7 +458,7 @@ Backend Tier Middleware
 ├── tier-check.js middleware                            <-- 8d
 │   ├── Extracts user identity from JWT / request
 │   ├── Queries user_subscriptions table
-│   ├── Determines effective tier (free / premium / enterprise)
+│   ├── Determines the effective account tier
 │   └── Attaches tier info to request (e.g., req.userTier)
 │
 ├── Route Integration

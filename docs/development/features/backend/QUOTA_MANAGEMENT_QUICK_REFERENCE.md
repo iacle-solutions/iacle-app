@@ -125,21 +125,21 @@ Get quota summary with statistics
 
 ## Default Quota Limits
 
-### Free Tier
+### Account tier
 
 - API Requests: 10,000/month
 - Data Transfer: 1 GB/month
 - Concurrent Connections: 5
 - Tunnels: 3
 
-### Premium Tier
+### Account tier
 
 - API Requests: 1,000,000/month
 - Data Transfer: 100 GB/month
 - Concurrent Connections: 100
 - Tunnels: 50
 
-### Enterprise Tier
+### Account tier
 
 - API Requests: Unlimited
 - Data Transfer: Unlimited

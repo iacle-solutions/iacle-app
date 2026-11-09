@@ -159,7 +159,7 @@ done
 ### Test with Different Users
 
 ```bash
-# Free tier user (60 req/min)
+# Account tier user (60 req/min)
 curl -H "Authorization: Bearer <free-user-token>" \
   http://localhost:3001/api/test
 

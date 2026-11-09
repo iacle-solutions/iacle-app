@@ -91,8 +91,8 @@ Get comprehensive dashboard metrics for the Admin Center.
 - `users.activePercentage`: Percentage of total users that are active
 
 - `subscriptions.distribution`: Count of users by subscription tier
-- `subscriptions.totalSubscribed`: Total paid subscribers (premium + enterprise)
-- `subscriptions.conversionRate`: Percentage of users with paid subscriptions
+- `subscriptions.totalSubscribed`: Total subscribers (active subscriptions)
+- `subscriptions.conversionRate`: Percentage of users with subscriptions
 
 - `revenue.mrr`: Monthly Recurring Revenue (based on active subscriptions)
 - `revenue.currentMonth`: Total revenue for current month
@@ -131,15 +131,13 @@ Users registered between the 1st and last day of the current month.
 
 ### Subscription Tier Distribution
 
-Count of users by their active subscription tier. Users without active subscriptions are counted as "free".
+Count of users by their active subscription tier. Users without active subscriptions are counted as the default account tier.
 
 ### Monthly Recurring Revenue (MRR)
 
 Calculated as:
 
-```
-MRR = (Premium Users × $9.99) + (Enterprise Users × $29.99)
-```
+MRR is the sum of recorded subscription amounts for the month. Amounts are not listed in this repository.
 
 ### Current Month Revenue
 
@@ -147,10 +145,10 @@ Sum of all successful payment transactions in the current calendar month.
 
 ### Conversion Rate
 
-Percentage of total users with paid subscriptions:
+Percentage of total users with subscriptions:
 
 ```
-Conversion Rate = (Paid Subscribers / Total Users) × 100
+Conversion Rate = (Subscribers / Total Users) × 100
 ```
 
 ## Usage Examples

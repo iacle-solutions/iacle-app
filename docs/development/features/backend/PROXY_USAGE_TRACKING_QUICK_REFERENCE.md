@@ -410,21 +410,7 @@ Get billing summary for a user.
 
 ## Billing Calculation
 
-### Free Tier
-
-- Base charge: $0
-- Data transfer charge: $0
-- Total: $0
-
-### Premium Tier
-
-- Base charge: $10/month
-- Data transfer charge: $0.01 per GB
-- Total: $10 + (total_data_gb * $0.01)
-
-### Enterprise Tier
-
-- Custom pricing (contact sales)
+Usage totals follow the account tier. Amounts are not listed in this repository.
 
 ## Integration
 

@@ -131,7 +131,7 @@ chmod +x IAClé-linux.AppImage
 ### Linux Deb Package
 
 ```bash
-sudo dpkg -i pistisai_amd64.deb
+sudo dpkg -i <downloaded-package>.deb
 IAClé
 ```
 

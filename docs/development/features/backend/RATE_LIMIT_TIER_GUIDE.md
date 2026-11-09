@@ -6,7 +6,7 @@ IAClé implements tier-based rate limiting to ensure fair resource allocation an
 
 **Requirement:** 12.7 - THE API SHALL implement API rate limit documentation
 
-## Free Tier
+## Account tier
 
 ### Limits
 
@@ -26,7 +26,7 @@ IAClé implements tier-based rate limiting to ensure fair resource allocation an
 ### Example Usage Pattern
 
 ```javascript
-// Free tier: 100 requests/minute = ~1.67 requests/second
+// Account tier: 100 requests/minute = ~1.67 requests/second
 // Plan requests accordingly
 
 async function freeUserWorkflow() {
@@ -64,7 +64,7 @@ curl -X POST \
   https://api.example.com/v2/users/me/tier/upgrade
 ```
 
-## Premium Tier
+## Account tier
 
 ### Limits
 
@@ -147,7 +147,7 @@ Consider upgrading to Enterprise if you:
 - Have mission-critical applications
 - Need dedicated support
 
-## Enterprise Tier
+## Account tier
 
 ### Limits
 
@@ -247,7 +247,7 @@ curl -H "X-API-Key: $API_KEY" \
 
 ## Rate Limit Monitoring by Tier
 
-### Free Tier Monitoring
+### Account tier Monitoring
 
 ```bash
 # Check your current usage
@@ -255,7 +255,7 @@ curl -H "Authorization: Bearer $TOKEN" \
   https://api.example.com/v2/rate-limit-metrics/summary
 ```
 
-### Premium Tier Monitoring
+### Account tier Monitoring
 
 ```bash
 # Same endpoint, but with higher limits
@@ -263,7 +263,7 @@ curl -H "Authorization: Bearer $TOKEN" \
   https://api.example.com/v2/rate-limit-metrics/summary
 ```
 
-### Enterprise Tier Monitoring
+### Account tier Monitoring
 
 ```bash
 # Same endpoint, plus access to admin metrics
@@ -298,7 +298,7 @@ curl -H "Authorization: Bearer $TOKEN" \
 
 ## Choosing the Right Tier
 
-### Free Tier
+### Account tier
 
 **Choose if:**
 
@@ -309,7 +309,7 @@ curl -H "Authorization: Bearer $TOKEN" \
 
 **Example:** Personal dashboard with <100 requests/day
 
-### Premium Tier
+### Account tier
 
 **Choose if:**
 
@@ -320,7 +320,7 @@ curl -H "Authorization: Bearer $TOKEN" \
 
 **Example:** SaaS application with 1,000-10,000 requests/day
 
-### Enterprise Tier
+### Account tier
 
 **Choose if:**
 
@@ -333,12 +333,12 @@ curl -H "Authorization: Bearer $TOKEN" \
 
 ## Handling Rate Limits by Tier
 
-### Free Tier Strategy
+### Account tier Strategy
 
 ```javascript
-// Conservative approach for free tier
+// Conservative approach for account tier
 async function freeUserStrategy() {
-  const maxConcurrent = 5; // Free tier limit
+  const maxConcurrent = 5; // Account tier limit
   const queue = [];
   
   for (let i = 0; i < totalRequests; i++) {
@@ -354,10 +354,10 @@ async function freeUserStrategy() {
 }
 ```
 
-### Premium Tier Strategy
+### Account tier Strategy
 
 ```javascript
-// Balanced approach for premium tier
+// Balanced approach for account tier
 async function premiumUserStrategy() {
   const maxConcurrent = 25; // Premium tier limit
   const batchSize = 50; // Premium burst size
@@ -372,10 +372,10 @@ async function premiumUserStrategy() {
 }
 ```
 
-### Enterprise Tier Strategy
+### Account tier Strategy
 
 ```javascript
-// Aggressive approach for enterprise tier
+// Aggressive approach for account tier
 async function enterpriseUserStrategy() {
   const maxConcurrent = 100; // Enterprise tier limit
   const batchSize = 200; // Enterprise burst size

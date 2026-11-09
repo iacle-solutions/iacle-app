@@ -101,11 +101,11 @@ psql -h localhost -U postgres -d IAClé -f services/api-backend/database/seeds/0
 
 | Email                       | Subscription Tier | Status   | Purpose                     |
 | --------------------------- | ----------------- | -------- | --------------------------- |
-| test.free@example.com       | Free              | Active   | Test free tier features     |
-| test.premium@example.com    | Premium           | Active   | Test premium features       |
-| test.enterprise@example.com | Enterprise        | Active   | Test enterprise features    |
-| test.trial@example.com      | Premium           | Trialing | Test trial period           |
-| test.canceled@example.com   | Premium           | Canceled | Test canceled subscriptions |
+| test.free@example.com       | account tier      | Active   | Test the default account tier |
+| test.premium@example.com    | account tier      | Active   | Test another account tier     |
+| test.enterprise@example.com | account tier      | Active   | Test another account tier     |
+| test.trial@example.com      | account tier      | Trialing | Test a trial period           |
+| test.canceled@example.com   | account tier      | Canceled | Test a canceled subscription  |
 
 ### Test Admin Users
 

@@ -48,7 +48,7 @@ Valid primary targets:
 - OpenClaw on this device
 - OpenClaw on another private or Tailscale device
 - compatible custom agent gateway
-- optional paid IAClé-hosted agent runtime
+- optional hosted agent runtime
 
 ### Support Model Channel
 

@@ -227,7 +227,7 @@ app.get('/api/tunnel/status', (req, res) => {
   });
 });
 
-// Premium feature (requires premium tier)
+// Premium feature (requires account tier)
 app.get(
   '/api/tunnel/advanced-metrics',
   requireTier(contextManager, UserTier.PREMIUM),
@@ -311,7 +311,7 @@ LOG_LEVEL=info
 1. Create an API in Auth0 dashboard
 2. Configure the audience (e.g., `https://api.IAClé.com`)
 3. Add custom claims to tokens:
-   - `https://IAClé.com/tier` - User tier (free/premium/enterprise)
+   - `https://IAClé.com/tier` - User tier (account tier)
    - `https://IAClé.com/permissions` - Array of permissions
 
 Example Auth0 Rule:

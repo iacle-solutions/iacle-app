@@ -107,7 +107,8 @@ USB phone smoke: `scripts/test-android-phone.sh`. Docs: `docs/development/testin
 
 ```bash
 bash scripts/test-android-phone.sh
-PISTISAI_SELF_TEST_HUB_HOST=your-pc.tailnet.ts.net bash scripts/test-android-phone.sh
+# Set the hub-host variable named in scripts/test-android-phone.sh, then:
+bash scripts/test-android-phone.sh
 ```
 
 Optional: `ANDROID_DEVICE_ID` if multiple devices are attached.

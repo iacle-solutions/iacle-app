@@ -16,7 +16,7 @@ Your **physical phone is not part of this rig**. Use it manually, or run `script
 bash scripts/setup-android-test-emulator.sh
 ```
 
-Creates AVD `pistisai_test` (API 34, Pixel 6 profile — aligned with CI).
+Creates the AVD named by that script (API 34, Pixel 6 profile — aligned with CI).
 
 ## Run the full rig
 

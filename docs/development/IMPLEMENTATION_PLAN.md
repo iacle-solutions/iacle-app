@@ -304,7 +304,7 @@ Implemented device identity authentication for OpenClaw Gateway WebSocket connec
 Guide new users through selected agent runtime configuration with support for:
 - **Local agent runtime**: Hermes, OpenClaw, or a compatible agent gateway on this device
 - **Remote/Tailscale agent runtime**: agent runtime on another user-controlled device or VPS in the tailnet
-- **Hosted agent runtime**: optional paid per-user runtime container
+- **Hosted agent runtime**: optional per-user runtime container
 - **Support model provider**: optional Ollama, LM Studio, or custom local model endpoint for memory/background features only
 
 ### Success Criteria ✅

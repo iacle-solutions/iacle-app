@@ -464,7 +464,7 @@ Server sends error to client:
     "category": "rateLimit",
     "message": "Rate limit exceeded",
     "userMessage": "Too many requests. Please try again later.",
-    "suggestion": "Reduce request rate or upgrade to premium tier"
+    "suggestion": "Reduce request rate or upgrade to account tier"
   }
 }
 ```
@@ -533,7 +533,7 @@ Server sends error to client:
     "category": "rateLimit",
     "message": "Rate limit exceeded: 100 requests per minute",
     "userMessage": "Too many requests. Please try again later.",
-    "suggestion": "Reduce request rate or upgrade to premium tier",
+    "suggestion": "Reduce request rate or upgrade to account tier",
     "timestamp": "2024-01-15T10:30:00Z",
     "requestId": "req-456",
     "retryAfter": 60
@@ -555,7 +555,7 @@ X-RateLimit-Reset: 1705318200
 
 ### Rate Limit Behavior
 
-- **Per-user limits**: 100 requests/minute (free tier)
+- **Per-user limits**: 100 requests/minute (account tier)
 - **Per-IP limits**: 1000 requests/minute (global)
 - **Burst handling**: Token bucket algorithm with 10-second window
 - **Exceeded response**: 429 Too Many Requests

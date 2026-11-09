@@ -8,7 +8,7 @@ The IAClé API implements comprehensive rate limiting to protect the service fro
 
 ## Rate Limit Policies by User Tier
 
-### Free Tier
+### Account tier
 
 - **Requests per minute**: 100
 - **Requests per hour**: 5,000
@@ -16,7 +16,7 @@ The IAClé API implements comprehensive rate limiting to protect the service fro
 - **Concurrent connections**: 5
 - **Exemptions**: None
 
-### Premium Tier
+### Account tier
 
 - **Requests per minute**: 500
 - **Requests per hour**: 30,000
@@ -24,7 +24,7 @@ The IAClé API implements comprehensive rate limiting to protect the service fro
 - **Concurrent connections**: 25
 - **Exemptions**: Health check endpoints
 
-### Enterprise Tier
+### Account tier
 
 - **Requests per minute**: 2,000
 - **Requests per hour**: 120,000

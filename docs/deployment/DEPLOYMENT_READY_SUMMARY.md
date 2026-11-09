@@ -1,6 +1,6 @@
 # IAClé - Docker Compose Deployment Guide
 
-> **Status**: Historical deployment summary for the older tunnel-centered stack. Current product direction is agent-runtime-first and Tailscale-first, with optional per-user cloud connector containers and optional paid hosted agent runtime containers. Ollama/LM Studio are support model providers, not primary app runtimes. Keep this file for deployment history and migration reference.
+> **Status**: Historical deployment summary for the older tunnel-centered stack. Current product direction is agent-runtime-first and Tailscale-first, with optional per-user cloud connector containers and optional hosted agent runtime containers. Ollama/LM Studio are support model providers, not primary app runtimes. Keep this file for deployment history and migration reference.
 
 ## Summary
 

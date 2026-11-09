@@ -514,14 +514,7 @@ If you need to rotate the keystore:
 2. Verify `minSdkVersion` in `build.gradle`
 3. Check required permissions in `AndroidManifest.xml`
 
-## Cost Considerations
-
-### GitHub Actions Minutes
-
-- **Public repositories**: FREE unlimited minutes
-- **Private repositories**: 2,000 free minutes/month, then $0.008/minute
-
-### Build Time Estimates
+## Build Time Estimates
 
 - Android APK build: ~10-15 minutes
 - With cache: ~5-8 minutes

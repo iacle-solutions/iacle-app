@@ -63,9 +63,10 @@ sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev
 
 ## DEB Package
 
+Download the Debian package from the [releases page](https://github.com/iacle-solutions/iacle-app/releases), then install it:
+
 ```bash
-wget https://github.com/iacle-solutions/iacle-app/releases/latest/download/pistisai_amd64.deb
-sudo dpkg -i pistisai_amd64.deb
+sudo dpkg -i <downloaded-package>.deb
 sudo apt-get install -f
 ```
 
@@ -92,17 +93,18 @@ sudo apt-get remove IAClé
 
 ## AppImage
 
+Download the AppImage from the [releases page](https://github.com/iacle-solutions/iacle-app/releases), then run it:
+
 ```bash
-wget https://github.com/iacle-solutions/iacle-app/releases/latest/download/Pistisai-x86_64.AppImage
-chmod +x Pistisai-x86_64.AppImage
-./Pistisai-x86_64.AppImage
+chmod +x <downloaded-app>.AppImage
+./<downloaded-app>.AppImage
 ```
 
 Optional desktop integration:
 
 ```bash
 mkdir -p ~/.local/bin ~/.local/share/applications
-mv Pistisai-x86_64.AppImage ~/.local/bin/Pistisai.AppImage
+mv <downloaded-app>.AppImage ~/.local/bin/iacle.AppImage
 ```
 
 Create `~/.local/share/applications/IAClé.desktop`:
@@ -111,7 +113,7 @@ Create `~/.local/share/applications/IAClé.desktop`:
 [Desktop Entry]
 Name=IAClé
 Comment=Secure agent companion
-Exec=/home/YOUR_USER/.local/bin/Pistisai.AppImage
+Exec=/home/YOUR_USER/.local/bin/iacle.AppImage
 Terminal=false
 Type=Application
 Categories=Development;Network;
@@ -132,9 +134,7 @@ flutter build linux --release
 
 Run the built app:
 
-```bash
-build/linux/x64/release/bundle/Pistisai
-```
+Run the executable in `build/linux/x64/release/bundle/`.
 
 ---
 
@@ -206,10 +206,7 @@ Log out and back in if your desktop environment needs to reload tray support.
 
 ### Logs
 
-```bash
-tail -f ~/.local/share/pistisai/logs/app.log
-journalctl --user -u pistisai -f
-```
+The app log is `logs/app.log` in the Linux data directory under `~/.local/share`. The user service journal is `journalctl --user -xe`.
 
 ---
 

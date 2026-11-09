@@ -5,7 +5,7 @@ Provides personality-driven responses and organic evolution capabilities for Ope
 ## Architecture
 
 ```
-services/openclaw-skills/pistisai/
+.
 ├── SKILL.md          # This file — skill descriptor
 ├── package.json      # NPM package manifest
 ├── tsconfig.json     # TypeScript configuration

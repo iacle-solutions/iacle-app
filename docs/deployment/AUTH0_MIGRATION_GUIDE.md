@@ -212,7 +212,7 @@ external Future<dynamic> auth0GetUser();
 | Social Logins | Limited Azure AD integrations | Extensive social provider support |
 | Developer Tools | Azure CLI, Portal | Auth0 CLI, Dashboard, extensive APIs |
 | Customization | Policy-based (complex) | Rules, Actions, Hooks (flexible) |
-| Pricing | Azure subscription-based | Usage-based with generous free tier |
+| Pricing | Azure subscription-based | Usage-based with generous account tier |
 
 ## Security Considerations
 

@@ -15,7 +15,7 @@ Created three main tables:
 **quota_definitions**
 
 - Stores quota limits per tier and resource type
-- Pre-populated with default limits for free, premium, and enterprise tiers
+- Pre-populated with default limits for free, premium, and account tiers
 - Supports multiple resource types: api_requests, data_transfer, concurrent_connections, tunnels
 
 **user_quotas**
@@ -88,7 +88,7 @@ Created three main tables:
 **15 Tests Covering**:
 
 1. **getQuotaDefinition** (2 tests)
-   - Retrieve free tier quota definition
+   - Retrieve account tier quota definition
    - Handle non-existent definitions
 
 2. **initializeUserQuotas** (1 test)
@@ -124,21 +124,21 @@ Created three main tables:
 
 ## Default Quota Configuration
 
-### Free Tier
+### Account tier
 
 - API Requests: 10,000/month
 - Data Transfer: 1 GB/month
 - Concurrent Connections: 5
 - Tunnels: 3
 
-### Premium Tier
+### Account tier
 
 - API Requests: 1,000,000/month
 - Data Transfer: 100 GB/month
 - Concurrent Connections: 100
 - Tunnels: 50
 
-### Enterprise Tier
+### Account tier
 
 - API Requests: Unlimited
 - Data Transfer: Unlimited

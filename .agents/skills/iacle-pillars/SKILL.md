@@ -1,12 +1,12 @@
 ---
-name: pistisai-pillars
+name: iacle-pillars
 description: The 4-pillar foundations of IAClé (Aiman, Aigent, Aimotions, Aidration) and the negative discipline that makes Πίστις (trust) return. Use when working on pillar features, agent behavior, or evaluating whether an action carries or abandons trust.
 ---
 
 # IAClé — The Four Pillars
 
 This skill defines the **four pillars** of IAClé and the discipline that makes the
-product name true. It is the counterpart to `pistisai-dev` (engineering) — this is the
+product name true. It is the counterpart to `iacle-dev` (engineering) — this is the
 **foundation/identity** layer.
 
 > NOTE: There are **FOUR** pillars, not five. The "5-pillar" doc in older backups
@@ -98,7 +98,7 @@ understand, or am I filling?"* — is Aidration's charter.
 - `docs/LAUNCH.md` — etymology: *"IAClé (ΠΙΣΤΙΣΑΙ — 'trust')"*.
 - `docs/index.md` — product definition (local-first companion layer).
 - `bible-service-seed.js` (historical, in vault backups) — the KJV corpus, curated June 6 2026.
-- `pistisai-dev` skill — engineering counterpart.
+- `iacle-dev` skill — engineering counterpart.
 
 > This skill was authored from the real foundation files above, not from paraphrase. If a
 > pillar mapping here disagrees with `brand-framework.md`, the brand file wins.

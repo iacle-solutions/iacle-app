@@ -4,7 +4,7 @@ This directory contains files required for Linux desktop integration and Flatpak
 
 ## Files
 
-### com.Pistisai.Pistisai.desktop
+### Desktop entry
 Desktop entry file that provides application menu integration on Linux systems.
 
 **Purpose**: 
@@ -16,7 +16,7 @@ Desktop entry file that provides application menu integration on Linux systems.
 
 **Specification**: [Desktop Entry Specification](https://specifications.freedesktop.org/desktop-entry-spec/latest/)
 
-### com.Pistisai.Pistisai.metainfo.xml
+### AppStream metadata
 AppStream metadata file that provides information for software centers.
 
 **Purpose**:
@@ -30,24 +30,22 @@ AppStream metadata file that provides information for software centers.
 
 ## Usage
 
-These files are automatically included when building the Flatpak package using the manifest at `com.Pistisai.Pistisai.yml`.
+These files are included when building the Flatpak package from the manifest in this directory.
 
 ## Testing Desktop Integration
 
 After installing the Flatpak, you can verify desktop integration:
 
 ```bash
-# Check if desktop file is installed
-flatpak run --command=ls com.Pistisai.Pistisai /app/share/applications/
+# Check if the desktop file is installed
+flatpak run --command=ls <flatpak-id> /app/share/applications/
 
-# Check if metadata is installed
-flatpak run --command=ls com.Pistisai.Pistisai /app/share/metainfo/
+# Check if the metadata is installed
+flatpak run --command=ls <flatpak-id> /app/share/metainfo/
 
-# Validate desktop file
-desktop-file-validate linux/com.Pistisai.Pistisai.desktop
-
-# Validate AppStream metadata
-appstreamcli validate linux/com.Pistisai.Pistisai.metainfo.xml
+# Validate the desktop entry and AppStream metadata in this directory
+desktop-file-validate linux/*.desktop
+appstreamcli validate linux/*.metainfo.xml
 ```
 
 ## Updating

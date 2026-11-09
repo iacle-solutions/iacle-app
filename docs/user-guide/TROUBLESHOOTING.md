@@ -239,23 +239,19 @@ nvidia-smi
 
 ### Conversation Storage
 
-- Linux: `~/.local/share/pistisai/local_brain.db`
+- Linux: the local database in the app data directory under `~/.local/share`
 - Windows: `%LOCALAPPDATA%\IAClé\local_brain.db`
 
 ### Logs
 
-- Linux: `~/.local/share/pistisai/logs/app.log`
+- Linux: the app log in the data directory under `~/.local/share`
 - Windows: `%LOCALAPPDATA%\IAClé\logs\app.log`
 
 ### Reset Configuration
 
 This removes local app configuration and local app data.
 
-Linux:
-
-```bash
-rm -rf ~/.config/pistisai/ ~/.local/share/pistisai/
-```
+On Linux, remove the app config directory under `~/.config` and the app data directory under `~/.local/share`.
 
 Windows:
 

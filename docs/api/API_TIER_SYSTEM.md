@@ -4,18 +4,18 @@
 
 The IAClé API supports tier-aware behavior for cloud features, per-user connectors, optional hosted agent runtimes, and legacy proxy paths.
 
-> **Status**: This document still contains older Ollama/direct-proxy endpoint examples. Current product direction is agent-runtime-first and Tailscale-first. New tier policy should apply to selected agent runtimes, optional cloud connectors, optional support model providers, and optional paid hosted agent runtime containers. Do not design new primary app flows around direct Ollama proxy endpoints.
+> **Status**: This document still contains older Ollama/direct-proxy endpoint examples. Current product direction is agent-runtime-first and Tailscale-first. New tier policy should apply to selected agent runtimes, optional cloud connectors, optional support model providers, and optional hosted agent runtime containers. Do not design new primary app flows around direct Ollama proxy endpoints.
 
 ## User Tiers
 
-### Free Tier
+### Account tier
 
 - **Local/user-owned agent runtime access** without hosted runtime compute
 - **No Docker required** on user's machine
 - **Single local or private-network agent runtime path**
 - **Basic features** with upgrade prompts for advanced functionality
 
-### Premium Tier
+### Account tier
 
 - **Optional hosted agent runtime or cloud connector orchestration** with isolated environments
 - **Team features** and collaboration tools
@@ -23,7 +23,7 @@ The IAClé API supports tier-aware behavior for cloud features, per-user connect
 - **Multiple connections** and advanced networking
 - **Priority support**
 
-### Enterprise Tier
+### Account tier
 
 - **Unlimited resources** and connections
 - **Custom configurations** and on-premise deployment
@@ -91,11 +91,11 @@ Health check for the historical direct proxy service.
 
 #### ALL `/api/direct-proxy/:userId/ollama/*`
 
-Historical direct proxy to a local Ollama support-provider path for free tier users. New agent-runtime designs should expose the selected agent runtime path instead of assuming Ollama.
+Historical direct proxy to a local Ollama support-provider path for account tier users. New agent-runtime designs should expose the selected agent runtime path instead of assuming Ollama.
 
 **Security:**
 
-- Only accessible by free tier users
+- Only accessible by account tier users
 - User can only access their own proxy (`:userId` must match authenticated user)
 - Request/response headers are sanitized
 - Path traversal protection enabled
@@ -138,9 +138,9 @@ Content-Type: application/json
   "requestId": "dp-1642234567890-abc123"
 }
 
-// Access denied for non-free tier
+// Access denied for another account tier
 {
-  "error": "Direct proxy access is only available for free tier users",
+  "error": "Direct proxy access is only available for account tier users",
   "code": "DIRECT_PROXY_FORBIDDEN",
   "userTier": "premium",
   "suggestion": "Use container-based proxy for premium features",
@@ -221,19 +221,19 @@ Container-based proxy with advanced features (premium/enterprise only).
 
 ## Rate Limiting
 
-### Free Tier
+### Account tier
 
 - **Legacy direct proxy**: 100 requests per minute when enabled
 - **API calls**: 50 requests per minute
 - **Concurrent connections**: 1
 
-### Premium Tier
+### Account tier
 
 - **Legacy container proxy**: 500 requests per minute when enabled
 - **API calls**: 200 requests per minute
 - **Concurrent connections**: 10
 
-### Enterprise Tier
+### Account tier
 
 - **No rate limits** (within reasonable usage)
 - **Custom limits** available upon request
@@ -263,7 +263,7 @@ Container-based proxy with advanced features (premium/enterprise only).
 
 ## Usage Examples
 
-### Legacy Free Tier Proxy Flow
+### Legacy Account tier Proxy Flow
 
 ```javascript
 // 1. Check tier and features
@@ -326,7 +326,7 @@ const response = await fetch(`/api/tunnel/${userId}/ollama/api/generate`, {
 ### Existing Users
 
 - **Premium/Enterprise users**: Preserve existing proxy behavior where still enabled, but prefer cloud connector or hosted agent runtime design for new work.
-- **Free tier users**: Should use local/user-owned agent runtimes by default.
+- **Account tier users**: Should use local/user-owned agent runtimes by default.
 - **Setup process**: Must verify an agent runtime first, then configure optional support model providers or cloud features.
 
 ### API Clients
@@ -340,7 +340,7 @@ const response = await fetch(`/api/tunnel/${userId}/ollama/api/generate`, {
 ### Common Issues
 
 1. **"Direct proxy access denied"**
-   - Verify user is on free tier
+   - Verify user is on account tier
    - Check Auth0 metadata configuration
    - Ensure proper authentication
 

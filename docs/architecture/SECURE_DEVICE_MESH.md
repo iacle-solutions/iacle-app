@@ -14,7 +14,7 @@ The agent runtime location is chosen by setup. It can be:
 - on another private device
 - on a Tailscale device
 - behind a manual/private URL
-- in an optional paid IAClé-hosted agent runtime
+- in an optional hosted agent runtime
 
 Ollama, LM Studio, and similar local model providers are not agent runtime nodes. They can live on the same tailnet, but they support app-owned local intelligence features rather than the main secure agent channel.
 
@@ -76,7 +76,7 @@ Examples:
 - Hermes on another workstation/server
 - OpenClaw Gateway on a lab machine
 - compatible custom agent gateway
-- IAClé-hosted agent runtime as paid compute
+- IAClé-hosted agent runtime as hosted compute
 
 The app should present runtime location as setup state, not product destiny.
 
