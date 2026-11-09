@@ -725,6 +725,5 @@ jobs:
 ## Related Documentation
 
 - [API Documentation Guide](./API_DOCUMENTATION_GUIDE.md)
-- [Authentication Guide](./AUTHENTICATION_GUIDE.md)
 - [API Versioning Guide](./API_VERSIONING_GUIDE.md)
 - [Rate Limit Documentation](./RATE_LIMIT_DOCUMENTATION.md)

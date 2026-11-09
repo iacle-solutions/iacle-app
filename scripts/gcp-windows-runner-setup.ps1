@@ -15,7 +15,7 @@ $MACHINE_TYPE = "e2-medium"
 $IMAGE_FAMILY = "windows-2019"
 $IMAGE_PROJECT = "windows-cloud"
 $GITHUB_RUNNER_ORG_URL = "https://github.com/Zoidbot-online/Zoidbot" # e.g., https://github.com/Zoidbot-online
-$GITHUB_RUNNER_TOKEN = "BOBH5XEA7XJPPTNW2CYI7F3IUR2RG" # Obtain from GitHub -> Settings -> Actions -> Runners -> New runner
+$GITHUB_RUNNER_TOKEN = "YOUR_GITHUB_RUNNER_TOKEN" # Obtain from GitHub -> Settings -> Actions -> Runners -> New runner
 
 # --- Startup Script for the VM (PowerShell) ---
 $StartupScript = @"

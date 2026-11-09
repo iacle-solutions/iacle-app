@@ -72,8 +72,11 @@ sed -i "s|ghcr.io/pistisai/Pistisai/streaming:latest|$STREAMING_IMAGE|g" full-ma
 sed -i "s|Pistisai/postgres:latest|$POSTGRES_IMAGE|g" full-manifest.yaml
 
 log_info "Injecting configuration..."
-# Hardcoded ID from health check - ideally should be dynamic but fixing for immediate stability
-TUNNEL_ID="62da6c19-947b-4bf6-acad-100a73de4e0d"
+TUNNEL_ID="${CLOUDFLARE_TUNNEL_ID:-}"
+if [[ -z "$TUNNEL_ID" ]]; then
+  echo "CLOUDFLARE_TUNNEL_ID is required" >&2
+  exit 1
+fi
 CONFIG_SHA="sha-$(date +%s)" # Simple timestamp for config churn
 
 sed -i "s|\${CLOUDFLARE_TUNNEL_ID}|$TUNNEL_ID|g" full-manifest.yaml

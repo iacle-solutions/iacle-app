@@ -20,9 +20,9 @@ permissions:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: pistisai/pistisai-app-web
-  COOLIFY_URL: https://deploy.pistisai.app
-  COOLIFY_APP_UUID: umnmzbzlgcnjssqphnrgiejt
-  COOLIFY_HOST: ${{ secrets.COOLIFY_HOST || '68.168.30.4' }}
+  COOLIFY_URL: ${{ secrets.COOLIFY_URL }}
+  COOLIFY_APP_UUID: ${{ secrets.COOLIFY_APP_UUID }}
+  COOLIFY_HOST: ${{ secrets.COOLIFY_HOST }}
 
 jobs:
   analyze:
@@ -91,6 +91,11 @@ jobs:
           cache-to: type=gha,mode=max
           provenance: true
           sbom: true
+          build-args: |
+            BRAND=iacle
+            PISTISAI_ADMIN_EMAIL=${{ secrets.PISTISAI_ADMIN_EMAIL }}
+            SUPABASE_URL=${{ secrets.SUPABASE_URL }}
+            SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }}
 
       - name: Verify image pushed
         run: |
@@ -126,6 +131,14 @@ jobs:
           fi
           if [ -z "${COOLIFY_HOST:-}" ]; then
             echo "COOLIFY_HOST is not set"
+            exit 1
+          fi
+          if [ -z "${COOLIFY_URL:-}" ]; then
+            echo "COOLIFY_URL is not set"
+            exit 1
+          fi
+          if [ -z "${COOLIFY_APP_UUID:-}" ]; then
+            echo "COOLIFY_APP_UUID is not set"
             exit 1
           fi
           install -d -m 700 ~/.ssh

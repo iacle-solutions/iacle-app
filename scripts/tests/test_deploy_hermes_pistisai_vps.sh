@@ -34,7 +34,6 @@ required_deploy = [
     'VPS_HOST="${VPS_HOST:-${PISTISAI_VPS_HOST:-pistisai.app}}"',
     'VPS_USER="${VPS_USER:-${PISTISAI_VPS_USER:-cloudllm}}"',
     'REMOTE_DIR="${REMOTE_DIR:-${PISTISAI_REMOTE_DIR:-/opt/Pistisai}}"',
-    "ignoring Simon VPS host",
     'deploy/hermes/docker-compose.hermes.yml',
     'https://api.pistisai.app/hermes/health',
     'https://pistisai.app/hermes/health',
@@ -43,8 +42,9 @@ for needle in required_deploy:
     if needle not in deploy_text:
         raise SystemExit(f'missing deploy script string: {needle}')
 
-if 'HostName ${VPS_HOST}' in deploy_text and '31.97.140.7' in deploy_text.split('VPS_HOST=', 1)[-1][:80]:
-    raise SystemExit('deploy script still uses Simon VPS as SSH host')
+import re
+if re.search(r"VPS_HOST:-(\d+\.){3}\d+", deploy_text):
+    raise SystemExit('deploy script must not default VPS_HOST to an address')
 
 required_workflow = [
     "secrets.VPS_HOST || 'pistisai.app'",
@@ -52,15 +52,14 @@ required_workflow = [
     'REMOTE_DIR=/opt/Pistisai',
     'https://api.pistisai.app/hermes/health',
     'https://pistisai.app/hermes/health',
-    'Ignoring Simon VPS host',
     'skipping live VPS deploy',
 ]
 for needle in required_workflow:
     if needle not in workflow_text:
         raise SystemExit(f'missing workflow string: {needle}')
 
-if "secrets.VPS_HOST || '31.97.140.7'" in workflow_text:
-    raise SystemExit('Hermes workflow must not fall back to Simon VPS')
+if re.search(r"secrets\.VPS_HOST \|\| '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+'", workflow_text):
+    raise SystemExit('Hermes workflow must not fall back to a raw address')
 if "secrets.VPS_USER || 'pistisai'" in workflow_text:
     raise SystemExit('Hermes workflow must not fall back to Simon SSH user')
 
@@ -74,14 +73,12 @@ required_web = [
 for needle in required_web:
     if needle not in web_text:
         raise SystemExit(f'missing web deploy string: {needle}')
-if "secrets.VPS_HOST || '31.97.140.7'" in web_text:
-    raise SystemExit('web deploy must not fall back to Simon VPS')
+if re.search(r"secrets\.VPS_HOST \|\| '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+'", web_text):
+    raise SystemExit('web deploy must not fall back to a raw address')
 if "secrets.VPS_USER || 'pistisai'" in web_text:
     raise SystemExit('web deploy must not fall back to Simon SSH user')
 if "/opt/pistisai/deploy" in web_text:
     raise SystemExit('web deploy still targets Simon deploy dir')
-if '31.97.140.7' in web_text:
-    raise SystemExit('web deploy must not reference Simon VPS')
 
 required_compose = [
     'nousresearch/hermes-agent',

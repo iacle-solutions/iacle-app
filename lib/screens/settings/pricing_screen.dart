@@ -143,7 +143,7 @@ class _PricingScreenState extends State<PricingScreen> {
       {
         'id': 'free',
         'name': 'Free',
-        'price': '\$0/month',
+        'price': '',
         'description': 'For users who want basic functionality',
         'color': AppTheme.colorsOf(context).textColorLight,
         'icon': Icons.info,
@@ -159,7 +159,7 @@ class _PricingScreenState extends State<PricingScreen> {
       {
         'id': 'premium',
         'name': 'Premium',
-        'price': '\$9.99/month',
+        'price': '',
         'description': 'For power users who need more features',
         'color': AppTheme.colorsOf(context).info,
         'icon': Icons.star,
@@ -177,7 +177,7 @@ class _PricingScreenState extends State<PricingScreen> {
       {
         'id': 'enterprise',
         'name': 'Enterprise',
-        'price': '\$29.99/month',
+        'price': '',
         'description': 'For teams and organizations',
         'color': AppTheme.colorsOf(context).accent,
         'icon': Icons.diamond,

@@ -44,16 +44,16 @@ fi
 
 # 4. Copy Configuration Files
 echo "Copying configuration files..."
-SOURCE_DIR="/run/media/rightguy/OS/Users/rightguy"
+SOURCE_DIR="${SOURCE_DIR:-}"
 
-if [ -f "$SOURCE_DIR/.gitconfig" ]; then
+if [ -n "$SOURCE_DIR" ] && [ -f "$SOURCE_DIR/.gitconfig" ]; then
     cp "$SOURCE_DIR/.gitconfig" ~/.gitconfig
     echo "Copied .gitconfig"
 else
     echo "WARNING: $SOURCE_DIR/.gitconfig not found"
 fi
 
-if [ -d "$SOURCE_DIR/.ssh" ]; then
+if [ -n "$SOURCE_DIR" ] && [ -d "$SOURCE_DIR/.ssh" ]; then
     mkdir -p ~/.ssh
     cp -r "$SOURCE_DIR/.ssh/"* ~/.ssh/
     chmod 700 ~/.ssh

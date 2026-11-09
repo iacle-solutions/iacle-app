@@ -11,7 +11,7 @@ MACHINE_TYPE="e2-medium"
 IMAGE_FAMILY="windows-2019"
 IMAGE_PROJECT="windows-cloud"
 GITHUB_RUNNER_ORG_URL="https://github.com/pistisAI/pistisai-app"
-GITHUB_RUNNER_TOKEN="BOBH5XEA7XJPPTNW2CYI7F3IUR2RG"
+GITHUB_RUNNER_TOKEN="YOUR_GITHUB_RUNNER_TOKEN"
 
 # --- Startup Script for the VM (PowerShell) ---
 STARTUP_SCRIPT_FILE=$(mktemp)

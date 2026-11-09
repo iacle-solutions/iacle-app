@@ -104,7 +104,7 @@ Required environment variables:
 - `DB_USER=appuser`
 - `DB_PASSWORD=<your-password>`
 - `DB_HOST=/cloudsql/IAClé-468303:us-central1:IAClé-db`
-- `SUPABASE_AUTH_DOMAIN=dev-v2f2p008x3dr74ww.us.auth0.com`
+- `SUPABASE_AUTH_DOMAIN=example.us.auth0.com`
 - `SUPABASE_AUTH_AUDIENCE=https://api.example.com`
 
 ### Step 3: Build and Deploy
@@ -120,7 +120,7 @@ gcloud run deploy IAClé-api \
     --region us-central1 \
     --allow-unauthenticated \
     --memory 1Gi \
-    --set-env-vars "NODE_ENV=production,DB_TYPE=postgresql,SUPABASE_AUTH_DOMAIN=dev-v2f2p008x3dr74ww.us.auth0.com,SUPABASE_AUTH_AUDIENCE=https://api.example.com" \
+    --set-env-vars "NODE_ENV=production,DB_TYPE=postgresql,SUPABASE_AUTH_DOMAIN=example.us.auth0.com,SUPABASE_AUTH_AUDIENCE=https://api.example.com" \
     --add-cloudsql-instances IAClé-468303:us-central1:IAClé-db
 ```
 

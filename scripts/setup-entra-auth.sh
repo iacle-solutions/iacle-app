@@ -3,7 +3,7 @@ set -e
 
 # Configuration
 APP_NAME="Pistisai-Auth"
-REPO_OWNER="imrightguy"
+REPO_OWNER="iacle-solutions"
 REPO_NAME="Pistisai"
 ENV_FILE=".env.entra"
 

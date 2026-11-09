@@ -10,8 +10,8 @@ SIMON_SSH_KEY_FILE="${SIMON_SSH_KEY_FILE:-}"
 SIMON_APP_DIR="${SIMON_APP_DIR:-/opt/pistisai}"
 SIMON_PUBLIC_HTTP_PORT="${SIMON_PUBLIC_HTTP_PORT:-3100}"
 CLOUDFLARE_DOMAIN="${CLOUDFLARE_DOMAIN:-pistisai.app}"
-CLOUDFLARE_ACCOUNT_ID="${CLOUDFLARE_ACCOUNT_ID:-35fa09929e656c4e96e4aa79909d11b7}"
-CLOUDFLARE_TUNNEL_ID="${CLOUDFLARE_TUNNEL_ID:-b0aebd5d-5fdf-4dc1-b64c-932c4ee8b400}"
+CLOUDFLARE_ACCOUNT_ID="${CLOUDFLARE_ACCOUNT_ID:-}"
+CLOUDFLARE_TUNNEL_ID="${CLOUDFLARE_TUNNEL_ID:-}"
 SYNC_REPO="${SYNC_REPO:-true}"
 DEPLOY_APP="${DEPLOY_APP:-true}"
 RECONCILE_CLOUDFLARE="${RECONCILE_CLOUDFLARE:-true}"
@@ -26,6 +26,10 @@ fail() {
   printf '[deploy-simon-vps] ERROR: %s\n' "$1" >&2
   exit 1
 }
+
+if [[ -z "$CLOUDFLARE_ACCOUNT_ID" || -z "$CLOUDFLARE_TUNNEL_ID" ]]; then
+  fail "CLOUDFLARE_ACCOUNT_ID and CLOUDFLARE_TUNNEL_ID are required"
+fi
 
 require_cmd() {
   command -v "$1" >/dev/null 2>&1 || fail "required command not found: $1"
@@ -201,7 +205,8 @@ for name in [domain, f'app.{domain}', f'api.{domain}']:
         record = api('POST', f'/zones/{zone_id}/dns_records', payload)
         mutations.append({'action': 'created', 'name': name, 'id': record['id']})
 for record in records:
-    if record['name'] == f'*.{domain}' and record['type'] == 'A' and record['content'] == '208.110.72.50':
+    legacy = os.environ.get('LEGACY_WILDCARD_A', '')
+    if legacy and record['name'] == f'*.{domain}' and record['type'] == 'A' and record['content'] == legacy:
         api('DELETE', f"/zones/{zone_id}/dns_records/{record['id']}")
         mutations.append({'action': 'deleted', 'name': record['name'], 'id': record['id']})
 

@@ -146,7 +146,7 @@ jobs:
         run: flutter pub get
 
       - name: "🌐 flutter build web"
-        run: flutter build web --release --no-web-resources-cdn
+        run: flutter build web --release --no-web-resources-cdn --dart-define=BRAND=iacle --dart-define=PISTISAI_ADMIN_EMAIL=${{ secrets.PISTISAI_ADMIN_EMAIL }} --dart-define=SUPABASE_URL=${{ secrets.SUPABASE_URL }} --dart-define=SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }}
 
       - name: "📦 Upload web build"
         uses: actions/upload-artifact@v7
@@ -187,7 +187,7 @@ jobs:
         run: flutter pub get
 
       - name: "🐧 flutter build linux --release"
-        run: flutter build linux --release
+        run: flutter build linux --release --dart-define=BRAND=iacle
 
       - name: "📦 Package bundle"
         run: |

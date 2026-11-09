@@ -50,7 +50,7 @@ jobs:
         run: flutter pub get
 
       - name: "🌐 flutter build web --release"
-        run: flutter build web --release --no-tree-shake-icons --no-web-resources-cdn
+        run: flutter build web --release --no-tree-shake-icons --no-web-resources-cdn --dart-define=BRAND=iacle
 
       - name: "🔍 Verify splash fix is in built index.html"
         run: |

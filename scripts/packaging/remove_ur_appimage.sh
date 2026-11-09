@@ -18,8 +18,6 @@ cd aur-remove
 git rm -f PKGBUILD .SRCINFO 2>/dev/null || true
 
 # Commit deletion
-git config user.name "rightguy"
-git config user.email "christopher.maltais@gmail.com"
 git commit -m "Remove package - consolidated into pistisai" || echo "Nothing to commit"
 
 # Push to delete

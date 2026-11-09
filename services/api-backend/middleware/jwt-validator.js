@@ -145,8 +145,8 @@ export class JWTValidator {
     const key = 'default';
     if (!this.authServices.has(key)) {
       const authService = new AuthService({
-        SUPABASE_URL: process.env.SUPABASE_URL || 'https://bpqwsjshoqxvtdttzvbr.supabase.co',
-        SUPABASE_JWKS_URI: process.env.SUPABASE_JWKS_URI || `${process.env.SUPABASE_URL || 'https://bpqwsjshoqxvtdttzvbr.supabase.co'}/auth/v1/.well-known/jwks.json`,
+        SUPABASE_URL: process.env.SUPABASE_URL || '',
+        SUPABASE_JWKS_URI: process.env.SUPABASE_JWKS_URI || `${process.env.SUPABASE_URL || ''}/auth/v1/.well-known/jwks.json`,
       });
 
       this.authServices.set(key, authService);

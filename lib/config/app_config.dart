@@ -20,11 +20,13 @@ class AppConfig {
   // Configured Authentication Provider
   static const AuthProviderType authProvider = AuthProviderType.supabase;
 
-  // Supabase Configuration
-  static const String supabaseUrl = 'https://bpqwsjshoqxvtdttzvbr.supabase.co';
-  // SECURITY: key removed from source — must be provided at build time:
-  //   flutter run --dart-define=SUPABASE_ANON_KEY=your_key
-  //   flutter build --dart-define=SUPABASE_ANON_KEY=your_key
+  // Supabase Configuration. Both values are compile-time defines with empty
+  // defaults so a project ref is never baked into source.
+  //   flutter build --dart-define=SUPABASE_URL=... --dart-define=SUPABASE_ANON_KEY=...
+  static const String supabaseUrl = String.fromEnvironment(
+    'SUPABASE_URL',
+    defaultValue: '',
+  );
   static const String supabaseAnonKey = String.fromEnvironment(
     'SUPABASE_ANON_KEY',
     defaultValue: '',
@@ -43,7 +45,7 @@ class AppConfig {
 
   // Development mode settings
   static const bool enableDevMode = false; // Set to false for production
-  static const String devModeUser = 'dev@pistisai.app';
+  static const String devModeUser = 'dev@example.com';
 
   // Testing mode settings
   static const bool forceSetupWizard =
@@ -87,7 +89,7 @@ class AppConfig {
   // 4. All code reads from getters, never from constants directly
   //
   // Environment Variables:
-  // - OPENCLAW_GATEWAY_HOST (e.g., "127.0.0.1", "100.78.133.50")
+  // - OPENCLAW_GATEWAY_HOST (e.g., "127.0.0.1")
   // - OPENCLAW_GATEWAY_PORT (e.g., "18789")
   // - OPENCLAW_GATEWAY_URL (full URL, overrides host/port if set)
 
