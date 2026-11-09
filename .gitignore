@@ -49,7 +49,7 @@ flutter_build/
 !.env.example
 
 # Logs
-logs/
+/logs/
 *.log
 npm-debug.log*
 
