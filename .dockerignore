@@ -19,7 +19,6 @@ playwright-report/
 # Documentation
 docs/
 *.md
-windows/
 test/
 tests/
 e2e/
@@ -31,6 +30,5 @@ data/
 # Build artifacts
 build/
 .dart_tool/
-android/
 .pub-cache/
 pubspec.lock
