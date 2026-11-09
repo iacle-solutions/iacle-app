@@ -28,7 +28,15 @@ grep -Fq 'BRAND=iacle' "$WORKFLOW" || fail "brand build arg missing"
 grep -Fq 'CLOUDFLARE_CACHE_PURGE_TOKEN' "$WORKFLOW" || fail "cache purge missing"
 grep -Fq 'bash scripts/ci/trigger_dokploy_deploy.sh' "$WORKFLOW" \
   || fail "workflow does not call the Dokploy trigger"
-grep -Fq 'visibility=public' "$WORKFLOW" || fail "workflow does not publish the GHCR package"
+if grep -Fq '/visibility' "$WORKFLOW"; then
+  fail "workflow still calls the unsupported package visibility API"
+fi
+grep -Fq 'cannot change package visibility' "$WORKFLOW" \
+  || fail "workflow does not say the package stays private"
+grep -Fq 'read:packages' "$ROOT/docs/operations/cicd/WEB_DEPLOY.md" \
+  || fail "deploy doc does not tell Dokploy how to pull a private image"
+grep -Fq 'does not try' "$ROOT/docs/operations/cicd/WEB_DEPLOY.md" \
+  || fail "deploy doc still claims the workflow changes package visibility"
 if grep -E '[0-9]{1,3}(\.[0-9]{1,3}){3}' "$WORKFLOW" >/dev/null; then
   fail "workflow contains an IP address"
 fi

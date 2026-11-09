@@ -124,43 +124,8 @@ jobs:
             exit 1
           fi
           echo "✅ Image pushed: $DIGEST"
-
-      - name: Make the GHCR package public
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          set -euo pipefail
-          owner="$(printf '%s' "$GITHUB_REPOSITORY_OWNER" | tr '[:upper:]' '[:lower:]')"
-          package="$(printf '%s' "${IMAGE_NAME##*/}" | tr '[:upper:]' '[:lower:]')"
-          echo "Marking ghcr.io/${owner}/${package} public so Dokploy can pull it."
-          ok=0
-          for _ in 1 2 3 4 5; do
-            if gh api --method PUT \
-              -H "Accept: application/vnd.github+json" \
-              "/orgs/${owner}/packages/container/${package}/visibility" \
-              -f visibility=public >/tmp/ghcr-visibility.json 2>/tmp/ghcr-visibility.err; then
-              ok=1
-              break
-            fi
-            if gh api --method PUT \
-              -H "Accept: application/vnd.github+json" \
-              "/user/packages/container/${package}/visibility" \
-              -f visibility=public >/tmp/ghcr-visibility.json 2>/tmp/ghcr-visibility.err; then
-              ok=1
-              break
-            fi
-            sleep 3
-          done
-          if [ "$ok" != "1" ]; then
-            echo "Could not mark the GHCR package public."
-            echo "Dokploy needs a registry credential for ghcr.io with read:packages, or an owner must set the package public in GitHub package settings."
-            if [ -s /tmp/ghcr-visibility.err ]; then
-              echo "Last visibility API error:"
-              sed -E 's/(ghp_|gho_|ghs_|github_pat_)[A-Za-z0-9_]+/[redacted]/g' /tmp/ghcr-visibility.err
-            fi
-            exit 0
-          fi
-          echo "GHCR package is public."
+          echo "GHCR packages start private. This workflow cannot change package visibility."
+          echo "Dokploy needs a ghcr.io registry credential with read:packages, unless an owner has already set this package public in GitHub package settings."
 
   deploy_dokploy:
     needs: build_and_push

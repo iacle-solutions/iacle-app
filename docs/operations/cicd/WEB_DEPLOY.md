@@ -40,7 +40,7 @@ The exact `flutter_bootstrap.js` location exists because the long-cache regex wo
 `deploy-web.yml` runs when [Auto Version Bump](../../../.github/workflows/auto-version-bump.yml) completes on `main`, or on `workflow_dispatch`.
 
 1. **analyze** — Flutter pin from `pubspec.yaml` on `ubuntu-24.04`, `flutter pub get`, `flutter analyze lib/`. Skipped when the triggering bump workflow failed.
-2. **build_and_push** — Build `Dockerfile.web` with `BRAND=iacle` and push `ghcr.io/<repository owner>/iacle-app-web:{version}` and `:latest`. For this repository that image is `ghcr.io/iacle-solutions/iacle-app-web`. `{version}` is the `version` field in `assets/version.json`. The job fails if the build action returns no digest. It then tries to mark the GHCR package public.
+2. **build_and_push** — Build `Dockerfile.web` with `BRAND=iacle` and push `ghcr.io/<repository owner>/iacle-app-web:{version}` and `:latest`. For this repository that image is `ghcr.io/iacle-solutions/iacle-app-web`. `{version}` is the `version` field in `assets/version.json`. The job fails if the build action returns no digest. The package stays private until an owner changes it.
 3. **deploy_dokploy** — POST `DOKPLOY_WEBHOOK_URL`, then purge the Cloudflare cache. The Cloudflare Tunnel is not redeployed by this job.
 
 Desktop, mobile, and backend workflows start from a completed Web Deploy run. They do not start from the version bump directly. See [CI/CD Quick Reference](CI_CD_QUICK_REFERENCE.md).
@@ -57,9 +57,10 @@ When `DOKPLOY_WEBHOOK_URL` is unset, the step prints `DOKPLOY_WEBHOOK_URL is not
 
 ### GHCR pull
 
-After the push, the workflow calls the GitHub packages API and sets the container package visibility to `public`. A public package is what lets Dokploy pull `:latest` without a registry login.
+A package published by this workflow starts private. GitHub's packages API has no supported call that lets the Actions token change that visibility, so the workflow does not try. Dokploy cannot pull `:latest` until one of these is true:
 
-If that API call fails, the step still succeeds and prints that Dokploy needs a registry credential. In Dokploy, add a registry for `ghcr.io` whose username is a GitHub account and whose password is a token with `read:packages`. Point the application at `ghcr.io/iacle-solutions/iacle-app-web:latest`.
+- An owner opens the package settings for `iacle-app-web`, chooses Change visibility, and sets it to Public. That is once per package. Later pushes stay public, and Dokploy can pull without a login.
+- Dokploy has a registry for `ghcr.io`. The username is a GitHub account. The password is a token with `read:packages`. The application image is `ghcr.io/iacle-solutions/iacle-app-web:latest`.
 
 ### Tunnel and cache purge
 
@@ -104,7 +105,7 @@ The browser loaded a CanvasKit URL on `gstatic.com`, or it is still executing an
 
 ### GHCR pull fails on the Dokploy host
 
-The package is still private and Dokploy has no registry credential. Confirm the workflow log says `GHCR package is public`, or add a `ghcr.io` registry in Dokploy with `read:packages`. The image name must be `ghcr.io/<repository owner>/iacle-app-web:latest`, not a package owned by another account.
+The package is still private and Dokploy has no registry credential. Either set the package to Public in GitHub package settings, or add a `ghcr.io` registry in Dokploy with `read:packages`. The image name must be `ghcr.io/<repository owner>/iacle-app-web:latest`, not a package owned by another account. The workflow log says it cannot change package visibility. That line is expected.
 
 ### Web image build cannot see the lockfile or Android project
 
