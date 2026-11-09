@@ -24,7 +24,7 @@ The **primary IAClé desktop install** (normally the first app installed) is the
                ▼
   ┌──────────────────────────┐
   │  Primary IAClé desktop   │  device/client hub: first installed app, main node
-  │  (embedded router :1337, │  exposes GET /api/pistisai/hub for discovery
+  │  (embedded router :1337, │  exposes the hub endpoint for discovery
   │   desktop control,       │
   │   vision, local brain)   │
   └──┬──────────┬─────────┬──┘
@@ -38,7 +38,7 @@ The **primary IAClé desktop install** (normally the first app installed) is the
 | Messaging-platform hub | Hermes gateway | Telegram, Slack, Discord, and other messaging adapters, owned directly by Hermes. They do **not** route through the Flutter app. |
 | Device/client hub | Primary IAClé desktop | Web app, mobile app, secondary desktops. Owns the agent-channel connection, desktop control, vision, and channel sync for IAClé clients. |
 
-- Discovery: the hub's embedded router (`lib/services/router_server.dart`) serves `GET /api/pistisai/hub` (`AppConfig.hubPath`); mobile clients use it over Tailscale to locate the primary desktop hub.
+- Discovery: the hub's embedded router (`lib/services/router_server.dart`) serves the hub endpoint (`AppConfig.hubPath`); mobile clients use it over Tailscale to locate the primary desktop hub.
 - Transitional: any current code path where web, mobile, or a secondary desktop connects straight to Hermes (or another runtime) is transitional and slated for removal (issue #492). New client work should target the hub.
 - Single-device local use is unchanged: the desktop is both hub and client.
 

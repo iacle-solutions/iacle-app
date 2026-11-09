@@ -4,6 +4,8 @@ library;
 
 import 'dart:typed_data';
 
+import 'package:pistisai/brand/brand.dart';
+
 /// Request priority levels
 enum RequestPriority {
   high, // Interactive user requests
@@ -303,7 +305,7 @@ class TunnelError implements Exception {
 
   /// Get documentation URL
   String get documentationUrl {
-    return 'https://docs.Pistisai.com/errors/$code';
+    return Brand.current.docsUrl;
   }
 
   /// Generate user-friendly message based on category and code

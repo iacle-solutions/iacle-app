@@ -1,12 +1,21 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:pistisai/brand/brand.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 /// Service for managing GitHub releases and downloads
 class GitHubReleaseService {
-  static const String _repoOwner = 'pistisAI';
-  static const String _repoName = 'Pistisai';
   static const String _baseApiUrl = 'https://api.github.com/repos';
+
+  static String get _repoOwner {
+    final parts = Uri.parse(Brand.current.repositoryUrl).pathSegments;
+    return parts.isNotEmpty ? parts.first : '';
+  }
+
+  static String get _repoName {
+    final parts = Uri.parse(Brand.current.repositoryUrl).pathSegments;
+    return parts.length > 1 ? parts[1] : '';
+  }
 
   /// Get the latest release information
   Future<GitHubRelease?> getLatestRelease() async {

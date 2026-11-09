@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:drift/drift.dart' as drift;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:pistisai/brand/brand.dart';
 import 'package:pistisai/database/drift_local_brain.dart';
 import 'package:pistisai/utils/logger.dart';
 
@@ -231,7 +232,7 @@ class ClipboardService with ChangeNotifier {
         ClipboardHistoryCompanion.insert(
           content: content,
           contentType: contentType,
-          sourceApp: const drift.Value('Pistisai'),
+          sourceApp: drift.Value(Brand.current.productName),
         ),
       );
 

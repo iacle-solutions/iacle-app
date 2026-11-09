@@ -16,7 +16,7 @@ IAClé is agent-first. The main application channel connects to an agent runtime
 
 ## Non-Negotiable Rules
 
-- The main secure channel connects to an agent runtime **from the primary IAClé desktop hub**. Web, mobile, and secondary desktop clients reach the runtime through that hub (discovered via `GET /api/pistisai/hub`), not directly. Direct client-to-Hermes paths are transitional and to be removed (issue #492).
+- The main secure channel connects to an agent runtime **from the primary IAClé desktop hub**. Web, mobile, and secondary desktop clients reach the runtime through that hub (discovered via the hub endpoint), not directly. Direct client-to-Hermes paths are transitional and to be removed (issue #492).
 - The hub is for IAClé clients only. Hermes keeps owning its messaging-platform adapters (Telegram, Slack, etc.) directly; they do not route through IAClé.
 - Hermes is the first agent runtime path for current testing.
 - OpenClaw remains a supported agent runtime and original integration.

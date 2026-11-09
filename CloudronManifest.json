@@ -1,8 +1,8 @@
 {
     "id": "app.pistisai.app",
-    "title": "Pistisai",
-    "author": "Pistisai Team",
-    "description": "Pistisai - The OpenClaw Agent Manager connecting Cloud AI to local computing via WebRTC and websockets.",
+    "title": "IAClé",
+    "author": "IAClé",
+    "description": "IAClé is a local-first assistant for Quebec businesses.",
     "version": "1.0.0",
     "healthCheckPath": "/",
     "httpPort": 3000,
@@ -11,9 +11,9 @@
         "redis": {}
     },
     "manifestVersion": 2,
-    "website": "https://github.com/pistisAI/pistisai-app",
-    "contactEmail": "support@pistisai.app",
-    "icon": "https://raw.githubusercontent.com/pistisAI/pistisai-app/main/assets/brand_logo.png",
+    "website": "https://iacle.app",
+    "contactEmail": "support@iacle.app",
+    "icon": "https://raw.githubusercontent.com/iacle-solutions/iacle-app/main/brand/iacle/assets/icon.png",
     "tags": [
         "ai",
         "agent",
