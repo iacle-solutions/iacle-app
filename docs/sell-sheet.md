@@ -9,8 +9,7 @@
 Les AI comme ChatGPT, Claude et Gemini sont pratiques, mais :
 
 - **Vos données partent chez eux** — avocats, thérapeutes, comptables peuvent pas envoyer leurs dossiers à OpenAI
-- **Vous payez chaque mois** — $20, $100, $200/mo qui s'accumulent
-- **Vous possédez rien** — changement de termes, augmentation de prix, vous avez pas le choix
+- **Vous possédez rien** — changement de termes, vous avez pas le choix
 - **Pas de continuité** — l'AI vous connaît pas, chaque conversation repart à zéro
 
 ## La solution
@@ -21,18 +20,8 @@ Les AI comme ChatGPT, Claude et Gemini sont pratiques, mais :
 |-----------------|---------------------|
 | 🤖 ChatGPT/Claude | 🖥️ Votre AI, sur votre machine |
 | 📤 Vos données partent au US | 🔒 Zéro donnée quitte votre réseau |
-| 💳 $20-200/mo récurrent | 💰 Vous possédez |
 | ❓ Changement de termes imprévisible | ✅ Vous contrôlez tout |
 | 🔄 Chaque session repart à zéro | 🧠 L'AI apprend et se souvient |
-
-## Combien ça coûte
-
-| Service | Prix |
-|---------|------|
-| **Installation** (30-60 min) | **$200-500** — une fois |
-| **Support / mises à jour** (optionnel) | $50-100/mo |
-
-Vos données restent chez vous. Le mini-PC peut être acheté ou loué.
 
 ## Combien de temps pour être prêt ?
 
@@ -40,7 +29,7 @@ Entre l'arrivée du technicien et votre première question à votre AI : **30 à
 
 ## Qu'est-ce qu'il me faut ?
 
-L'agent tourne sur un ordinateur chez vous. L'audit vérifie si votre PC actuel peut l'héberger. Sinon, on fournit un mini-PC dédié (standard : Beelink GTi15), en achat ou en location. Du matériel sur mesure, seulement quand l'audit le montre.
+L'agent tourne sur un ordinateur chez vous. L'audit vérifie si votre PC actuel peut l'héberger. Sinon, IAClé fournit un mini-PC dédié (standard : Beelink GTi15). Du matériel sur mesure, seulement quand l'audit le montre.
 
 On vient, on installe, on repart. Vous avez votre AI qui tourne.
 
@@ -63,10 +52,10 @@ Pour les tâches quotidiennes — analyse, rédaction, résumé, organisation �
 Rien ne quitte votre réseau. Pas de cloud, pas de serveur externe. C'est l'avantage #1.
 
 **"Et si j'ai un problème ?"**
-Option support : $50-100/mo pour les mises à jour, fine-tuning, assistance technique.
+Le soutien couvre les mises à jour, le fine-tuning et l'assistance technique.
 
-**"Puis-je l'essayer avant d'acheter ?"**
-Oui. On fait une démo chez vous, sans engagement.
+**"Puis-je voir une démo ?"**
+Oui. On fait une démo chez vous.
 
 ---
 

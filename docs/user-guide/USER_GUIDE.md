@@ -69,7 +69,7 @@ The app can discover or configure agent runtimes:
 | Hermes | `127.0.0.1:8642` (wizard-configured) | First agent runtime path for current testing |
 | OpenClaw Gateway | `localhost:18789` | Supported original integration |
 | Custom agent gateway | User supplied | Private compatible agent runtime |
-| Hosted agent runtime | Pistisai managed | Optional paid compute |
+| Hosted agent runtime | Pistisai managed | Optional hosted compute |
 
 ### Support Model Discovery
 
@@ -177,7 +177,7 @@ Tailscale is the preferred secure transport. Instead of maintaining a separate c
 - Laptop app connects to Hermes running on the same laptop.
 - Desktop app connects to Hermes or OpenClaw running on a workstation in the same tailnet.
 - Phone or web session connects through a per-user cloud connector that has joined the user's tailnet.
-- Optional paid hosted agent runtime runs in an isolated per-user container and joins the user's tailnet only after setup approval.
+- Optional hosted agent runtime runs in an isolated per-user container and joins the user's tailnet only after setup approval.
 - Optional Ollama/LM Studio support model providers run on local hardware for memory/background features.
 
 ### What Syncs

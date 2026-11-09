@@ -10,7 +10,7 @@ Sign-in is for the tunnel and for sync. The network is a tunnel behind Cloudflar
 
 **Pistisai** is a local-first companion and desktop capability layer for user-selected agent runtimes. It gives Hermes, OpenClaw, and compatible agent gateways a secure channel to the user and permissioned hands and eyes on the user's desktops.
 
-IAClé delivers that hub to Quebec SMBs. The agent runs on a computer at the client's site. The readiness audit checks whether their current PC can host it. If it can, it runs there. If not, IAClé supplies a dedicated mini PC (standard: Beelink GTi15), for purchase or rental. Custom hardware only when the audit shows the need. Cloud services the client already uses are optional, and only with consent.
+IAClé delivers that hub to Quebec SMBs. The agent runs on a computer at the client's site. The readiness audit checks whether their current PC can host it. If it can, it runs there. If not, IAClé provides a dedicated mini PC (standard: Beelink GTi15). Custom hardware only when the audit shows the need. Cloud services the client already uses are optional, and only with consent.
 
 The main app does not connect directly to raw local model providers as its primary experience. Ollama, LM Studio, and similar endpoints are support model providers for app-owned features such as memory, embeddings, summarization, classification, OCR cleanup, and speech helpers.
 
@@ -23,7 +23,7 @@ Pistisai has four product layers:
 1. **User-owned agent runtime**: the normal path. The user runs Hermes, OpenClaw, or a compatible agent gateway on hardware they control.
 2. **Support model provider**: optional local model infrastructure such as Ollama or LM Studio for memory and other app-owned background features.
 3. **Cloud connector and sync**: optional per-user cloud connector container that can join the user's Tailscale tailnet for secure channel sync, presence, and web/mobile access.
-4. **Hosted agent runtime**: optional paid compute add-on for users who want Pistisai to run an isolated agent runtime for them.
+4. **Hosted agent runtime**: optional hosted runtime for users who want Pistisai to run an isolated agent runtime for them.
 
 Cloud services coordinate identity, sync, presence, and optional hosted compute. They are not required for the core single-device local experience.
 
@@ -88,7 +88,7 @@ Agent runtime setup paths:
 2. **Another private device**: agent runtime running on another desktop, workstation, or server.
 3. **Tailscale device**: agent runtime discovered through the user's tailnet.
 4. **Manual/private URL**: custom LAN, VPN, tailnet DNS, or private compatible agent gateway.
-5. **Cloud-hosted agent runtime**: optional paid Pistisai-managed runtime.
+5. **Cloud-hosted agent runtime**: optional Pistisai-managed runtime.
 6. **No runtime yet**: guide the user through installing or configuring Hermes, OpenClaw, or another compatible agent gateway.
 
 Optional support model setup paths:
@@ -128,7 +128,7 @@ The wizard must not present Ollama or LM Studio as primary agent runtime choices
 | Streaming Proxy | Legacy/fallback streaming path and web transport support |
 | Per-user cloud connector | Isolated optional container that joins the user's Tailscale tailnet |
 | Tailscale Relay | Existing service area for Tailscale integration |
-| Hosted agent runtime | Optional paid isolated runtime compute |
+| Hosted agent runtime | Optional isolated runtime compute |
 | Auth Backend | Lightweight Auth0 JWT validation |
 | SDK | TypeScript SDK |
 | OpenClaw Skills | Avatar personality/evolution skill package |
@@ -177,7 +177,7 @@ Rules:
 - Core single-device use must work without mandatory cloud dependencies.
 - The active agent runtime location is chosen by setup, not assumed.
 - User-owned agent runtimes normally live inside the user's network or tailnet.
-- Cloud-hosted agent runtime is optional paid compute.
+- Cloud-hosted agent runtime is optional hosted compute.
 - Desktop control and vision are always device-scoped and permissioned.
 - Cloud sync must not grant direct desktop access without local app approval.
 - Local model providers do not receive desktop-control authority.

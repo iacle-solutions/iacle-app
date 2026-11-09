@@ -588,8 +588,8 @@ class HomepageScreen extends StatelessWidget {
             constraints: const BoxConstraints(maxWidth: 600),
             child: Text(
               'AI that respects your privacy. Runs entirely on your machine, '
-              'backed by your terms. No cloud lock-in, no data mining, '
-              'no subscription required. Trust is not a feature — it\'s the foundation.',
+              'backed by your terms. No cloud lock-in, no data mining. '
+              'Trust is not a feature — it\'s the foundation.',
               style: TextStyle(
                 fontSize: isMobile ? 14 : 16,
                 color: colors.textColorLight,

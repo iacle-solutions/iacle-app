@@ -225,7 +225,7 @@ For web/mobile access or cloud coordination, Pistisai should add an isolated per
 
 ### Hosted Agent Runtime
 
-Running the agent runtime in Pistisai-hosted infrastructure is an optional paid compute path. It should use a per-user isolated container and join the user's tailnet only after setup approval.
+Running the agent runtime in Pistisai-hosted infrastructure is an optional hosted path. It should use a per-user isolated container and join the user's tailnet only after setup approval.
 
 ---
 

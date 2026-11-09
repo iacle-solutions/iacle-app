@@ -166,9 +166,6 @@ A centralized workspace for project owners and system administrators. Access is 
 
 *   **Dashboard Overview:** Displays high-level platform stats.
 *   **User Management:** Edit, search, and assign user roles or admin permissions (`viewUsers`, `viewPayments`, `viewConfiguration`, etc.).
-*   **Payment Audits:** Logs transactions and tracks payment success.
-*   **Subscription Management:** Adjust customer tiers and subscription configurations.
-*   **Financial Reports:** Track revenues, refunds, and cost margins.
 *   **Audit Logs Viewer:** Real-time log of administrative actions.
 *   **Email Setup:** Configure custom SMTP, SendGrid, or mail relay hosts, edit templates, and track delivery metrics.
 *   **DNS Configuration:** Manage domains, records, and hostname redirects.
