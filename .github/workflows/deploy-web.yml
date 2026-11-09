@@ -77,6 +77,19 @@ jobs:
           echo "tag=$VERSION" >> $GITHUB_OUTPUT
           echo "Building version: $VERSION"
 
+      - name: Materialize IAClé brand licence
+        env:
+          IACLE_BRAND_LICENCE: ${{ secrets.IACLE_BRAND_LICENCE }}
+        run: |
+          set -euo pipefail
+          if [ -z "${IACLE_BRAND_LICENCE:-}" ]; then
+            echo "IACLE_BRAND_LICENCE is not set"
+            exit 1
+          fi
+          # Never print or commit the licence; Docker bake reads ./iacle.licence
+          printf '%s\n' "$IACLE_BRAND_LICENCE" > iacle.licence
+          chmod 600 iacle.licence
+
       - name: Require web auth defines
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
@@ -111,11 +124,6 @@ jobs:
           cache-to: type=gha,mode=max
           provenance: true
           sbom: true
-          build-args: |
-            BRAND=iacle
-            PISTISAI_ADMIN_EMAIL=${{ secrets.PISTISAI_ADMIN_EMAIL }}
-            SUPABASE_URL=${{ secrets.SUPABASE_URL }}
-            SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }}
 
       - name: Verify image pushed
         run: |
