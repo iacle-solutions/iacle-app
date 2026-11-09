@@ -1,12 +1,12 @@
 # IAClé
 
-IAClé is Christopher Maltais's Quebec sole proprietorship. It is the brand that delivers the PistisAI stack to Quebec SMBs.
+IAClé is a local-first AI assistant for Quebec businesses. [Français](README.md)
 
-The stack is the desktop hub built around Hermes: chat, voice, avatar, and skills. One stack, one company. [Français](README.md).
+IAClé is based on PistisAI.
 
 ## Local-first
 
-The agent runs on a computer at the client's site. The free audit checks whether their current PC can host it. If it can, it runs there. If not, IAClé supplies a dedicated mini PC (standard: Beelink GTi15), for purchase or rental. Custom hardware only when the audit shows the need.
+The agent runs on a computer at the client's site. The free audit checks whether their current PC can host it. If it can, it runs there. If not, IAClé supplies a dedicated mini PC (standard: Beelink GTi15), bought or rented. Custom hardware only when the audit shows the need.
 
 It can reach a cloud service the client already uses only when that is secure, the client consents, and the provider has been assessed under Quebec Law 25 (a privacy impact assessment). Outbound flows are documented. They can be pulled back.
 
@@ -16,25 +16,22 @@ In the service, an employee approves outgoing messages and important decisions.
 
 Quebec SMBs. First in Estrie, then further into Quebec, especially regulated firms: legal, health, and finance.
 
-## The hub
+## What the assistant does
 
-This repository is the PistisAI desktop hub, delivered under the IAClé brand.
-
-- Chat with Hermes, OpenClaw, or a compatible gateway.
-- Voice and avatar.
+- Chat, voice, and avatar.
 - Screen reading and OCR, with the person's permission.
 - Desktop actions, each one permissioned.
 - Skills, sessions, and scheduled tasks.
 - A private mesh across the client's computers.
 
-Ollama and LM Studio handle hub tasks such as memory and embeddings. The main agent stays Hermes, or a compatible gateway.
+Hermes is the main runtime. OpenClaw and compatible gateways work too. Ollama and LM Studio handle memory and embeddings.
 
 ## Offer
 
 | Offer | What it is |
 | --- | --- |
 | Readiness audit | Free. Three columns: what current tools already do, what is still done by hand, and what is left to automate. It also checks whether the current PC can host the agent. |
-| Implementation | One operational path. Examples: email triage, invoices, a bilingual AI receptionist, reports, bookkeeping. |
+| Setup | One operational path, then installation and support. Examples: email triage, invoices, a bilingual AI receptionist, reports, bookkeeping. |
 | Managed services | System monitoring, Law 25 support, and a way to take the data back. |
 
 ## Sign-in
@@ -43,13 +40,9 @@ Sign-in is for the tunnel and for sync.
 
 | Tier | Network |
 | --- | --- |
-| Free | `pistisai.app` tunnel, behind Cloudflare Access |
+| Free | Tunnel behind Cloudflare Access |
 | Business | The customer's Tailscale or VPN |
 | Enterprise | The customer's Tailscale or VPN |
-
-This model does not use Supabase.
-
-This repository will be resynced with pistisai-app (see [#26](https://github.com/iacle-solutions/iacle-app/issues/26)).
 
 ## Development
 
@@ -77,7 +70,7 @@ cd services/api-backend && npm install && npm run dev
 cd services/streaming-proxy && npm install && npm run dev
 ```
 
-`backend/auth/` has no `dev` script. Start it with `node handlers.js`.
+The auth service has no `dev` script. From its directory, start it with `node handlers.js`.
 
 Details: [AGENTS.md](AGENTS.md), [onboarding](docs/development/DEVELOPER_ONBOARDING.md), [contributing](CONTRIBUTING.md).
 
@@ -94,6 +87,8 @@ Details: [AGENTS.md](AGENTS.md), [onboarding](docs/development/DEVELOPER_ONBOARD
 | [Specification](SPEC.md) | Software spec |
 | [Security](SECURITY.md) | Report a vulnerability |
 
+Report a vulnerability in private: [GitHub security advisories](https://github.com/iacle-solutions/iacle-app/security/advisories).
+
 ## License
 
-MIT. See [LICENSE](LICENSE).
+See [LICENSE](LICENSE).
