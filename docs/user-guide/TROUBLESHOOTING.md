@@ -1,8 +1,8 @@
-# Pistisai Troubleshooting Guide
+# IAClé Troubleshooting Guide
 
 This guide helps diagnose setup, agent runtime, support model, mesh, desktop-control, voice, and sync problems.
 
-Pistisai does not require one default runtime. Confirm which agent runtime the setup wizard selected before troubleshooting. Ollama and LM Studio are support model providers, not primary agent runtime targets.
+IAClé does not require one default runtime. Confirm which agent runtime the setup wizard selected before troubleshooting. Ollama and LM Studio are support model providers, not primary agent runtime targets.
 
 ---
 
@@ -81,7 +81,7 @@ If the support model provider works but chat is disconnected, troubleshoot the a
 
 ### Device Does Not Appear
 
-- Confirm Pistisai is installed and signed in where sync is expected.
+- Confirm IAClé is installed and signed in where sync is expected.
 - Confirm Tailscale is running on the device.
 - Check account sync settings.
 - Re-open the app after network changes.
@@ -106,8 +106,8 @@ That is expected unless the target device granted desktop permissions. Conversat
 Linux:
 
 ```bash
-ldd /opt/pistisai-app
-./pistisai --verbose
+ldd /opt/iacle-app
+./IAClé --verbose
 ```
 
 Windows:
@@ -239,29 +239,25 @@ nvidia-smi
 
 ### Conversation Storage
 
-- Linux: `~/.local/share/pistisai/local_brain.db`
-- Windows: `%LOCALAPPDATA%\pistisai\local_brain.db`
+- Linux: the local database in the app data directory under `~/.local/share`
+- Windows: `%LOCALAPPDATA%\IAClé\local_brain.db`
 
 ### Logs
 
-- Linux: `~/.local/share/pistisai/logs/app.log`
-- Windows: `%LOCALAPPDATA%\pistisai\logs\app.log`
+- Linux: the app log in the data directory under `~/.local/share`
+- Windows: `%LOCALAPPDATA%\IAClé\logs\app.log`
 
 ### Reset Configuration
 
 This removes local app configuration and local app data.
 
-Linux:
-
-```bash
-rm -rf ~/.config/Pistisai/ ~/.local/share/pistisai/
-```
+On Linux, remove the app config directory under `~/.config` and the app data directory under `~/.local/share`.
 
 Windows:
 
 ```cmd
-rmdir /s "%APPDATA%\Pistisai"
-rmdir /s "%LOCALAPPDATA%\Pistisai"
+rmdir /s "%APPDATA%\IAClé"
+rmdir /s "%LOCALAPPDATA%\IAClé"
 ```
 
 ---
@@ -274,4 +270,4 @@ rmdir /s "%LOCALAPPDATA%\Pistisai"
 - [System Architecture](../architecture/SYSTEM_ARCHITECTURE.md)
 - [Agent Runtime Contract](../architecture/AGENT_RUNTIME_CONTRACT.md)
 - [Secure Device Mesh](../architecture/SECURE_DEVICE_MESH.md)
-- [GitHub Issues](https://github.com/pistisAI/pistisai-app/issues)
+- [GitHub Issues](https://github.com/iacle-solutions/iacle-app/issues)

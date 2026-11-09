@@ -1,8 +1,8 @@
-# Pistisai Authentication Guide
+# IAClé Authentication Guide
 
 ## Overview
 
-This guide provides comprehensive documentation for authenticating with the Pistisai API. The API uses OAuth2 with Auth0 for user authentication and JWT tokens for API access.
+This guide provides comprehensive documentation for authenticating with the IAClé API. The API uses OAuth2 with Auth0 for user authentication and JWT tokens for API access.
 
 **Validates: Requirements 12.8**
 
@@ -21,7 +21,7 @@ This guide provides comprehensive documentation for authenticating with the Pist
 
 ## Authentication Methods
 
-The Pistisai API supports two authentication methods:
+The IAClé API supports two authentication methods:
 
 ### 1. JWT Bearer Token (User Authentication)
 
@@ -43,15 +43,15 @@ X-API-Key: <API_KEY>
 
 ### Overview
 
-Pistisai uses Auth0 for OAuth2 authentication. The flow follows the standard OAuth2 Authorization Code flow with PKCE (Proof Key for Code Exchange) for enhanced security.
+IAClé uses Auth0 for OAuth2 authentication. The flow follows the standard OAuth2 Authorization Code flow with PKCE (Proof Key for Code Exchange) for enhanced security.
 
 ### OAuth2 Configuration
 
 ```
 Auth0 Domain: dev-v2f2p008x3dr74ww.us.auth0.com
 Client ID: <YOUR_CLIENT_ID>
-Audience: https://api.pistisai.app
-Redirect URI: https://app.pistisai.app/callback
+Audience: https://api.example.com
+Redirect URI: https://app.example.com/callback
 ```
 
 ### Authorization Code Flow (Recommended)
@@ -66,9 +66,9 @@ Redirect the user to Auth0's authorization endpoint:
 https://dev-v2f2p008x3dr74ww.us.auth0.com/authorize?
   client_id=YOUR_CLIENT_ID&
   response_type=code&
-  redirect_uri=https://app.pistisai.app/callback&
+  redirect_uri=https://app.example.com/callback&
   scope=openid profile email&
-  audience=https://api.pistisai.app&
+  audience=https://api.example.com&
   state=STATE_VALUE&
   code_challenge=CODE_CHALLENGE&
   code_challenge_method=S256
@@ -90,7 +90,7 @@ https://dev-v2f2p008x3dr74ww.us.auth0.com/authorize?
 The user logs in with their Auth0 credentials. Auth0 redirects back to your redirect_uri with an authorization code:
 
 ```
-https://app.pistisai.app/callback?
+https://app.example.com/callback?
   code=AUTH_CODE&
   state=STATE_VALUE
 ```
@@ -107,7 +107,7 @@ curl -X POST https://dev-v2f2p008x3dr74ww.us.auth0.com/oauth/token \
     "client_secret": "YOUR_CLIENT_SECRET",
     "code": "AUTH_CODE",
     "grant_type": "authorization_code",
-    "redirect_uri": "https://app.pistisai.app/callback",
+    "redirect_uri": "https://app.example.com/callback",
     "code_verifier": "CODE_VERIFIER"
   }'
 ```
@@ -178,7 +178,7 @@ SIGNATURE_HERE
   "iss": "https://dev-v2f2p008x3dr74ww.us.auth0.com/",
   "sub": "auth0|6345a2ff123456789abcdef",
   "aud": [
-    "https://api.pistisai.app",
+    "https://api.example.com",
     "https://dev-v2f2p008x3dr74ww.us.auth0.com/userinfo"
   ],
   "iat": 1673804000,
@@ -195,7 +195,7 @@ Tokens expire after 24 hours. Use the refresh token to obtain a new access token
 #### Check Token Expiry
 
 ```bash
-curl -X POST https://api.pistisai.app/auth/token/check-expiry \
+curl -X POST https://api.example.com/auth/token/check-expiry \
   -H "Content-Type: application/json" \
   -d '{
     "token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9..."
@@ -215,7 +215,7 @@ curl -X POST https://api.pistisai.app/auth/token/check-expiry \
 #### Refresh Token
 
 ```bash
-curl -X POST https://api.pistisai.app/auth/token/refresh \
+curl -X POST https://api.example.com/auth/token/refresh \
   -H "Content-Type: application/json" \
   -d '{
     "refreshToken": "refresh_eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
@@ -238,7 +238,7 @@ curl -X POST https://api.pistisai.app/auth/token/refresh \
 Validate a token before using it:
 
 ```bash
-curl -X POST https://api.pistisai.app/auth/token/validate \
+curl -X POST https://api.example.com/auth/token/validate \
   -H "Content-Type: application/json" \
   -d '{
     "token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9..."
@@ -262,7 +262,7 @@ curl -X POST https://api.pistisai.app/auth/token/validate \
 ### Get Current User Info
 
 ```bash
-curl -X GET https://api.pistisai.app/auth/me \
+curl -X GET https://api.example.com/auth/me \
   -H "Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9..."
 ```
 
@@ -282,7 +282,7 @@ curl -X GET https://api.pistisai.app/auth/me \
 ### Logout and Token Revocation
 
 ```bash
-curl -X POST https://api.pistisai.app/auth/logout \
+curl -X POST https://api.example.com/auth/logout \
   -H "Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9..."
 ```
 
@@ -316,7 +316,7 @@ const auth0 = new Auth0Client({
   clientId: 'YOUR_CLIENT_ID',
   authorizationParams: {
     redirect_uri: window.location.origin + '/callback',
-    audience: 'https://api.pistisai.app',
+    audience: 'https://api.example.com',
     scope: 'openid profile email'
   }
 });
@@ -345,7 +345,7 @@ async function getAccessToken() {
 async function makeAuthenticatedRequest(endpoint) {
   const token = await auth0.getTokenSilently();
   
-  const response = await fetch(`https://api.pistisai.app${endpoint}`, {
+  const response = await fetch(`https://api.example.com${endpoint}`, {
     headers: {
       'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json'
@@ -393,8 +393,8 @@ const _secureStorage = FlutterSecureStorage();
 
 const _auth0Domain = 'dev-v2f2p008x3dr74ww.us.auth0.com';
 const _clientId = 'YOUR_CLIENT_ID';
-const _redirectUrl = 'com.Pistisai://callback';
-const _audience = 'https://api.pistisai.app';
+const _redirectUrl = 'the app callback scheme';
+const _audience = 'https://api.example.com';
 ```
 
 #### Login
@@ -441,7 +441,7 @@ Future<Map<String, dynamic>> makeAuthenticatedRequest(String endpoint) async {
   final token = await _secureStorage.read(key: 'access_token');
   
   final response = await http.get(
-    Uri.parse('https://api.pistisai.app$endpoint'),
+    Uri.parse('https://api.example.com$endpoint'),
     headers: {
       'Authorization': 'Bearer $token',
       'Content-Type': 'application/json',
@@ -468,7 +468,7 @@ Future<void> refreshToken() async {
     final refreshToken = await _secureStorage.read(key: 'refresh_token');
     
     final response = await http.post(
-      Uri.parse('https://api.pistisai.app/auth/token/refresh'),
+      Uri.parse('https://api.example.com/auth/token/refresh'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({'refreshToken': refreshToken}),
     );
@@ -500,7 +500,7 @@ Future<void> refreshToken() async {
 Future<void> logout() async {
   try {
     await http.post(
-      Uri.parse('https://api.pistisai.app/auth/logout'),
+      Uri.parse('https://api.example.com/auth/logout'),
       headers: {
         'Authorization': 'Bearer ${await _secureStorage.read(key: 'access_token')}',
       },
@@ -534,9 +534,9 @@ import * as AppAuth from 'expo-app-auth';
 const config = {
   issuer: 'https://dev-v2f2p008x3dr74ww.us.auth0.com',
   clientId: 'YOUR_CLIENT_ID',
-  redirectUrl: 'com.Pistisai://callback',
+  redirectUrl: 'the app callback scheme',
   scopes: ['openid', 'profile', 'email'],
-  audience: 'https://api.pistisai.app',
+  audience: 'https://api.example.com',
 };
 ```
 
@@ -566,7 +566,7 @@ async function login() {
 async function makeAuthenticatedRequest(endpoint) {
   const token = await SecureStore.getItemAsync('access_token');
   
-  const response = await fetch(`https://api.pistisai.app${endpoint}`, {
+  const response = await fetch(`https://api.example.com${endpoint}`, {
     headers: {
       'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json',
@@ -600,7 +600,7 @@ import axios from 'axios';
 const SUPABASE_AUTH_DOMAIN = 'dev-v2f2p008x3dr74ww.us.auth0.com';
 const SUPABASE_AUTH_CLIENT_ID = process.env.SUPABASE_AUTH_CLIENT_ID;
 const SUPABASE_AUTH_CLIENT_SECRET = process.env.SUPABASE_AUTH_CLIENT_SECRET;
-const API_AUDIENCE = 'https://api.pistisai.app';
+const API_AUDIENCE = 'https://api.example.com';
 ```
 
 #### Get Access Token (Machine-to-Machine)
@@ -634,7 +634,7 @@ async function makeAuthenticatedRequest(endpoint, method = 'GET', data = null) {
   
   const config = {
     method,
-    url: `https://api.pistisai.app${endpoint}`,
+    url: `https://api.example.com${endpoint}`,
     headers: {
       'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json',
@@ -803,5 +803,5 @@ For authentication issues:
 
 - Check [API Documentation](./API_DOCUMENTATION_GUIDE.md)
 - Review [Error Codes](./API_ERROR_CODES.md)
-- Contact support@pistisai.app
-- Visit https://docs.pistisai.app
+- Contact ops@example.com
+- Visit https://docs.example.com

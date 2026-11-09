@@ -1,12 +1,12 @@
 # Linux Build Guide
 
-This guide explains the Linux build system for Pistisai, which creates both Flatpak and .deb packages.
+This guide explains the Linux build system for IAClé, which creates both Flatpak and .deb packages.
 
 ## Overview
 
 Linux builds are **ENABLED** and fully integrated into the CI/CD pipeline. The build system uses:
 
-- **GitHub-hosted runners** (ubuntu-latest) - FREE for public repositories
+- **GitHub-hosted runners** (ubuntu-latest)
 - **Dual packaging**: Flatpak (universal) and .deb (Debian/Ubuntu)
 - **Automated dependency installation** for reproducible builds
 - **Parallel execution** with Windows and Android builds
@@ -15,12 +15,12 @@ Linux builds are **ENABLED** and fully integrated into the CI/CD pipeline. The b
 
 Linux builds produce two package formats:
 
-1. **Flatpak** (`Pistisai-{version}.flatpak`)
+1. **Flatpak** (`IAClé-{version}.flatpak`)
    - Universal package for all Linux distributions
    - Sandboxed environment with controlled permissions
    - Works on Ubuntu, Fedora, Arch, Debian, openSUSE, etc.
 
-2. **.deb Package** (`pistisai_{version}_amd64.deb`)
+2. **.deb Package** (the Debian package from the Linux build)
    - Native package for Debian/Ubuntu-based systems
    - Integrates with system package manager
    - Appears in application menu automatically
@@ -93,7 +93,7 @@ flutter build linux --release
 ### 4. Test the Build
 
 ```bash
-./build/linux/x64/release/bundle/Pistisai
+# Run the executable in build/linux/x64/release/bundle/
 ```
 
 ### 5. Build Flatpak (Optional)
@@ -106,21 +106,21 @@ flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flat
 flatpak install -y flathub org.freedesktop.Platform//23.08 org.freedesktop.Sdk//23.08
 
 # Build Flatpak
-flatpak-builder --force-clean --repo=repo build-dir com.Pistisai.Pistisai.yml
+flatpak-builder --force-clean --repo=repo build-dir <flatpak-manifest>.yml
 
 # Create bundle
-flatpak build-bundle repo Pistisai.flatpak com.Pistisai.Pistisai
+flatpak build-bundle repo iacle.flatpak <flatpak-id>
 
 # Test installation
-flatpak install --user Pistisai.flatpak
+flatpak install --user IAClé.flatpak
 
 # Run the app
-flatpak run com.Pistisai.Pistisai
+flatpak run <flatpak-id>
 ```
 
 ## Flatpak Manifest Configuration
 
-The Flatpak manifest (`com.Pistisai.Pistisai.yml`) defines:
+The Flatpak manifest defines:
 
 ### Runtime and SDK
 
@@ -155,13 +155,13 @@ The manifest copies the Flutter build output and installs:
 ### Option 1: GitHub Releases (Current)
 
 - Users download `.flatpak` file from GitHub releases
-- Manual installation: `flatpak install Pistisai-*.flatpak`
+- Manual installation: `flatpak install IAClé-*.flatpak`
 - Simple but requires manual updates
 
 ### Option 2: Flathub (Recommended for Future)
 
 - Submit to Flathub for centralized distribution
-- Users can install via: `flatpak install flathub com.Pistisai.Pistisai`
+- Users can install via: `flatpak install flathub <flatpak-id>`
 - Automatic updates through Flatpak
 - Better discoverability in software centers
 
@@ -201,15 +201,15 @@ flatpak install flathub org.freedesktop.Platform//23.08 org.freedesktop.Sdk//23.
 
 # Clear build cache and retry
 rm -rf build-dir repo
-flatpak-builder --force-clean --repo=repo build-dir com.Pistisai.Pistisai.yml
+flatpak-builder --force-clean --repo=repo build-dir <flatpak-manifest>.yml
 ```
 
 ### Application Won't Start
 
 ```bash
 # Check Flatpak logs
-flatpak run --command=sh com.Pistisai.Pistisai
-journalctl --user -xe | grep Pistisai
+flatpak run --command=sh <flatpak-id>
+journalctl --user -xe | grep IAClé
 ```
 
 ### Missing Dependencies
@@ -241,16 +241,6 @@ The workflow caches:
 - Build artifacts
 
 Expected cache hit rate: >80% for subsequent builds
-
-## Cost Analysis
-
-**GitHub-hosted runners (ubuntu-latest):**
-
-- Public repositories: **FREE unlimited minutes**
-- Private repositories: 2,000 free minutes/month
-
-**Pistisai Status**: Public repository
-**Monthly Cost**: **$0** (completely free)
 
 ## Next Steps
 

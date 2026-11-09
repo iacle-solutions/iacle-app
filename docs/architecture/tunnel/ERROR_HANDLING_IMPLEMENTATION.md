@@ -107,7 +107,7 @@ try {
 
 ```dart
 final testSuite = DiagnosticTestSuite(
-  serverHost: 'api.pistisai.app',
+  serverHost: 'api.example.com',
   serverPort: 443,
   authToken: userToken,
   testTimeout: Duration(seconds: 30),
@@ -378,7 +378,7 @@ Potential improvements:
 
 ## Documentation
 
-- Error codes are documented at: `https://docs.Pistisai.com/errors/{code}`
+- Error codes are documented at: `https://docs.IAClé.com/errors/{code}`
 - Each error includes a link to relevant documentation
 - Diagnostic reports can be exported for support tickets
 - Recovery strategies are logged for debugging

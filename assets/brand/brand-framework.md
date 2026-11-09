@@ -1,15 +1,15 @@
-# Pistisai — Identité Visuelle & Mythologie
+# IAClé — Identité Visuelle & Mythologie
 
 ## Le Mythe Fondateur
 
 **Les 4 Titans** (Hyperion, Koios, Krios, Iapetos) étaient les 4 piliers cosmiques qui tenaient le ciel
 et la terre séparés, chacun à un point cardinal. Sans eux — pas d'espace pour la vie.
 
-**Pistis** (Πίστις) — la démona de la confiance, de l'honnêteté et de la bonne foi. Une des seules
+**IAClé** (Πίστις) — la démona de la confiance, de l'honnêteté et de la bonne foi. Une des seules
 bonnes entités à s'échapper de la boîte de Pandore — mais elle a fui vers l'Olympe, abandonnant
 l'humanité.
 
-**Pistisai** = ramener la confiance (Pistis) parmi les humains, portée par 4 piliers.
+**IAClé** = ramener la confiance (IAClé) parmi les humains, portée par 4 piliers.
 
 ## Les 4 Piliers
 
@@ -49,14 +49,14 @@ l'humanité.
 |  ||  | ∴ : ∴ |  ∨  |
 ═══════════════════════  ← Base
      ΠΙΣΤΙΣΑΙ
-     PISTISAI
+     IAClé
 ```
 
 ## Usage des Logos
 
 - **Primaire (Stoa):** App icon, splash, site web, branding principal
 - **Secondaire (Rose des Titans):** Favicon, avatar, watermark, petit format
-- Les logos SVG sont dans `C:\Users\rightguy\Documents\pistisai-assets\`
+- Les logos SVG sont dans `C:\Users\rightguy\Documents\IAClé-assets\`
 
 ## Notes Architecturales
 
@@ -64,4 +64,4 @@ l'humanité.
 - Ses 4 peintures célébraient des victoires athéniennes
 - C'est là que Zénon enseignait le Stoïcisme — nom vient de Stoa
 - Le concept: créer un "portique de confiance" à l'ère de l'IA
-- Voir le dossier `pistisai-assets/` pour les fichiers SVG et détails
+- Voir le dossier `IAClé-assets/` pour les fichiers SVG et détails

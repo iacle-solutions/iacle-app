@@ -1,4 +1,4 @@
-# Pistisai Privacy-First Architecture Testing Checklist
+# IAClé Privacy-First Architecture Testing Checklist
 
 ## 🚨 **CRITICAL ISSUE VALIDATION**
 
@@ -94,24 +94,24 @@ flutter run -d windows
 
 ### ✅ **Tier-Based Feature Testing**
 
-**Free Tier Testing**:
+**Account tier Testing**:
 
 ```bash
-# Login with free tier account
+# Login with account tier account
 # Navigate to privacy dashboard
 ```
 
 **Expected Results**:
 
-- [ ] ✅ Cloud sync toggle disabled with "Requires premium tier" message
+- [ ] ✅ Cloud sync toggle disabled with "Requires account tier" message
 - [ ] ✅ Storage location shows "Local Only"
-- [ ] ✅ Tier features show free tier limitations
+- [ ] ✅ Tier features show account tier limitations
 - [ ] ✅ Container status shows "ephemeral"
 
-**Premium Tier Testing** (if available):
+**Account tier Testing** (if available):
 
 ```bash
-# Login with premium tier account
+# Login with account tier account
 # Navigate to privacy dashboard
 ```
 
@@ -206,7 +206,7 @@ flutter run -d linux
 **Expected Results**:
 
 - [ ] ✅ Proper 401 error handling
-- [ ] ✅ Fallback to free tier on auth failure
+- [ ] ✅ Fallback to account tier on auth failure
 - [ ] ✅ Clear error messages for users
 - [ ] ✅ No sensitive data exposure
 
@@ -310,7 +310,7 @@ For detailed testing strategy, refer to [docs/TESTING_STRATEGY.md](TESTING_STRAT
 
 ### ✅ **Tier-Based Features**
 
-- [ ] ✅ Free tier limitations properly enforced
+- [ ] ✅ Account tier limitations properly enforced
 - [ ] ✅ Premium tier features accessible
 - [ ] ✅ Container allocation based on tier
 - [ ] ✅ Platform access restrictions work

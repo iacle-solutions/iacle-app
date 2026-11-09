@@ -1,6 +1,6 @@
 # Android Build Guide
 
-This guide explains the Android build system for Pistisai, which creates multi-architecture APKs.
+This guide explains the Android build system for IAClé, which creates multi-architecture APKs.
 
 ## Overview
 
@@ -96,7 +96,7 @@ The Android build system requires:
 # Generate a new keystore (run this locally, not in CI)
 keytool -genkey -v -keystore release-keystore.jks \
   -keyalg RSA -keysize 2048 -validity 10000 \
-  -alias Pistisai-release
+  -alias release-key
 
 # You will be prompted for:
 # - Keystore password (save this securely!)
@@ -184,7 +184,7 @@ If you prefer to configure secrets manually:
    ```bash
    keytool -genkey -v -keystore android/release-keystore.jks \
      -keyalg RSA -keysize 2048 -validity 10000 \
-     -alias Pistisai-release
+     -alias release-key
    ```
 
 2. **Convert to base64**:
@@ -204,7 +204,7 @@ If you prefer to configure secrets manually:
    gh secret set ANDROID_KEYSTORE_B64 < android/release-keystore.base64.txt
    gh secret set ANDROID_STORE_PASSWORD
    gh secret set ANDROID_KEY_PASSWORD
-   gh secret set ANDROID_KEY_ALIAS -b "Pistisai-release"
+   gh secret set ANDROID_KEY_ALIAS -b "IAClé-release"
    ```
 
 ### Security Best Practices
@@ -263,7 +263,7 @@ android {
 
 ### Check android/app/src/main/AndroidManifest.xml
 
-SDK levels are not declared in the manifest. `minSdkVersion` and `targetSdkVersion` come from the Flutter Gradle plugin inside `android/app/build.gradle`. The manifest does declare `INTERNET`, `ACCESS_NETWORK_STATE`, and an OAuth callback intent filter with scheme `Pistisai` and host `callback`.
+SDK levels are not declared in the manifest. `minSdkVersion` and `targetSdkVersion` come from the Flutter Gradle plugin inside `android/app/build.gradle`. The manifest does declare `INTERNET`, `ACCESS_NETWORK_STATE`, and an OAuth callback intent filter with scheme `IAClé` and host `callback`.
 
 ### Update pubspec.yaml
 
@@ -384,11 +384,11 @@ After successful build:
    # Install via ADB
    adb install app-arm64-v8a-release.apk
 
-   # Launch app. applicationId is app.pistisai.app.
-   adb shell am start -n app.pistisai.app/.MainActivity
+   # Launch app. applicationId is app.example.com.
+   adb shell am start -n app.example.com/.MainActivity
 
    # Check logs
-   adb logcat | grep -i pistisai
+   adb logcat | grep -i IAClé
    ```
 
 The mobile workflow does not publish `.sha256` files next to the APKs.
@@ -514,14 +514,7 @@ If you need to rotate the keystore:
 2. Verify `minSdkVersion` in `build.gradle`
 3. Check required permissions in `AndroidManifest.xml`
 
-## Cost Considerations
-
-### GitHub Actions Minutes
-
-- **Public repositories**: FREE unlimited minutes
-- **Private repositories**: 2,000 free minutes/month, then $0.008/minute
-
-### Build Time Estimates
+## Build Time Estimates
 
 - Android APK build: ~10-15 minutes
 - With cache: ~5-8 minutes

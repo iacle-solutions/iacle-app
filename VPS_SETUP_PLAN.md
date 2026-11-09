@@ -1,7 +1,7 @@
-# VPS Setup Plan for Pistisai (Coolify-based)
+# VPS Setup Plan for IAClé (Coolify-based)
 
 ## Overview
-Deploy Pistisai Flutter web app to VPS (68.168.30.4) using Coolify for container management and GitHub Actions for CI/CD.
+Deploy IAClé Flutter web app to VPS (68.168.30.4) using Coolify for container management and GitHub Actions for CI/CD.
 
 **VPS:** 68.168.30.4 (Ubuntu 24.04 LTS)
 **Tailscale IP:** 100.101.206.45
@@ -13,7 +13,7 @@ Deploy Pistisai Flutter web app to VPS (68.168.30.4) using Coolify for container
 
 1. **SSH keys ready:** Your ed25519 pubkey (`ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPu4TAbuWRj4eSM8+dzwsS3t6NROuvFV4Ml4IwV3jFUg`)
 2. **Local `zoidbot` user** with passwordless sudo created
-3. **GitHub repo access** for pistisAI/pistisai-app
+3. **GitHub repo access** for IAClé/iacle-app
 
 ---
 
@@ -125,7 +125,7 @@ ss -tlnp | grep :22
 3. **Create API token** (Root permissions, never expires)
 4. **Save token** to `~/.hermes/vault/coolify_api_token` (chmod 600)
 5. **Add server:** Use Tailscale IP `100.101.206.45`, key-based auth
-6. **Create Pistisai team** and add both users
+6. **Create IAClé team** and add both users
 
 ---
 
@@ -138,14 +138,14 @@ Using Global API Key: `[REDACTED - stored in GitHub Secrets]`
 | cloudtolocalllm.online | A | 68.168.30.4 | DNS only |
 | direct.cloudtolocalllm.online | A | 68.168.30.4 | DNS only |
 | vps.cloudtolocalllm.online | A | 68.168.30.4 | DNS only |
-| direct.pistisai.app | A | 68.168.30.4 | DNS only |
-| vps.pistisai.app | A | 68.168.30.4 | DNS only |
+| direct.example.com | A | 68.168.30.4 | DNS only |
+| vps.example.com | A | 68.168.30.4 | DNS only |
 
-`pistisai.app` apex + subdomains remain on Cloudflare Tunnels (proxied).
+`example.com` apex + subdomains remain on Cloudflare Tunnels (proxied).
 
 ---
 
-## Phase 9: Deploy pistisai-app
+## Phase 9: Deploy iacle-app
 
 1. Fix Flutter web build (dependency_overrides in pubspec.yaml):
    ```yaml

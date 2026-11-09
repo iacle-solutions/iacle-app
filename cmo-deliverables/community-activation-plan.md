@@ -19,7 +19,7 @@ Plan and copy for the launch. Pairs with
 
 ### Newcomer welcome
 - Pin the Discord welcome + the setup wizard steps.
-- Auto-reply in issues: point to pistisai.app and the runtime + OS they're on.
+- Auto-reply in issues: point to example.com and the runtime + OS they're on.
 
 ### Failure-report loop
 - Every failure report gets a triage label and an acknowledgement within 24h.

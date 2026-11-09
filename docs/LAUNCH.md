@@ -9,9 +9,9 @@ This page is how to run the software. The offer is in the [README](../README.md)
 
 ## What this repository is
 
-The PistisAI desktop hub, delivered by IAClé. It is the layer in front of an agent runtime. Hermes is the primary path. OpenClaw and compatible gateways work too. Ollama and LM Studio support memory, embeddings, OCR, and speech. The main runtime stays the agent gateway.
+The IAClé desktop hub, delivered by IAClé. It is the layer in front of an agent runtime. Hermes is the primary path. OpenClaw and compatible gateways work too. Ollama and LM Studio support memory, embeddings, OCR, and speech. The main runtime stays the agent gateway.
 
-The agent runs on a computer at the client's site. The free readiness audit checks whether their current PC can host it. If it can, it runs there. If not, IAClé supplies a dedicated mini PC (standard: Beelink GTi15), for purchase or rental. Custom hardware only when the audit shows the need.
+The agent runs on a computer at the client's site. The readiness audit checks whether their current PC can host it. If it can, it runs there. If not, IAClé provides a dedicated mini PC (standard: Beelink GTi15). Custom hardware only when the audit shows the need.
 
 ---
 
@@ -26,7 +26,7 @@ The agent runs on a computer at the client's site. The free readiness audit chec
 
 The setup wizard chooses where the agent lives: this device, another private device, a Tailscale device, or a manual private URL.
 
-Sign-in is for the tunnel and for sync. Free uses the `pistisai.app` tunnel behind Cloudflare Access. Business and Enterprise use the customer's Tailscale or VPN.
+Sign-in is for the tunnel and for sync. The network is a tunnel behind Cloudflare Access, Tailscale, or the customer's VPN.
 
 ---
 
@@ -37,7 +37,7 @@ CI builds these targets. To run a copy yourself, build from source.
 | Platform | CI |
 |----------|----|
 | Linux | `flutter build linux`, AppImage script in `scripts/packaging/build_appimage.sh` |
-| Windows | `flutter build windows`, Inno Setup script at `windows/installer/Pistisai.iss` |
+| Windows | `flutter build windows`, Inno Setup script at `windows/installer/IAClé.iss` |
 | macOS | `flutter build macos` |
 | Android | `flutter build apk` via `.github/workflows/build-mobile.yml` |
 | Web | `flutter build web --release --no-web-resources-cdn` |
@@ -57,7 +57,7 @@ flutter run -d linux
 flutter run -d chrome
 ```
 
-The app package is `pistisai` (Dart `>=3.5.0 <4.0.0`). `lib/shared` (`pistisai_shared`) targets Dart `>=3.9.0 <4.0.0` and needs its own `flutter pub get`. Flutter is pinned to `3.47.7` in `pubspec.yaml`.
+The app package is `IAClé` (Dart `>=3.5.0 <4.0.0`). `lib/shared` (`shared`) targets Dart `>=3.9.0 <4.0.0` and needs its own `flutter pub get`. Flutter is pinned to `3.47.7` in `pubspec.yaml`.
 
 Release builds:
 
@@ -100,7 +100,7 @@ Desktop control, vision, and the channel are scoped to a device and permissioned
 
 - [deployment/DEPLOYMENT_OVERVIEW.md](deployment/DEPLOYMENT_OVERVIEW.md)
 - [deployment/SELF_HOSTING.md](deployment/SELF_HOSTING.md)
-- [SECURITY.md](../SECURITY.md) — report vulnerabilities privately to `security@pistisai.app` or [this repo's security advisories](https://github.com/iacle-solutions/iacle-app/security/advisories).
+- [SECURITY.md](../SECURITY.md) — report vulnerabilities privately to `ops@example.com` or [this repo's security advisories](https://github.com/iacle-solutions/iacle-app/security/advisories).
 
 ---
 

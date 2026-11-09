@@ -1,6 +1,6 @@
 # Resource Management Guide
 
-This document defines the resource management strategy for the Pistisai API Backend.
+This document defines the resource management strategy for the IAClé API Backend.
 
 ## Resource Categories
 

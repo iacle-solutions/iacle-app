@@ -1,10 +1,10 @@
-# Pistisai
+# IAClé
 
 **The desktop hub IAClé delivers to Quebec SMBs.**
 
 IAClé is Christopher Maltais's Quebec sole proprietorship and the brand on this stack. The software in this repository is that stack: a Flutter desktop/web hub for Hermes, OpenClaw, and compatible gateways, plus skills. One stack, one company. The public description is the French [README](../README.md) ([English](../README.en.md)).
 
-Pistisai is a local-first companion and desktop capability layer for agent runtimes. It provides a secure agent channel, avatar/voice companion, desktop control, vision, agent runtime management, and multi-device sync. Sign-in is for the tunnel and for sync. The free tier uses the `pistisai.app` tunnel behind Cloudflare Access. Business and Enterprise use the customer's Tailscale or VPN. Sign-in does not use Supabase.
+IAClé is a local-first companion and desktop capability layer for agent runtimes. It provides a secure agent channel, avatar/voice companion, desktop control, vision, agent runtime management, and multi-device sync. Sign-in is for the tunnel and for sync. The network is a tunnel behind Cloudflare Access, Tailscale, or the customer's VPN. Sign-in does not use Supabase.
 
 ## What It Does
 
@@ -19,15 +19,15 @@ Pistisai is a local-first companion and desktop capability layer for agent runti
 
 | Layer | Technology |
 |-------|------------|
-| Flutter app | Dart `>=3.5.0 <4.0.0`, package `pistisai` |
-| Shared package | `lib/shared` (`pistisai_shared`), Dart `>=3.9.0 <4.0.0` |
+| Flutter app | Dart `>=3.5.0 <4.0.0`, package `IAClé` |
+| Shared package | `lib/shared` (`shared`), Dart `>=3.9.0 <4.0.0` |
 | Local database | Drift / SQLite |
 | Embedded router | Shelf server, port `1337` |
 | API backend | Express 5 ESM, Node `>=22 <27`, port `8080` |
 | Streaming proxy | Express 5 ESM, Node `>=22 <27`, port `3001` |
 | Tailscale relay | Express 4 ESM, port `3002` |
 | Auth backend | Express 5 CommonJS, port `3000` |
-| SDK | `@Pistisai/sdk` v2, ESM |
+| SDK | `@IAClé/sdk` v2, ESM |
 
 ## Quick Links
 

@@ -53,12 +53,10 @@ If `KILOCODE_TOKEN` is not set:
 - ⚠️  No intelligent analysis
 - 📝 Warning shown in logs
 
-## Cost
+## Usage
 
-- **Kilocode API**: Free tier includes generous limits for `grok-code-fast-1`
 - **Each version bump**: 1 API call
 - **Typical usage**: ~10-50 calls/month
-- **Cost**: $0 (within free tier)
 
 ## Privacy
 
@@ -89,10 +87,5 @@ git push origin --tags
 
 ## Quota Limits
 
-Kilocode Free Tier:
-
-- **Sufficient for**: 100+ deployments/day
-- If you hit limits:
-  - Workflow falls back to PATCH bump
-  - No deployment failure
-  - Consider upgrading to paid tier
+- If the API limit is reached, the workflow falls back to a PATCH bump
+- A limit does not fail the deployment

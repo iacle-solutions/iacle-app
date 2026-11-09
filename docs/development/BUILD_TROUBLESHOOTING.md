@@ -1,6 +1,6 @@
 # Build Troubleshooting Guide
 
-This guide helps you diagnose and fix common issues with Pistisai builds using GitHub Actions.
+This guide helps you diagnose and fix common issues with IAClé builds using GitHub Actions.
 
 ## Table of Contents
 
@@ -129,7 +129,7 @@ This guide helps you diagnose and fix common issues with Pistisai builds using G
 **Solutions:**
 
 1. **Verify Inno Setup script exists**:
-   - Check `build-tools/installers/windows/Pistisai_Simple.iss` exists
+   - Check `build-tools/installers/windows/IAClé_Simple.iss` exists
    - Validate script syntax locally with Inno Setup
 
 2. **Check installation paths**:
@@ -476,47 +476,6 @@ Build times significantly longer than expected may indicate:
 - **Resource contention**: GitHub Actions capacity issues
 - **Code changes**: Large refactors may increase build time
 
-## Cost Information
-
-### GitHub-Hosted Runners (Current Setup)
-
-**Public Repositories:**
-
-- ✅ **Completely FREE** - Unlimited minutes
-- ✅ No credit card required
-- ✅ No usage limits for public repos
-
-**Private Repositories:**
-
-- Free tier: 2,000 minutes/month
-- Windows runners: 2x multiplier (1 minute = 2 minutes)
-- Estimated cost per build: ~30-40 minutes = 60-80 billable minutes
-
-**Cost Comparison:**
-
-| Solution | Monthly Cost | Setup Time | Maintenance |
-|----------|-------------|------------|-------------|
-| GitHub-hosted (public) | **$0** | 0 minutes | None |
-| GitHub-hosted (private) | ~$0-8/month | 0 minutes | None |
-| Self-hosted runner | $0-50+/month | 2-4 hours | Ongoing |
-| Cloud VM (Azure/AWS) | $50-200/month | 4-8 hours | Ongoing |
-
-**Savings with GitHub-Hosted Runners:**
-
-- No infrastructure costs
-- No maintenance overhead
-- No setup time required
-- Automatic updates and security patches
-- Scalable (parallel builds)
-
-**For Private Repositories:**
-
-If you exceed free tier, consider:
-
-1. Optimize build time (caching, parallel jobs)
-2. Use self-hosted runner for frequent builds
-3. Upgrade to GitHub Team/Enterprise plan
-
 ## Android Build Issues
 
 ### Issue: Android Build Not Running
@@ -642,7 +601,7 @@ If you exceed free tier, consider:
 
    ```bash
    # Check SHA256 checksum
-   sha256sum -c Pistisai-*-arm64-v8a.apk.sha256
+   sha256sum -c IAClé-*-arm64-v8a.apk.sha256
    ```
 
 5. **Check available storage**:
@@ -653,7 +612,7 @@ If you exceed free tier, consider:
 
    ```bash
    # If upgrading, uninstall old version first
-   adb uninstall com.Pistisai.Pistisai
+   adb uninstall <application-id>
    ```
 
 ### Issue: APK Installs but Crashes on Launch
@@ -670,7 +629,7 @@ If you exceed free tier, consider:
 
    ```bash
    # View crash logs
-   adb logcat | grep -E "AndroidRuntime|Pistisai"
+   adb logcat | grep -E "AndroidRuntime|IAClé"
    ```
 
 2. **Verify permissions**:
@@ -686,7 +645,7 @@ If you exceed free tier, consider:
 
    ```bash
    # Clear app data and cache
-   adb shell pm clear com.Pistisai.Pistisai
+   adb shell pm clear <application-id>
    ```
 
 ### Issue: Gradle Build Timeout
@@ -794,7 +753,7 @@ When reporting build issues, include:
 
 **Where to report:**
 
-- GitHub Issues: https://github.com/pistisAI/pistisai-app/issues
+- GitHub Issues: https://github.com/iacle-solutions/iacle-app/issues
 - Include label: `ci/cd` or `build`
 
 ### Additional Resources

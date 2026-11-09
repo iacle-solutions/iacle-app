@@ -1,8 +1,8 @@
-# Pistisai SDK Documentation
+# IAClé SDK Documentation
 
 ## Overview
 
-The Pistisai SDK is an official JavaScript/TypeScript client library for the Pistisai API. It provides a simple, type-safe interface for interacting with all API endpoints.
+The IAClé SDK is an official JavaScript/TypeScript client library for the IAClé API. It provides a simple, type-safe interface for interacting with all API endpoints.
 
 **Requirements: 12.6**
 
@@ -24,19 +24,19 @@ The Pistisai SDK is an official JavaScript/TypeScript client library for the Pis
 ### npm
 
 ```bash
-npm install @Pistisai/sdk
+npm install @IAClé/sdk
 ```
 
 ### yarn
 
 ```bash
-yarn add @Pistisai/sdk
+yarn add @IAClé/sdk
 ```
 
 ### pnpm
 
 ```bash
-pnpm add @Pistisai/sdk
+pnpm add @IAClé/sdk
 ```
 
 ## Quick Start
@@ -44,10 +44,10 @@ pnpm add @Pistisai/sdk
 ### Basic Setup
 
 ```typescript
-import { PistisaiClient } from '@Pistisai/sdk';
+import { IACléClient } from '@IAClé/sdk';
 
-const client = new PistisaiClient({
-  baseURL: 'https://api.pistisai.app',
+const client = new IACléClient({
+  baseURL: 'https://api.example.com',
   apiVersion: 'v2',
 });
 
@@ -393,8 +393,8 @@ interface SDKConfig {
 ### Example Configuration
 
 ```typescript
-const client = new PistisaiClient({
-  baseURL: 'https://api.pistisai.app',
+const client = new IACléClient({
+  baseURL: 'https://api.example.com',
   apiVersion: 'v2',
   timeout: 60000,
   retryAttempts: 5,
@@ -460,14 +460,14 @@ Full TypeScript support with comprehensive types:
 
 ```typescript
 import {
-  PistisaiClient,
+  IACléClient,
   Tunnel,
   User,
   Webhook,
-} from '@Pistisai/sdk';
+} from '@IAClé/sdk';
 
-const client = new PistisaiClient({
-  baseURL: 'https://api.pistisai.app',
+const client = new IACléClient({
+  baseURL: 'https://api.example.com',
 });
 
 // Types are automatically inferred
@@ -481,10 +481,10 @@ const webhook: Webhook = await client.getWebhook('webhook-id');
 ### Complete Authentication Flow
 
 ```typescript
-import { PistisaiClient } from '@Pistisai/sdk';
+import { IACléClient } from '@IAClé/sdk';
 
-const client = new PistisaiClient({
-  baseURL: 'https://api.pistisai.app',
+const client = new IACléClient({
+  baseURL: 'https://api.example.com',
 });
 
 // After OAuth login
@@ -567,9 +567,9 @@ console.log(`Total deliveries: ${deliveries.pagination.total}`);
 
 For issues, questions, or contributions:
 
-- GitHub: https://github.com/pistisAI/pistisai-app
-- Documentation: https://pistisai.app/docs
-- API Docs: https://api.pistisai.app/api/docs
+- GitHub: https://github.com/iacle-solutions/iacle-app
+- Documentation: https://example.com/docs
+- API Docs: https://api.example.com/api/docs
 
 ## License
 

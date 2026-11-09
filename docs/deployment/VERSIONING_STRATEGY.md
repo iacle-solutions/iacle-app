@@ -1,8 +1,8 @@
-# Pistisai Versioning Strategy
+# IAClé Versioning Strategy
 
 ## Overview
 
-Pistisai follows a strict semantic versioning scheme that aligns release types with deployment urgency and testing requirements. This strategy ensures appropriate prioritization of different types of changes and helps teams understand the impact and urgency of each release.
+IAClé follows a strict semantic versioning scheme that aligns release types with deployment urgency and testing requirements. This strategy ensures appropriate prioritization of different types of changes and helps teams understand the impact and urgency of each release.
 
 ## Semantic Versioning Format
 

@@ -1,6 +1,6 @@
 # Flutter Services
 
-This directory contains the business logic and state management services for Pistisai.
+This directory contains the business logic and state management services for IAClé.
 
 ## Overview
 

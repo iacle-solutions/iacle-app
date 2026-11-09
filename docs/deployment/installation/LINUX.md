@@ -1,6 +1,6 @@
 # Linux Installation Guide
 
-This guide covers installing Pistisai on Linux. Agent runtime selection happens in the setup wizard after installation. Pistisai can connect to Hermes, OpenClaw, or a compatible custom agent gateway. Hermes is the first agent runtime path for current testing.
+This guide covers installing IAClé on Linux. Agent runtime selection happens in the setup wizard after installation. IAClé can connect to Hermes, OpenClaw, or a compatible custom agent gateway. Hermes is the first agent runtime path for current testing.
 
 Ollama and LM Studio are optional support model providers for memory/background features, not primary app runtimes.
 
@@ -24,7 +24,7 @@ Prepare one agent runtime before or during first launch:
 | Hermes | Configured in wizard | First agent runtime path for current testing |
 | OpenClaw Gateway | `http://localhost:18789` | Supported original integration |
 | Custom agent gateway | User supplied | Private server, VPS, or compatible agent runtime API |
-| Hosted agent runtime | Pistisai managed | Optional paid compute |
+| Hosted agent runtime | IAClé managed | Optional hosted compute |
 
 For a runtime on another machine, install Tailscale on both devices and confirm they can reach each other.
 
@@ -63,55 +63,57 @@ sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev
 
 ## DEB Package
 
+Download the Debian package from the [releases page](https://github.com/iacle-solutions/iacle-app/releases), then install it:
+
 ```bash
-wget https://github.com/pistisAI/pistisai-app/releases/latest/download/pistisai_amd64.deb
-sudo dpkg -i pistisai_amd64.deb
+sudo dpkg -i <downloaded-package>.deb
 sudo apt-get install -f
 ```
 
 Launch:
 
 ```bash
-pistisai
+IAClé
 ```
 
 Update:
 
 ```bash
 sudo apt-get update
-sudo apt-get upgrade pistisai
+sudo apt-get upgrade IAClé
 ```
 
 Uninstall:
 
 ```bash
-sudo apt-get remove pistisai
+sudo apt-get remove IAClé
 ```
 
 ---
 
 ## AppImage
 
+Download the AppImage from the [releases page](https://github.com/iacle-solutions/iacle-app/releases), then run it:
+
 ```bash
-wget https://github.com/pistisAI/pistisai-app/releases/latest/download/Pistisai-x86_64.AppImage
-chmod +x Pistisai-x86_64.AppImage
-./Pistisai-x86_64.AppImage
+chmod +x <downloaded-app>.AppImage
+./<downloaded-app>.AppImage
 ```
 
 Optional desktop integration:
 
 ```bash
 mkdir -p ~/.local/bin ~/.local/share/applications
-mv Pistisai-x86_64.AppImage ~/.local/bin/Pistisai.AppImage
+mv <downloaded-app>.AppImage ~/.local/bin/iacle.AppImage
 ```
 
-Create `~/.local/share/applications/Pistisai.desktop`:
+Create `~/.local/share/applications/IAClé.desktop`:
 
 ```ini
 [Desktop Entry]
-Name=Pistisai
+Name=IAClé
 Comment=Secure agent companion
-Exec=/home/YOUR_USER/.local/bin/Pistisai.AppImage
+Exec=/home/YOUR_USER/.local/bin/iacle.AppImage
 Terminal=false
 Type=Application
 Categories=Development;Network;
@@ -123,8 +125,8 @@ Categories=Development;Network;
 
 ```bash
 sudo snap install flutter --classic
-git clone https://github.com/pistisAI/pistisai-app.git
-cd Pistisai
+git clone https://github.com/iacle-solutions/iacle-app.git
+cd iacle-app
 flutter pub get
 flutter config --enable-linux-desktop
 flutter build linux --release
@@ -132,16 +134,14 @@ flutter build linux --release
 
 Run the built app:
 
-```bash
-build/linux/x64/release/bundle/Pistisai
-```
+Run the executable in `build/linux/x64/release/bundle/`.
 
 ---
 
 ## First Launch
 
 1. Start your selected agent runtime or confirm the remote runtime is reachable.
-2. Launch Pistisai.
+2. Launch IAClé.
 3. Complete the setup wizard.
 4. Select the agent runtime and endpoint.
 5. Optionally configure a support model provider for memory/background features.
@@ -168,9 +168,9 @@ Web and mobile access should use the Tailscale-first cloud connector design. The
 ### Application Will Not Start
 
 ```bash
-ldd /opt/pistisai-app
+ldd /opt/iacle-app
 sudo apt-get install -y libgtk-3-0 libglib2.0-0
-chmod +x /opt/pistisai-app
+chmod +x /opt/iacle-app
 ```
 
 ### Agent Runtime Not Found
@@ -206,10 +206,7 @@ Log out and back in if your desktop environment needs to reload tray support.
 
 ### Logs
 
-```bash
-tail -f ~/.local/share/pistisai/logs/app.log
-journalctl --user -u pistisai -f
-```
+The app log is `logs/app.log` in the Linux data directory under `~/.local/share`. The user service journal is `journalctl --user -xe`.
 
 ---
 

@@ -54,7 +54,7 @@ services:
 
 The sandbox environment includes three pre-configured test users:
 
-#### Free Tier User
+#### Account tier User
 
 ```json
 {
@@ -66,7 +66,7 @@ The sandbox environment includes three pre-configured test users:
 }
 ```
 
-#### Premium Tier User
+#### Account tier User
 
 ```json
 {
@@ -605,7 +605,7 @@ curl -X DELETE http://localhost:8080/sandbox/clear
 
 Create mock data for different scenarios:
 
-- Free tier users
+- Account tier users
 - Premium tier users
 - Admin users
 - Multiple tunnels
@@ -696,7 +696,7 @@ jobs:
     
     services:
       api:
-        image: ghcr.io/pistisai/Pistisai/api:latest
+        image: ghcr.io/IAClé/IAClé/api:latest
         env:
           SANDBOX_MODE: true
           NODE_ENV: sandbox

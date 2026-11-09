@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document describes the implementation of comprehensive authentication audit logging for the Pistisai API Backend. The implementation provides complete logging of all authentication attempts, successes, and failures with full context including IP address, user agent, and timestamp.
+This document describes the implementation of comprehensive authentication audit logging for the IAClé API Backend. The implementation provides complete logging of all authentication attempts, successes, and failures with full context including IP address, user agent, and timestamp.
 
 **Validates: Requirements 2.6, 11.10**
 
@@ -180,19 +180,19 @@ const failedAttempts = await getFailedLoginAttempts('user-123', {
 ```bash
 # Get current user's audit logs
 curl -H "Authorization: Bearer <token>" \
-  https://api.pistisai.app/auth/audit-logs/me
+  https://api.example.com/auth/audit-logs/me
 
 # Get failed login attempts
 curl -H "Authorization: Bearer <token>" \
-  https://api.pistisai.app/auth/audit-logs/failed-attempts
+  https://api.example.com/auth/audit-logs/failed-attempts
 
 # Get system-wide audit logs (admin only)
 curl -H "Authorization: Bearer <admin-token>" \
-  https://api.pistisai.app/admin/auth/audit-logs
+  https://api.example.com/admin/auth/audit-logs
 
 # Get audit logs summary (admin only)
 curl -H "Authorization: Bearer <admin-token>" \
-  https://api.pistisai.app/admin/auth/audit-logs/summary
+  https://api.example.com/admin/auth/audit-logs/summary
 ```
 
 ## Testing

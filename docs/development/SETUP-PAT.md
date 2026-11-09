@@ -15,9 +15,9 @@ To enable automatic cloud deployment when version tags are created, we need a Pe
 2. **Click "Generate new token"**
 
 3. **Configure Token**:
-   - **Name**: `Pistisai Deployment Automation`
+   - **Name**: `IAClé Deployment Automation`
    - **Expiration**: 90 days (or longer)
-   - **Repository access**: Only select repositories → `Pistisai`
+   - **Repository access**: Only select repositories → `IAClé`
    - **Permissions**:
      - Repository permissions:
        - Contents: Read and write
@@ -29,7 +29,7 @@ To enable automatic cloud deployment when version tags are created, we need a Pe
 ## Add to GitHub Secrets
 
 ```bash
-cd /home/rightguy/development/Pistisai
+cd /home/rightguy/development/IAClé
 gh secret set PAT_TOKEN --body 'your_generated_token_here'
 ```
 

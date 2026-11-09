@@ -2,11 +2,11 @@
 
 ## Overview
 
-Pistisai implements tier-based rate limiting to ensure fair resource allocation and protect the service from abuse. Each tier has different rate limits tailored to different use cases.
+IAClé implements tier-based rate limiting to ensure fair resource allocation and protect the service from abuse. Each tier has different rate limits tailored to different use cases.
 
 **Requirement:** 12.7 - THE API SHALL implement API rate limit documentation
 
-## Free Tier
+## Account tier
 
 ### Limits
 
@@ -26,7 +26,7 @@ Pistisai implements tier-based rate limiting to ensure fair resource allocation 
 ### Example Usage Pattern
 
 ```javascript
-// Free tier: 100 requests/minute = ~1.67 requests/second
+// Account tier: 100 requests/minute = ~1.67 requests/second
 // Plan requests accordingly
 
 async function freeUserWorkflow() {
@@ -61,10 +61,10 @@ curl -X POST \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"tier": "premium"}' \
-  https://api.pistisai.app/v2/users/me/tier/upgrade
+  https://api.example.com/v2/users/me/tier/upgrade
 ```
 
-## Premium Tier
+## Account tier
 
 ### Limits
 
@@ -134,8 +134,8 @@ Premium users get exemption for health check endpoints:
 
 ```bash
 # These don't count against rate limit for Premium users
-curl https://api.pistisai.app/health
-curl https://api.pistisai.app/v2/health
+curl https://api.example.com/health
+curl https://api.example.com/v2/health
 ```
 
 ### Upgrade Triggers
@@ -147,7 +147,7 @@ Consider upgrading to Enterprise if you:
 - Have mission-critical applications
 - Need dedicated support
 
-## Enterprise Tier
+## Account tier
 
 ### Limits
 
@@ -214,10 +214,10 @@ Enterprise users get exemption for admin endpoints:
 ```bash
 # These don't count against rate limit for Enterprise users
 curl -H "Authorization: Bearer $TOKEN" \
-  https://api.pistisai.app/v2/admin/users
+  https://api.example.com/v2/admin/users
 
 curl -H "Authorization: Bearer $TOKEN" \
-  https://api.pistisai.app/v2/admin/subscriptions
+  https://api.example.com/v2/admin/subscriptions
 ```
 
 ## Service-to-Service Communication
@@ -235,7 +235,7 @@ Service-to-service communication using API keys has higher limits:
 
 ```bash
 curl -H "X-API-Key: $API_KEY" \
-  https://api.pistisai.app/v2/tunnels
+  https://api.example.com/v2/tunnels
 ```
 
 ### When to Use
@@ -247,40 +247,40 @@ curl -H "X-API-Key: $API_KEY" \
 
 ## Rate Limit Monitoring by Tier
 
-### Free Tier Monitoring
+### Account tier Monitoring
 
 ```bash
 # Check your current usage
 curl -H "Authorization: Bearer $TOKEN" \
-  https://api.pistisai.app/v2/rate-limit-metrics/summary
+  https://api.example.com/v2/rate-limit-metrics/summary
 ```
 
-### Premium Tier Monitoring
+### Account tier Monitoring
 
 ```bash
 # Same endpoint, but with higher limits
 curl -H "Authorization: Bearer $TOKEN" \
-  https://api.pistisai.app/v2/rate-limit-metrics/summary
+  https://api.example.com/v2/rate-limit-metrics/summary
 ```
 
-### Enterprise Tier Monitoring
+### Account tier Monitoring
 
 ```bash
 # Same endpoint, plus access to admin metrics
 curl -H "Authorization: Bearer $TOKEN" \
-  https://api.pistisai.app/v2/rate-limit-metrics/summary
+  https://api.example.com/v2/rate-limit-metrics/summary
 
 # Admin: View top violators
 curl -H "Authorization: Bearer $TOKEN" \
-  https://api.pistisai.app/v2/rate-limit-metrics/top-violators
+  https://api.example.com/v2/rate-limit-metrics/top-violators
 
 # Admin: View top violating IPs
 curl -H "Authorization: Bearer $TOKEN" \
-  https://api.pistisai.app/v2/rate-limit-metrics/top-ips
+  https://api.example.com/v2/rate-limit-metrics/top-ips
 
 # Admin: View dashboard data
 curl -H "Authorization: Bearer $TOKEN" \
-  https://api.pistisai.app/v2/rate-limit-metrics/dashboard-data
+  https://api.example.com/v2/rate-limit-metrics/dashboard-data
 ```
 
 ## Tier Comparison Table
@@ -298,7 +298,7 @@ curl -H "Authorization: Bearer $TOKEN" \
 
 ## Choosing the Right Tier
 
-### Free Tier
+### Account tier
 
 **Choose if:**
 
@@ -309,7 +309,7 @@ curl -H "Authorization: Bearer $TOKEN" \
 
 **Example:** Personal dashboard with <100 requests/day
 
-### Premium Tier
+### Account tier
 
 **Choose if:**
 
@@ -320,7 +320,7 @@ curl -H "Authorization: Bearer $TOKEN" \
 
 **Example:** SaaS application with 1,000-10,000 requests/day
 
-### Enterprise Tier
+### Account tier
 
 **Choose if:**
 
@@ -333,12 +333,12 @@ curl -H "Authorization: Bearer $TOKEN" \
 
 ## Handling Rate Limits by Tier
 
-### Free Tier Strategy
+### Account tier Strategy
 
 ```javascript
-// Conservative approach for free tier
+// Conservative approach for account tier
 async function freeUserStrategy() {
-  const maxConcurrent = 5; // Free tier limit
+  const maxConcurrent = 5; // Account tier limit
   const queue = [];
   
   for (let i = 0; i < totalRequests; i++) {
@@ -354,10 +354,10 @@ async function freeUserStrategy() {
 }
 ```
 
-### Premium Tier Strategy
+### Account tier Strategy
 
 ```javascript
-// Balanced approach for premium tier
+// Balanced approach for account tier
 async function premiumUserStrategy() {
   const maxConcurrent = 25; // Premium tier limit
   const batchSize = 50; // Premium burst size
@@ -372,10 +372,10 @@ async function premiumUserStrategy() {
 }
 ```
 
-### Enterprise Tier Strategy
+### Account tier Strategy
 
 ```javascript
-// Aggressive approach for enterprise tier
+// Aggressive approach for account tier
 async function enterpriseUserStrategy() {
   const maxConcurrent = 100; // Enterprise tier limit
   const batchSize = 200; // Enterprise burst size
@@ -398,7 +398,7 @@ async function enterpriseUserStrategy() {
 
    ```bash
    curl -H "Authorization: Bearer $TOKEN" \
-     https://api.pistisai.app/v2/users/me
+     https://api.example.com/v2/users/me
    ```
 
 2. Upgrade to desired tier:
@@ -408,14 +408,14 @@ async function enterpriseUserStrategy() {
      -H "Authorization: Bearer $TOKEN" \
      -H "Content-Type: application/json" \
      -d '{"tier": "premium"}' \
-     https://api.pistisai.app/v2/users/me/tier/upgrade
+     https://api.example.com/v2/users/me/tier/upgrade
    ```
 
 3. Verify upgrade:
 
    ```bash
    curl -H "Authorization: Bearer $TOKEN" \
-     https://api.pistisai.app/v2/users/me
+     https://api.example.com/v2/users/me
    ```
 
 ### Effective Immediately

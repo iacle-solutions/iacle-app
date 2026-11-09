@@ -1,6 +1,6 @@
 # Agent Runtime Contract
 
-Pistisai is agent-first. The main application channel connects to an agent runtime, not directly to a raw local model provider.
+IAClé is agent-first. The main application channel connects to an agent runtime, not directly to a raw local model provider.
 
 ## Terms
 
@@ -8,11 +8,11 @@ Pistisai is agent-first. The main application channel connects to an agent runti
 | --- | --- |
 | Agent runtime | Hermes, OpenClaw, or a compatible gateway that manages agents, sessions, tools, and runtime state. |
 | Agent session | A live assistant, task, or persona running inside an agent runtime. |
-| Device node | An installed Pistisai desktop app exposing local capabilities under local permission rules. |
+| Device node | An installed IAClé desktop app exposing local capabilities under local permission rules. |
 | Capability broker | The app-side broker that approves, executes, and audits desktop, vision, clipboard, file, and command actions. |
 | Local model provider | Ollama, LM Studio, llama.cpp, or similar model endpoints used for app support features such as embeddings or summarization. |
 | Cloud connector | Optional isolated per-user container joined to the user's Tailscale tailnet for sync and reachability. |
-| Hosted agent runtime | Optional paid Pistisai-managed agent runtime compute, isolated per user. |
+| Hosted agent runtime | Optional paid IAClé-managed agent runtime compute, isolated per user. |
 
 ## Non-Negotiable Rules
 
@@ -48,7 +48,7 @@ Valid primary targets:
 - OpenClaw on this device
 - OpenClaw on another private or Tailscale device
 - compatible custom agent gateway
-- optional paid Pistisai-hosted agent runtime
+- optional hosted agent runtime
 
 ### Support Model Channel
 
@@ -104,7 +104,7 @@ Invalid use:
 ```text
 Agent runtime request
         |
-Pistisai capability broker
+IAClé capability broker
         |
 Device permission check
         |
@@ -128,7 +128,7 @@ Agent runtime setup choices:
 3. OpenClaw on this device.
 4. OpenClaw on another private or Tailscale device.
 5. Compatible custom agent gateway.
-6. Optional Pistisai-hosted agent runtime.
+6. Optional IAClé-hosted agent runtime.
 7. No agent runtime yet; guide the user to install or configure Hermes/OpenClaw/a compatible agent gateway.
 
 Optional support model setup choices:

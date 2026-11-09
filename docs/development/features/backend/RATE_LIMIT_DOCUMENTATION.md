@@ -2,13 +2,13 @@
 
 ## Overview
 
-The Pistisai API implements comprehensive rate limiting to protect the service from abuse and ensure fair resource allocation across all users. Rate limiting is applied at multiple levels: per-user, per-IP, and per-endpoint.
+The IAClé API implements comprehensive rate limiting to protect the service from abuse and ensure fair resource allocation across all users. Rate limiting is applied at multiple levels: per-user, per-IP, and per-endpoint.
 
 **Requirement: 12.7** - THE API SHALL implement API rate limit documentation
 
 ## Rate Limit Policies by User Tier
 
-### Free Tier
+### Account tier
 
 - **Requests per minute**: 100
 - **Requests per hour**: 5,000
@@ -16,7 +16,7 @@ The Pistisai API implements comprehensive rate limiting to protect the service f
 - **Concurrent connections**: 5
 - **Exemptions**: None
 
-### Premium Tier
+### Account tier
 
 - **Requests per minute**: 500
 - **Requests per hour**: 30,000
@@ -24,7 +24,7 @@ The Pistisai API implements comprehensive rate limiting to protect the service f
 - **Concurrent connections**: 25
 - **Exemptions**: Health check endpoints
 
-### Enterprise Tier
+### Account tier
 
 - **Requests per minute**: 2,000
 - **Requests per hour**: 120,000
@@ -136,7 +136,7 @@ Retry-After: 60
 Always check the `X-RateLimit-*` headers in responses to understand your current usage:
 
 ```javascript
-const response = await fetch('https://api.pistisai.app/v2/users/me');
+const response = await fetch('https://api.example.com/v2/users/me');
 const limit = response.headers.get('X-RateLimit-Limit');
 const remaining = response.headers.get('X-RateLimit-Remaining');
 const reset = response.headers.get('X-RateLimit-Reset');
@@ -289,7 +289,7 @@ Get your current rate limit metrics:
 
 ```bash
 curl -H "Authorization: Bearer $TOKEN" \
-  https://api.pistisai.app/v2/rate-limit-metrics/summary
+  https://api.example.com/v2/rate-limit-metrics/summary
 ```
 
 **Response:**
@@ -313,7 +313,7 @@ Admins can view top violators:
 
 ```bash
 curl -H "Authorization: Bearer $ADMIN_TOKEN" \
-  https://api.pistisai.app/v2/rate-limit-metrics/top-violators?limit=10
+  https://api.example.com/v2/rate-limit-metrics/top-violators?limit=10
 ```
 
 ## Common Issues and Solutions
@@ -515,11 +515,11 @@ async function makeServiceRequest(endpoint, options = {}) {
 ```bash
 # Get your user info including tier
 curl -H "Authorization: Bearer $TOKEN" \
-  https://api.pistisai.app/v2/users/me
+  https://api.example.com/v2/users/me
 
 # Check rate limit metrics
 curl -H "Authorization: Bearer $TOKEN" \
-  https://api.pistisai.app/v2/rate-limit-metrics/summary
+  https://api.example.com/v2/rate-limit-metrics/summary
 ```
 
 ### Monitor Rate Limit Violations
@@ -527,11 +527,11 @@ curl -H "Authorization: Bearer $TOKEN" \
 ```bash
 # Admin: Get top violators
 curl -H "Authorization: Bearer $ADMIN_TOKEN" \
-  https://api.pistisai.app/v2/rate-limit-metrics/top-violators
+  https://api.example.com/v2/rate-limit-metrics/top-violators
 
 # Admin: Get top violating IPs
 curl -H "Authorization: Bearer $ADMIN_TOKEN" \
-  https://api.pistisai.app/v2/rate-limit-metrics/top-ips
+  https://api.example.com/v2/rate-limit-metrics/top-ips
 ```
 
 ## Support

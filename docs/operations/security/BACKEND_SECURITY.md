@@ -2,7 +2,7 @@
 
 ## Overview
 
-This guide documents the security enhancements and best practices for the Pistisai API backend. It covers input sanitization, CORS configuration, and HTTPS enforcement.
+This guide documents the security enhancements and best practices for the IAClé API backend. It covers input sanitization, CORS configuration, and HTTPS enforcement.
 
 ---
 
@@ -36,8 +36,8 @@ Strict whitelist-based CORS with no wildcards. Supports standard, admin, and web
 
 **Allowed Origins (Production):**
 
-- `https://app.pistisai.app`
-- `https://admin.pistisai.app`
+- `https://app.example.com`
+- `https://admin.example.com`
 
 ### 3. HTTPS Enforcement
 

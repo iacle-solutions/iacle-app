@@ -1,11 +1,11 @@
 ---
-name: pistisai-dev
-description: Technical skill guide for developer workflow, toolchains, testing, database generation, and coding rules in the Pistisai Flutter/Node.js project.
+name: iacle-dev
+description: Technical skill guide for developer workflow, toolchains, testing, database generation, and coding rules in the IAClé Flutter/Node.js project.
 ---
 
-# Pistisai Project Development Skill
+# IAClé Project Development Skill
 
-This skill contains the comprehensive developer guidelines, commands, architectural constraints, and toolchains for working with the **Pistisai** codebase (Flutter desktop/web frontend + Node.js backend services).
+This skill contains the comprehensive developer guidelines, commands, architectural constraints, and toolchains for working with the **IAClé** codebase (Flutter desktop/web frontend + Node.js backend services).
 
 ---
 

@@ -1,6 +1,6 @@
 # Troubleshooting ArgoCD Connectivity (502 Bad Gateway)
 
-This guide provides steps to diagnose and resolve 502 Bad Gateway errors when accessing ArgoCD via the Cloudflare Tunnel (`https://argocd.pistisai.app/`).
+This guide provides steps to diagnose and resolve 502 Bad Gateway errors when accessing ArgoCD via the Cloudflare Tunnel (`https://argocd.example.com/`).
 
 ## 1. Verify Internal Connectivity
 
@@ -13,8 +13,8 @@ kubectl get pods -n argocd -l app.kubernetes.io/name=argocd-server
 # Verify the service is correct
 kubectl get svc argocd-server -n argocd
 
-# Test connectivity from a pod in the Pistisai namespace
-kubectl run curl-test --image=curlimages/curl -n Pistisai -it --rm -- \
+# Test connectivity from a pod in the IAClé namespace
+kubectl run curl-test --image=curlimages/curl -n IAClé -it --rm -- \
   curl -v http://argocd-server.argocd.svc.cluster.local:80/healthz
 ```
 
@@ -28,7 +28,7 @@ kubectl run curl-test --image=curlimages/curl -n Pistisai -it --rm -- \
 Ensure the `cloudflared-config` uses the correct protocol and port. ArgoCD server with the `--insecure` flag listens on port 8080 (Service port 80).
 
 ```yaml
-- hostname: argocd.pistisai.app
+- hostname: argocd.example.com
   service: http://argocd-server.argocd.svc.cluster.local:80
 ```
 
@@ -40,7 +40,7 @@ If ArgoCD is using a self-signed certificate internally, `cloudflared` might fai
 Add `noTLSVerify: true` to the ingress rule.
 
 ```yaml
-- hostname: argocd.pistisai.app
+- hostname: argocd.example.com
   service: https://argocd-server.argocd.svc.cluster.local:443
   originRequest:
     noTLSVerify: true
@@ -54,10 +54,10 @@ ArgoCD might reject requests if the `Host` header doesn't match its expected int
 Explicitly set the `httpHostHeader` in the tunnel config.
 
 ```yaml
-- hostname: argocd.pistisai.app
+- hostname: argocd.example.com
   service: http://argocd-server.argocd.svc.cluster.local:80
   originRequest:
-    httpHostHeader: argocd.pistisai.app
+    httpHostHeader: argocd.example.com
 ```
 
 ## 3. Deployment Stability
@@ -71,5 +71,5 @@ To ensure `cloudflared` always picks up the latest configuration:
 ## 4. Monitoring Domain Health
 
 Domain health is tracked via Prometheus Blackbox Exporter.
-Check the Grafana dashboard or Prometheus targets to see the status of `https://argocd.pistisai.app/`.
+Check the Grafana dashboard or Prometheus targets to see the status of `https://argocd.example.com/`.
 Alerts will be triggered if the domain is down for more than 1 minute.

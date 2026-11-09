@@ -1,9 +1,9 @@
-# Pistisai QA Checklist — v1.0.x
+# IAClé QA Checklist — v1.0.x
 
 ## Before you start
-- Kill any old `Pistisai.exe` processes (Task Manager)
+- Kill any old `IAClé.exe` processes (Task Manager)
 - Build: `flutter build windows --release`
-- Launch: `build/windows/x64/runner/Release/Pistisai.exe`
+- Launch: `build/windows/x64/runner/Release/IAClé.exe`
 - Keep the console window visible for log checking
 
 ---
@@ -12,9 +12,9 @@
 
 | # | Test | Expected | Pass/Fail |
 |---|------|----------|-----------|
-| 1.1 | Double-click Pistisai.exe | Window opens within 5s | |
+| 1.1 | Double-click IAClé.exe | Window opens within 5s | |
 | 1.2 | Console output | No "Window event: move" spam. Initialization messages only. | |
-| 1.3 | App icon in taskbar/tray | Pistisai icon visible | |
+| 1.3 | App icon in taskbar/tray | IAClé icon visible | |
 | 1.4 | Resize window | Drag edges, maximize, restore — smooth | |
 
 ---
@@ -73,7 +73,7 @@
 ## Known Issues (pre-existing)
 - Web E2E tests fail (pre-existing, not related)
 - Backend Deploy tests fail (pre-existing, needs infra)
-- Backend deploy 502 on api.pistisai.app
+- Backend deploy 502 on api.example.com
 
 ---
 

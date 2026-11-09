@@ -28,7 +28,7 @@ Set the following environment variables:
 # Google OAuth Configuration
 GOOGLE_CLIENT_ID=your-client-id.apps.googleusercontent.com
 GOOGLE_CLIENT_SECRET=your-client-secret
-GOOGLE_REDIRECT_URI=https://api.pistisai.app/admin/email/oauth/callback
+GOOGLE_REDIRECT_URI=https://api.example.com/admin/email/oauth/callback
 
 # Encryption Key (for token storage)
 ENCRYPTION_KEY=your-32-byte-hex-encoded-key
@@ -89,11 +89,11 @@ await googleWorkspaceService.storeOAuthConfiguration({
 const result = await googleWorkspaceService.sendEmail({
   userId: user.id,
   to: 'recipient@example.com',
-  subject: 'Welcome to Pistisai',
+  subject: 'Welcome to IAClé',
   body: '<h1>Welcome!</h1><p>Thank you for signing up.</p>',
-  from: 'noreply@pistisai.app',
-  replyTo: 'support@pistisai.app',
-  cc: ['admin@pistisai.app'],
+  from: 'ops@example.com',
+  replyTo: 'ops@example.com',
+  cc: ['ops@example.com'],
   bcc: [],
 });
 
@@ -119,7 +119,7 @@ console.log(`Email: ${quota.emailAddress}`);
 ```javascript
 const records = await googleWorkspaceService.getRecommendedDNSRecords(
   userId,
-  'pistisai.app'
+  'example.com'
 );
 
 console.log('MX Records:', records.mx);

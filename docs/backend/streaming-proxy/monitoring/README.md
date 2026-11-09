@@ -78,7 +78,7 @@ The monitoring setup provides:
 
 ### Prerequisites
 
-1. Grafana instance running at https://grafana.pistisai.app
+1. Grafana instance running at https://grafana.example.com
 2. Prometheus datasource configured in Grafana
 3. Grafana API key with admin permissions
 4. MCP Grafana server configured with GRAFANA_URL and GRAFANA_API_KEY

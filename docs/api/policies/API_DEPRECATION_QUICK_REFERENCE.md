@@ -2,7 +2,7 @@
 
 ## Overview
 
-Pistisai API implements structured deprecation with migration guides. This quick reference shows how to use deprecation features.
+IAClé API implements structured deprecation with migration guides. This quick reference shows how to use deprecation features.
 
 **Requirements: 12.5**
 
@@ -12,19 +12,19 @@ Pistisai API implements structured deprecation with migration guides. This quick
 
 ```bash
 # Get overall deprecation status
-curl https://api.pistisai.app/api/deprecation/status
+curl https://api.example.com/api/deprecation/status
 
 # Get list of deprecated endpoints
-curl https://api.pistisai.app/api/deprecation/deprecated
+curl https://api.example.com/api/deprecation/deprecated
 
 # Get list of sunset endpoints
-curl https://api.pistisai.app/api/deprecation/sunset
+curl https://api.example.com/api/deprecation/sunset
 
 # Get info for specific endpoint
-curl "https://api.pistisai.app/api/deprecation/endpoint-info?path=/v1/users"
+curl "https://api.example.com/api/deprecation/endpoint-info?path=/v1/users"
 
 # Get migration guide
-curl https://api.pistisai.app/api/deprecation/migration-guide/MIGRATION_V1_TO_V2
+curl https://api.example.com/api/deprecation/migration-guide/MIGRATION_V1_TO_V2
 ```
 
 ## Deprecation Headers
@@ -61,10 +61,10 @@ Deprecated endpoints include deprecation info in response:
 
 ```javascript
 // Before
-const api = 'https://api.pistisai.app/v1';
+const api = 'https://api.example.com/v1';
 
 // After
-const api = 'https://api.pistisai.app/v2';
+const api = 'https://api.example.com/v2';
 ```
 
 ### 2. Update Response Parsing
@@ -92,7 +92,7 @@ console.error(error.error.suggestion);
 
 ```bash
 curl -H "Authorization: Bearer TOKEN" \
-  https://api.pistisai.app/v2/users/me
+  https://api.example.com/v2/users/me
 ```
 
 ## Implementation
@@ -155,13 +155,13 @@ app.use('/api/deprecation', deprecationRoutes);
 ### Check Deprecation Status
 
 ```bash
-curl https://api.pistisai.app/api/deprecation/status | jq '.totalDeprecated'
+curl https://api.example.com/api/deprecation/status | jq '.totalDeprecated'
 ```
 
 ### Get Days Until Sunset
 
 ```bash
-curl https://api.pistisai.app/api/deprecation/deprecated | \
+curl https://api.example.com/api/deprecation/deprecated | \
   jq '.endpoints[0].daysUntilSunset'
 ```
 
@@ -177,25 +177,25 @@ grep "DEPRECATION" /var/log/api-backend.log
 1. **Check deprecation status regularly**
 
    ```bash
-   curl https://api.pistisai.app/api/deprecation/status
+   curl https://api.example.com/api/deprecation/status
    ```
 
 2. **Monitor deprecation headers**
 
    ```bash
-   curl -i https://api.pistisai.app/v1/users | grep Deprecation
+   curl -i https://api.example.com/v1/users | grep Deprecation
    ```
 
 3. **Use migration guides**
 
    ```bash
-   curl https://api.pistisai.app/api/deprecation/migration-guide/MIGRATION_V1_TO_V2
+   curl https://api.example.com/api/deprecation/migration-guide/MIGRATION_V1_TO_V2
    ```
 
 4. **Test with v2 before sunset**
 
    ```bash
-   curl https://api.pistisai.app/v2/users/me
+   curl https://api.example.com/v2/users/me
    ```
 
 5. **Set calendar reminders**
@@ -210,10 +210,10 @@ The endpoint has been sunset and is no longer available. Use the replacement end
 
 ```bash
 # Old (sunset)
-curl https://api.pistisai.app/v1/users
+curl https://api.example.com/v1/users
 
 # New (use this)
-curl https://api.pistisai.app/v2/users
+curl https://api.example.com/v2/users
 ```
 
 ### Missing Deprecation Headers
@@ -222,7 +222,7 @@ The endpoint is not deprecated. Check the endpoint path:
 
 ```bash
 # Check if endpoint is deprecated
-curl "https://api.pistisai.app/api/deprecation/endpoint-info?path=/v1/users"
+curl "https://api.example.com/api/deprecation/endpoint-info?path=/v1/users"
 ```
 
 ### Migration Guide Not Found
@@ -231,15 +231,15 @@ The migration guide ID may be incorrect. Get the correct ID:
 
 ```bash
 # Get endpoint info with guide ID
-curl "https://api.pistisai.app/api/deprecation/endpoint-info?path=/v1/users" | \
+curl "https://api.example.com/api/deprecation/endpoint-info?path=/v1/users" | \
   jq '.migrationGuide'
 ```
 
 ## Support
 
-- **Documentation**: https://docs.pistisai.app/api/deprecation
-- **API Docs**: https://api.pistisai.app/api/docs
-- **Support**: support@pistisai.app
-- **Issues**: https://github.com/ghcr.io/pistisai/Pistisai/api/issues
+- **Documentation**: https://docs.example.com/api/deprecation
+- **API Docs**: https://api.example.com/api/docs
+- **Support**: ops@example.com
+- **Issues**: https://github.com/ghcr.io/IAClé/IAClé/api/issues
 
 </content>

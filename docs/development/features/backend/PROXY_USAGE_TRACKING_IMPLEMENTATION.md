@@ -80,7 +80,7 @@ Comprehensive test suite covering:
 - Getting usage metrics (single date, date range)
 - Usage aggregation
 - Usage report generation (grouped by day and proxy)
-- Billing calculations (free, premium, enterprise tiers)
+- Billing calculations (free, premium, account tiers)
 - Authorization and error handling
 
 ## Features Implemented
@@ -143,23 +143,7 @@ Reports include:
 
 ### 5. Billing Calculation
 
-Calculates billing based on user tier:
-
-**Free Tier:**
-
-- Base charge: $0
-- Data transfer: $0
-- Total: $0
-
-**Premium Tier:**
-
-- Base charge: $10/month
-- Data transfer: $0.01 per GB
-- Total: $10 + (data_gb * $0.01)
-
-**Enterprise Tier:**
-
-- Custom pricing (contact sales)
+Usage totals follow the account tier. Amounts are not listed in this repository.
 
 ### 6. Authorization & Security
 

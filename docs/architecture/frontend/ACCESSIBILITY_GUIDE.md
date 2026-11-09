@@ -2,15 +2,15 @@
 
 ## Overview
 
-This guide explains how to implement accessibility features in Pistisai screens using the provided accessibility components and services.
+This guide explains how to implement accessibility features in IAClé screens using the provided accessibility components and services.
 
 ## Quick Start
 
 ### 1. Wrap Your Screen with AccessibleScreenWrapper
 
 ```dart
-import 'package:Pistisai/widgets/accessible_screen_wrapper.dart';
-import 'package:Pistisai/services/accessibility_service.dart';
+import 'package:<app>/widgets/accessible_screen_wrapper.dart';
+import 'package:<app>/services/accessibility_service.dart';
 
 class MyScreen extends StatelessWidget {
   @override

@@ -14,21 +14,21 @@
 ### List Subscriptions
 
 ```bash
-curl -X GET "https://api.pistisai.app/api/admin/subscriptions?tier=premium&includeUpcoming=true" \
+curl -X GET "https://api.example.com/api/admin/subscriptions?tier=premium&includeUpcoming=true" \
   -H "Authorization: Bearer <token>"
 ```
 
 ### Get Subscription Details
 
 ```bash
-curl -X GET "https://api.pistisai.app/api/admin/subscriptions/{id}" \
+curl -X GET "https://api.example.com/api/admin/subscriptions/{id}" \
   -H "Authorization: Bearer <token>"
 ```
 
 ### Update Subscription Tier
 
 ```bash
-curl -X PATCH "https://api.pistisai.app/api/admin/subscriptions/{id}" \
+curl -X PATCH "https://api.example.com/api/admin/subscriptions/{id}" \
   -H "Authorization: Bearer <token>" \
   -H "Content-Type: application/json" \
   -d '{"tier": "enterprise", "priceId": "price_xxx"}'
@@ -37,7 +37,7 @@ curl -X PATCH "https://api.pistisai.app/api/admin/subscriptions/{id}" \
 ### Cancel Subscription (End of Period)
 
 ```bash
-curl -X POST "https://api.pistisai.app/api/admin/subscriptions/{id}/cancel" \
+curl -X POST "https://api.example.com/api/admin/subscriptions/{id}/cancel" \
   -H "Authorization: Bearer <token>" \
   -H "Content-Type: application/json" \
   -d '{"immediate": false, "reason": "Customer request"}'
@@ -46,7 +46,7 @@ curl -X POST "https://api.pistisai.app/api/admin/subscriptions/{id}/cancel" \
 ### Cancel Subscription (Immediate)
 
 ```bash
-curl -X POST "https://api.pistisai.app/api/admin/subscriptions/{id}/cancel" \
+curl -X POST "https://api.example.com/api/admin/subscriptions/{id}/cancel" \
   -H "Authorization: Bearer <token>" \
   -H "Content-Type: application/json" \
   -d '{"immediate": true, "reason": "Terms violation"}'

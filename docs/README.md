@@ -1,6 +1,6 @@
-# Pistisai Documentation
+# IAClé Documentation
 
-This is the documentation hub for the PistisAI stack in this repository. IAClé is the Quebec company and brand that delivers the same stack to Quebec clients. Product description: [README](../README.md) ([English](../README.en.md)). Prefer linking here from new docs instead of adding another top-level index.
+This is the documentation hub for the IAClé stack in this repository. IAClé is the Quebec company and brand that delivers the same stack to Quebec clients. Product description: [README](../README.md) ([English](../README.en.md)). Prefer linking here from new docs instead of adding another top-level index.
 
 For project-wide agent instructions, see [AGENTS.md](../AGENTS.md). For the product specification, see [SPEC.md](../SPEC.md).
 
@@ -67,13 +67,9 @@ For project-wide agent instructions, see [AGENTS.md](../AGENTS.md). For the prod
 - [Features Guide](user-guide/FEATURES_GUIDE.md)
 - [Troubleshooting](user-guide/TROUBLESHOOTING.md)
 
-## Historical Material
-
-Large implementation notes, one-off plans, and generated summaries should move under [Archive](archive/README.md) when they are no longer current. Current docs should describe the code as it exists now, not preserve task history inline.
-
 ## Maintenance Rules
 
 - Keep this file as the single navigation source.
 - Keep [DOCUMENTATION_INDEX.md](DOCUMENTATION_INDEX.md) as a compatibility redirect only.
 - Run `npm run docs:links` before changing canonical docs.
-- Use `npm run docs:links:all` for full-tree cleanup work; it is expected to fail until the archive is cleaned.
+- Use `npm run docs:links:all` for a full-tree link check.

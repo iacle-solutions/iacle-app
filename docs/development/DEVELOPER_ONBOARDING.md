@@ -1,6 +1,6 @@
 # Developer Onboarding
 
-This guide is the entry point for working on the PistisAI stack. IAClé is the Quebec brand that delivers it. Product description: [README](../../README.md).
+This guide is the entry point for working on the IAClé stack. IAClé is the Quebec brand that delivers it. Product description: [README](../../README.md).
 
 ## Repository Shape
 
@@ -106,7 +106,7 @@ npm test                  # api-backend security CI suite only
 npm run docs:links
 ```
 
-`npm run docs:links` validates the canonical documentation set. `npm run docs:links:all` scans the full markdown tree and may fail until archived/historical docs are cleaned.
+`npm run docs:links` validates the canonical documentation set. `npm run docs:links:all` scans the full markdown tree.
 
 ## Where To Read Next
 

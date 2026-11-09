@@ -1,6 +1,6 @@
 # Avatar Personality System
 
-The Avatar Personality System is a core component of Pistisai that enables the AI companion (Pistisai) to evolve its personality based on conversation patterns and depth of interaction.
+The Avatar Personality System is a core component of IAClé that enables the AI companion (IAClé) to evolve its personality based on conversation patterns and depth of interaction.
 
 ## Overview
 
@@ -73,7 +73,7 @@ The avatar progresses through four evolution stages:
 ### Basic Personality Management
 
 ```dart
-import 'package:pistisai/services/avatar/personality_engine.dart';
+import 'package:<app>/services/avatar/personality_engine.dart';
 
 // Get the personality engine from service locator
 final personalityEngine = serviceLocator<PersonalityEngine>();
@@ -116,7 +116,7 @@ if (decision.approved) {
 ### Conversation Tracking
 
 ```dart
-import 'package:pistisai/services/avatar/evolution_tracker.dart';
+import 'package:<app>/services/avatar/evolution_tracker.dart';
 
 final evolutionTracker = serviceLocator<EvolutionTracker>();
 
@@ -143,7 +143,7 @@ curl http://localhost:1337/avatar/state
 Response:
 ```json
 {
-  "agent_name": "Pistisai",
+  "agent_name": "IAClé",
   "traits": {
     "formality": 0.5,
     "humor": 0.5,
@@ -255,9 +255,9 @@ The avatar personality system integrates with OpenClaw Gateway as a skill:
 ```
 
 This installs the skill to:
-- Linux: `~/.openclaw/skills/pistisai/avatar_personality/`
-- macOS: `~/.config/openclaw/skills/pistisai/avatar_personality/`
-- Windows: `%APPDATA%\openclaw\skills\pistisai\avatar_personality\`
+- Linux: `~/.openclaw/skills/IAClé/avatar_personality/`
+- macOS: `~/.config/openclaw/skills/IAClé/avatar_personality/`
+- Windows: `%APPDATA%\openclaw\skills\IAClé\avatar_personality\`
 
 ### Skill Triggers
 
@@ -274,7 +274,7 @@ The skill maintains a `personality.md` file with current state:
 
 ```yaml
 ---
-agent_name: Pistisai
+agent_name: IAClé
 formality: 0.5
 humor: 0.5
 enthusiasm: 0.5
@@ -285,7 +285,7 @@ depth_score: 0.67
 last_updated: 2025-02-22T06:00:00Z
 ---
 
-# Pistisai Personality
+# IAClé Personality
 
 ## Traits
 - Formality: 50%
@@ -305,7 +305,7 @@ Depth Score: 0.67
 ```sql
 CREATE TABLE avatar_profiles (
   id TEXT PRIMARY KEY,
-  agent_name TEXT NOT NULL DEFAULT 'Pistisai',
+  agent_name TEXT NOT NULL DEFAULT 'IAClé',
   personality_traits TEXT NOT NULL, -- JSON: {formality, humor, enthusiasm, empathy}
   evolution_stage TEXT NOT NULL DEFAULT 'curious_explorer',
   conversation_count INTEGER NOT NULL DEFAULT 0,
@@ -450,7 +450,7 @@ Planned features for future phases:
 
 1. Verify skill installation:
    ```bash
-   ls ~/.openclaw/skills/pistisai/avatar_personality/
+   ls ~/.openclaw/skills/IAClé/avatar_personality/
    ```
 
 2. Check OpenClaw Gateway status:

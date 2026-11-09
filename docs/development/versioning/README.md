@@ -1,6 +1,6 @@
 # Versioning Documentation
 
-This directory contains version management and build process documentation for Pistisai.
+This directory contains version management and build process documentation for IAClé.
 
 ## 📚 Contents
 
@@ -24,7 +24,7 @@ This directory contains version management and build process documentation for P
 
 ### Version Scheme
 
-Pistisai uses semantic versioning (SemVer) with the following format:
+IAClé uses semantic versioning (SemVer) with the following format:
 
 ```
 MAJOR.MINOR.PATCH+BUILD_NUMBER

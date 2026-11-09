@@ -25,7 +25,7 @@ All endpoints require:
 **Request:**
 
 ```bash
-curl -X POST "https://api.pistisai.app/api/admin/email/oauth/start" \
+curl -X POST "https://api.example.com/api/admin/email/oauth/start" \
   -H "Authorization: Bearer <jwt_token>" \
   -H "Content-Type: application/json"
 ```
@@ -69,7 +69,7 @@ curl -X POST "https://api.pistisai.app/api/admin/email/oauth/start" \
 **Request:**
 
 ```bash
-curl -X POST "https://api.pistisai.app/api/admin/email/oauth/callback" \
+curl -X POST "https://api.example.com/api/admin/email/oauth/callback" \
   -H "Authorization: Bearer <jwt_token>" \
   -H "Content-Type: application/json" \
   -d '{
@@ -87,11 +87,11 @@ curl -X POST "https://api.pistisai.app/api/admin/email/oauth/callback" \
     "configuration": {
       "id": "config-uuid",
       "provider": "google_workspace",
-      "from_address": "noreply@pistisai.app",
+      "from_address": "ops@example.com",
       "is_active": true,
       "created_at": "2025-01-16T10:30:00.000Z"
     },
-    "userEmail": "noreply@pistisai.app"
+    "userEmail": "ops@example.com"
   },
   "timestamp": "2025-01-16T10:30:00.000Z"
 }
@@ -117,7 +117,7 @@ curl -X POST "https://api.pistisai.app/api/admin/email/oauth/callback" \
 **Request:**
 
 ```bash
-curl -X GET "https://api.pistisai.app/api/admin/email/config" \
+curl -X GET "https://api.example.com/api/admin/email/config" \
   -H "Authorization: Bearer <jwt_token>"
 ```
 
@@ -131,9 +131,9 @@ curl -X GET "https://api.pistisai.app/api/admin/email/config" \
       {
         "id": "config-uuid",
         "provider": "google_workspace",
-        "from_address": "noreply@pistisai.app",
-        "from_name": "Pistisai",
-        "reply_to_address": "support@pistisai.app",
+        "from_address": "ops@example.com",
+        "from_name": "IAClé",
+        "reply_to_address": "ops@example.com",
         "is_active": true,
         "created_at": "2025-01-16T10:30:00.000Z",
         "updated_at": "2025-01-16T10:30:00.000Z"
@@ -166,7 +166,7 @@ curl -X GET "https://api.pistisai.app/api/admin/email/config" \
 **Request:**
 
 ```bash
-curl -X DELETE "https://api.pistisai.app/api/admin/email/config?provider=google_workspace" \
+curl -X DELETE "https://api.example.com/api/admin/email/config?provider=google_workspace" \
   -H "Authorization: Bearer <jwt_token>"
 ```
 
@@ -200,14 +200,14 @@ curl -X DELETE "https://api.pistisai.app/api/admin/email/config?provider=google_
 ```json
 {
   "recipientEmail": "test@example.com",
-  "subject": "Test Email from Pistisai"
+  "subject": "Test Email from IAClé"
 }
 ```
 
 **Request:**
 
 ```bash
-curl -X POST "https://api.pistisai.app/api/admin/email/test" \
+curl -X POST "https://api.example.com/api/admin/email/test" \
   -H "Authorization: Bearer <jwt_token>" \
   -H "Content-Type: application/json" \
   -d '{
@@ -224,7 +224,7 @@ curl -X POST "https://api.pistisai.app/api/admin/email/test" \
   "data": {
     "messageId": "gmail-message-id",
     "recipientEmail": "test@example.com",
-    "subject": "Test Email from Pistisai",
+    "subject": "Test Email from IAClé",
     "sentAt": "2025-01-16T10:30:00.000Z"
   },
   "message": "Test email sent successfully",
@@ -252,7 +252,7 @@ curl -X POST "https://api.pistisai.app/api/admin/email/test" \
 **Request:**
 
 ```bash
-curl -X GET "https://api.pistisai.app/api/admin/email/status" \
+curl -X GET "https://api.example.com/api/admin/email/status" \
   -H "Authorization: Bearer <jwt_token>"
 ```
 
@@ -265,7 +265,7 @@ curl -X GET "https://api.pistisai.app/api/admin/email/status" \
     "status": {
       "configured": true,
       "provider": "google_workspace",
-      "from_address": "noreply@pistisai.app",
+      "from_address": "ops@example.com",
       "is_active": true,
       "created_at": "2025-01-16T10:30:00.000Z",
       "updated_at": "2025-01-16T10:30:00.000Z"
@@ -292,7 +292,7 @@ curl -X GET "https://api.pistisai.app/api/admin/email/status" \
 **Request:**
 
 ```bash
-curl -X GET "https://api.pistisai.app/api/admin/email/quota" \
+curl -X GET "https://api.example.com/api/admin/email/quota" \
   -H "Authorization: Bearer <jwt_token>"
 ```
 
@@ -305,7 +305,7 @@ curl -X GET "https://api.pistisai.app/api/admin/email/quota" \
     "quota": {
       "messagesTotal": 1234,
       "messagesUnread": 45,
-      "emailAddress": "noreply@pistisai.app",
+      "emailAddress": "ops@example.com",
       "historyId": "12345",
       "retrievedAt": "2025-01-16T10:30:00.000Z"
     }
@@ -379,7 +379,7 @@ Common error codes:
 1. Start OAuth flow:
 
 ```bash
-curl -X POST "https://api.pistisai.app/api/admin/email/oauth/start" \
+curl -X POST "https://api.example.com/api/admin/email/oauth/start" \
   -H "Authorization: Bearer <jwt_token>"
 ```
 
@@ -388,7 +388,7 @@ curl -X POST "https://api.pistisai.app/api/admin/email/oauth/start" \
 2. Handle callback:
 
 ```bash
-curl -X POST "https://api.pistisai.app/api/admin/email/oauth/callback" \
+curl -X POST "https://api.example.com/api/admin/email/oauth/callback" \
   -H "Authorization: Bearer <jwt_token>" \
   -H "Content-Type: application/json" \
   -d '{
@@ -400,14 +400,14 @@ curl -X POST "https://api.pistisai.app/api/admin/email/oauth/callback" \
 1. Verify configuration:
 
 ```bash
-curl -X GET "https://api.pistisai.app/api/admin/email/status" \
+curl -X GET "https://api.example.com/api/admin/email/status" \
   -H "Authorization: Bearer <jwt_token>"
 ```
 
 1. Send test email:
 
 ```bash
-curl -X POST "https://api.pistisai.app/api/admin/email/test" \
+curl -X POST "https://api.example.com/api/admin/email/test" \
   -H "Authorization: Bearer <jwt_token>" \
   -H "Content-Type: application/json" \
   -d '{
