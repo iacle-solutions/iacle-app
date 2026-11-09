@@ -7,11 +7,9 @@ list(APPEND FLUTTER_PLUGIN_LIST
   camera_desktop
   file_selector_windows
   flutter_secure_storage_windows
-  local_notifier
   record_windows
   screen_retriever_windows
   sentry_flutter
-  tray_manager
   url_launcher_windows
   window_manager
 )

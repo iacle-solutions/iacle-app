@@ -3,6 +3,8 @@ import 'package:flutter/foundation.dart';
 import '../models/platform_config.dart';
 import '../models/download_option.dart';
 import '../models/installation_step.dart';
+import '../brand/brand.dart';
+import '../brand/brand_copy.dart';
 import '../config/app_config.dart';
 
 // Conditional imports for web platform detection
@@ -226,14 +228,13 @@ class PlatformDetectionService extends ChangeNotifier {
     return PlatformConfig(
       platform: PlatformType.windows,
       displayName: 'Windows',
-      iconPath: 'assets/images/windows-icon.png',
       downloadOptions: [
         DownloadOption(
           name: 'Windows Installer (Setup.exe)',
           description:
               'Recommended for most users. Includes automatic updates and system integration.',
           downloadUrl:
-              'https://github.com/pistisAI/pistisai-app/releases/latest/download/Pistisai-Windows-${AppConfig.appVersion}-Setup.exe',
+              '${Brand.current.releasesUrl}/download/${Brand.current.artifactPrefix}-Windows-${AppConfig.appVersion}-Setup.exe',
           fileSize: '~10 MB',
           installationType: 'exe',
           isRecommended: true,
@@ -246,7 +247,7 @@ class PlatformDetectionService extends ChangeNotifier {
           name: 'Portable ZIP',
           description: 'No installation required. Extract and run directly.',
           downloadUrl:
-              'https://github.com/pistisAI/pistisai-app/releases/latest/download/Pistisai-Windows-${AppConfig.appVersion}-portable.zip',
+              '${Brand.current.releasesUrl}/download/${Brand.current.artifactPrefix}-Windows-${AppConfig.appVersion}-portable.zip',
           fileSize: '~12 MB',
           installationType: 'zip',
           requirements: ['Windows 10 or later'],
@@ -273,8 +274,7 @@ class PlatformDetectionService extends ChangeNotifier {
         ),
         InstallationStep(
           title: 'Launch the application',
-          description:
-              'Find Pistisai in your Start menu or desktop shortcut.',
+          description: BrandCopy.startMenuHint,
           applicableTypes: ['exe'],
           order: 2,
         ),
@@ -287,8 +287,7 @@ class PlatformDetectionService extends ChangeNotifier {
         ),
         InstallationStep(
           title: 'Run the executable',
-          description:
-              'Navigate to the extracted folder and double-click Pistisai.exe.',
+          description: BrandCopy.exeDoubleClick,
           applicableTypes: ['zip'],
           order: 1,
           troubleshootingTips: [
@@ -317,14 +316,13 @@ class PlatformDetectionService extends ChangeNotifier {
     return PlatformConfig(
       platform: PlatformType.linux,
       displayName: 'Linux',
-      iconPath: 'assets/images/linux-icon.png',
       downloadOptions: [
         DownloadOption(
           name: 'AppImage (Universal)',
           description:
               'Portable application that runs on any Linux distribution. No installation required.',
           downloadUrl:
-              'https://github.com/pistisAI/pistisai-app/releases/latest/download/Pistisai-Linux-${AppConfig.appVersion}-x86_64.AppImage',
+              '${Brand.current.releasesUrl}/download/${Brand.current.artifactPrefix}-Linux-${AppConfig.appVersion}-x86_64.AppImage',
           fileSize: '~48 MB',
           installationType: 'appimage',
           isRecommended: true,
@@ -335,7 +333,7 @@ class PlatformDetectionService extends ChangeNotifier {
           description:
               'Native package for Ubuntu, Debian, and derivatives with proper dependency management.',
           downloadUrl:
-              'https://github.com/pistisAI/pistisai-app/releases/latest/download/Pistisai-Linux_${AppConfig.appVersion}_amd64.deb',
+              '${Brand.current.releasesUrl}/download/${Brand.current.artifactPrefix}-Linux_${AppConfig.appVersion}_amd64.deb',
           fileSize: '~44 MB',
           installationType: 'deb',
           requirements: [
@@ -347,7 +345,8 @@ class PlatformDetectionService extends ChangeNotifier {
           name: 'Arch Linux (AUR)',
           description:
               'Pre-built binary package for Arch Linux and derivatives.',
-          downloadUrl: 'https://aur.archlinux.org/packages/Pistisai',
+          downloadUrl:
+              'https://aur.archlinux.org/packages/${Brand.current.artifactPrefix}',
           fileSize: '~42 MB',
           installationType: 'aur',
           requirements: [
@@ -367,7 +366,7 @@ class PlatformDetectionService extends ChangeNotifier {
           title: 'Make executable',
           description: 'Open terminal and make the AppImage executable.',
           commands: [
-            'chmod +x Pistisai-Linux-${AppConfig.appVersion}-x86_64.AppImage',
+            'chmod +x ${Brand.current.artifactPrefix}-Linux-${AppConfig.appVersion}-x86_64.AppImage',
           ],
           applicableTypes: ['appimage'],
           order: 1,
@@ -376,7 +375,7 @@ class PlatformDetectionService extends ChangeNotifier {
           title: 'Run the application',
           description: 'Double-click the AppImage or run it from terminal.',
           commands: [
-            './Pistisai-Linux-${AppConfig.appVersion}-x86_64.AppImage',
+            './${Brand.current.artifactPrefix}-Linux-${AppConfig.appVersion}-x86_64.AppImage',
           ],
           applicableTypes: ['appimage'],
           order: 2,
@@ -395,7 +394,7 @@ class PlatformDetectionService extends ChangeNotifier {
           title: 'Install package',
           description: 'Install using dpkg or your package manager.',
           commands: [
-            'sudo dpkg -i Pistisai-Linux_${AppConfig.appVersion}_amd64.deb',
+            'sudo dpkg -i ${Brand.current.artifactPrefix}-Linux_${AppConfig.appVersion}_amd64.deb',
             'sudo apt-get install -f  # Fix dependencies if needed',
           ],
           applicableTypes: ['deb'],
@@ -405,9 +404,9 @@ class PlatformDetectionService extends ChangeNotifier {
           title: 'Install from AUR',
           description: 'Use your preferred AUR helper to install.',
           commands: [
-            'yay -S Pistisai',
-            '# Or: paru -S Pistisai',
-            '# Or: pamac install Pistisai',
+            'yay -S ${Brand.current.artifactPrefix}',
+            '# Or: paru -S ${Brand.current.artifactPrefix}',
+            '# Or: pamac install ${Brand.current.artifactPrefix}',
           ],
           applicableTypes: ['aur'],
           order: 0,
@@ -435,14 +434,13 @@ class PlatformDetectionService extends ChangeNotifier {
     return PlatformConfig(
       platform: PlatformType.macos,
       displayName: 'macOS',
-      iconPath: 'assets/images/macos-icon.png',
       downloadOptions: [
         DownloadOption(
           name: 'macOS Application (.dmg)',
           description:
               'Standard macOS installer with drag-and-drop installation.',
           downloadUrl:
-              'https://github.com/pistisAI/pistisai-app/releases/latest/download/Pistisai-macOS-${AppConfig.appVersion}.dmg',
+              '${Brand.current.releasesUrl}/download/${Brand.current.artifactPrefix}-macOS-${AppConfig.appVersion}.dmg',
           fileSize: '~50 MB',
           installationType: 'dmg',
           isRecommended: true,
@@ -467,14 +465,13 @@ class PlatformDetectionService extends ChangeNotifier {
         ),
         InstallationStep(
           title: 'Install the application',
-          description: 'Drag Pistisai to your Applications folder.',
+          description: BrandCopy.macDragHint,
           applicableTypes: ['dmg'],
           order: 2,
         ),
         InstallationStep(
           title: 'Launch the application',
-          description:
-              'Find Pistisai in your Applications folder and launch it.',
+          description: BrandCopy.macLaunchHint,
           applicableTypes: ['dmg'],
           order: 3,
           troubleshootingTips: [
@@ -486,8 +483,7 @@ class PlatformDetectionService extends ChangeNotifier {
       troubleshootingGuides: {
         'gatekeeper_blocked':
             'If Gatekeeper blocks the app, go to System Preferences > Security & Privacy > General and click "Open Anyway".',
-        'quarantine_attribute':
-            'Remove quarantine attribute: xattr -d com.apple.quarantine /Applications/Pistisai.app',
+        'quarantine_attribute': BrandCopy.quarantineHint,
         'permission_denied':
             'Ensure you have permission to write to Applications folder.',
       },
