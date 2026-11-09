@@ -44,47 +44,14 @@ Sign-in is for the tunnel and for sync.
 | Business | The customer's Tailscale or VPN |
 | Enterprise | The customer's Tailscale or VPN |
 
-## Development
-
-Flutter `3.47.7`, pinned in `pubspec.yaml`. Node `26`, pinned in `.nvmrc`. Service engines allow Node `>=22 <27` (the SDK allows `>=18`).
-
-```bash
-git clone https://github.com/iacle-solutions/iacle-app.git
-cd iacle-app
-flutter pub get
-cd lib/shared && flutter pub get && cd ../..
-flutter run -d linux
-flutter run -d chrome
-```
-
-```bash
-flutter build linux --release
-flutter build web --release --no-web-resources-cdn
-flutter build apk --release --split-per-abi
-flutter build windows --release
-flutter build macos --release
-```
-
-```bash
-cd services/api-backend && npm install && npm run dev
-cd services/streaming-proxy && npm install && npm run dev
-```
-
-The auth service has no `dev` script. From its directory, start it with `node handlers.js`.
-
-Details: [AGENTS.md](AGENTS.md), [onboarding](docs/development/DEVELOPER_ONBOARDING.md), [contributing](CONTRIBUTING.md).
-
 ## Documentation
 
 | Document | What it is |
 | --- | --- |
 | [Français](README.md) | The same page in French |
 | [Overview](docs/index.md) | What the software is |
-| [Getting started](docs/LAUNCH.md) | Run it from source |
 | [Setup](docs/user-guide/SETUP_GUIDE.md) | Install the hub |
 | [User guide](docs/user-guide/USER_GUIDE.md) | Use the hub |
-| [Architecture](docs/architecture/SYSTEM_ARCHITECTURE.md) | How it is built |
-| [Specification](SPEC.md) | Software spec |
 | [Security](SECURITY.md) | Report a vulnerability |
 
 Report a vulnerability in private: [GitHub security advisories](https://github.com/iacle-solutions/iacle-app/security/advisories).
@@ -92,3 +59,5 @@ Report a vulnerability in private: [GitHub security advisories](https://github.c
 ## License
 
 See [LICENSE](LICENSE).
+
+For developers: [CONTRIBUTING.md](CONTRIBUTING.md).

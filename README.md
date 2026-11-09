@@ -44,47 +44,14 @@ La connexion sert au tunnel et à la synchro.
 | Affaires | Tailscale ou le VPN du client |
 | Entreprise | Tailscale ou le VPN du client |
 
-## Développement
-
-Flutter `3.47.7`, indiqué dans `pubspec.yaml`. Node `26`, indiqué dans `.nvmrc`. Les services acceptent Node `>=22 <27` (le SDK, `>=18`).
-
-```bash
-git clone https://github.com/iacle-solutions/iacle-app.git
-cd iacle-app
-flutter pub get
-cd lib/shared && flutter pub get && cd ../..
-flutter run -d linux
-flutter run -d chrome
-```
-
-```bash
-flutter build linux --release
-flutter build web --release --no-web-resources-cdn
-flutter build apk --release --split-per-abi
-flutter build windows --release
-flutter build macos --release
-```
-
-```bash
-cd services/api-backend && npm install && npm run dev
-cd services/streaming-proxy && npm install && npm run dev
-```
-
-Le service d'auth n'a pas de script `dev`. Depuis son dossier, on le lance avec `node handlers.js`.
-
-Détails : [AGENTS.md](AGENTS.md), [prise en main](docs/development/DEVELOPER_ONBOARDING.md), [contribuer](CONTRIBUTING.md).
-
 ## Documentation
 
 | Document | Contenu |
 | --- | --- |
 | [English](README.en.md) | La même page en anglais |
 | [Vue d'ensemble](docs/index.md) | Définition du logiciel |
-| [Démarrage](docs/LAUNCH.md) | Lancer depuis le code source |
 | [Installation](docs/user-guide/SETUP_GUIDE.md) | Installer le poste |
 | [Utilisation](docs/user-guide/USER_GUIDE.md) | S'en servir |
-| [Architecture](docs/architecture/SYSTEM_ARCHITECTURE.md) | Comment c'est fait |
-| [Spécification](SPEC.md) | Spec du logiciel |
 | [Sécurité](SECURITY.md) | Signaler une faille |
 
 Une faille se signale en privé : [avis de sécurité GitHub](https://github.com/iacle-solutions/iacle-app/security/advisories).
@@ -92,3 +59,5 @@ Une faille se signale en privé : [avis de sécurité GitHub](https://github.com
 ## Licence
 
 Voir [LICENSE](LICENSE).
+
+Pour les développeurs : [CONTRIBUTING.md](CONTRIBUTING.md).

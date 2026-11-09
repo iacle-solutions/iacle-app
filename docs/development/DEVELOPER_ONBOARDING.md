@@ -52,6 +52,13 @@ npm install
 npm test
 ```
 
+Dev servers:
+
+```bash
+cd services/api-backend && npm install && npm run dev
+cd services/streaming-proxy && npm install && npm run dev
+```
+
 For SDK work:
 
 ```bash
@@ -88,6 +95,9 @@ flutter run -d windows
 flutter run -d chrome
 flutter build linux --release
 flutter build web --release --no-web-resources-cdn
+flutter build apk --release --split-per-abi
+flutter build windows --release
+flutter build macos --release
 ```
 
 ```bash
