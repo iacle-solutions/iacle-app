@@ -20,6 +20,9 @@ on:
       - "pubspec.lock"
       - ".github/workflows/build-mobile.yml"
 
+env:
+  IACLE_BRAND_LICENCE: ${{ secrets.IACLE_BRAND_LICENCE }}
+
 concurrency:
   group: mobile-build-${{ github.ref }}
   cancel-in-progress: false
@@ -191,6 +194,8 @@ jobs:
       - name: Flutter Build APK
         run: |
           flutter pub get
+          echo "$IACLE_BRAND_LICENCE" > /tmp/iacle.licence
+          bash tool/brand.sh iacle --license /tmp/iacle.licence
           flutter build apk --release --split-per-abi
 
       - name: Upload APKs
@@ -232,6 +237,8 @@ jobs:
       - name: Flutter Build iOS
         run: |
           flutter pub get
+          echo "$IACLE_BRAND_LICENCE" > /tmp/iacle.licence
+          bash tool/brand.sh iacle --license /tmp/iacle.licence
           flutter build ios --release --no-codesign
 
       - name: Upload iOS build

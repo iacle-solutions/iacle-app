@@ -18,6 +18,7 @@ on:
 
 env:
   PLATFORMS: ${{ inputs.platforms || 'linux,windows,macos' }}
+  IACLE_BRAND_LICENCE: ${{ secrets.IACLE_BRAND_LICENCE }}
 
 concurrency:
   group: desktop-build-${{ github.ref }}
@@ -105,6 +106,8 @@ jobs:
       - name: Flutter Build Linux
         run: |
           flutter pub get
+          echo "$IACLE_BRAND_LICENCE" > /tmp/iacle.licence
+          bash tool/brand.sh iacle --license /tmp/iacle.licence
           flutter build linux --release
 
       - name: Package Linux Distributions
@@ -170,6 +173,8 @@ jobs:
       - name: Flutter Build Windows
         run: |
           flutter pub get
+          echo "$IACLE_BRAND_LICENCE" > /tmp/iacle.licence
+          bash tool/brand.sh iacle --license /tmp/iacle.licence
           flutter build windows --release
 
       - name: Package Portable ZIP
@@ -249,6 +254,8 @@ jobs:
       - name: Flutter Build macOS
         run: |
           flutter pub get
+          echo "$IACLE_BRAND_LICENCE" > /tmp/iacle.licence
+          bash tool/brand.sh iacle --license /tmp/iacle.licence
           flutter build macos --release
         env:
           MACOSX_DEPLOYMENT_TARGET: 12.0

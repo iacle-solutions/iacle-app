@@ -187,6 +187,8 @@ flutter:
     - assets/images/lobster_avatar_128.png
     - assets/version.json
     - assets/component-versions.json
+    - brand/iacle/
+    - brand/iacle/assets/
     - assets/pistisai/hermes/plugins/pistisai/
     - assets/pistisai/hermes/profiles/aigent-watch/
     - assets/pistisai/hermes/profiles/aigent-watch/skills/drift-scan/
