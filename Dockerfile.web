@@ -10,7 +10,11 @@ ARG BRAND=iacle
 ARG PISTISAI_ADMIN_EMAIL=
 ARG SUPABASE_URL=
 ARG SUPABASE_ANON_KEY=
-RUN flutter build web --release --no-web-resources-cdn \
+RUN if [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_ANON_KEY" ] || [ -z "$PISTISAI_ADMIN_EMAIL" ]; then \
+      echo "SUPABASE_URL, SUPABASE_ANON_KEY, and PISTISAI_ADMIN_EMAIL are required" >&2; \
+      exit 1; \
+    fi \
+ && flutter build web --release --no-web-resources-cdn \
     --dart-define=BRAND=${BRAND} \
     --dart-define=PISTISAI_ADMIN_EMAIL=${PISTISAI_ADMIN_EMAIL} \
     --dart-define=SUPABASE_URL=${SUPABASE_URL} \

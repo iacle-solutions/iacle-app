@@ -77,6 +77,26 @@ jobs:
           echo "tag=$VERSION" >> $GITHUB_OUTPUT
           echo "Building version: $VERSION"
 
+      - name: Require web auth defines
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          PISTISAI_ADMIN_EMAIL: ${{ secrets.PISTISAI_ADMIN_EMAIL }}
+        run: |
+          set -euo pipefail
+          if [ -z "${SUPABASE_URL:-}" ]; then
+            echo "SUPABASE_URL is not set"
+            exit 1
+          fi
+          if [ -z "${SUPABASE_ANON_KEY:-}" ]; then
+            echo "SUPABASE_ANON_KEY is not set"
+            exit 1
+          fi
+          if [ -z "${PISTISAI_ADMIN_EMAIL:-}" ]; then
+            echo "PISTISAI_ADMIN_EMAIL is not set"
+            exit 1
+          fi
+
       - name: Build and push Docker image
         id: build
         uses: docker/build-push-action@v6

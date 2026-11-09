@@ -60,9 +60,9 @@ class SupabaseAuthProvider extends AuthProvider {
   @override
   Future<void> login() async {
     if (!_configured) {
-      debugPrint(
-          '[SupabaseAuthProvider] SUPABASE_URL and SUPABASE_ANON_KEY are required');
-      return;
+      throw StateError(
+        'SUPABASE_URL and SUPABASE_ANON_KEY are required',
+      );
     }
     await Supabase.instance.client.auth.signInWithOAuth(
       OAuthProvider.google,
