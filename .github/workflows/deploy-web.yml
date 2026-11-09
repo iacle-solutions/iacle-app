@@ -114,12 +114,21 @@ jobs:
           ref: main
 
       - name: Trigger Dokploy deploy
+        id: dokploy
         env:
           DOKPLOY_WEBHOOK_URL: ${{ secrets.DOKPLOY_WEBHOOK_URL }}
           DOKPLOY_API_KEY: ${{ secrets.DOKPLOY_API_KEY }}
-        run: bash scripts/ci/trigger_dokploy_deploy.sh
+        run: |
+          set -euo pipefail
+          if [ -z "${DOKPLOY_WEBHOOK_URL:-}" ]; then
+            echo "skipped=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "skipped=false" >> "$GITHUB_OUTPUT"
+          fi
+          bash scripts/ci/trigger_dokploy_deploy.sh
 
       - name: Confirm iacle.app serves the app
+        if: steps.dokploy.outputs.skipped != 'true'
         run: |
           set -euo pipefail
           for host in iacle.app www.iacle.app app.iacle.app; do
