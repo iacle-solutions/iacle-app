@@ -1,4 +1,4 @@
-# Zoidbot Windows-to-VPS Integration Test Script
+# IAClé Windows-to-VPS Integration Test Script
 # Tests SSH connectivity and VPS deployment script availability
 # Validates the restored Windows PowerShell orchestration
 
@@ -12,9 +12,9 @@ param(
 )
 
 # Configuration
-$VPSHost = "zoidbot.online"
+$VPSHost = "example.com"
 $VPSUser = "cloudllm"
-$VPSProjectPath = "/opt/zoidbot"
+$VPSProjectPath = "/opt/iacle"
 $VPSScriptsPath = "$VPSProjectPath/scripts/deploy"
 
 # Colors for output
@@ -52,7 +52,7 @@ function Write-LogStep {
 }
 
 function Show-Help {
-    Write-Host "Zoidbot Windows-to-VPS Integration Test" -ForegroundColor Blue
+    Write-Host "IAClé Windows-to-VPS Integration Test" -ForegroundColor Blue
     Write-Host "=============================================" -ForegroundColor Blue
     Write-Host ""
     Write-Host "Tests the integration between Windows PowerShell orchestration"
@@ -302,7 +302,7 @@ function Show-TestSummary {
 
 # Main execution
 Write-Host "================================================================" -ForegroundColor Blue
-Write-Host "Zoidbot Windows-to-VPS Integration Test" -ForegroundColor Blue
+Write-Host "IAClé Windows-to-VPS Integration Test" -ForegroundColor Blue
 Write-Host "Time: $(Get-Date)" -ForegroundColor Blue
 Write-Host "VPS: $VPSHost" -ForegroundColor Blue
 Write-Host "User: $VPSUser" -ForegroundColor Blue

@@ -510,7 +510,7 @@ class HomepageScreen extends StatelessWidget {
 
           const SizedBox(height: 16),
 
-          // Zoid pillar name
+          // Pillar name
           Text(p.name,
             style: TextStyle(
               fontSize: 22,

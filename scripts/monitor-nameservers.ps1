@@ -6,7 +6,7 @@ $ErrorActionPreference = "Continue"
 # Cloudflare nameservers we expect (will be loaded from file or API)
 $expectedNameservers = @()
 
-$domain = "zoidbot.online"
+$domain = "example.com"
 $checkInterval = 30 # seconds
 $attempt = 0
 

@@ -77,7 +77,7 @@ Backend Validates Token
 #### Frontend (web/auth0-bridge.js)
 
 - **Auth0 Domain**: `example.us.auth0.com`
-- **Client ID**: `FuXPnevXpp311CdYHGsbNZe9t3D8Ts7A`
+- **Client ID**: `YOUR_CLIENT_ID`
 - **Audience**: `https://api.example.com` ✅
 - **Scope**: `openid profile email offline_access`
 

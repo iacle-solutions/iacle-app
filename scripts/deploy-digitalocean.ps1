@@ -1,12 +1,12 @@
-# Zoidbot - DigitalOcean Kubernetes Deployment Script
+# IAClé - DigitalOcean Kubernetes Deployment Script
 # Complete automation for deploying to DigitalOcean Kubernetes
 
 param(
     [Parameter(Mandatory=$false)]
-    [string]$ClusterName = "zoidbot",
+    [string]$ClusterName = "iacle",
     
     [Parameter(Mandatory=$false)]
-    [string]$Registry = "zoidbot",
+    [string]$Registry = "iacle",
     
     [Parameter(Mandatory=$false)]
     [switch]$SkipBuild,
@@ -21,7 +21,7 @@ param(
 $ErrorActionPreference = "Stop"
 
 Write-Host "╔════════════════════════════════════════════════════════════╗" -ForegroundColor Blue
-Write-Host "║   Zoidbot - DigitalOcean Kubernetes Deployment    ║" -ForegroundColor Blue
+Write-Host "║   IAClé - DigitalOcean Kubernetes Deployment    ║" -ForegroundColor Blue
 Write-Host "╚════════════════════════════════════════════════════════════╝" -ForegroundColor Blue
 Write-Host ""
 
@@ -29,8 +29,8 @@ Write-Host ""
 # Configuration
 #######################################################################
 
-$DOMAIN = "zoidbot.online"
-$NAMESPACE = "zoidbot"
+$DOMAIN = "example.com"
+$NAMESPACE = "iacle"
 $REGISTRY_URL = "registry.digitalocean.com/$Registry"
 
 #######################################################################
@@ -176,12 +176,12 @@ $webDeploymentPath = "k8s/web-deployment.yaml"
 
 # Update API deployment
 $apiContent = Get-Content $apiDeploymentPath -Raw
-$apiContent = $apiContent -replace "image: .*zoidbot.*api.*", "image: ${REGISTRY_URL}/api:latest"
+$apiContent = $apiContent -replace "image: .*iacle.*api.*", "image: ${REGISTRY_URL}/api:latest"
 Set-Content -Path $apiDeploymentPath -Value $apiContent
 
 # Update web deployment
 $webContent = Get-Content $webDeploymentPath -Raw
-$webContent = $webContent -replace "image: .*zoidbot.*web.*", "image: ${REGISTRY_URL}/web:latest"
+$webContent = $webContent -replace "image: .*iacle.*web.*", "image: ${REGISTRY_URL}/web:latest"
 Set-Content -Path $webDeploymentPath -Value $webContent
 
 Write-Host "✓ Manifests updated" -ForegroundColor Green

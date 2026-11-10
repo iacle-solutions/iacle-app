@@ -31,7 +31,7 @@ From `assets/brand/brand-framework.md` (verified source of truth):
 is to **carry** trust rather than perform it. If the agent at IAClé's center is
 untrustworthy, the name is a lie.
 
-### The Biblical layer (verified — `bible-service-seed.js`, curated "Zoid Maltek, June 6 2026")
+### The Biblical layer (verified — `bible-service-seed.js`)
 The same word anchors in the curated KJV corpus: **Hebrews 11:1** (faith = substance/evidence
 of things not seen), **Proverbs 3:5-6** (trust, lean not on own understanding), **Galatians 5:22**
 (faithfulness is fruit), **1 Corinthians 13:4-7** (love keeps no record of wrongs,

@@ -1,7 +1,7 @@
-# Zoidbot OAuth Configuration Test
+# IAClé OAuth Configuration Test
 # This script tests the OAuth client ID configuration
 
-Write-Host "=== Zoidbot OAuth Configuration Test ===" -ForegroundColor Cyan
+Write-Host "=== IAClé OAuth Configuration Test ===" -ForegroundColor Cyan
 Write-Host ""
 
 $configFile = "lib\config\app_config.dart"

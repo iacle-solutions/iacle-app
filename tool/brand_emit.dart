@@ -203,6 +203,11 @@ String applyWebIndex(String source, BrandConfig brand) {
     RegExp(r'background-color:\s*#[0-9A-Fa-f]{6}'),
     'background-color: ${brand.backgroundHex}',
   );
+  // Strip upstream (pistisai) hosts from CSP to prevent white-label leaks
+  out = out.replaceAll(
+    RegExp(r'https://\*\.pistisai\.app\s+wss://\*\.pistisai\.app\s+'),
+    '',
+  );
   out = _ensureCspConnectHost(out, brand.websiteDomain);
   return out;
 }

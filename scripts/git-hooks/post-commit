@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Zoidbot post-commit hook
+# IAClé post-commit hook
 # Automatically pushes commits when documentation is complete
 #
 

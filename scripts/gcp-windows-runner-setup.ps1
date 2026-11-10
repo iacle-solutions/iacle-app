@@ -15,7 +15,7 @@ $VM_NAME = "github-runner-windows-$(Get-Date -Format yyyyMMddHHmmss)"
 $MACHINE_TYPE = "e2-medium"
 $IMAGE_FAMILY = "windows-2019"
 $IMAGE_PROJECT = "windows-cloud"
-$GITHUB_RUNNER_ORG_URL = "https://github.com/Zoidbot-online/Zoidbot" # e.g., https://github.com/Zoidbot-online
+$GITHUB_RUNNER_ORG_URL = "https://github.com/example-org/example-app" # e.g., https://github.com/example-org
 if (-not $env:GITHUB_RUNNER_TOKEN) { Write-Error "GITHUB_RUNNER_TOKEN is required"; exit 1 }
 $GITHUB_RUNNER_TOKEN = $env:GITHUB_RUNNER_TOKEN
 
