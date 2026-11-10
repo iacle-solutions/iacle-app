@@ -51,9 +51,9 @@ function Setup-TestEnvironment {
     
     # Create a test README.md with version badge
     $readmeContent = @"
-# Zoidbot
+# IAClé
 
-[![Version](https://img.shields.io/badge/version-4.0.32-blue.svg)](https://github.com/Zoidbot-online/Zoidbot)
+[![Version](https://img.shields.io/badge/version-4.0.32-blue.svg)](https://github.com/example-org/example-app)
 
 A sophisticated Flutter-based application that bridges cloud-based AI services with local AI models.
 

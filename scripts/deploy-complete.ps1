@@ -7,7 +7,7 @@ $ErrorActionPreference = "Stop"
 Write-Host @"
 
 ╔════════════════════════════════════════════════════════════════╗
-║     Zoidbot - Complete Deployment to DO K8s           ║
+║     IAClé - Complete Deployment to DO K8s           ║
 ╚════════════════════════════════════════════════════════════════╝
 
 "@ -ForegroundColor Cyan
@@ -16,9 +16,9 @@ Write-Host @"
 $env:Path = "$env:Path;$env:LOCALAPPDATA\doctl"
 
 # Variables
-$registry = "registry.digitalocean.com/zoidbot"
-$clusterName = "zoidbot"
-$namespace = "zoidbot"
+$registry = "registry.digitalocean.com/iacle"
+$clusterName = "iacle"
+$namespace = "iacle"
 
 Write-Host "Step 1: Logging in to DigitalOcean Container Registry..." -ForegroundColor Yellow
 doctl registry login

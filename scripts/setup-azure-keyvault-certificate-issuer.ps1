@@ -4,9 +4,9 @@
 
 $ErrorActionPreference = "Stop"
 
-$KEY_VAULT_NAME = "zoidbot-kv"
-$RESOURCE_GROUP = "zoidbot-rg"
-$DOMAIN = "zoidbot.online"
+$KEY_VAULT_NAME = "iacle-kv"
+$RESOURCE_GROUP = "iacle-rg"
+$DOMAIN = "example.com"
 
 Write-Host "🔐 Setting up Azure Key Vault Certificate Issuer..." -ForegroundColor Cyan
 Write-Host ""

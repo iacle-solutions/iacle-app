@@ -37,7 +37,7 @@ services:
   #   build:
   #     context: .
   #     dockerfile: config/docker/Dockerfile.static-site
-  #   container_name: zoidbot-static-site
+  #   container_name: iacle-static-site
   #   volumes:
   #     - ./static_homepage:/usr/share/nginx/html/static:ro
   #     - ./docs-site/dist:/usr/share/nginx/html/docs:ro

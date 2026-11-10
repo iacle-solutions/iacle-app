@@ -13,7 +13,7 @@ l'humanité.
 
 ## Les 4 Piliers
 
-| Titan | Direction | Domaine | Pilier Zoid | Rôle |
+| Titan | Direction | Domaine | Pilier | Rôle |
 |-------|-----------|---------|-------------|------|
 | Hyperion (Ὑπερίων) | Est (Aube) | "Celui qui veille" — Dieu de la lumière céleste | Aiman — La Face | Le visage, l'accueil |
 | Koios/Coeus (Κοῖος) | Nord (Axe) | "Questionnement" — Dieu de l'intellect | Aigent — Le Moteur | L'intelligence, la structure |

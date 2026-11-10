@@ -32,7 +32,7 @@ _CITATION = re.compile(r"([\w./\\-]+\.(?:txt|json|md|py|html|jsonl))[: ](\d{1,6}
 # as their authority is circular.
 _SELF_AUTHORED = re.compile(
     r"(__NO_BAKED_IN_FILES__|"
-    r"The Long Birth|C2L Framework|self-authored-note|habits-dossier|"
+    r"self-authored-note|dossier|"
     r"vault[/\\]Identity)", re.I)
 
 # Language that hands a claim to the person as THEIR rule/word.
@@ -263,7 +263,7 @@ def _default_targets():
     seen = set()
     scan_dirs = []
     for base in _roots():
-        scan_dirs.append((os.path.join(base, "ZoidBot", "vault"), ".md"))
+        scan_dirs.append((os.path.join(base, "IAClé", "vault"), ".md"))
         scan_dirs.append((os.path.join(base, "docs", "personal"), ".md"))
         scan_dirs.append((os.path.join(base, "docs"), ".md"))
     for base, ext in scan_dirs:

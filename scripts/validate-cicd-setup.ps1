@@ -1,7 +1,7 @@
 #!/usr/bin/env pwsh
 <#
 .SYNOPSIS
-    Validates the Zoidbot CI/CD pipeline setup
+    Validates the IAClé CI/CD pipeline setup
 
 .DESCRIPTION
     This script validates that all components of the CI/CD pipeline are properly
@@ -39,7 +39,7 @@ $ErrorActionPreference = 'Continue'  # Continue on errors to show all issues
 
 # Script metadata
 $ScriptVersion = "1.0.0"
-$ScriptName = "Zoidbot CI/CD Validation"
+$ScriptName = "IAClé CI/CD Validation"
 
 # Validation results
 $ValidationResults = @{
@@ -393,7 +393,7 @@ function Show-ValidationSummary {
 # Main execution
 function Main {
     Write-Info "Starting $ScriptName v$ScriptVersion"
-    Write-Info "Validating Zoidbot CI/CD pipeline setup..."
+    Write-Info "Validating IAClé CI/CD pipeline setup..."
     
     # Run all validations
     Test-ProjectStructure

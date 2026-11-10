@@ -41,8 +41,7 @@ Signature: a self-authored filename **plus a line-number citation** (`IDENTITY_D
 back as the person's rule.
 
 In-scope filenames: `vault/Identity/*`, identity and family documents,
-agent-authored dossiers, agent-authored biographies,
-`habits-dossier*`.
+agent-authored dossiers and agent-authored biographies.
 
 **Pitfalls**
 

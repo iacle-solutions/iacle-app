@@ -21,7 +21,7 @@ if (!(Get-Command gh -ErrorAction SilentlyContinue)) {
     Write-Host "Install it from: https://cli.github.com/" -ForegroundColor Yellow
     Write-Host ""
     Write-Host "Or set secrets manually at:" -ForegroundColor Yellow
-    Write-Host "https://github.com/Zoidbot-online/Zoidbot/settings/secrets/actions" -ForegroundColor White
+    Write-Host "https://github.com/example-org/example-app/settings/secrets/actions" -ForegroundColor White
     exit 1
 }
 
@@ -37,7 +37,7 @@ Write-Host "✓ Authenticated with GitHub" -ForegroundColor Green
 Write-Host ""
 
 # Repository
-$repo = "Zoidbot-online/Zoidbot"
+$repo = "example-org/example-app"
 Write-Host "Repository: $repo" -ForegroundColor Cyan
 Write-Host ""
 
@@ -50,7 +50,7 @@ $doToken = Read-Host "Enter your DigitalOcean Personal Access Token" -MaskInput
 
 Write-Host ""
 Write-Host "2. Domain Name" -ForegroundColor Cyan
-$domain = Read-Host "Enter your domain (e.g., zoidbot.com)"
+$domain = Read-Host "Enter your domain (e.g., example.com)"
 
 Write-Host ""
 Write-Host "3. PostgreSQL Password" -ForegroundColor Cyan

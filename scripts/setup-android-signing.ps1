@@ -124,7 +124,7 @@ if ($keystoreExists -and -not $Force) {
     }
     
     # Generate keystore
-    $dname = "CN=Zoidbot, OU=Development, O=Zoidbot, L=Unknown, ST=Unknown, C=US"
+    $dname = "CN=IAClé, OU=Development, O=IAClé, L=Unknown, ST=Unknown, C=US"
     
     $keytoolArgs = @(
         "-genkey",

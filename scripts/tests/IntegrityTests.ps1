@@ -60,9 +60,9 @@ function Remove-IntegrityTestEnvironment {
 function New-TestFiles {
     # Standard UTF-8 file with LF endings
     $contentLF = @"
-# Zoidbot
+# IAClé
 
-[![Version](https://img.shields.io/badge/version-4.0.32-blue.svg)](https://github.com/Zoidbot-online/Zoidbot)
+[![Version](https://img.shields.io/badge/version-4.0.32-blue.svg)](https://github.com/example-org/example-app)
 
 Test file with LF line endings.
 "@
@@ -74,9 +74,9 @@ Test file with LF line endings.
 
     # File without final newline
     $contentNoNewline = @"
-# Zoidbot
+# IAClé
 
-[![Version](https://img.shields.io/badge/version-4.0.32-blue.svg)](https://github.com/Zoidbot-online/Zoidbot)
+[![Version](https://img.shields.io/badge/version-4.0.32-blue.svg)](https://github.com/example-org/example-app)
 
 Test file without final newline.
 "@
@@ -84,9 +84,9 @@ Test file without final newline.
 
     # File with Unicode characters
     $contentUnicode = @"
-# Zoidbot
+# IAClé
 
-[![Version](https://img.shields.io/badge/version-4.0.32-blue.svg)](https://github.com/Zoidbot-online/Zoidbot)
+[![Version](https://img.shields.io/badge/version-4.0.32-blue.svg)](https://github.com/example-org/example-app)
 
 Test file with Unicode:  �  �
 Special characters: àáâãäåæçèéêë
@@ -96,9 +96,9 @@ Mathematical symbols: ∑ ∏ ∫ ∆ ∇
 
     # Large file for performance testing
     $contentLarge = @"
-# Zoidbot
+# IAClé
 
-[![Version](https://img.shields.io/badge/version-4.0.32-blue.svg)](https://github.com/Zoidbot-online/Zoidbot)
+[![Version](https://img.shields.io/badge/version-4.0.32-blue.svg)](https://github.com/example-org/example-app)
 
 "@
     for ($i = 1; $i -le 1000; $i++) {

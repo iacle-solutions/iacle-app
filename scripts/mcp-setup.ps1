@@ -7,7 +7,7 @@ $ErrorActionPreference = "Stop"
 Write-Host @"
 
 ╔════════════════════════════════════════════════════════════════╗
-║           MCP Tools Setup for Zoidbot                  ║
+║           MCP Tools Setup for IAClé                  ║
 ╚════════════════════════════════════════════════════════════════╝
 
 "@ -ForegroundColor Cyan

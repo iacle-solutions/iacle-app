@@ -1,7 +1,6 @@
 # Pi Agent Integration — Implementation Plan
 
 > **Status:** ✅ Research complete — ready for implementation
-> **Author:** Zoid (with the operator)
 > **Created:** 2026-09-06
 > **Revised:** 2026-09-07 (v8 — implementation-ready: exact files, code patterns, commands)
 > **Location:** `docs/architecture/PI_AGENT_INTEGRATION.md`
@@ -556,8 +555,8 @@ After=network.target
 
 [Service]
 Type=simple
-User=zoid
-Group=zoid
+User=app
+Group=app
 WorkingDirectory=/dev/IAClé
 ExecStart=/var/lib/app/.local/bin/pi \
   --provider llamacpp \

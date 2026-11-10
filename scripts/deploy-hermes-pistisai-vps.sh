@@ -14,13 +14,13 @@ HERMES_API_SERVER_KEY="${HERMES_API_SERVER_KEY:-}"
 PISTISAI_VPS_SSH_HOST="${PISTISAI_VPS_SSH_HOST:-}"
 
 if [[ "$VPS_USER" == "pistisai" ]]; then
-  echo "[deploy-hermes] ignoring Simon SSH user pistisai; using cloudllm" >&2
+  echo "[deploy-hermes] ignoring legacy SSH user pistisai; using cloudllm" >&2
   VPS_USER="cloudllm"
 fi
 
 case "$REMOTE_DIR" in
   /opt/pistisai|/opt/pistisai/deploy)
-    echo "[deploy-hermes] ignoring Simon remote dir $REMOTE_DIR; using /opt/Pistisai" >&2
+    echo "[deploy-hermes] ignoring legacy remote dir $REMOTE_DIR; using /opt/Pistisai" >&2
     REMOTE_DIR="/opt/Pistisai"
     ;;
 esac

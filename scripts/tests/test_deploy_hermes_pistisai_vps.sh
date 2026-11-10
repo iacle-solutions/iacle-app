@@ -61,7 +61,7 @@ for needle in required_workflow:
 if re.search(r"secrets\.VPS_HOST \|\| '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+'", workflow_text):
     raise SystemExit('Hermes workflow must not fall back to a raw address')
 if "secrets.VPS_USER || 'pistisai'" in workflow_text:
-    raise SystemExit('Hermes workflow must not fall back to Simon SSH user')
+    raise SystemExit('Hermes workflow must not fall back to the legacy SSH user')
 
 required_web = [
     "secrets.DEPLOY_WEBHOOK_URL || 'https://deploy.pistisai.app/deploy'",
@@ -76,9 +76,9 @@ for needle in required_web:
 if re.search(r"secrets\.VPS_HOST \|\| '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+'", web_text):
     raise SystemExit('web deploy must not fall back to a raw address')
 if "secrets.VPS_USER || 'pistisai'" in web_text:
-    raise SystemExit('web deploy must not fall back to Simon SSH user')
+    raise SystemExit('web deploy must not fall back to the legacy SSH user')
 if "/opt/pistisai/deploy" in web_text:
-    raise SystemExit('web deploy still targets Simon deploy dir')
+    raise SystemExit('web deploy still targets the legacy deploy dir')
 
 required_compose = [
     'nousresearch/hermes-agent',

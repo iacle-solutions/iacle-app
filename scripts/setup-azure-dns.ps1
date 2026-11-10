@@ -1,20 +1,20 @@
-# Setup Azure DNS for Zoidbot
+# Setup Azure DNS for IAClé
 # This script creates an Azure DNS zone and all required DNS records
 
 $ErrorActionPreference = "Stop"
 
 # Configuration
-$RESOURCE_GROUP = "zoidbot-rg"
-$DNS_ZONE_NAME = "zoidbot.online"
-$AKS_CLUSTER_NAME = "zoidbot-aks"
+$RESOURCE_GROUP = "iacle-rg"
+$DNS_ZONE_NAME = "example.com"
+$AKS_CLUSTER_NAME = "iacle-aks"
 $TTL = 300
 
 # DNS records to create
 $DOMAINS = @(
-    "zoidbot.online",
-    "app.zoidbot.online",
-    "api.zoidbot.online",
-    "auth.zoidbot.online"
+    "example.com",
+    "app.example.com",
+    "api.example.com",
+    "auth.example.com"
 )
 
 Write-Host "🔧 Setting up Azure DNS for $DNS_ZONE_NAME..." -ForegroundColor Cyan
@@ -77,10 +77,10 @@ Write-Host "📋 Step 5: Creating DNS records..." -ForegroundColor Yellow
 
 foreach ($domain in $DOMAINS) {
     # Extract subdomain name
-    if ($domain -eq "zoidbot.online") {
+    if ($domain -eq "example.com") {
         $record_name = "@"
     } else {
-        $record_name = $domain -replace '\.zoidbot\.online$', ''
+        $record_name = $domain -replace '\.iacle\.online$', ''
     }
     
     Write-Host "Creating/updating: $domain → $LB_IP" -ForegroundColor Cyan
