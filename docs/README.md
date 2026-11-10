@@ -1,6 +1,6 @@
-# IAClé Documentation
+# Pistisai Documentation
 
-This is the documentation hub for the IAClé stack in this repository. IAClé is the Quebec company and brand that delivers the same stack to Quebec clients. Product description: [README](../README.md) ([English](../README.en.md)). Prefer linking here from new docs instead of adding another top-level index.
+This is the documentation hub for the Pistisai stack in this repository. Product description: [README](../README.md). Prefer linking here from new docs instead of adding another top-level index.
 
 For project-wide agent instructions, see [AGENTS.md](../AGENTS.md). For the product specification, see [SPEC.md](../SPEC.md).
 
@@ -26,7 +26,6 @@ For project-wide agent instructions, see [AGENTS.md](../AGENTS.md). For the prod
 - [Vision System](architecture/VISION_SYSTEM.md)
 - [Tunnel System](architecture/TUNNEL_SYSTEM.md) - legacy/fallback tunnel reference
 - [Service Lifecycle](architecture/service_lifecycle.md)
-- [Architecture Codemap](architecture/architecture-codemap.md)
 
 ## Development
 

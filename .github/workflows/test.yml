@@ -63,7 +63,7 @@ jobs:
             backend:
               - 'services/api-backend/**'
               - 'test/api-backend/**'
-              - 'scripts/tests/**'
+              - 'scripts/tests/test_no_hardcoded_dev_bypass_token.sh'
               - '.github/workflows/test.yml'
 
       - name: "Fail open if the path filter failed"
@@ -123,6 +123,9 @@ jobs:
       - name: "📦 flutter pub get"
         run: flutter pub get
 
+      - name: Bake Pistisai brand
+        run: bash tool/brand.sh pistisai
+
       - name: "🧪 flutter test (security + basic)"
         run: bash scripts/ci/flutter_security_basic_tests.sh
 
@@ -145,8 +148,11 @@ jobs:
       - name: "📦 flutter pub get"
         run: flutter pub get
 
+      - name: Bake Pistisai brand
+        run: bash tool/brand.sh pistisai
+
       - name: "🌐 flutter build web"
-        run: flutter build web --release --no-web-resources-cdn --dart-define=BRAND=iacle --dart-define=PISTISAI_ADMIN_EMAIL=${{ secrets.PISTISAI_ADMIN_EMAIL }} --dart-define=SUPABASE_URL=${{ secrets.SUPABASE_URL }} --dart-define=SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }}
+        run: flutter build web --release --no-web-resources-cdn --dart-define=BRAND=pistisai
 
       - name: "📦 Upload web build"
         uses: actions/upload-artifact@v7
@@ -154,6 +160,34 @@ jobs:
           name: web-build
           path: build/web/
           retention-days: 7
+
+  whitelabel_leak_check:
+    name: "🏷️ White-label build has no upstream hosts"
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    needs: [changes, flutter_analyze, flutter_smoke_test]
+    if: needs.changes.outputs.flutter == 'true' && needs.flutter_analyze.result == 'success' && needs.flutter_smoke_test.result == 'success'
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version-file: pubspec.yaml
+          channel: "stable"
+          cache: true
+
+      - name: "📦 flutter pub get"
+        run: flutter pub get
+
+      - name: Bake the example brand
+        run: bash tool/brand.sh example
+
+      - name: "🌐 flutter build web (example brand)"
+        run: flutter build web --release --no-web-resources-cdn --dart-define=BRAND=example
+
+      - name: "🏷️ No upstream hosts, links, schemes, or names"
+        run: bash tool/brand_leak_check.sh build/web
 
   build_linux:
     name: "🐧 Build Linux Desktop"
@@ -186,8 +220,11 @@ jobs:
       - name: "📦 flutter pub get"
         run: flutter pub get
 
+      - name: Bake Pistisai brand
+        run: bash tool/brand.sh pistisai
+
       - name: "🐧 flutter build linux --release"
-        run: flutter build linux --release --dart-define=BRAND=iacle
+        run: flutter build linux --release --dart-define=BRAND=pistisai
 
       - name: "📦 Package bundle"
         run: |
@@ -248,6 +285,7 @@ jobs:
       - flutter_analyze
       - flutter_smoke_test
       - build_web
+      - whitelabel_leak_check
       - build_linux
       - backend
     if: always()
@@ -258,11 +296,12 @@ jobs:
           ANALYZE: ${{ needs.flutter_analyze.result }}
           SMOKE: ${{ needs.flutter_smoke_test.result }}
           WEB: ${{ needs.build_web.result }}
+          WHITELABEL: ${{ needs.whitelabel_leak_check.result }}
           LINUX: ${{ needs.build_linux.result }}
           BACKEND: ${{ needs.backend.result }}
         run: |
           fail=0
-          for result in "$CHANGES" "$ANALYZE" "$SMOKE" "$WEB" "$LINUX" "$BACKEND"; do
+          for result in "$CHANGES" "$ANALYZE" "$SMOKE" "$WEB" "$WHITELABEL" "$LINUX" "$BACKEND"; do
             case "$result" in
               success|skipped) ;;
               *)
@@ -272,7 +311,7 @@ jobs:
             esac
           done
           if [ "$fail" -ne 0 ]; then
-            echo "CHANGES=$CHANGES ANALYZE=$ANALYZE SMOKE=$SMOKE WEB=$WEB LINUX=$LINUX BACKEND=$BACKEND"
+            echo "CHANGES=$CHANGES ANALYZE=$ANALYZE SMOKE=$SMOKE WEB=$WEB WHITELABEL=$WHITELABEL LINUX=$LINUX BACKEND=$BACKEND"
             exit 1
           fi
           echo "All needed jobs succeeded or were skipped."

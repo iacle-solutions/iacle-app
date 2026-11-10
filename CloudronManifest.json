@@ -1,8 +1,8 @@
 {
     "id": "app.pistisai.app",
     "title": "Pistisai",
-    "author": "Pistisai Team",
-    "description": "Pistisai - The OpenClaw Agent Manager connecting Cloud AI to local computing via WebRTC and websockets.",
+    "author": "Pistisai",
+    "description": "Pistisai is a local-first companion for your AI agent.",
     "version": "1.0.0",
     "healthCheckPath": "/",
     "httpPort": 3000,
@@ -11,9 +11,9 @@
         "redis": {}
     },
     "manifestVersion": 2,
-    "website": "https://github.com/pistisAI/pistisai-app",
+    "website": "https://pistisai.app",
     "contactEmail": "support@pistisai.app",
-    "icon": "https://raw.githubusercontent.com/pistisAI/pistisai-app/main/assets/brand_logo.png",
+    "icon": "https://raw.githubusercontent.com/pistisAI/pistisai-app/main/assets/images/app_icon.png",
     "tags": [
         "ai",
         "agent",

@@ -1,6 +1,6 @@
 # Agent Runtime Contract
 
-IAClé is agent-first. The main application channel connects to an agent runtime, not directly to a raw local model provider.
+Pistisai is agent-first. The main application channel connects to an agent runtime, not directly to a raw local model provider.
 
 ## Terms
 
@@ -8,15 +8,16 @@ IAClé is agent-first. The main application channel connects to an agent runtime
 | --- | --- |
 | Agent runtime | Hermes, OpenClaw, or a compatible gateway that manages agents, sessions, tools, and runtime state. |
 | Agent session | A live assistant, task, or persona running inside an agent runtime. |
-| Device node | An installed IAClé desktop app exposing local capabilities under local permission rules. |
+| Device node | An installed Pistisai desktop app exposing local capabilities under local permission rules. |
 | Capability broker | The app-side broker that approves, executes, and audits desktop, vision, clipboard, file, and command actions. |
 | Local model provider | Ollama, LM Studio, llama.cpp, or similar model endpoints used for app support features such as embeddings or summarization. |
 | Cloud connector | Optional isolated per-user container joined to the user's Tailscale tailnet for sync and reachability. |
-| Hosted agent runtime | Optional paid IAClé-managed agent runtime compute, isolated per user. |
+| Hosted agent runtime | Optional hosted agent runtime compute, isolated per user. |
 
 ## Non-Negotiable Rules
 
-- The main secure channel connects to an agent runtime.
+- The main secure channel connects to an agent runtime **from the primary Pistisai desktop hub**. Web, mobile, and secondary desktop clients reach the runtime through that hub (discovered via the hub endpoint), not directly. Direct client-to-Hermes paths are transitional and to be removed (issue #492).
+- The hub is for Pistisai clients only. Hermes keeps owning its messaging-platform adapters (Telegram, Slack, etc.) directly; they do not route through Pistisai.
 - Hermes is the first agent runtime path for current testing.
 - OpenClaw remains a supported agent runtime and original integration.
 - Ollama and LM Studio are not primary app runtimes unless wrapped by an agent runtime.
@@ -41,7 +42,7 @@ Responsibilities:
 - voice/avatar state handoff
 - multi-device channel sync
 
-Valid primary targets:
+Valid primary targets (configured on the primary desktop hub; other Pistisai clients inherit the hub's target):
 
 - Hermes on this device
 - Hermes on another private or Tailscale device
@@ -104,7 +105,7 @@ Invalid use:
 ```text
 Agent runtime request
         |
-IAClé capability broker
+Pistisai capability broker
         |
 Device permission check
         |
@@ -128,7 +129,7 @@ Agent runtime setup choices:
 3. OpenClaw on this device.
 4. OpenClaw on another private or Tailscale device.
 5. Compatible custom agent gateway.
-6. Optional IAClé-hosted agent runtime.
+6. Optional Pistisai-hosted agent runtime.
 7. No agent runtime yet; guide the user to install or configure Hermes/OpenClaw/a compatible agent gateway.
 
 Optional support model setup choices:

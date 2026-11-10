@@ -1,6 +1,6 @@
 # Security Documentation
 
-This directory contains security policies, procedures, and audit reports for IAClé.
+This directory contains security policies, procedures, and audit reports for Pistisai.
 
 ## 📚 Contents
 
@@ -11,18 +11,19 @@ This directory contains security policies, procedures, and audit reports for IAC
 
 ### Security Audits & Reports
 
+- **[Security Audit Report](SECURITY_AUDIT_REPORT.md)** - Comprehensive security assessment
 
 ## 🔗 Related Documentation
 
-- **[Operations Documentation](../OPERATIONS/README.md)** - Operational security procedures
-- **[Deployment Documentation](../DEPLOYMENT/README.md)** - Secure deployment practices
-- **[Legal Documentation](../LEGAL/README.md)** - Privacy and compliance policies
+- **Operations Documentation** - Operational security procedures
+- **Deployment Documentation** - Secure deployment practices
+- **Legal Documentation** - Privacy and compliance policies
 
 ## 📖 Security Overview
 
 ### Security Principles
 
-IAClé follows security-first design principles:
+Pistisai follows security-first design principles:
 
 1. **Privacy by Design** - Sensitive data stays local when possible
 2. **Zero Trust Architecture** - Verify all connections and requests

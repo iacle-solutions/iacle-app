@@ -2,7 +2,7 @@
 
 ## Overview
 
-This guide documents the security enhancements and best practices for the IAClé API backend. It covers input sanitization, CORS configuration, and HTTPS enforcement.
+This guide documents the security enhancements and best practices for the Pistisai API backend. It covers input sanitization, CORS configuration, and HTTPS enforcement.
 
 ---
 
@@ -82,5 +82,5 @@ app.use('/api/admin', adminCors, adminHttpsEnforcement, sanitizeAdminInput);
 
 ## Related Documentation
 
-- [Admin Management API](../api/admin/ADMIN_MANAGEMENT.md)
-- [Audit Log API](../api/admin/AUDIT_LOGS.md)
+- Admin Management API
+- Audit Log API

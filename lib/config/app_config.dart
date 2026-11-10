@@ -1,36 +1,39 @@
 import 'package:flutter/foundation.dart';
+import 'package:pistisai/brand/brand.dart';
 import 'package:pistisai/services/settings_preference_service.dart';
 
 /// Application configuration constants
 class AppConfig {
-  // App Information
-  static const String appName = 'Pistisai';
-  static const String appVersion = '1.0.6';
+  // App Information. The visible name comes from the baked brand.
+  static String get appName => Brand.current.productName;
+  static const String appVersion = '1.1.100';
   static const String appDescription =
       'Local-first agent companion. Offline until you choose to connect.';
 
-  // URLs
-  static const String homepageUrl = 'https://pistisai.app';
-  static const String appUrl = 'https://app.pistisai.app';
-  static const String adminCenterUrl = 'https://admin.pistisai.app';
-  static const String githubUrl = 'https://github.com/pistisAI/pistisai-app';
-  static const String githubReleasesUrl =
-      'https://github.com/pistisAI/pistisai-app/releases/latest';
+  // Public site, repository, and every backend host follow the baked brand.
+  static String get homepageUrl => Brand.current.websiteUrl;
+  static String get appUrl => Brand.current.appUrl;
+  static String get adminCenterUrl => Brand.current.adminCenterUrl;
+  static String get githubUrl => Brand.current.repositoryUrl;
+  static String get githubReleasesUrl => Brand.current.releasesUrl;
 
   // Configured Authentication Provider
-  static const AuthProviderType authProvider = AuthProviderType.supabase;
+  static const AuthProviderType authProvider =
+      AuthProviderType.cloudflareAccess;
 
-  // Supabase Configuration. Both values are compile-time defines with empty
-  // defaults so a project ref is never baked into source.
-  //   flutter build --dart-define=SUPABASE_URL=... --dart-define=SUPABASE_ANON_KEY=...
-  static const String supabaseUrl = String.fromEnvironment(
-    'SUPABASE_URL',
-    defaultValue: '',
-  );
-  static const String supabaseAnonKey = String.fromEnvironment(
-    'SUPABASE_ANON_KEY',
-    defaultValue: '',
-  );
+  /// Cloudflare Access team host, without a scheme. Comes from the baked
+  /// brand; `--dart-define=CF_ACCESS_TEAM_DOMAIN=...` overrides it.
+  static String get cloudflareAccessTeamDomain {
+    const define = String.fromEnvironment('CF_ACCESS_TEAM_DOMAIN');
+    return define.isNotEmpty ? define : Brand.current.accessTeamDomain;
+  }
+
+  /// Cloudflare Access application audience. Comes from the baked brand;
+  /// `--dart-define=CF_ACCESS_AUD=...` overrides it.
+  static String get cloudflareAccessAud {
+    const define = String.fromEnvironment('CF_ACCESS_AUD');
+    return define.isNotEmpty ? define : Brand.current.accessAud;
+  }
 
   // Sentry Configuration
   // Override at compile time: flutter build --dart-define=SENTRY_DSN=your_dsn
@@ -45,7 +48,7 @@ class AppConfig {
 
   // Development mode settings
   static const bool enableDevMode = false; // Set to false for production
-  static const String devModeUser = 'dev@example.com';
+  static String get devModeUser => 'dev@${Brand.current.websiteDomain}';
 
   // Testing mode settings
   static const bool forceSetupWizard =
@@ -54,11 +57,11 @@ class AppConfig {
   static const bool skipDeviceIdentity =
       false; // Use paired-device auth, reject token-only
   // API Configuration
-  static const String apiBaseUrl = 'https://api.pistisai.app';
+  static String get apiBaseUrl => Brand.current.apiBaseUrl;
   static const Duration apiTimeout = Duration(seconds: 30);
   // Tunnel Configuration (SSH over WebSocket)
-  static const String tunnelSshUrl = 'wss://api.pistisai.app/ssh';
-  static const String tunnelSshUrlDev = 'wss://api.pistisai.app/ssh';
+  static String get tunnelSshUrl => Brand.current.tunnelSshUrl;
+  static String get tunnelSshUrlDev => Brand.current.tunnelSshUrl;
   // UI Configuration
   static const double maxContentWidth = 1200.0;
   static const double mobileBreakpoint = 768.0;
@@ -70,6 +73,17 @@ class AppConfig {
   static bool get enableDebugMode => !kReleaseMode;
   static bool get showTunnelDebugInfo => !kReleaseMode;
   static bool get enableVerboseLogging => !kReleaseMode;
+
+  /// Router, locator, and callback traces. Off unless the build passes
+  /// `--dart-define=PISTISAI_VERBOSE_LOGS=true`.
+  static const bool verboseDiagnostics = bool.fromEnvironment(
+    'PISTISAI_VERBOSE_LOGS',
+  );
+
+  static void verboseLog(String? message, {int? wrapWidth}) {
+    if (!verboseDiagnostics) return;
+    debugPrint(message, wrapWidth: wrapWidth);
+  }
 
   // Tier-based feature flags
   static const bool enableTierDetection = true;
@@ -89,7 +103,7 @@ class AppConfig {
   // 4. All code reads from getters, never from constants directly
   //
   // Environment Variables:
-  // - OPENCLAW_GATEWAY_HOST (e.g., "127.0.0.1")
+  // - OPENCLAW_GATEWAY_HOST (e.g., "127.0.0.1", "100.78.133.50")
   // - OPENCLAW_GATEWAY_PORT (e.g., "18789")
   // - OPENCLAW_GATEWAY_URL (full URL, overrides host/port if set)
 
@@ -206,7 +220,7 @@ class AppConfig {
   static String getGatewayUrlSync() => gatewayUrl;
 
   // Cloud Relay Configuration (via OpenClaw)
-  static const String cloudGatewayUrl = '$apiBaseUrl/v1';
+  static String get cloudGatewayUrl => '$apiBaseUrl/v1';
 
   // Admin Interface Configuration
   static const bool enableAdminInterface = true;
@@ -216,7 +230,7 @@ class AppConfig {
   static const int pistisaiUiPort = 1338;
 
   // Platform-specific admin server URLs
-  static const String adminServerUrlWeb = 'https://api.pistisai.app';
+  static String get adminServerUrlWeb => Brand.current.apiBaseUrl;
   static const String adminServerUrlDesktop = 'http://127.0.0.1:8080';
 
   // Get admin server URL based on platform
@@ -256,13 +270,13 @@ class AppConfig {
   }
 
   // Bridge Configuration
-  static const String bridgePollingUrl = '$apiBaseUrl/v1/bridge-polling';
-  static const String bridgeStatusUrl = '$bridgePollingUrl/:bridgeId/status';
-  static const String bridgeRegisterUrl = '$bridgePollingUrl/register';
+  static String get bridgePollingUrl => '$apiBaseUrl/v1/bridge-polling';
+  static String get bridgeStatusUrl => '$bridgePollingUrl/:bridgeId/status';
+  static String get bridgeRegisterUrl => '$bridgePollingUrl/register';
 }
 
 enum AuthProviderType {
-  supabase,
+  cloudflareAccess,
   none,
 }
 

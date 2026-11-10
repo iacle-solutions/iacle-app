@@ -1,7 +1,7 @@
 /**
  * @fileoverview Authentication Service for Pistisai Tunnel
  * Handles JWT validation, session management, and role-based access control
- * Migrated from Auth0 to Supabase Auth.
+ * Identity is Cloudflare Access. Tokens are RS256 JWTs from the team certs.
  */
 
 import jwt from 'jsonwebtoken';
@@ -10,20 +10,28 @@ import jwksClient from 'jwks-rsa';
 import { TunnelLogger } from '../utils/logger.js';
 import { DatabaseMigratorPG } from '../database/migrate-pg.js';
 
+function accessTeamDomain() {
+  return (process.env.CF_ACCESS_TEAM_DOMAIN || '')
+    .replace(/^https?:\/\//, '')
+    .replace(/\/$/, '');
+}
+
 /**
- * Authentication service with JWT integration
- * Uses Supabase Auth for JWT validation (ES256)
+ * Authentication service with JWT integration.
+ * Uses Cloudflare Access certs for JWT validation (RS256).
  */
 export class AuthService {
   constructor(config) {
+    const teamDomain = accessTeamDomain();
     this.config = {
-      SUPABASE_URL: process.env.SUPABASE_URL || '',
-      SUPABASE_JWKS_URI:
-        process.env.SUPABASE_JWKS_URI ||
-        `${process.env.SUPABASE_URL || ''}/auth/v1/.well-known/jwks.json`,
+      ...config,
+      CF_ACCESS_TEAM_DOMAIN: teamDomain,
+      CF_ACCESS_AUD: process.env.CF_ACCESS_AUD || '',
+      JWKS_URI: teamDomain
+        ? `https://${teamDomain}/cdn-cgi/access/certs`
+        : '',
       SESSION_TIMEOUT: parseInt(process.env.SESSION_TIMEOUT) || 3600000, // 1 hour
       MAX_SESSIONS_PER_USER: parseInt(process.env.MAX_SESSIONS_PER_USER) || 5,
-      ...config,
     };
 
     this.logger = new TunnelLogger('auth-service');
@@ -53,13 +61,14 @@ export class AuthService {
 
     this.initialized = false;
 
-    // Initialize JWKS client for Supabase
-    this.jwksClient = jwksClient({
-      jwksUri: this.config.SUPABASE_JWKS_URI,
-      cache: true,
-      rateLimit: true,
-      jwksRequestsPerMinute: 5,
-    });
+    this.jwksClient = this.config.JWKS_URI
+      ? jwksClient({
+          jwksUri: this.config.JWKS_URI,
+          cache: true,
+          rateLimit: true,
+          jwksRequestsPerMinute: 5,
+        })
+      : null;
   }
 
   /**
@@ -88,7 +97,7 @@ export class AuthService {
       this.initialized = true;
 
       this.logger.info(
-        'Authentication service initialized (Supabase ES256)',
+        'Authentication service initialized (Cloudflare Access RS256)',
       );
 
       this.startSessionCleanup();
@@ -161,10 +170,28 @@ export class AuthService {
     }
   }
 
+  assertAccessAudience(payload) {
+    const expected = this.config.CF_ACCESS_AUD;
+    if (!expected) {
+      return;
+    }
+    const aud = payload?.aud;
+    const matches = Array.isArray(aud)
+      ? aud.includes(expected)
+      : aud === expected;
+    if (!matches) {
+      throw new Error('Cloudflare Access audience mismatch');
+    }
+  }
+
   /**
    * Get signing key from JWKS
    */
   getKey(header, callback) {
+    if (!this.jwksClient) {
+      callback(new Error('Cloudflare Access is not configured'));
+      return;
+    }
     this.jwksClient.getSigningKey(header.kid, (err, key) => {
       if (err) {
         callback(err);
@@ -209,8 +236,8 @@ export class AuthService {
   }
 
   /**
-   * Validate Supabase JWT token
-   * Supabase JWTs: iss = {supabase_url}/auth/v1, aud = "authenticated", sub = user UUID
+   * Validate a Cloudflare Access JWT.
+   * Access JWTs: iss is the team host, aud is the application audience.
    */
   async validateToken(token, req = {}, preValidatedPayload = null) {
     try {
@@ -222,17 +249,19 @@ export class AuthService {
       } else if (this.isDevBypassToken(token)) {
         this.logger.info('Using dev bypass token');
         payload = {
-          iss: `${this.config.SUPABASE_URL}/auth/v1`,
+          iss: this.config.CF_ACCESS_TEAM_DOMAIN
+            ? `https://${this.config.CF_ACCESS_TEAM_DOMAIN}`
+            : 'cloudflare-access',
           sub: '00000000-0000-0000-0000-000000000000',
-          aud: 'authenticated',
-          email: 'dev@example.com',
-          name: 'Dev User',
-          nickname: 'dev-user',
+          aud: this.config.CF_ACCESS_AUD,
+          email: '<EMAIL>',
+          name: 'Christopher (Dev)',
+          nickname: 'rightguy',
           exp: Math.floor(Date.now() / 1000) + 3600 * 24 * 365,
           iat: Math.floor(Date.now() / 1000),
           role: 'authenticated',
           app_metadata: { role: 'admin' },
-          user_metadata: { name: 'Dev User', nickname: 'dev-user' },
+          user_metadata: { name: 'Christopher (Dev)', nickname: 'rightguy' },
           scope: 'openid profile email admin',
         };
       } else {
@@ -248,7 +277,7 @@ export class AuthService {
           jwt.verify(
             token,
             this.getKey.bind(this),
-            { algorithms: ['ES256'] },
+            { algorithms: ['RS256'] },
             (err, decodedToken) => {
               if (err) {
                 reject(err);
@@ -259,6 +288,7 @@ export class AuthService {
           );
         });
 
+        this.assertAccessAudience(payload);
         this.logger.info('Token verification successful');
       }
 
@@ -301,17 +331,19 @@ export class AuthService {
       if (this.isDevBypassToken(token)) {
         this.logger.info('Bypassing WebSocket token verification for dev token');
         return {
-          iss: `${this.config.SUPABASE_URL}/auth/v1`,
+          iss: this.config.CF_ACCESS_TEAM_DOMAIN
+            ? `https://${this.config.CF_ACCESS_TEAM_DOMAIN}`
+            : 'cloudflare-access',
           sub: '00000000-0000-0000-0000-000000000000',
-          aud: 'authenticated',
-          email: 'dev@example.com',
-          name: 'Dev User',
-          nickname: 'dev-user',
+          aud: this.config.CF_ACCESS_AUD,
+          email: '<EMAIL>',
+          name: 'Christopher (Dev)',
+          nickname: 'rightguy',
           exp: Math.floor(Date.now() / 1000) + 3600 * 24 * 365,
           iat: Math.floor(Date.now() / 1000),
           role: 'authenticated',
           app_metadata: { role: 'admin' },
-          user_metadata: { name: 'Dev User', nickname: 'dev-user' },
+          user_metadata: { name: 'Christopher (Dev)', nickname: 'rightguy' },
           scope: 'openid profile email admin',
         };
       }
@@ -325,7 +357,7 @@ export class AuthService {
         jwt.verify(
           token,
           this.getKey.bind(this),
-          { algorithms: ['ES256'] },
+          { algorithms: ['RS256'] },
           (err, decodedToken) => {
             if (err) {
               reject(err);
@@ -336,6 +368,7 @@ export class AuthService {
         );
       });
 
+      this.assertAccessAudience(verified);
       this.logger.info('WebSocket token verification successful', {
         userId: verified.sub,
         exp: verified.exp,
@@ -352,51 +385,76 @@ export class AuthService {
   }
 
   /**
-   * Resolve internal user ID from Supabase user ID
+   * Link an Access subject to an internal user without clobbering the primary id.
    */
-  async resolveUserId(supabaseId, userInfo = {}) {
+  async linkAuthSubject(userId, accessSub) {
+    await this.runQuery(
+      `INSERT INTO user_auth_subjects (subject, user_id)
+       VALUES ($1, $2)
+       ON CONFLICT (subject) DO UPDATE SET user_id = EXCLUDED.user_id`,
+      [accessSub, userId],
+      'run',
+    );
+  }
+
+  /**
+   * Resolve internal user ID from a Cloudflare Access subject (`sub`).
+   * Same email with a new Access sub (OTP then Google) maps to one user.
+   * Never overwrites users.supabase_id once set — that would orphan rows keyed
+   * by the previous subject. Additional subjects are stored in user_auth_subjects.
+   */
+  async resolveUserId(accessSub, userInfo = {}) {
     try {
-      // 1. Try to find existing user by supabase_id
+      // 1. Primary subject column
       const existingUser = await this.runQuery(
         'SELECT id FROM users WHERE supabase_id = $1',
-        [supabaseId],
+        [accessSub],
         'get',
       );
-
       if (existingUser) {
+        await this.linkAuthSubject(existingUser.id, accessSub);
         return existingUser.id;
       }
 
-      // 2. Try to find user by email
+      // 2. Previously linked alternate Access subject
+      const bySubject = await this.runQuery(
+        'SELECT user_id AS id FROM user_auth_subjects WHERE subject = $1',
+        [accessSub],
+        'get',
+      );
+      if (bySubject) {
+        return bySubject.id;
+      }
+
+      // 3. Same email, different Access sub (OTP / Google / GitHub)
       if (!userInfo.email) {
-        this.logger.error('Supabase userInfo missing email claim', { supabaseId });
+        this.logger.error('Access userInfo missing email claim', { accessSub });
         throw new Error('Invalid token: missing email claim in userInfo');
       }
       const userEmail = userInfo.email;
       const existingByEmail = await this.runQuery(
-        'SELECT id FROM users WHERE email = $1',
+        'SELECT id, supabase_id FROM users WHERE email = $1',
         [userEmail],
         'get',
       );
 
       if (existingByEmail) {
-        this.logger.info('Found existing user by email, linking supabase_id', {
+        this.logger.info('Found existing user by email; linking Access subject', {
           userId: existingByEmail.id,
           email: userEmail,
         });
 
+        // Keep the original supabase_id. Only refresh profile fields.
         await this.runQuery(
-          `UPDATE users SET 
-             supabase_id = $1, 
-             name = COALESCE($2, name),
-             nickname = COALESCE($3, nickname),
-             picture = COALESCE($4, picture),
-             email_verified = $5, 
-             locale = COALESCE($6, locale),
-             updated_at = NOW() 
-           WHERE id = $7`,
+          `UPDATE users SET
+             name = COALESCE($1, name),
+             nickname = COALESCE($2, nickname),
+             picture = COALESCE($3, picture),
+             email_verified = $4,
+             locale = COALESCE($5, locale),
+             updated_at = NOW()
+           WHERE id = $6`,
           [
-            supabaseId,
             userInfo.name,
             userInfo.nickname,
             userInfo.picture,
@@ -406,17 +464,18 @@ export class AuthService {
           ],
           'run',
         );
+        await this.linkAuthSubject(existingByEmail.id, accessSub);
         return existingByEmail.id;
       }
 
-      // 3. Create new user
-      this.logger.info('Creating new user record for Supabase ID', { supabaseId });
+      // 4. Create new user; first subject becomes supabase_id
+      this.logger.info('Creating new user record for Access subject', { accessSub });
 
       const newUser = await this.runQuery(
         `INSERT INTO users (supabase_id, email, name, nickname, picture, email_verified, locale, created_at, updated_at)
          VALUES ($1, $2, $3, $4, $5, $6, $7, NOW(), NOW()) RETURNING id`,
         [
-          supabaseId,
+          accessSub,
           userEmail,
           userInfo.name,
           userInfo.nickname,
@@ -428,13 +487,15 @@ export class AuthService {
       );
 
       if (newUser && newUser.rows && newUser.rows.length > 0) {
-        return newUser.rows[0].id;
+        const userId = newUser.rows[0].id;
+        await this.linkAuthSubject(userId, accessSub);
+        return userId;
       }
 
       throw new Error('Failed to create user record');
     } catch (error) {
       this.logger.error('Failed to resolve user ID', {
-        supabaseId,
+        accessSub,
         error: error.message,
       });
       throw error;

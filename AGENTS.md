@@ -1,4 +1,4 @@
-# IAClé — Agent Guide
+# Pistisai — Agent Guide
 
 Flutter desktop/web app + Node.js backend services: local-first companion layer for agent runtimes (Hermes primary test path, OpenClaw Gateway, compatible gateways). Ollama/LM Studio are support model providers for app-owned features (e.g. embeddings) — not primary runtimes unless wrapped by an agent runtime.
 
@@ -25,13 +25,14 @@ npm install                                     # root Node tooling (backend onl
 cd services/api-backend && npm install          # repeat per service you touch
 ```
 
-CI pins Flutter via exact `environment.flutter` in root `pubspec.yaml` (currently `3.47.7`, stable; workflows use `flutter-version-file: pubspec.yaml`) and Node `26` (`.nvmrc` — **single source of truth** for Node); service engines allow Node `>=22 <27` (sdk `>=18`). Android builds use AGP `8.11.1`, Gradle `8.14.3`, Kotlin `2.4.0` (Flutter `3.47.7` floor; Gradle 9 / AGP 9 blocked until `tesseract_ocr` drops `jcenter()`). Integration test rig (shared `docker-compose.test.yml` hub): `bash scripts/run_integration_test_rig.sh` (prefers **emulator**, not USB); local PC: `bash scripts/run_pc_integration_test_rig.sh` (`docs/development/testing/PHYSICAL_INTEGRATION_TEST_RIG.md`). USB phone smoke: `scripts/test-android-phone.sh`. CI: `integration-test-rig.yml`; optional self-hosted `integration-test-rig-physical.yml` (label `integration-rig`).
+CI pins Flutter via exact `environment.flutter` in root `pubspec.yaml` (currently `3.47.9`, stable; workflows use `flutter-version-file: pubspec.yaml`) and Node `26` (`.nvmrc` — **single source of truth** for Node); service engines allow Node `>=22 <27` (sdk `>=18`). Android builds use AGP `8.11.1`, Gradle `8.14.3`, Kotlin `2.4.0` (Flutter `3.47.7` floor; Gradle 9 / AGP 9 blocked until `tesseract_ocr` drops `jcenter()`). Integration test rig (shared `docker-compose.test.yml` hub): `bash scripts/run_integration_test_rig.sh` (prefers **emulator**, not USB); local PC: `bash scripts/run_pc_integration_test_rig.sh` (`docs/development/testing/PHYSICAL_INTEGRATION_TEST_RIG.md`). USB phone smoke: `scripts/test-android-phone.sh`. CI: `integration-test-rig.yml`; optional self-hosted `integration-test-rig-physical.yml` (label `integration-rig`).
 
 ```bash
 # Flutter — CI scopes analysis to lib/ only; gate suite is the script, not bare flutter test
+bash tool/brand.sh pistisai
 flutter analyze lib/
 bash scripts/ci/flutter_security_basic_tests.sh   # CI gate: smoke/config/models/utils/helpers + selected services/widgets/integration
-flutter build web --release --no-web-resources-cdn  # --no-web-resources-cdn matches CI
+flutter build web --release --no-web-resources-cdn --dart-define=BRAND=pistisai  # --no-web-resources-cdn matches CI
 dart run build_runner build --delete-conflicting-outputs  # after Drift schema/query changes only
 
 # Backend — root npm test is api-backend security suite only, not a full suite
@@ -63,7 +64,7 @@ The `build_number` in `assets/version.json` should match the `+<build_number>` s
 - Platform splits via conditional imports (`dart.library.io` / `dart.library.html`); never import `dart:io` directly in shared code
 - Register services via `setupCoreServices()` / `setupAuthenticatedServices()` in `lib/di/locator.dart`; consume via `serviceLocator.get<T>()` — don't instantiate registered services directly
 - Desktop auto-bootstraps authenticated services (30s timeout); web requires explicit auth/session bootstrap first
-- GitHub issues (`github.com/iacle-solutions/iacle-app/issues`, launch tracker #39) are the work-tracking source of truth — check before substantive work
+- GitHub issues (`github.com/pistisAI/pistisai-app/issues`, launch tracker #39) are the work-tracking source of truth — check before substantive work
 
 ## MCP (OpenCode)
 
@@ -78,4 +79,4 @@ Restart OpenCode after editing `opencode.json` so it refetches server tools.
 - Jest `testPathIgnorePatterns` intentionally skips tunnel-*, `*-properties`, `*-integration`, `test/archive/`, and live-Auth0 tests; check `jest.config.js` before assuming a test runs or "passes" by being skipped
 - api-backend Jest needs `node --experimental-vm-modules ... --forceExit`; sdk uses plain `jest`
 - Don't edit `lib/**/*.g.dart` / `lib/**/*.freezed.dart` — regenerate via build_runner
-- Preserve branding exactly: `IAClé`, `OpenClaw`, `Zoidbot`
+- Preserve branding exactly: `Pistisai`, `OpenClaw`, `Zoidbot`

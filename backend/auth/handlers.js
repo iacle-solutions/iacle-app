@@ -65,10 +65,10 @@ const checkJwt = (req, res, next) => {
     token === devBypassToken
   ) {
     req.auth = {
-      sub: 'dev-user',
-      email: 'dev@example.com',
-      name: 'Dev User',
-      nickname: 'dev-user',
+      sub: 'google-oauth2|102509433531341542550',
+      email: 'dev@pistisai.app',
+      name: 'Christopher (Dev)',
+      nickname: 'rightguy',
       'https://pistisai.app/roles': ['admin'],
       'https://Pistisai.com/app_metadata': { role: 'admin' },
       scope: 'openid profile email admin',

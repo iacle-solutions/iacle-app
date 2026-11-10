@@ -25,7 +25,7 @@
     style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
     img-src 'self' data: blob: https:;
     connect-src 'self'
-      https://*.iacle.app wss://*.iacle.app https://*.pistisai.app http://127.0.0.1:* ws://127.0.0.1:* wss://*.pistisai.app
+      https://*.iacle.app http://127.0.0.1:* ws://127.0.0.1:* wss://*.iacle.app
       https://*.supabase.co https://*.sentry.io https://*.gstatic.com
       https://fonts.googleapis.com https://fonts.gstatic.com
       https://accounts.google.com;
@@ -44,9 +44,6 @@
 
   <title>IAClé — Assistant local</title>
   <link rel="manifest" href="manifest.json">
-
-  <!-- Runtime app config -->
-  <script src="config/config.js"></script>
 
   <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
 
