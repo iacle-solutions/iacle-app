@@ -1,12 +1,11 @@
 # Versioning Documentation
 
-This directory contains version management and build process documentation for IAClé.
+This directory contains version management and build process documentation for Pistisai.
 
 ## 📚 Contents
 
 ### Version Management
 
-- **[Versioning](VERSIONING.md)** - Version numbering scheme and release process
 - **[AI Versioning](AI-VERSIONING.md)** - AI-assisted version management
 
 ### Build Process
@@ -16,15 +15,15 @@ This directory contains version management and build process documentation for I
 
 ## 🔗 Related Documentation
 
-- **[Release Documentation](../RELEASE/README.md)** - Release notes and procedures
-- **[Development Documentation](../DEVELOPMENT/README.md)** - Development build processes
-- **[Operations Documentation](../OPERATIONS/README.md)** - Deployment version management
+- **Release Documentation** - Release notes and procedures
+- **Development Documentation** - Development build processes
+- **Operations Documentation** - Deployment version management
 
 ## 📖 Versioning Overview
 
 ### Version Scheme
 
-IAClé uses semantic versioning (SemVer) with the following format:
+Pistisai uses semantic versioning (SemVer) with the following format:
 
 ```
 MAJOR.MINOR.PATCH+BUILD_NUMBER

@@ -12,8 +12,8 @@ import 'package:dio/dio.dart';
 /// and perform real assertions when explicitly enabled.
 void main() {
   group('Download Functionality Tests', () {
-    const String repoOwner = 'iacle-solutions';
-    const String repoName = 'iacle-app';
+    const String repoOwner = 'imrightguy';
+    const String repoName = 'Pistisai';
     const String baseApiUrl = 'https://api.github.com/repos';
     final bool networkEnabled =
         Platform.environment['PISTISAI_NETWORK_E2E'] == '1';
@@ -118,8 +118,8 @@ void main() {
   group('Download URL Construction Tests', () {
     test('Construct Valid Download URLs', () {
       const version = 'v3.14.45';
-      const repoOwner = 'iacle-solutions';
-      const repoName = 'iacle-app';
+      const repoOwner = 'imrightguy';
+      const repoName = 'Pistisai';
 
       final portableUrl =
           'https://github.com/$repoOwner/$repoName/releases/download/$version/pistisai-${version.substring(1)}-portable.zip';

@@ -1,7 +1,8 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
-import 'package:tray_manager/tray_manager.dart';
+import 'package:tray_manager/legacy.dart';
+import '../brand/brand.dart';
 import 'connection_manager_service.dart';
 import '../utils/logger.dart';
 
@@ -86,22 +87,29 @@ class NativeTrayService with TrayListener {
       _onSettings = onSettings;
       _onQuit = onQuit;
 
-      // Initialize tray manager
-      await trayManager
-          .setIcon(_getTrayIconPath(TrayConnectionStatus.disconnected));
-
       // Listen to connection changes
       if (_connectionManager != null) {
         _connectionManager!.addListener(_onConnectionStatusChanged);
       }
 
-      // Set up initial menu
+      // Icon + context menu together. On Linux the panel opens the menu itself
+      // from the StatusNotifierItem DBus Menu property — setContextMenu must
+      // run (with rightClicked trigger) or XFCE reports /NO_DBUSMENU.
       await _updateTrayMenu();
 
       // Add tray listener
       trayManager.addListener(this);
 
       _isInitialized = true;
+
+      // XFCE often queries Menu before the first export settles; re-export once.
+      if (!kIsWeb && Platform.isLinux) {
+        unawaited(Future<void>.delayed(const Duration(milliseconds: 400), () {
+          if (_isInitialized) {
+            unawaited(_updateTrayMenu());
+          }
+        }));
+      }
       appLogger
           .info('[NativeTray] Native tray service initialized successfully');
       return true;
@@ -151,7 +159,7 @@ class NativeTrayService with TrayListener {
         items: [
           MenuItem(
             key: 'show',
-            label: 'Show Pistisai',
+            label: 'Show ${Brand.current.productName}',
           ),
           MenuItem(
             key: 'hide',
@@ -179,8 +187,8 @@ class NativeTrayService with TrayListener {
       await trayManager.setContextMenu(menu);
 
       try {
-        await trayManager
-            .setToolTip('Pistisai - ${_getStatusLabel(status)}');
+        await trayManager.setToolTip(
+            '${Brand.current.productName} - ${_getStatusLabel(status)}');
       } catch (_) {
         // setToolTip is not implemented on Linux — ignore silently.
       }
@@ -221,10 +229,45 @@ class NativeTrayService with TrayListener {
     _onShowWindow?.call();
   }
 
-  /// TrayListener: Handle tray icon right-click
+  /// TrayListener: Handle tray icon right-click (press).
+  ///
+  /// Linux: the panel owns right-click and opens the exported DBus menu —
+  /// do not call popUpContextMenu (it targets /NO_DBUSMENU and breaks XFCE).
+  /// Windows/macOS: pop the menu explicitly.
   @override
   void onTrayIconRightMouseDown() {
-    trayManager.popUpContextMenu();
+    if (!kIsWeb && Platform.isLinux) {
+      // Keep the DBus menu registered; panel opens it.
+      unawaited(_ensureLinuxDbusMenu());
+      return;
+    }
+    unawaited(_showContextMenu());
+  }
+
+  /// Fallback when the host fires right-click on release instead of press.
+  @override
+  void onTrayIconRightMouseUp() {
+    if (!kIsWeb && Platform.isLinux) {
+      return;
+    }
+    unawaited(_showContextMenu());
+  }
+
+  Future<void> _ensureLinuxDbusMenu() async {
+    try {
+      await _updateTrayMenu();
+    } catch (e) {
+      appLogger.warning('[NativeTray] Failed to refresh Linux tray menu: $e');
+    }
+  }
+
+  Future<void> _showContextMenu() async {
+    try {
+      await _updateTrayMenu();
+      await trayManager.popUpContextMenu();
+    } catch (e) {
+      appLogger.warning('[NativeTray] Failed to show context menu: $e');
+    }
   }
 
   /// TrayListener: Handle menu item click
@@ -241,6 +284,7 @@ class NativeTrayService with TrayListener {
         _onSettings?.call();
         break;
       case 'quit':
+        appLogger.info('[NativeTray] Quit menu item selected');
         _onQuit?.call();
         break;
     }

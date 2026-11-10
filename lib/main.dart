@@ -5,12 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:pistisai/services/voice/voice_conversation_service.dart';
 import 'package:pistisai/services/voice/local_voice_input_service.dart';
 import 'package:pistisai/services/onboarding/setup_wizard_service.dart';
 
 import 'package:pistisai/bootstrap/bootstrapper.dart';
+import 'package:pistisai/brand/brand.dart';
+import 'package:pistisai/brand/brand_localizations.dart';
 import 'package:pistisai/config/app_config.dart';
 import 'package:pistisai/config/router.dart';
 import 'package:pistisai/config/theme.dart';
@@ -52,15 +53,15 @@ import 'package:pistisai/services/onboarding/mobile_connection_service.dart';
 
 /// Resolve the OAuth callback URL from process arguments, if present.
 ///
-/// Returns the first argument that looks like a Pistisai callback scheme
-/// (`pistisai://` or `com.pistisai.app://`). Returns `null` when none of the
+/// Returns the first argument that uses the brand's callback scheme
+/// (`<url_scheme>://` or `<app_id>://`). Returns `null` when none of the
 /// arguments are a callback URL — including when conventional engine/flutter
 /// flags such as `--enable-logging` or `--verbose` are passed. This prevents
 /// non-callback arguments from ever triggering the early `return` in [main]
 /// that would skip `runApp` and leave the window black.
 String? resolveCallbackUrl(List<String> args) {
   for (final a in args) {
-    if (a.startsWith('com.pistisai.app://') || a.startsWith('pistisai://')) {
+    if (Brand.current.isCallbackUrl(a)) {
       return a;
     }
   }
@@ -70,6 +71,7 @@ String? resolveCallbackUrl(List<String> args) {
 void main([List<String> args = const []]) async {
   // Flutter requires WidgetsFlutterBinding to be initialized first
   WidgetsFlutterBinding.ensureInitialized();
+  Brand.assertCompileDefineMatches();
 
   // Ensure only one instance runs at a time (desktop hub only).
   // Android/iOS must not bind the desktop lock port or they will exit.
@@ -79,18 +81,6 @@ void main([List<String> args = const []]) async {
       debugPrint('[Main] Another instance is already running. Exiting.');
       exit(0);
     }
-  }
-
-  // Initialize Supabase only when the build was given both defines.
-  // Empty defaults keep a project ref out of source and still allow login
-  // once SUPABASE_URL and SUPABASE_ANON_KEY are provided.
-  if (AppConfig.supabaseUrl.isNotEmpty &&
-      AppConfig.supabaseAnonKey.isNotEmpty) {
-    await Supabase.initialize(
-      url: AppConfig.supabaseUrl,
-      publishableKey: AppConfig.supabaseAnonKey,
-      debug: kDebugMode,
-    );
   }
 
   // Register the desktop camera backend (Linux/macOS/Windows) for the
@@ -124,7 +114,7 @@ void main([List<String> args = const []]) async {
 
   // Sentry DSN is empty by default; set via --dart-define=SENTRY_DSN=...
   if (AppConfig.sentryDsn.isNotEmpty) {
-    _runAppWithSentry();
+    await _runAppWithSentry();
   } else {
     debugPrint('[Main] Sentry DSN not configured, running without Sentry');
     unawaited(_registerWindowsUrlScheme());
@@ -144,10 +134,21 @@ Future<void> _registerWindowsUrlScheme() async {
 
 /// Run the app with Sentry error tracking enabled.
 /// Sentry DSN is configured via --dart-define=SENTRY_DSN=... at build time.
-void _runAppWithSentry() {
+Future<void> _runAppWithSentry() async {
   debugPrint('[Main] Running app with Sentry');
   _initializeClientLogBuffer();
-  _runAppCommon();
+  await SentryFlutter.init(
+    (options) {
+      options.dsn = AppConfig.sentryDsn;
+      options.environment = AppConfig.sentryEnvironment;
+      // Capture full stack traces for all errors, not just catch-block exceptions.
+      options.attachStacktrace = true;
+      // Balanced sampling: real errors always reported, traces sampled at 10%.
+      options.tracesSampleRate = 0.1;
+    },
+    // Start the app inside Sentry's error-tracking zone once the SDK is live.
+    appRunner: _runAppCommon,
+  );
 }
 
 void _runAppCommon() {
@@ -239,8 +240,8 @@ class _PistisaiAppState extends State<PistisaiApp> {
         theme: AppTheme.lightTheme,
         darkTheme: AppTheme.darkTheme,
         themeMode: ThemeMode.system,
-        home: const Scaffold(
-          body: Center(child: Text('Pistisai')),
+        home: Scaffold(
+          body: Center(child: Text(Brand.current.productName)),
         ),
       );
     }
@@ -487,8 +488,7 @@ Future<void> _handleCommandLineArgs(List<String> args) async {
   debugPrint('[Main] Handling command-line arguments: $args');
   String? callbackUrl;
   for (final arg in args) {
-    if (arg.startsWith('com.pistisai.app://') ||
-        arg.startsWith('pistisai://')) {
+    if (Brand.current.isCallbackUrl(arg)) {
       callbackUrl = arg;
       break;
     }
@@ -500,15 +500,6 @@ Future<void> _handleCommandLineArgs(List<String> args) async {
       try {
         await PlatformFileUtils.writeCallbackFile(callbackUrl);
         debugPrint('[Main] Wrote callback URL to temp file');
-
-        // Process the OAuth callback directly
-        // This completes the authentication flow
-        final session = await Supabase.instance.client.auth
-            .getSessionFromUrl(Uri.parse(callbackUrl));
-        debugPrint(
-            '[Main] OAuth callback processed, session: ${session.session}');
-
-        debugPrint('[Main] OAuth session user: ${session.session.user.email}');
       } catch (e) {
         debugPrint('[Main] Error processing OAuth callback: $e');
       }
@@ -576,50 +567,80 @@ class _AppRouterHostState extends State<_AppRouterHost> {
       // ThemeProvider may not be registered yet; handled by fallback below
     }
 
-    return WindowListenerWidget(
-      child: MaterialApp.router(
-        title: AppConfig.appName,
-        debugShowCheckedModeBanner: false,
-        theme: AppTheme.lightTheme,
-        darkTheme: AppTheme.darkTheme,
-        themeMode: themeProvider?.themeMode ?? ThemeMode.system,
-        routerConfig: router,
-        builder: (context, child) {
-          // Error fallback
-          if (child == null) {
-            return const Scaffold(
-              body: Center(
-                child: Text('Loading...', style: TextStyle(fontSize: 18)),
-              ),
-            );
-          }
+    final brandLocale = Brand.current.materialLocale;
+    Widget routerBuilder(BuildContext context, Widget? child) {
+      if (child == null) {
+        return const Scaffold(
+          body: Center(
+            child: Text('Loading...', style: TextStyle(fontSize: 18)),
+          ),
+        );
+      }
+      final mediaQuery = MediaQuery.of(context);
+      return MediaQuery(
+        data: mediaQuery.copyWith(
+          textScaler: TextScaler.linear(
+            mediaQuery.textScaler.scale(1.0).clamp(0.8, 1.2),
+          ),
+        ),
+        child: child,
+      );
+    }
 
-          final mediaQuery = MediaQuery.of(context);
-          return MediaQuery(
-            data: mediaQuery.copyWith(
-              textScaler: TextScaler.linear(
-                mediaQuery.textScaler.scale(1.0).clamp(0.8, 1.2),
-              ),
-            ),
-            child: child,
+    // Unlocked brands do not set locale or supportedLocales. That is the
+    // MaterialApp this app used before branding, so device resolution is
+    // unchanged. A locked brand sets its locale and includes French and
+    // English so Material localizations can load.
+    final MaterialApp app = brandLocale == null
+        ? MaterialApp.router(
+            title: AppConfig.appName,
+            debugShowCheckedModeBanner: false,
+            theme: AppTheme.lightTheme,
+            darkTheme: AppTheme.darkTheme,
+            themeMode: themeProvider?.themeMode ?? ThemeMode.system,
+            routerConfig: router,
+            builder: routerBuilder,
+          )
+        : MaterialApp.router(
+            title: AppConfig.appName,
+            locale: brandLocale,
+            localizationsDelegates: brandLocalizationsDelegates,
+            supportedLocales: lockedBrandLocales(Brand.current),
+            debugShowCheckedModeBanner: false,
+            theme: AppTheme.lightTheme,
+            darkTheme: AppTheme.darkTheme,
+            themeMode: themeProvider?.themeMode ?? ThemeMode.system,
+            routerConfig: router,
+            builder: routerBuilder,
           );
-        },
-      ),
-    );
+    return WindowListenerWidget(child: app);
   }
 
   void _initializeRouter(AuthService authService) {
-    final setupWizardService = di.serviceLocator.get<SetupWizardService>();
-    final mobileConnectionService =
-        di.serviceLocator.get<MobileConnectionService>();
-    setState(() {
-      _router = AppRouter.createRouter(
-        navigatorKey: navigatorKey,
-        authService: authService,
-        setupWizardService: setupWizardService,
-        mobileConnectionService: mobileConnectionService,
-      );
-    });
+    try {
+      final setupWizardService = di.serviceLocator.get<SetupWizardService>();
+      if (!di.serviceLocator.isRegistered<MobileConnectionService>()) {
+        debugPrint(
+          '[Router] MobileConnectionService missing — registering fallback',
+        );
+        di.serviceLocator.registerSingleton<MobileConnectionService>(
+          MobileConnectionService(),
+        );
+      }
+      final mobileConnectionService =
+          di.serviceLocator.get<MobileConnectionService>();
+      setState(() {
+        _router = AppRouter.createRouter(
+          navigatorKey: navigatorKey,
+          authService: authService,
+          setupWizardService: setupWizardService,
+          mobileConnectionService: mobileConnectionService,
+        );
+      });
+    } catch (e, st) {
+      debugPrint('[Router] Failed to initialize router: $e');
+      debugPrint('[Router] $st');
+    }
   }
 }
 // Deployment trigger 1770824833

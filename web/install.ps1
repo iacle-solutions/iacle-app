@@ -1,20 +1,20 @@
-# Pistisai web bootstrap installer — served from pistisai.app/install.ps1
+# IAClé web bootstrap installer — served from iacle.app/install.ps1
 $ErrorActionPreference = "Stop"
-Write-Host "Pistisai Windows Installer"
+Write-Host "IAClé Windows Installer"
 $version = "1.0.3"
 $INSTALL_VERSION = "1.0.3"
 try {
-    $latest = Invoke-RestMethod "https://api.github.com/repos/pistisAI/pistisai-app/releases/latest"
+    $latest = Invoke-RestMethod "https://api.github.com/repos/iacle-solutions/iacle-app/releases/latest"
     $version = $latest.tag_name.TrimStart('v')
 } catch {
     Write-Host "Using bundled version $version"
 }
-$release = Invoke-RestMethod "https://api.github.com/repos/pistisAI/pistisai-app/releases/tags/v$version"
-$asset = $release.assets | Where-Object { $_.name -eq "Pistisai-Windows-x64-Setup.exe" } | Select-Object -First 1
-if (-not $asset) { throw "Pistisai-Windows-x64-Setup.exe not found on release v$version" }
-$dest = Join-Path $env:LOCALAPPDATA "Pistisai\cache\Pistisai-Windows-x64-Setup-$version.exe"
+$release = Invoke-RestMethod "https://api.github.com/repos/iacle-solutions/iacle-app/releases/tags/v$version"
+$asset = $release.assets | Where-Object { $_.name -eq "IAClé-Windows-x64-Setup.exe" } | Select-Object -First 1
+if (-not $asset) { throw "IAClé-Windows-x64-Setup.exe not found on release v$version" }
+$dest = Join-Path $env:LOCALAPPDATA "IAClé\cache\IAClé-Windows-x64-Setup-$version.exe"
 New-Item -ItemType Directory -Force -Path (Split-Path $dest) | Out-Null
-Write-Host "Downloading Pistisai v$version..."
+Write-Host "Downloading IAClé v$version..."
 Invoke-WebRequest -Uri $asset.browser_download_url -OutFile $dest
 Write-Host "Launching installer..."
 Start-Process -FilePath $dest -Wait

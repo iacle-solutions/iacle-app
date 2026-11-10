@@ -1,24 +1,31 @@
+# syntax=docker/dockerfile:1
 # ---- Build stage: Flutter web ----
-FROM gmeligio/flutter-android:3.47.7 AS builder
+# BRAND picks brand/<id>/. A tree that already has that brand baked and
+# committed builds as is. Otherwise a paid white-label brand needs its licence
+# as a build secret:
+#   docker build -f Dockerfile.web --build-arg BRAND=acme \
+#     --secret id=brand_licence,src=acme.licence .
+FROM gmeligio/flutter-android:3.47.9 AS builder
 
 WORKDIR /app
 COPY pubspec.* ./
+COPY tool/cnativeapi/ tool/cnativeapi/
+COPY tool/linux_native_deps/ tool/linux_native_deps/
 RUN flutter pub get
 RUN flutter config --enable-web
+ARG BRAND=pistisai
 COPY . .
-ARG BRAND=iacle
-ARG PISTISAI_ADMIN_EMAIL=
-ARG SUPABASE_URL=
-ARG SUPABASE_ANON_KEY=
-RUN if [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_ANON_KEY" ] || [ -z "$PISTISAI_ADMIN_EMAIL" ]; then \
-      echo "SUPABASE_URL, SUPABASE_ANON_KEY, and PISTISAI_ADMIN_EMAIL are required" >&2; \
-      exit 1; \
-    fi \
- && flutter build web --release --no-web-resources-cdn \
-    --dart-define=BRAND=${BRAND} \
-    --dart-define=PISTISAI_ADMIN_EMAIL=${PISTISAI_ADMIN_EMAIL} \
-    --dart-define=SUPABASE_URL=${SUPABASE_URL} \
-    --dart-define=SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY} \
+RUN --mount=type=secret,id=brand_licence,required=false \
+    if grep -q "^  id: \"$BRAND\",$" lib/brand/active_brand.g.dart; then \
+      echo "Brand $BRAND is already baked in the source tree"; \
+    elif [ "$BRAND" != "pistisai" ]; then \
+      if [ -f /run/secrets/brand_licence ]; then \
+        dart run tool/brand_codegen.dart "$BRAND" --license /run/secrets/brand_licence; \
+      else \
+        dart run tool/brand_codegen.dart "$BRAND"; \
+      fi; \
+    fi
+RUN flutter build web --release --no-web-resources-cdn --dart-define=BRAND=$BRAND \
  && python3 -c 'import json,pathlib; m=json.loads(pathlib.Path("assets/version.json").read_text()); p=pathlib.Path("build/web/index.html"); p.write_text(p.read_text().replace("$FLUTTER_BUILD_NUMBER", m["version"]+"."+str(m["build_number"])))'
 
 # ---- Serve stage: Nginx ----

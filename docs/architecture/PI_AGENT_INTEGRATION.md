@@ -1,7 +1,7 @@
 # Pi Agent Integration — Implementation Plan
 
 > **Status:** ✅ Research complete — ready for implementation
-> **Author:** Zoid (with the operator)
+> **Author:** Zoid (with Christopher)
 > **Created:** 2026-09-06
 > **Revised:** 2026-09-07 (v8 — implementation-ready: exact files, code patterns, commands)
 > **Location:** `docs/architecture/PI_AGENT_INTEGRATION.md`
@@ -29,7 +29,7 @@
 
 ## Executive Summary
 
-Pi integrates into the IAClé ecosystem in **three distinct roles**:
+Pi integrates into the Pistisai ecosystem in **three distinct roles**:
 
 1. **Harness** — User-selectable chat engine in the Flutter app (like Hermes/OpenClaw)
 2. **Watcher** — Always-on background observer on the VPS (systemd service)
@@ -60,7 +60,7 @@ Pi integrates into the IAClé ecosystem in **three distinct roles**:
 - **Server:** `127.0.0.1:8080` (router mode for multi-model)
 
 ### Agent
-- **Base:** `@earendil-works/pi-coding-agent` (installed at `/var/lib/app/.local/bin/pi`)
+- **Base:** `@earendil-works/pi-coding-agent` (installed at `/home/zoid/.local/bin/pi`)
 - **Harness fork:** `oh-my-pi` (can1357) — installed on-demand when Pi selected
 - **A2A mesh:** `@bacnh85/pi-a2a` extension
 - **Desktop control:** `@agent-sh/computer-use-linux` (MCP server)
@@ -77,9 +77,9 @@ Pi integrates into the IAClé ecosystem in **three distinct roles**:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                     the hub (Desktop, CachyOS)                  │
+│                     right-pc (Desktop, CachyOS)                  │
 │  ┌──────────────────────────────────────────────────────────┐   │
-│  │              Flutter App (IAClé)                        │   │
+│  │              Flutter App (Pistisai)                        │   │
 │  │  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌─────────┐ │   │
 │  │  │  Hermes   │  │ OpenClaw  │  │    Pi     │  │  Ollama  │ │   │
 │  │  │  Adapter  │  │  Adapter  │  │  Adapter  │  │  (ref)   │ │   │
@@ -102,7 +102,7 @@ Pi integrates into the IAClé ecosystem in **three distinct roles**:
 └─────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────┐
-│                     server-IAClé (VPS)                        │
+│                     server-Pistisai (VPS)                        │
 │  ┌──────────────────────────────────────────────────────────┐   │
 │  │          Pi Watcher (systemd service)                      │   │
 │  │  - Always-on background observer                           │   │
@@ -365,27 +365,27 @@ case ProviderType.pi:
 echo '{"id":"1","type":"prompt","message":"hello"}' | pi --mode rpc --provider llamacpp --model google_gemma-4-E4B-it
 
 # Run Flutter tests
-cd /dev/IAClé/iacle-app && flutter test test/services/pi_manager/
+cd /dev/Pistisai/pistisai-app && flutter test test/services/pi_manager/
 ```
 
 ---
 
 ### Phase 2: llama.cpp Infrastructure
 
-**Goal:** Local inference running on the hub
+**Goal:** Local inference running on right-pc
 **Estimated:** 1 day (mostly automated)
 
-#### Build llama.cpp (the hub, CachyOS)
+#### Build llama.cpp (right-pc, CachyOS)
 
 ```bash
-# SSH to the hub
-ssh the hub
+# SSH to right-pc
+ssh right-pc
 
 # Install dependencies (if not present)
 sudo pacman -S --needed cmake gcc cuda
 
 # Clone and build
-cd /var/lib/models/dev/tools
+cd /run/media/rightguy/data/dev/tools
 git clone https://github.com/ggml-org/llama.cpp
 cd llama.cpp
 cmake -B build -DGGML_CUDA=ON -DCMAKE_CUDA_ARCHITECTURES=89
@@ -406,12 +406,12 @@ llama-server -hf bartowski/google_gemma-4-E4B-it-GGUF:Q4_K_M \
 # Or download manually:
 huggingface-cli download bartowski/google_gemma-4-E4B-it-GGUF \
   google_gemma-4-E4B-it-Q4_K_M.gguf \
-  --local-dir /var/lib/models/ai/models/
+  --local-dir /run/media/rightguy/data/ai/models/
 
 # Also download mmproj for vision:
 huggingface-cli download bartowski/google_gemma-4-E4B-it-GGUF \
   mmproj-BF16.gguf \
-  --local-dir /var/lib/models/ai/models/
+  --local-dir /run/media/rightguy/data/ai/models/
 ```
 
 #### systemd Unit (llama-server)
@@ -424,12 +424,12 @@ After=network.target
 
 [Service]
 Type=exec
-User=app
-Group=app
-WorkingDirectory=/var/lib/models/ai/models
+User=rightguy
+Group=rightguy
+WorkingDirectory=/run/media/rightguy/data/ai/models
 ExecStart=/usr/local/bin/llama-server \
-  -m /var/lib/models/ai/models/google_gemma-4-E4B-it-Q4_K_M.gguf \
-  --mmproj /var/lib/models/ai/models/mmproj-BF16.gguf \
+  -m /run/media/rightguy/data/ai/models/google_gemma-4-E4B-it-Q4_K_M.gguf \
+  --mmproj /run/media/rightguy/data/ai/models/mmproj-BF16.gguf \
   -ngl 99 \
   -c 32768 \
   -fa on \
@@ -498,9 +498,9 @@ export default function observerExtension(pi: ExtensionAPI) {
 
   // Register notification tool
   pi.registerTool({
-    name: "notify_operator",
-    label: "Notify the operator",
-    description: "Send a notification to the operator",
+    name: "notify_christopher",
+    label: "Notify Christopher",
+    description: "Send a notification to Christopher",
     parameters: z.object({
       message: z.string(),
       urgency: z.enum(["low", "medium", "high"]).default("medium"),
@@ -558,11 +558,11 @@ After=network.target
 Type=simple
 User=zoid
 Group=zoid
-WorkingDirectory=/dev/IAClé
-ExecStart=/var/lib/app/.local/bin/pi \
+WorkingDirectory=/dev/Pistisai
+ExecStart=/home/zoid/.local/bin/pi \
   --provider llamacpp \
   --model google_gemma-4-E4B-it \
-  --extension /dev/IAClé/watcher/observer-extension.ts
+  --extension /dev/Pistisai/watcher/observer-extension.ts
 Restart=always
 RestartSec=10
 
@@ -572,7 +572,7 @@ CPUQuota=50%
 
 # Security
 ProtectSystem=strict
-ReadWritePaths=/dev/IAClé /var/lib/app/.pi /tmp
+ReadWritePaths=/dev/Pistisai /home/zoid/.pi /tmp
 PrivateTmp=true
 NoNewPrivileges=true
 ProtectHome=read-only
@@ -589,8 +589,8 @@ WantedBy=multi-user.target
 set -euo pipefail
 
 # Copy extension
-mkdir -p /dev/IAClé/watcher
-cp observer-extension.ts /dev/IAClé/watcher/
+mkdir -p /dev/Pistisai/watcher
+cp observer-extension.ts /dev/Pistisai/watcher/
 
 # Install systemd unit
 sudo cp systemd/pi-watcher.service /etc/systemd/system/
@@ -626,7 +626,7 @@ class PiSubagent {
     final result = await Process.run(
       'pi',
       ['--print', '--provider', 'llamacpp', '--model', 'google_gemma-4-E4B-it', task],
-      workingDirectory: cwd ?? '/dev/IAClé',
+      workingDirectory: cwd ?? '/dev/Pistisai',
     );
 
     return SubagentResult(
@@ -687,7 +687,7 @@ pi install npm:@bacnh85/pi-a2a
 |-------|---------|--------|
 | **L1: Passive** | Tool call/result events | Log + self-correct via extension |
 | **L2: Active** | Cron heartbeat (every 30 min) | A2A message to peer for second opinion |
-| **L3: Intervention** | Anomaly + peer confirms | Surface question to the operator |
+| **L3: Intervention** | Anomaly + peer confirms | Surface question to Christopher |
 
 #### Accountability Question Format
 
@@ -708,7 +708,7 @@ Not a report. A question. Forces engagement without noise.
 #### Install computer-use-linux
 
 ```bash
-# On the hub
+# On right-pc
 pi install npm:@agent-sh/computer-use-linux
 ```
 
@@ -755,7 +755,7 @@ User: "Click the Firefox icon"
 - Read files, explore, organize, learn
 - Run health checks on services
 - Restart paused/crashed agent instances
-- Send notifications to the operator
+- Send notifications to Christopher
 - Communicate with peer agents via A2A
 - Control desktop (when user explicitly directs)
 
@@ -771,7 +771,7 @@ User: "Click the Firefox icon"
 
 ## Hardware Compatibility
 
-### the operator's PC (the hub)
+### Christopher's PC (right-pc)
 
 | Component | Spec | Verdict |
 |-----------|------|---------|

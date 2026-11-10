@@ -1,8 +1,8 @@
-# IAClé Release Notes
+# Pistisai Release Notes
 
 ## 📋 Overview
 
-This document consolidates all release information, version history, and release management processes for IAClé into a single authoritative reference.
+This document consolidates all release information, version history, and release management processes for Pistisai into a single authoritative reference.
 
 ---
 
@@ -30,7 +30,7 @@ This document consolidates all release information, version history, and release
 
 ### **Platform Support**
 
-- **Linux**: AppImage, DEB (Ubuntu/Debian), Manual Build. AUR support is temporarily unavailable. See [AUR Status](../DEPLOYMENT/AUR_STATUS.md) for details.
+- **Linux**: AppImage, DEB (Ubuntu/Debian), Manual Build. AUR support is temporarily unavailable. See AUR Status for details.
 - **Windows**: Installer with Docker/Ollama integration
 - **Web**: Progressive Web App with cloud connectivity
 - **Self-Hosting**: Complete VPS deployment solution
@@ -75,9 +75,9 @@ The most significant architectural improvement since the project's inception, fe
 
 **New Components**:
 
-- **Enhanced Tray Daemon** (`IAClé-enhanced-tray`): Independent Python daemon
+- **Enhanced Tray Daemon** (`Pistisai-enhanced-tray`): Independent Python daemon
 - **Connection Broker**: Universal connection management service
-- **Settings Application** (`IAClé-settings`): Dedicated configuration interface
+- **Settings Application** (`Pistisai-settings`): Dedicated configuration interface
 - **Health Monitor**: Continuous connection health monitoring
 - **Token Manager**: Secure authentication token handling
 

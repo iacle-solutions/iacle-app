@@ -1,6 +1,6 @@
 # Developer Onboarding
 
-This guide is the entry point for working on the IAClé stack. IAClé is the Quebec brand that delivers it. Product description: [README](../../README.md).
+This guide is the entry point for working on the Pistisai stack. Product description: [README](../../README.md).
 
 ## Repository Shape
 
@@ -86,24 +86,29 @@ dart run build_runner build --delete-conflicting-outputs
 ## Common Commands
 
 ```bash
+bash tool/brand.sh pistisai
 flutter analyze lib/
 bash scripts/ci/flutter_security_basic_tests.sh
-flutter test test/services/some_test.dart
+flutter test --dart-define=BRAND=pistisai test/services/some_test.dart
 dart format .
-flutter run -d linux
-flutter run -d windows
-flutter run -d chrome
-flutter build linux --release
-flutter build web --release --no-web-resources-cdn
-flutter build apk --release --split-per-abi
-flutter build windows --release
-flutter build macos --release
+flutter run -d linux --dart-define=BRAND=pistisai
+flutter run -d windows --dart-define=BRAND=pistisai
+flutter run -d chrome --dart-define=BRAND=pistisai
+flutter build linux --release --dart-define=BRAND=pistisai
+flutter build web --release --no-web-resources-cdn --dart-define=BRAND=pistisai
+flutter build apk --release --split-per-abi --dart-define=BRAND=pistisai
+flutter build windows --release --dart-define=BRAND=pistisai
+flutter build macos --release --dart-define=BRAND=pistisai
 ```
 
 ```bash
 npm test                  # api-backend security CI suite only
 # npm run test:full       # broader Jest run; see jest.config.js ignore-list
 npm run docs:links
+
+# Service dev servers
+cd services/api-backend && npm install && npm run dev
+cd services/streaming-proxy && npm install && npm run dev
 ```
 
 `npm run docs:links` validates the canonical documentation set. `npm run docs:links:all` scans the full markdown tree.

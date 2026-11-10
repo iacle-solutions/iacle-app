@@ -25,15 +25,14 @@ router.get('/credentials', authenticateJWT, (req, res) => {
   try {
     // Get TURN credentials from environment variables
     // These should be set securely in production (e.g., Kubernetes secrets)
-    const turnUsername = process.env.TURN_USERNAME || '';
+    const turnUsername = process.env.TURN_USERNAME || 'Pistisai';
     const turnCredential =
       process.env.TURN_CREDENTIAL || process.env.TURN_PASSWORD || '';
-    const turnUrls = (process.env.TURN_URLS || '')
-      .split(',')
-      .map((url) => url.trim())
-      .filter((url) => url.length > 0);
+    const turnUrls = process.env.TURN_URLS
+      ? process.env.TURN_URLS.split(',')
+      : ['turn:174.138.115.184:3478', 'turn:174.138.115.184:5349'];
 
-    if (!turnCredential || turnUrls.length === 0 || !turnUsername) {
+    if (!turnCredential) {
       logger.warn('[TURN Credentials] TURN credential not configured');
       return res.status(503).json({
         status: 'error',

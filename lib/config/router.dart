@@ -73,6 +73,8 @@ import '../screens/debug/debug_screen.dart';
 
 // Config screen
 import '../screens/config/config_screen.dart';
+import '../config/app_config.dart';
+import 'package:pistisai/brand/brand.dart';
 
 /// Wrapper widget that provides HomeLayout with its required dependencies
 class _HomeLayoutWrapper extends StatefulWidget {
@@ -123,11 +125,11 @@ bool _isAppSubdomain() {
 
   final hostname = _getCurrentHostname();
   final isApp = hostname.startsWith('app.') ||
-      hostname == 'app.pistisai.app' ||
+      hostname == Brand.current.appHost ||
       hostname == 'localhost' ||
       hostname == '127.0.0.1';
 
-  debugPrint('[Router] Hostname: $hostname, isApp: $isApp');
+  AppConfig.verboseLog('[Router] Hostname: $hostname, isApp: $isApp');
   return isApp;
 }
 
@@ -154,14 +156,14 @@ class AppRouter {
     required SetupWizardService setupWizardService,
     required MobileConnectionService mobileConnectionService,
   }) {
-    debugPrint('[Router] createRouter called');
+    AppConfig.verboseLog('[Router] createRouter called');
 
     // For web, determine initial location thoughtfully
     String initialLocation = '/';
     if (kIsWeb) {
       final currentUri = Uri.base;
       if (_hasCallbackParameters(currentUri)) {
-        debugPrint(
+        AppConfig.verboseLog(
             '[Router] Initial URL has callback parameters, forcing /callback');
         initialLocation = '/callback?${currentUri.query}';
       } else {
@@ -171,7 +173,7 @@ class AppRouter {
         }
       }
     }
-    debugPrint('[Router] Initial location: $initialLocation');
+    AppConfig.verboseLog('[Router] Initial location: $initialLocation');
 
     final rootNavigatorKey = navigatorKey ?? GlobalKey<NavigatorState>();
 
@@ -424,14 +426,16 @@ class AppRouter {
         ...construction_lazy.constructionRoutes,
       ],
       redirect: (context, state) async {
-        debugPrint('[Router] Redirect check: ${state.matchedLocation}');
+        AppConfig.verboseLog(
+            '[Router] Redirect check: ${state.matchedLocation}');
 
         final location = state.matchedLocation;
         final isCallback = location == AppRoutePaths.callback;
         final hasCallbackParams = _hasCallbackParameters(state.uri) ||
             (kIsWeb && _hasCallbackParameters(Uri.base));
         if (hasCallbackParams && !isCallback && kIsWeb) {
-          debugPrint('[Router] Redirecting to /callback to process params');
+          AppConfig.verboseLog(
+              '[Router] Redirecting to /callback to process params');
           final params = state.uri.queryParameters.isNotEmpty
               ? state.uri.queryParameters
               : Uri.base.queryParameters;
@@ -461,7 +465,7 @@ class AppRouter {
           ),
         );
         if (next != null) {
-          debugPrint('[Router] Redirecting $location -> $next');
+          AppConfig.verboseLog('[Router] Redirecting $location -> $next');
         }
         return next;
       },

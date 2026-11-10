@@ -2,7 +2,7 @@
 
 ## Overview
 
-This guide ensures consistent formatting and style across all IAClé documentation.
+This guide ensures consistent formatting and style across all Pistisai documentation.
 
 ## File Naming Conventions
 
@@ -48,10 +48,10 @@ flutter run -d windows  # Run on Windows
 
 ```markdown
 # Good
-See the [Installation Guide](../INSTALLATION/README.md) for details.
+See the Installation Guide for details.
 
 # Avoid
-Click [here](../INSTALLATION/README.md) for more info.
+Click here for more info.
 ```
 
 ### Lists
@@ -93,7 +93,7 @@ Click [here](../INSTALLATION/README.md) for more info.
 
 ```markdown
 # Good
-Currently deployed on Azure AKS. For AWS EKS deployment, see [AWS Guide](aws-guide.md).
+Currently deployed on Azure AKS. For AWS EKS deployment, see AWS Guide.
 
 # Avoid
 Deployed on AWS EKS (when actually using Azure AKS)
@@ -151,4 +151,4 @@ Before publishing documentation:
 - Follow established patterns in existing docs
 - Maintain consistent terminology across documents
 
-This style guide ensures IAClé documentation remains professional, accessible, and maintainable.
+This style guide ensures Pistisai documentation remains professional, accessible, and maintainable.

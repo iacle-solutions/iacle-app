@@ -1,9 +1,9 @@
-# IAClé Scripts Documentation
+# Pistisai Scripts Documentation
 
 **Version**: 3.6.9  
 **Last Updated**: 2025-06-24
 
-This directory contains all automation scripts for IAClé development, deployment, and maintenance.
+This directory contains all automation scripts for Pistisai development, deployment, and maintenance.
 
 ## 📁 Directory Structure
 
@@ -36,13 +36,13 @@ This directory contains all automation scripts for IAClé development, deploymen
 
 ### Temporarily Removed Scripts
 
-- **AUR-related scripts** - Temporarily removed (reintegration planned). See [AUR Status](../docs/DEPLOYMENT/AUR_STATUS.md) for details.
+- **AUR-related scripts** - Temporarily removed (reintegration planned). See [AUR Status](../../deployment/AUR_STATUS.md) for details.
 
 ### PowerShell Scripts (`powershell/`)
 
 - **BuildEnvironmentUtilities.ps1** - Build environment utilities
 - **Create-UnifiedPackages.ps1** - Unified package creation
-- **Fix-IACléEnvironment.ps1** - Environment fixes
+- **Fix-PistisaiEnvironment.ps1** - Environment fixes
 - **build_time_version_injector.ps1** - PowerShell version injector
 - **fix_line_endings.ps1** - Fixes line endings for bash scripts
 - **flutter-setup.ps1** - Flutter development setup
@@ -176,7 +176,7 @@ node scripts/validate-organization.js
 ./scripts/powershell/Create-UnifiedPackages.ps1
 ```
 
-**Note**: AUR package building scripts temporarily removed. See [AUR Status](../docs/DEPLOYMENT/AUR_STATUS.md) for details.
+**Note**: AUR package building scripts temporarily removed. See [AUR Status](../../deployment/AUR_STATUS.md) for details.
 
 ## 🔧 Platform Separation
 
@@ -234,10 +234,10 @@ grep -r "SSL" scripts/ --include="*.sh"
 
 ## 📚 Related Documentation
 
-- [Main README](../README.md) - Project overview and setup
-- [Deployment Guide](../docs/DEPLOYMENT/) - Detailed deployment instructions
-- [Development Guide](../docs/DEVELOPMENT/) - Development workflow
-- [Operations Guide](../docs/OPERATIONS/) - System operations and maintenance
+- [Main README](../../../README.md) - Project overview and setup
+- [Deployment Guide](../../deployment/README.md) - Detailed deployment instructions
+- [Docs index](../../README.md) - Development workflow index
+- [Operations Guide](../../operations/README.md) - System operations and maintenance
 
 ---
 

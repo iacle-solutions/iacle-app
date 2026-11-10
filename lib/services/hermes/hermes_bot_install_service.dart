@@ -1,7 +1,10 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:pistisai/brand/brand.dart';
+import 'package:pistisai/brand/brand_config.dart';
 import 'package:pistisai/services/hermes/hermes_local_agent_api.dart';
 
 enum HermesBotInstallStatus { installed, skipped, failed }
@@ -81,7 +84,7 @@ class HermesBotInstallService {
         _isWeb = isWeb ?? (() => kIsWeb),
         _processHome = processHome;
 
-  static const agentStep = 'PistisAI package';
+  static String get agentStep => Brand.current.packageTitle;
   static const desktopStep = 'Desktop embed';
   static const profileStep = 'aigent-watch profile';
   static const enableStep = 'Enable pistisai';
@@ -161,7 +164,8 @@ class HermesBotInstallService {
       return override();
     }
     if (agentPort != null && agentPort > 0) {
-      final fromProcess = await (_processHome ?? listeningHermesHome)(agentPort);
+      final fromProcess =
+          await (_processHome ?? listeningHermesHome)(agentPort);
       if (fromProcess != null && fromProcess.trim().isNotEmpty) {
         return fromProcess.trim();
       }
@@ -327,7 +331,22 @@ class HermesBotInstallService {
 
   static Future<List<int>> _loadBundledAsset(String relativePath) async {
     final data = await rootBundle.load('assets/pistisai/hermes/$relativePath');
-    return data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+    final bytes =
+        data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+    if (!relativePath.endsWith('.js')) {
+      return bytes;
+    }
+    return utf8.encode(brandPluginSource(utf8.decode(bytes), Brand.current));
+  }
+
+  /// Fills the brand tokens in the bundled desktop plugin source.
+  @visibleForTesting
+  static String brandPluginSource(String source, BrandConfig brand) {
+    String js(String value) =>
+        value.replaceAll(r'\', r'\\').replaceAll("'", r"\'");
+    return source
+        .replaceAll('{{app_url}}', js(brand.appUrl))
+        .replaceAll('{{product_name}}', js(brand.productName));
   }
 
   static Future<HermesCommandResult> _runHermesProcess(

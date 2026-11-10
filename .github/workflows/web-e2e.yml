@@ -49,8 +49,11 @@ jobs:
       - name: "📦 flutter pub get"
         run: flutter pub get
 
+      - name: Bake Pistisai brand
+        run: bash tool/brand.sh pistisai
+
       - name: "🌐 flutter build web --release"
-        run: flutter build web --release --no-tree-shake-icons --no-web-resources-cdn --dart-define=BRAND=iacle
+        run: flutter build web --release --no-tree-shake-icons --no-web-resources-cdn --dart-define=BRAND=pistisai
 
       - name: "🔍 Verify splash fix is in built index.html"
         run: |

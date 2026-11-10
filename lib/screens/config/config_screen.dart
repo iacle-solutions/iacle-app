@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
+import '../../brand/brand_copy.dart';
 import '../../widgets/common/card_section.dart';
 import '../../widgets/common/error_state.dart';
 import '../../widgets/common/loading_skeleton.dart';
@@ -25,6 +26,90 @@ import '../../services/settings_import_export_service.dart';
 import '../../services/theme_provider.dart';
 import '../../utils/file_download_helper.dart';
 import '../../di/locator.dart';
+
+class _SettingsPageLink {
+  const _SettingsPageLink(this.label, this.subtitle, this.route, this.icon);
+
+  final String label;
+  final String subtitle;
+  final String route;
+  final IconData icon;
+}
+
+const _settingsPages = <_SettingsPageLink>[
+  _SettingsPageLink(
+    'General',
+    'App preferences',
+    '/settings/general',
+    Icons.tune,
+  ),
+  _SettingsPageLink(
+    'Appearance',
+    'Theme and look',
+    '/settings/appearance',
+    Icons.palette_outlined,
+  ),
+  _SettingsPageLink(
+    'Connection',
+    'Daemon, mesh, and account',
+    '/settings/connection',
+    Icons.lan_outlined,
+  ),
+  _SettingsPageLink(
+    'LLM providers',
+    'Model provider settings',
+    '/settings/llm',
+    Icons.psychology_outlined,
+  ),
+  _SettingsPageLink(
+    'Vision',
+    'Screen and vision tools',
+    '/settings/vision',
+    Icons.visibility_outlined,
+  ),
+  _SettingsPageLink(
+    'Avatar',
+    'Companion appearance',
+    '/settings/avatar',
+    Icons.face_outlined,
+  ),
+  _SettingsPageLink(
+    'Achievements',
+    'Avatar milestones',
+    '/settings/achievements',
+    Icons.emoji_events_outlined,
+  ),
+  _SettingsPageLink(
+    'Desktop',
+    'Local desktop tools',
+    '/settings/desktop',
+    Icons.desktop_windows_outlined,
+  ),
+  _SettingsPageLink(
+    'About',
+    '',
+    '/settings/about',
+    Icons.info_outline,
+  ),
+  _SettingsPageLink(
+    'Plans',
+    'Subscription options',
+    '/upgrade',
+    Icons.workspace_premium_outlined,
+  ),
+  _SettingsPageLink(
+    'Brain insights',
+    'Local brain activity',
+    '/brain-insights',
+    Icons.bubble_chart_outlined,
+  ),
+  _SettingsPageLink(
+    'Roadmap',
+    'What is in progress',
+    '/construction',
+    Icons.construction_outlined,
+  ),
+];
 
 /// Configuration screen with tabbed organization for better UX.
 /// Settings are persisted via SettingsPreferenceService and ConnectionManagerService.
@@ -376,7 +461,8 @@ class _ConfigScreenState extends State<ConfigScreen>
       if (file == null) return;
 
       final content = await file.readAsString();
-      final settings = await _importExportService.importSettingsFromJson(content);
+      final settings =
+          await _importExportService.importSettingsFromJson(content);
       await _importExportService.applyImportedSettings(settings);
       if (mounted) {
         await _loadData();
@@ -765,6 +851,24 @@ class _ConfigScreenState extends State<ConfigScreen>
             _readOnly('Platform',
                 '${Platform.operatingSystem} ${Platform.operatingSystemVersion}'),
             _readOnly('Dart Version', Platform.version.split(' ').first),
+          ],
+        ),
+        const SizedBox(height: 16),
+        CardSection(
+          title: 'Settings pages',
+          children: [
+            for (final page in _settingsPages)
+              ListTile(
+                leading: Icon(page.icon),
+                title: Text(page.label),
+                subtitle: Text(
+                  page.route == '/settings/about'
+                      ? BrandCopy.settingsAboutSubtitle
+                      : page.subtitle,
+                ),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () => context.go(page.route),
+              ),
           ],
         ),
         const SizedBox(height: 16),

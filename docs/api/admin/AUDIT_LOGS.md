@@ -111,4 +111,4 @@ curl -X GET "https://api.example.com/api/admin/audit/export?startDate=2025-01-01
 ## Related Documentation
 
 - [Admin Management API](./ADMIN_MANAGEMENT.md)
-- [Admin Authentication Middleware](../../middleware/admin-auth.js)
+- Admin Authentication Middleware
