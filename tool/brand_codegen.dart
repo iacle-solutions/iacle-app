@@ -11,7 +11,7 @@ import 'brand_emit.dart';
 /// whitelabel and requires a valid licence, supplied either as a path or as
 /// the licence JSON itself via `--license <path|json>`:
 ///
-///   tool/brand.sh acme --license /path/to/acme.licence
+///   tool/brand.sh iacle --license /path/to/iacle.licence
 ///
 /// Without a valid, unexpired licence for that brand the bake refuses to run.
 Future<void> main(List<String> args) async {
@@ -41,10 +41,8 @@ Future<void> main(List<String> args) async {
     exit(1);
   }
 
-  // The upstream product is free, and so is the `example` placeholder that CI
-  // bakes to prove a white-label build carries no upstream hosts. Every other
-  // brand is a licensed whitelabel.
-  if (!_freeBrands.contains(id)) {
+  // The upstream product is free. Every other brand is a licensed whitelabel.
+  if (id != 'pistisai') {
     if (licenseSource == null || licenseSource.trim().isEmpty) {
       stderr.writeln(
         'Brand "$id" is a paid whitelabel. Supply a licence:\n'
@@ -74,8 +72,6 @@ Future<void> main(List<String> args) async {
     'Build with: flutter build <target> --dart-define=BRAND=${brand.id}',
   );
 }
-
-const Set<String> _freeBrands = {'pistisai', 'example'};
 
 /// Read a licence from a file path, or treat the argument as the JSON itself.
 Future<String> _readLicence(String source) async {

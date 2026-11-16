@@ -1,16 +1,12 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
-import '../l10n/app_localizations.dart';
-
 import 'brand.dart';
 import 'brand_config.dart';
 
-/// App strings plus Material, Widgets, and Cupertino localizations for a
-/// locked brand locale.
+/// Material, Widgets, and Cupertino localizations for a locked brand locale.
 const List<LocalizationsDelegate<dynamic>> brandLocalizationsDelegates =
     <LocalizationsDelegate<dynamic>>[
-  AppLocalizations.delegate,
   GlobalMaterialLocalizations.delegate,
   GlobalWidgetsLocalizations.delegate,
   GlobalCupertinoLocalizations.delegate,

@@ -9,13 +9,13 @@ BrandConfig parseBrandYaml(String source) {
   final colors = <String, String>{};
   String? blockKey;
   final block = StringBuffer();
-  bool inColors = false;
+  var inColors = false;
 
   void finishBlock() {
     if (blockKey == null) {
       return;
     }
-    String text = block.toString();
+    var text = block.toString();
     if (text.endsWith('\n')) {
       text = text.substring(0, text.length - 1);
     }
@@ -88,14 +88,6 @@ BrandConfig parseBrandYaml(String source) {
     websiteDomain: req('website_domain'),
     websiteUrl: req('website_url'),
     appUrl: req('app_url'),
-    apiBaseUrl: req('api_base_url'),
-    wsEndpoint: req('ws_endpoint'),
-    tunnelSshUrl: req('tunnel_ssh_url'),
-    streamingBaseUrl: req('streaming_base_url'),
-    adminCenterUrl: req('admin_center_url'),
-    urlScheme: req('url_scheme'),
-    accessTeamDomain: scalars['access_team_domain'] ?? '',
-    accessAud: scalars['access_aud'] ?? '',
     defaultLocale: req('default_locale'),
     lockLocale: _parseBool(req('lock_locale'), 'lock_locale'),
     logoAsset: req('logo_asset'),
@@ -167,7 +159,7 @@ bool _parseBool(String value, String key) {
 }
 
 int _parseHex(String value) {
-  String hex = value.trim();
+  var hex = value.trim();
   if (hex.startsWith('#')) {
     hex = hex.substring(1);
   }

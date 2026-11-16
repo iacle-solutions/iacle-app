@@ -75,9 +75,9 @@ class BrandLicence {
   const BrandLicence._();
 
   /// Ed25519 public key (base64url, unpadded) for the whitelabel key.
-  /// Generated 2026-11-09; the private key is held by the licensor only.
+  /// Generated 2026-11-09; the private key stays with the licensor.
   static const String _publicKeyB64Url =
-      'JTu_dDC7g2J8NnfxJ60tD4w6CGiA66CBtCojh9H_q08';
+      'JnH0CFZOZbmc6ue9leMfd2td0jTed295UdCfzF61xHM';
 
   static final Ed25519 _ed25519 = Ed25519();
 
@@ -93,7 +93,7 @@ class BrandLicence {
 
   /// Base64url decode, tolerant of missing padding.
   static List<int>? _b64UrlDecode(String input) {
-    String s = input.trim();
+    var s = input.trim();
     final pad = s.length % 4;
     if (pad != 0) s += '=' * (4 - pad);
     final normalized = s.replaceAll('-', '+').replaceAll('_', '/');
@@ -104,10 +104,7 @@ class BrandLicence {
     }
   }
 
-  /// Verify an Ed25519 signature over [message].
-  ///
-  /// [publicKeyB64Url] overrides the embedded licensor key. Tests pass a key
-  /// they control. Production calls leave it null.
+  /// Verify an Ed25519 signature over [message] with the embedded public key.
   static Future<bool> _verifyEd25519(
     List<int> message,
     List<int> signature, {
@@ -147,11 +144,8 @@ class BrandLicence {
     final message = _canonicalPayload(payload);
     final sigBytes = _b64UrlDecode(signature);
     final ok = sigBytes != null &&
-        await _verifyEd25519(
-          message,
-          sigBytes,
-          publicKeyB64Url: publicKeyB64Url,
-        );
+        await _verifyEd25519(message, sigBytes,
+            publicKeyB64Url: publicKeyB64Url);
     if (!ok) {
       return const LicenceResult(
         status: LicenceStatus.badSignature,
@@ -199,11 +193,8 @@ class BrandLicence {
       if (decoded is! Map<String, dynamic>) {
         return const LicenceResult(status: LicenceStatus.malformed);
       }
-      return await validate(
-        decoded,
-        requestedBrand: requestedBrand,
-        publicKeyB64Url: publicKeyB64Url,
-      );
+      return await validate(decoded,
+          requestedBrand: requestedBrand, publicKeyB64Url: publicKeyB64Url);
     } catch (e) {
       return LicenceResult(
         status: LicenceStatus.malformed,
