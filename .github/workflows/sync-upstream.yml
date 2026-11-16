@@ -1,0 +1,96 @@
+name: Sync upstream pistisai releases
+
+# Follows upstream pistisai-app release tags (mobile-v*) and opens a PR that
+# merges the new tag into main, then re-bakes the IAClé brand. Never force-pushes.
+on:
+  schedule:
+    - cron: "17 */6 * * *"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Upstream tag to sync (e.g. mobile-v1.5.2). Empty = latest mobile-v*."
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      - name: Resolve upstream tag
+        id: tag
+        env:
+          GH_TOKEN: ${{ secrets.UPSTREAM_READ_TOKEN || secrets.GITHUB_TOKEN }}
+          INPUT_TAG: ${{ inputs.tag }}
+        run: |
+          git remote add upstream https://github.com/pistisAI/pistisai-app.git || true
+          git fetch -q upstream --tags
+          if [ -n "$INPUT_TAG" ]; then
+            TAG="$INPUT_TAG"
+          else
+            TAG=$(git tag -l 'mobile-v*' --sort=-v:refname | head -1)
+          fi
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "Resolved upstream tag: $TAG"
+
+      - name: Skip if already merged
+        id: already
+        env:
+          TAG: ${{ steps.tag.outputs.tag }}
+        run: |
+          if git merge-base --is-ancestor "$TAG" HEAD 2>/dev/null; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            echo "$TAG already in main; nothing to sync."
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Merge upstream tag into a sync branch
+        if: steps.already.outputs.skip == 'false'
+        env:
+          TAG: ${{ steps.tag.outputs.tag }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          BRANCH="sync/upstream-${TAG}"
+          git checkout -q -B "$BRANCH" HEAD
+          # Merge, never rebase or force. A conflict stops the job for review.
+          git merge --no-ff -m "chore(sync): merge upstream ${TAG}" "$TAG"
+          git push -q --force-with-lease origin "$BRANCH" 2>/dev/null || git push -q origin "$BRANCH"
+          echo "BRANCH=$BRANCH" >> "$GITHUB_ENV"
+
+      - name: Re-bake IAClé brand
+        if: steps.already.outputs.skip == 'false'
+        env:
+          IACLE_BRAND_LICENCE: ${{ secrets.IACLE_BRAND_LICENCE }}
+        run: |
+          if [ -z "$IACLE_BRAND_LICENCE" ]; then
+            echo "::error::IACLE_BRAND_LICENCE secret is missing; cannot bake the brand."
+            exit 1
+          fi
+          printf '%s' "$IACLE_BRAND_LICENCE" > "$RUNNER_TEMP/iacle.licence"
+          tool/brand.sh iacle --license "$RUNNER_TEMP/iacle.licence"
+          rm -f "$RUNNER_TEMP/iacle.licence"
+
+      - name: Open sync PR
+        if: steps.already.outputs.skip == 'false'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ steps.tag.outputs.tag }}
+        run: |
+          gh pr create --base main --head "$BRANCH" \
+            --title "chore(sync): merge upstream ${TAG}" \
+            --body "Automated sync of upstream ${TAG} into IAClé. Re-baked with tool/brand.sh iacle. Review CI before merging." \
+            || echo "PR may already exist for $BRANCH"
