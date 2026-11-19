@@ -1,4 +1,16 @@
-# Pistisai — ΠΙΣΤΙΣΑΙ
+# IAClé
+
+**Québec commercial IT for local-first AI.**
+
+IAClé is based on PistisAI, the upstream product. IAClé is the Québec service that delivers and installs that platform to Québec SMEs.
+
+This repository is the IAClé build of that platform. For product behaviour, architecture, and developer quick-start, see the upstream PistisAI material below.
+
+---
+
+## The upstream PistisAI platform IAClé is built on
+
+### Pistisai — ΠΙΣΤΙΣΑΙ
 
 **A local-first companion and desktop capability layer for your AI agent. Private, secure, yours.**
 
