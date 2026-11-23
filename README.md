@@ -1,4 +1,24 @@
-# Pistisai — ΠΙΣΤΙΣΑΙ
+# IAClé
+
+**Québec commercial IT for local-first AI.**
+
+IAClé is based on PistisAI, the upstream product. IAClé is the Québec service that delivers and installs that platform to Québec businesses, with an enterprise and white-label delivery model. PistisAI serves personal and enterprise use; IAClé is the enterprise-facing service.
+
+This repository is the IAClé build of that platform. For product behaviour, architecture, and developer quick-start, see the upstream PistisAI material below.
+
+## Status
+
+IAClé is in pre-launch. There are no customers yet. Launch material is preparation, not a public launch announcement.
+
+## Initial focus
+
+Notary offices are the first target. Each new client type adds a reusable skills bundle to the offering, and that bundle is improved as it is proven in the field.
+
+---
+
+## The upstream PistisAI platform IAClé is built on
+
+### Pistisai — ΠΙΣΤΙΣΑΙ
 
 **A local-first companion and desktop capability layer for your AI agent. Private, secure, yours.**
 
@@ -20,7 +40,7 @@ Your AI runs on your hardware. The app gives it voice, vision, desktop control, 
 
 **You need an agent runtime.** Hermes is the primary test path. OpenClaw and compatible agent gateways also work. Your desktop hub connects to the runtime; your other Pistisai devices connect to the hub.
 
-> 🚀 **Public launch is live.** Full quick-start, supported runtimes, and self-hosting steps → [docs/LAUNCH.md](docs/LAUNCH.md). Primary CTA: clone the repo, run a workflow, and open an issue or discussion with your real use case. Track the launch → [GitHub issue #39](https://github.com/pistisAI/pistisai-app/issues/39).
+> ℹ️ **Status: pre-launch.** No customers to date. The launch material is preparation, not a live public launch. Quick-start, supported runtimes, and self-hosting steps → [docs/LAUNCH.md](docs/LAUNCH.md).
 >
 > 🏛️ **Why we exist** → [docs/governance/manifesto.md](docs/governance/manifesto.md) — the meaning of Πίστις and the Four Pillars behind the product.
 
