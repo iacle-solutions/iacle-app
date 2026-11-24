@@ -76,8 +76,13 @@ void main() {
     expect(iacle.apiBaseUrl, 'https://api.iacle.app');
     expect(iacle.wsEndpoint, 'wss://api.iacle.app/ws');
     expect(iacle.tunnelSshUrl, 'wss://api.iacle.app/ssh');
-    expect(Brand.current.apiBaseUrl, iacle.apiBaseUrl);
-    expect(Brand.current.tunnelSshUrl, iacle.tunnelSshUrl);
+    // CI bakes the default (Pistisai) brand before the smoke tests, so the
+    // baked brand is not necessarily IAClé here. Assert the IAClé endpoint
+    // path through an explicit override so this regression test is
+    // deterministic under both the IAClé and Pistisai bakes (#44).
+    Brand.debugOverride(iacle);
+    expect(AppConfig.apiBaseUrl, iacle.apiBaseUrl);
+    expect(AppConfig.tunnelSshUrl, iacle.tunnelSshUrl);
   });
 
   test('AppConfig backend URLs follow the active brand', () {
