@@ -196,9 +196,10 @@ export class WebhookTestingService {
    * @param {string} webhookUrl - URL to send test webhook to
    * @param {object} payload - Webhook payload to send
    * @param {string} secret - Optional webhook secret for signature
+   * @param {string} userId - Authenticated caller, used to scope cached results
    * @returns {object} Delivery result with status and response
    */
-  async simulateWebhookDelivery(webhookUrl, payload, secret = null) {
+  async simulateWebhookDelivery(webhookUrl, payload, secret = null, userId = null) {
     const testId = crypto.randomUUID();
     const timestamp = Date.now();
 
@@ -234,12 +235,16 @@ export class WebhookTestingService {
         headers['X-Webhook-Signature'] = signature;
       }
 
-      // Simulate delivery
+      // Simulate delivery. Never follow redirects: an allowlisted host such
+      // as webhook.site can answer 302 with an arbitrary Location, and Node's
+      // default redirect:'follow' would fetch that internal target without
+      // re-running the hostname check and echo its body to the caller.
       const response = await fetch(webhookUrl, {
         method: 'POST',
         headers,
         body: JSON.stringify(payload),
         timeout: 10000,
+        redirect: 'error',
       });
 
       const result = {
@@ -265,7 +270,7 @@ export class WebhookTestingService {
       }
 
       // Cache test event
-      this.cacheTestEvent(testId, result);
+      this.cacheTestEvent(testId, result, userId);
 
       logger.info('[WebhookTesting] Webhook delivery simulated', {
         testId,
@@ -284,7 +289,7 @@ export class WebhookTestingService {
         payload,
       };
 
-      this.cacheTestEvent(testId, result);
+      this.cacheTestEvent(testId, result, userId);
 
       logger.error('[WebhookTesting] Webhook delivery simulation failed', {
         testId,
@@ -351,10 +356,12 @@ export class WebhookTestingService {
    * @private
    * @param {string} testId - Test event ID
    * @param {object} result - Test result
+   * @param {string} userId - Owner of the test event (null for legacy callers)
    */
-  cacheTestEvent(testId, result) {
+  cacheTestEvent(testId, result, userId = null) {
     this.testEventCache.set(testId, {
       ...result,
+      ownerId: userId,
       cachedAt: new Date().toISOString(),
     });
 
@@ -369,20 +376,29 @@ export class WebhookTestingService {
    * Get test event by ID
    *
    * @param {string} testId - Test event ID
-   * @returns {object|null} Test event or null if not found
+   * @param {string} userId - Requesting user; omitted only for internal callers
+   * @returns {object|null} Test event or null if not found or not owned
    */
-  getTestEvent(testId) {
-    return this.testEventCache.get(testId) || null;
+  getTestEvent(testId, userId = undefined) {
+    const event = this.testEventCache.get(testId) || null;
+    if (!event || userId === undefined) {
+      return event;
+    }
+    return event.ownerId === userId ? event : null;
   }
 
   /**
    * Get all cached test events
    *
    * @param {number} limit - Maximum number of events to return
-   * @returns {array} Array of test events
+   * @param {string} userId - Requesting user; omitted only for internal callers
+   * @returns {array} Array of test events owned by that user
    */
-  getAllTestEvents(limit = 100) {
-    const events = Array.from(this.testEventCache.values());
+  getAllTestEvents(limit = 100, userId = undefined) {
+    let events = Array.from(this.testEventCache.values());
+    if (userId !== undefined) {
+      events = events.filter((event) => event.ownerId === userId);
+    }
     return events.slice(-limit);
   }
 

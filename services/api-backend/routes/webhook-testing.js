@@ -198,6 +198,7 @@ router.post('/test/send', authenticateJWT, validateSchema(testSendSchema), async
       webhookUrl,
       payload,
       secret,
+      req.user.sub,
     );
 
     logger.info('[WebhookTesting] Test webhook sent', {
@@ -234,7 +235,7 @@ router.post('/test/send', authenticateJWT, validateSchema(testSendSchema), async
 router.get('/test/events', authenticateJWT, validateSchema(testEventsQuerySchema), (req, res) => {
   try {
     const limit = Math.min(req.query.limit, 1000);
-    const events = webhookTestingService.getAllTestEvents(limit);
+    const events = webhookTestingService.getAllTestEvents(limit, req.user.sub);
 
     logger.info('[WebhookTesting] Test events retrieved', {
       userId: req.user.sub,
@@ -264,7 +265,7 @@ router.get('/test/events', authenticateJWT, validateSchema(testEventsQuerySchema
 router.get('/test/events/:testId', authenticateJWT, validateSchema(testIdParamSchema), (req, res) => {
   try {
     const { testId } = req.params;
-    const event = webhookTestingService.getTestEvent(testId);
+    const event = webhookTestingService.getTestEvent(testId, req.user.sub);
 
     if (!event) {
       return res.status(404).json({
