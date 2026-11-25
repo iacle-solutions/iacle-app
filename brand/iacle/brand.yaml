@@ -10,6 +10,14 @@ privacy_email: privacy@iacle.app
 website_domain: iacle.app
 website_url: https://iacle.app
 app_url: https://app.iacle.app
+api_base_url: https://api.iacle.app
+ws_endpoint: wss://api.iacle.app/ws
+tunnel_ssh_url: wss://api.iacle.app/ssh
+streaming_base_url: https://streaming.iacle.app
+admin_center_url: https://admin.iacle.app
+url_scheme: iacle
+access_team_domain: pistisai.cloudflareaccess.com
+access_aud: 30673c1ca7e895cd91f819678441650a467291f0d19cb5a0f58ebfd5e7686913
 default_locale: fr
 lock_locale: true
 logo_asset: brand/iacle/assets/logo.png

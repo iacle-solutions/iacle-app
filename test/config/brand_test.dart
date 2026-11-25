@@ -21,6 +21,7 @@ import '../../tool/brand_emit.dart';
 void main() {
   final pistisai = _load('pistisai');
   final example = _load('example');
+  final baked = _load(Brand.current.id);
 
   tearDown(() {
     Brand.debugOverride(null);
@@ -56,6 +57,34 @@ void main() {
     }
   });
 
+  test('IAClé brand endpoints point at IAClé hosts', () {
+    final iacle = _load('iacle');
+    for (final value in [
+      iacle.apiBaseUrl,
+      iacle.wsEndpoint,
+      iacle.tunnelSshUrl,
+      iacle.streamingBaseUrl,
+      iacle.adminCenterUrl,
+      iacle.appUrl,
+      iacle.websiteUrl,
+      iacle.releasesUrl,
+      iacle.urlScheme,
+    ]) {
+      expect(value.toLowerCase(), isNot(contains('pistisai')),
+          reason: 'brand/iacle/brand.yaml endpoints must use IAClé hosts: $value');
+    }
+    expect(iacle.apiBaseUrl, 'https://api.iacle.app');
+    expect(iacle.wsEndpoint, 'wss://api.iacle.app/ws');
+    expect(iacle.tunnelSshUrl, 'wss://api.iacle.app/ssh');
+    // CI bakes the default (Pistisai) brand before the smoke tests, so the
+    // baked brand is not necessarily IAClé here. Assert the IAClé endpoint
+    // path through an explicit override so this regression test is
+    // deterministic under both the IAClé and Pistisai bakes (#44).
+    Brand.debugOverride(iacle);
+    expect(AppConfig.apiBaseUrl, iacle.apiBaseUrl);
+    expect(AppConfig.tunnelSshUrl, iacle.tunnelSshUrl);
+  });
+
   test('AppConfig backend URLs follow the active brand', () {
     Brand.debugOverride(example);
     expect(AppConfig.apiBaseUrl, example.apiBaseUrl);
@@ -84,21 +113,21 @@ void main() {
       final rendered = renderTemplate(template, example);
       expect(rendered.toLowerCase(), isNot(contains('pistisai')),
           reason: name);
-      expect(renderTemplate(template, pistisai),
+      expect(renderTemplate(template, Brand.current),
           File('web/$name').readAsStringSync(),
-          reason: 'web/$name must match the pistisai bake');
+          reason: 'web/$name must match the baked brand');
     }
   });
 
-  test('baked brand matches brand/pistisai/brand.yaml', () {
-    expect(Brand.current.id, pistisai.id);
-    expect(Brand.current.productName, pistisai.productName);
-    expect(Brand.current.windowTitle, pistisai.windowTitle);
-    expect(Brand.current.primaryArgb, pistisai.primaryArgb);
-    expect(Brand.current.legalLine, pistisai.legalLine);
-    expect(Brand.current.aboutText, pistisai.aboutText);
-    expect(Brand.current.defaultLocale, 'en');
-    expect(Brand.current.lockLocale, isFalse);
+  test('baked brand matches its brand.yaml', () {
+    expect(Brand.current.id, baked.id);
+    expect(Brand.current.productName, baked.productName);
+    expect(Brand.current.windowTitle, baked.windowTitle);
+    expect(Brand.current.primaryArgb, baked.primaryArgb);
+    expect(Brand.current.legalLine, baked.legalLine);
+    expect(Brand.current.aboutText, baked.aboutText);
+    expect(Brand.current.defaultLocale, baked.defaultLocale);
+    expect(Brand.current.lockLocale, baked.lockLocale);
   });
 
   test('example brand copy does not name the upstream product', () {
@@ -115,7 +144,7 @@ void main() {
     expect(example.materialLocale, const Locale('fr'));
   });
 
-  testWidgets('baked brand renders Pistisai', (tester) async {
+  testWidgets('baked brand renders its welcome copy', (tester) async {
     await tester.pumpWidget(
       MaterialApp(
         theme: AppTheme.darkTheme,
@@ -124,14 +153,14 @@ void main() {
       ),
     );
 
-    expect(find.text('Welcome to Pistisai'), findsOneWidget);
+    expect(find.text('Welcome to ${baked.productName}'), findsOneWidget);
   });
 
-  testWidgets('baked about copy names Pistisai', (tester) async {
+  testWidgets('baked about copy names the brand', (tester) async {
     await _pumpAbout(tester);
     final visible = _visibleText(tester);
-    expect(visible, contains('About Pistisai'));
-    expect(visible, contains(pistisai.aboutText));
+    expect(visible, contains('About ${baked.productName}'));
+    expect(visible, contains(baked.aboutText));
   });
 
   test('example brand copy does not contain the upstream product name', () {
