@@ -74,10 +74,11 @@ class LicenceResult {
 class BrandLicence {
   const BrandLicence._();
 
-  /// Ed25519 public key (base64url, unpadded) for the whitelabel key.
-  /// Generated 2026-11-09; the private key is held by the licensor only.
+  /// Ed25519 public key (base64url, unpadded) for this fork's whitelabel key.
+  /// The private key stays with the licensor. Upstream's key does not verify
+  /// the IAClé licence.
   static const String _publicKeyB64Url =
-      'JTu_dDC7g2J8NnfxJ60tD4w6CGiA66CBtCojh9H_q08';
+      'JnH0CFZOZbmc6ue9leMfd2td0jTed295UdCfzF61xHM';
 
   static final Ed25519 _ed25519 = Ed25519();
 
