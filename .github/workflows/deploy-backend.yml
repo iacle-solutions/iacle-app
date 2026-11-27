@@ -158,14 +158,29 @@ jobs:
 
       - name: Backend images built
         run: echo "✅ Backend images built"
-  # AGENTS.md: every deploy runs a full-zone Cloudflare cache purge, and the
-  # deploy fails if the purge fails. Same secrets and fail-closed logic as
-  # purge_cache in deploy-web.yml. Runs only when images were pushed (ref main);
-  # builds on other refs load images locally and push nothing.
-  # Known gap (as in deploy-web.yml): the host still pulls the images by hand,
-  # so this purge can run before the host serves them; re-run if it deploys late.
-  purge_cache:
+
+  # GitHub Actions asks Dokploy to pull the images. A missing webhook fails
+  # the deploy. Runs only when images were pushed (ref main).
+  deploy_dokploy:
     needs: [build_images]
+    if: github.ref_name == 'main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7
+        with:
+          ref: main
+      - name: Trigger Dokploy deploy
+        env:
+          DOKPLOY_WEBHOOK_URL: ${{ secrets.DOKPLOY_BACKEND_WEBHOOK_URL }}
+          DOKPLOY_API_KEY: ${{ secrets.DOKPLOY_API_KEY }}
+        run: bash scripts/ci/trigger_dokploy_deploy.sh
+
+  # Every deploy purges the whole zone after Dokploy is triggered, and the
+  # deploy fails if the purge fails. Same secrets and fail-closed logic as
+  # purge_cache in deploy-web.yml.
+  purge_cache:
+    needs: [deploy_dokploy]
     if: github.ref_name == 'main'
     runs-on: ubuntu-24.04
     timeout-minutes: 5

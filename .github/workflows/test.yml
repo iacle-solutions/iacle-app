@@ -179,11 +179,16 @@ jobs:
             clang cmake ninja-build pkg-config \
             libgtk-3-dev libx11-dev libxi-dev liblzma-dev libstdc++-12-dev
 
-      - name: Bake Pistisai brand
-        run: bash tool/brand.sh pistisai
+      - name: Bake IAClé brand
+        env:
+          IACLE_BRAND_LICENCE: ${{ secrets.IACLE_BRAND_LICENCE }}
+        run: bash scripts/ci/bake_iacle_brand.sh
 
       - name: "🌐 flutter build web"
-        run: flutter build web --release --no-web-resources-cdn --dart-define=BRAND=pistisai
+        run: flutter build web --release --no-web-resources-cdn --dart-define=BRAND=iacle
+
+      - name: "🏷️ No upstream hosts, links, schemes, or names"
+        run: bash tool/brand_leak_check.sh build/web
 
       - name: "📦 Upload web build"
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9  # v7
@@ -264,11 +269,13 @@ jobs:
       - name: "📦 flutter pub get"
         run: flutter pub get
 
-      - name: Bake Pistisai brand
-        run: bash tool/brand.sh pistisai
+      - name: Bake IAClé brand
+        env:
+          IACLE_BRAND_LICENCE: ${{ secrets.IACLE_BRAND_LICENCE }}
+        run: bash scripts/ci/bake_iacle_brand.sh
 
       - name: "🐧 flutter build linux --release"
-        run: flutter build linux --release --dart-define=BRAND=pistisai
+        run: flutter build linux --release --dart-define=BRAND=iacle
 
       - name: "📦 Package bundle"
         run: |
