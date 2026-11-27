@@ -118,10 +118,12 @@ jobs:
           cache: true
 
       - name: Flutter Build Linux
+        env:
+          IACLE_BRAND_LICENCE: ${{ secrets.IACLE_BRAND_LICENCE }}
         run: |
           flutter pub get
-          bash tool/brand.sh pistisai
-          flutter build linux --release --dart-define=BRAND=pistisai --dart-define=SENTRY_DSN=${{ secrets.SENTRY_DSN }}
+          bash scripts/ci/bake_iacle_brand.sh
+          flutter build linux --release --dart-define=BRAND=iacle --dart-define=SENTRY_DSN=${{ secrets.SENTRY_DSN }}
 
       - name: Package Linux Distributions
         env:
@@ -190,10 +192,12 @@ jobs:
           cache: true
 
       - name: Flutter Build Windows
+        env:
+          IACLE_BRAND_LICENCE: ${{ secrets.IACLE_BRAND_LICENCE }}
         run: |
           flutter pub get
-          bash tool/brand.sh pistisai
-          flutter build windows --release --dart-define=BRAND=pistisai --dart-define=SENTRY_DSN=${{ secrets.SENTRY_DSN }}
+          bash scripts/ci/bake_iacle_brand.sh
+          flutter build windows --release --dart-define=BRAND=iacle --dart-define=SENTRY_DSN=${{ secrets.SENTRY_DSN }}
 
       - name: Package Portable ZIP
         run: |
@@ -275,13 +279,14 @@ jobs:
       - name: Flutter Build macOS
         run: |
           flutter pub get
-          bash tool/brand.sh pistisai
+          bash scripts/ci/bake_iacle_brand.sh
           # Create Podfile.lock and sync the sandbox before the build.
           # Without this, `flutter build` fails with "sandbox is not in sync
           # with the Podfile.lock" (#775).
           (cd macos && pod install --repo-update)
-          flutter build macos --release --dart-define=BRAND=pistisai --dart-define=SENTRY_DSN=${{ secrets.SENTRY_DSN }}
+          flutter build macos --release --dart-define=BRAND=iacle --dart-define=SENTRY_DSN=${{ secrets.SENTRY_DSN }}
         env:
+          IACLE_BRAND_LICENCE: ${{ secrets.IACLE_BRAND_LICENCE }}
           MACOSX_DEPLOYMENT_TARGET: 12.0
 
       - name: Package macOS App

@@ -1,8 +1,8 @@
 name: pistisai
 description: Local-first agent companion for Hermes and compatible agent runtimes.
 publish_to: none
-homepage: https://pistisai.app
-repository: https://github.com/pistisAI/pistisai-app
+homepage: https://iacle.app
+repository: https://github.com/iacle-solutions/iacle-app
 version: 1.5.69+191
 
 environment:
@@ -184,6 +184,7 @@ flutter:
     - assets/images/lobster_avatar_128.png
     - assets/version.json
     - brand/example/assets/
+    - brand/iacle/assets/
     - assets/pistisai/hermes/plugins/pistisai/
     - assets/pistisai/hermes/plugins/pistisai/desktop/
     - assets/pistisai/hermes/profiles/aigent-watch/

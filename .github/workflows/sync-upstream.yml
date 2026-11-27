@@ -1,0 +1,85 @@
+name: Sync upstream
+
+# Merge pistisAI/pistisai-app main into this repository and open a pull request.
+# Never force-pushes. Scheduled runs use the default branch only.
+# Release workflows bake IAClé at build time. This job refreshes the committed
+# bake with tool/brand.sh pistisai so the CI drift check still matches.
+on:
+  schedule:
+    - cron: "17 */6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7
+        with:
+          fetch-depth: 0
+          ref: main
+
+      - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2  # v2
+        with:
+          flutter-version-file: pubspec.yaml
+          channel: stable
+          cache: true
+
+      - name: Native build deps
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq --no-install-recommends \
+            clang cmake ninja-build pkg-config \
+            libgtk-3-dev libx11-dev libxi-dev liblzma-dev libstdc++-12-dev
+
+      - name: Merge upstream main
+        id: merge
+        run: |
+          set -euo pipefail
+          git remote add upstream https://github.com/pistisAI/pistisai-app.git \
+            || git remote set-url upstream https://github.com/pistisAI/pistisai-app.git
+          git fetch upstream main
+          UPSTREAM="$(git rev-parse upstream/main)"
+          echo "upstream=$UPSTREAM" >> "$GITHUB_OUTPUT"
+          if git merge-base --is-ancestor "$UPSTREAM" HEAD; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            echo "upstream/main $UPSTREAM is already in main"
+            exit 0
+          fi
+          echo "skip=false" >> "$GITHUB_OUTPUT"
+          SHORT="$(git rev-parse --short "$UPSTREAM")"
+          BRANCH="sync/upstream-${SHORT}"
+          echo "branch=$BRANCH" >> "$GITHUB_OUTPUT"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -B "$BRANCH" HEAD
+          git merge --no-ff -m "chore(sync): merge upstream main ${SHORT}" upstream/main
+          flutter pub get
+          bash tool/brand.sh pistisai
+          git add lib web linux windows macos android
+          if ! git diff --cached --quiet; then
+            git commit -m "chore(sync): refresh the committed brand bake"
+          fi
+          git push origin "$BRANCH"
+
+      - name: Open sync PR
+        if: steps.merge.outputs.skip == 'false'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: ${{ steps.merge.outputs.branch }}
+          UPSTREAM: ${{ steps.merge.outputs.upstream }}
+        run: |
+          set -euo pipefail
+          BODY="Merges pistisAI/pistisai-app main (${UPSTREAM}).
+
+          IAClé is PistisAI renamed for the Québec market: the same codebase and the same product. Release workflows bake IAClé at build time. This pull request keeps the committed bake aligned with the CI drift check (tool/brand.sh pistisai).
+
+          Do not force-push main."
+          gh pr create --base main --head "$BRANCH" \
+            --title "chore(sync): merge upstream main" \
+            --body "$BODY" \
+            || echo "PR may already exist for $BRANCH"

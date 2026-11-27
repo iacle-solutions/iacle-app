@@ -1,0 +1,50 @@
+name: Bake IAClé
+
+# Produces the IAClé bake from IACLE_BRAND_LICENCE and uploads a patch of the
+# generated files. The licence is not uploaded. Dispatch this after a brand.yaml
+# change when you need the generated files locally. Release workflows bake on
+# their own and do not need this artifact.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  bake:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7
+
+      - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2  # v2
+        with:
+          flutter-version-file: pubspec.yaml
+          channel: stable
+          cache: true
+
+      - name: Native build deps
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq --no-install-recommends \
+            clang cmake ninja-build pkg-config \
+            libgtk-3-dev libx11-dev libxi-dev liblzma-dev libstdc++-12-dev
+
+      - name: Bake IAClé
+        env:
+          IACLE_BRAND_LICENCE: ${{ secrets.IACLE_BRAND_LICENCE }}
+        run: |
+          set -euo pipefail
+          flutter pub get
+          bash scripts/ci/bake_iacle_brand.sh
+          git diff --stat -- lib web linux windows macos android
+          git diff -- lib web linux windows macos android > "$RUNNER_TEMP/iacle-bake.patch"
+          test -s "$RUNNER_TEMP/iacle-bake.patch"
+
+      - name: Upload bake patch
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9  # v7
+        with:
+          name: iacle-bake-patch
+          path: ${{ runner.temp }}/iacle-bake.patch
+          retention-days: 1

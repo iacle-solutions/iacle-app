@@ -190,10 +190,12 @@ jobs:
           fi
 
       - name: Flutter Build APK
+        env:
+          IACLE_BRAND_LICENCE: ${{ secrets.IACLE_BRAND_LICENCE }}
         run: |
           flutter pub get
-          bash tool/brand.sh pistisai
-          flutter build apk --release --split-per-abi --dart-define=BRAND=pistisai --dart-define=SENTRY_DSN=${{ secrets.SENTRY_DSN }}
+          bash scripts/ci/bake_iacle_brand.sh
+          flutter build apk --release --split-per-abi --dart-define=BRAND=iacle --dart-define=SENTRY_DSN=${{ secrets.SENTRY_DSN }}
 
       - name: Upload APKs
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9  # v7
@@ -238,10 +240,12 @@ jobs:
           cache: true
 
       - name: Flutter Build iOS
+        env:
+          IACLE_BRAND_LICENCE: ${{ secrets.IACLE_BRAND_LICENCE }}
         run: |
           flutter pub get
-          bash tool/brand.sh pistisai
-          flutter build ios --release --no-codesign --dart-define=BRAND=pistisai --dart-define=SENTRY_DSN=${{ secrets.SENTRY_DSN }}
+          bash scripts/ci/bake_iacle_brand.sh
+          flutter build ios --release --no-codesign --dart-define=BRAND=iacle --dart-define=SENTRY_DSN=${{ secrets.SENTRY_DSN }}
 
       - name: Upload iOS build
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9  # v7

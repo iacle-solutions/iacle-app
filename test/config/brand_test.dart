@@ -21,6 +21,7 @@ import '../../tool/brand_emit.dart';
 void main() {
   final pistisai = _load('pistisai');
   final example = _load('example');
+  final baked = _load(Brand.current.id);
 
   tearDown(() {
     Brand.debugOverride(null);
@@ -33,6 +34,38 @@ void main() {
     expect(pistisai.backgroundArgb, 0xFF181A20);
     expect(pistisai.lockLocale, isFalse);
     expect(pistisai.websiteUrl, 'https://pistisai.app');
+  });
+
+  test('IAClé brand endpoints point at IAClé hosts', () {
+    final iacle = _load('iacle');
+    for (final value in [
+      iacle.apiBaseUrl,
+      iacle.wsEndpoint,
+      iacle.tunnelSshUrl,
+      iacle.streamingBaseUrl,
+      iacle.adminCenterUrl,
+      iacle.appUrl,
+      iacle.websiteUrl,
+      iacle.releasesUrl,
+      iacle.urlScheme,
+    ]) {
+      expect(value.toLowerCase(), isNot(contains('pistisai.app')),
+          reason: 'brand/iacle/brand.yaml endpoints must use IAClé hosts: $value');
+      expect(value.toLowerCase(), isNot(contains('pistisai/pistisai-app')),
+          reason: value);
+    }
+    expect(iacle.apiBaseUrl, 'https://api.iacle.app');
+    expect(iacle.wsEndpoint, 'wss://api.iacle.app/ws');
+    expect(iacle.tunnelSshUrl, 'wss://api.iacle.app/ssh');
+    expect(iacle.streamingBaseUrl, 'https://streaming.iacle.app');
+    expect(iacle.adminCenterUrl, 'https://admin.iacle.app');
+    expect(iacle.urlScheme, 'iacle');
+    expect(iacle.accessTeamDomain, 'pistisai.cloudflareaccess.com');
+    expect(iacle.accessAud,
+        '30673c1ca7e895cd91f819678441650a467291f0d19cb5a0f58ebfd5e7686913');
+    Brand.debugOverride(iacle);
+    expect(AppConfig.apiBaseUrl, iacle.apiBaseUrl);
+    expect(AppConfig.tunnelSshUrl, iacle.tunnelSshUrl);
   });
 
   test('example brand endpoints never point at the upstream backend', () {
@@ -84,21 +117,21 @@ void main() {
       final rendered = renderTemplate(template, example);
       expect(rendered.toLowerCase(), isNot(contains('pistisai')),
           reason: name);
-      expect(renderTemplate(template, pistisai),
+      expect(renderTemplate(template, Brand.current),
           File('web/$name').readAsStringSync(),
-          reason: 'web/$name must match the pistisai bake');
+          reason: 'web/$name must match the baked brand');
     }
   });
 
-  test('baked brand matches brand/pistisai/brand.yaml', () {
-    expect(Brand.current.id, pistisai.id);
-    expect(Brand.current.productName, pistisai.productName);
-    expect(Brand.current.windowTitle, pistisai.windowTitle);
-    expect(Brand.current.primaryArgb, pistisai.primaryArgb);
-    expect(Brand.current.legalLine, pistisai.legalLine);
-    expect(Brand.current.aboutText, pistisai.aboutText);
-    expect(Brand.current.defaultLocale, 'en');
-    expect(Brand.current.lockLocale, isFalse);
+  test('baked brand matches its brand.yaml', () {
+    expect(Brand.current.id, baked.id);
+    expect(Brand.current.productName, baked.productName);
+    expect(Brand.current.windowTitle, baked.windowTitle);
+    expect(Brand.current.primaryArgb, baked.primaryArgb);
+    expect(Brand.current.legalLine, baked.legalLine);
+    expect(Brand.current.aboutText, baked.aboutText);
+    expect(Brand.current.defaultLocale, baked.defaultLocale);
+    expect(Brand.current.lockLocale, baked.lockLocale);
   });
 
   test('example brand copy does not name the upstream product', () {
@@ -124,14 +157,14 @@ void main() {
       ),
     );
 
-    expect(find.text('Welcome to Pistisai'), findsOneWidget);
+    expect(find.text('Welcome to ${baked.productName}'), findsOneWidget);
   });
 
   testWidgets('baked about copy names Pistisai', (tester) async {
     await _pumpAbout(tester);
     final visible = _visibleText(tester);
-    expect(visible, contains('About Pistisai'));
-    expect(visible, contains(pistisai.aboutText));
+    expect(visible, contains('About ${baked.productName}'));
+    expect(visible, contains(baked.aboutText));
   });
 
   test('example brand copy does not contain the upstream product name', () {
@@ -185,10 +218,10 @@ void main() {
     expect(theme.colorScheme.primary, isNot(const Color(0xFFFFD700)));
   });
 
-  test('baked theme primary comes from the Pistisai brand file', () {
+  test('baked theme primary comes from the baked brand file', () {
     final theme = ThemeConfig.loadThemeConfiguration(ThemeMode.dark, null);
-    expect(theme.colorScheme.primary, pistisai.primary);
-    expect(ThemeConfig.primaryColor, pistisai.primary);
+    expect(theme.colorScheme.primary, baked.primary);
+    expect(ThemeConfig.primaryColor, baked.primary);
   });
 
   testWidgets('locked French example brand renders a Material screen', (

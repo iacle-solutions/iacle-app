@@ -23,7 +23,8 @@ permissions:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: pistisai/pistisai-app-web
+  # GHCR package for this repository. Dokploy pulls :latest.
+  IMAGE_NAME: iacle-solutions/iacle-app-web
 
 jobs:
   analyze:
@@ -75,6 +76,18 @@ jobs:
           echo "tag=$VERSION" >> $GITHUB_OUTPUT
           echo "Building version: $VERSION"
 
+      - name: Stage brand licence
+        env:
+          IACLE_BRAND_LICENCE: ${{ secrets.IACLE_BRAND_LICENCE }}
+        run: |
+          set -euo pipefail
+          if [ -z "${IACLE_BRAND_LICENCE:-}" ]; then
+            echo "❌ IACLE_BRAND_LICENCE is not set"
+            exit 66
+          fi
+          umask 077
+          printf '%s' "$IACLE_BRAND_LICENCE" > "$RUNNER_TEMP/iacle.licence"
+
       - name: Build and push Docker image
         id: build
         uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc  # v7.4.0
@@ -82,6 +95,10 @@ jobs:
           context: .
           file: Dockerfile.web
           push: true
+          build-args: |
+            BRAND=iacle
+          secret-files: |
+            brand_licence=${{ runner.temp }}/iacle.licence
           tags: |
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.version.outputs.tag }}
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
@@ -100,11 +117,26 @@ jobs:
           fi
           echo "✅ Image pushed: $DIGEST"
 
-  # Known gap: the host still pulls the image by hand (`docker compose up -d`),
-  # so this purge can run before the host serves the new image. Moving the pull
-  # into Actions closes it; until then, re-run this workflow if the host deploys late.
-  purge_cache:
+  # GitHub Actions asks Dokploy to pull the image. A missing webhook fails
+  # the deploy. Nobody deploys this by hand.
+  deploy_dokploy:
     needs: [build_and_push]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7
+        with:
+          ref: main
+      - name: Trigger Dokploy deploy
+        env:
+          DOKPLOY_WEBHOOK_URL: ${{ secrets.DOKPLOY_WEBHOOK_URL }}
+          DOKPLOY_API_KEY: ${{ secrets.DOKPLOY_API_KEY }}
+        run: bash scripts/ci/trigger_dokploy_deploy.sh
+
+  # Every deploy purges the whole zone after Dokploy is triggered, and the
+  # deploy fails if the purge fails.
+  purge_cache:
+    needs: [deploy_dokploy]
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     env:
